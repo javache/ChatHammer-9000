@@ -1,14 +1,13 @@
 package ch9k.eventpool;
 
-import java.util.List;
-import java.util.Map;
+import com.google.common.collect.Multimap;
 
 /**
  * Distributes events across the application
  * @author Pieter De Baets
  */
 public class EventPool {
-    private Map<String,List<EventListener>> listeners;
+    private Multimap<String,EventListener> listeners;
 
     /**
      * Add a new Event-listener that will listen to a given set of events
