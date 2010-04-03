@@ -1,11 +1,13 @@
 package ch9k.plugins;
 
+import javax.swing.JPanel;
+import ch9k.chat.Conversation;
+
 /**
  * Represents a plugin that is drawable on a swing panel.
  * @author Jasper Van der Jeugt
  */
-public interface DrawablePlugin extends Plugin
-{
+public interface DrawablePlugin extends Plugin {
     /**
      * Enable this plugin for a specific conversation. This method is also
      * used for passing the JPanel on which the plugin should be drawn.
