@@ -10,14 +10,6 @@ public class EventTest {
     public EventTest() {}
 
     /**
-     * Test of getId method, of class Event.
-     */
-    @Test
-    public void testGetId() {
-        assertEquals("ch9k.eventpool.Event", Event.getId());
-    }
-
-    /**
      * Test of isHandled method, of class Event.
      */
     @Test
