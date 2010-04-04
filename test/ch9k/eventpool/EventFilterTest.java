@@ -6,15 +6,13 @@ import static org.junit.Assert.*;
 /**
  * @author Pieter De Baets
  */
-public class EventFilterTest {
-    public EventFilterTest() {}
-    
+public class EventFilterTest {    
     /**
      * Test of getEventIds method, of class EventFilter.
      */
     @Test
     public void testGetEventIds() {
         EventFilter instance = new EventFilter();
-        assertArrayEquals(null, instance.getEventIds());
+        assertArrayEquals(null, instance.getMatchedEventIds());
     }
 }

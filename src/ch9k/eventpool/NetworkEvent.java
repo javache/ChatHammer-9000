@@ -14,6 +14,7 @@ public class NetworkEvent extends Event {
      * Get the origin of this Event
      * @return source
      */
+    @Override
     public InetAddress getSource() {
         return source;
     }

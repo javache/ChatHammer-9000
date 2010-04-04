@@ -23,4 +23,10 @@ public abstract class Event {
     public void setHandled(boolean handled) {
         this.handled = handled;
     }
+
+    /**
+     * Get the object that originally sent this event
+     * @return source
+     */
+    public abstract Object getSource();
 }

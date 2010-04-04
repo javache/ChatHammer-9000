@@ -7,8 +7,6 @@ import static org.junit.Assert.*;
  * @author Pieter De Baets
  */
 public class NetworkEventTest {
-    public NetworkEventTest() {}
-
     /**
      * Test of getSource method, of class NetworkEvent.
      */

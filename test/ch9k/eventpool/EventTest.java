@@ -7,7 +7,12 @@ import static org.junit.Assert.*;
  * @author Pieter De Baets
  */
 public class EventTest {
-    public EventTest() {}
+    public class EventImpl extends Event {
+        @Override
+        public Object getSource() {
+            return null;
+        }
+    }
 
     /**
      * Test of isHandled method, of class Event.
@@ -27,6 +32,4 @@ public class EventTest {
         instance.setHandled(true);
         assertEquals(true, instance.isHandled());
     }
-
-    public class EventImpl extends Event {}
 }

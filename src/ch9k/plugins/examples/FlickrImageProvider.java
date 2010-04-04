@@ -1,4 +1,4 @@
-package ch9k.plugins;
+package ch9k.plugins.examples;
 
 import com.aetrion.flickr.Flickr;
 

@@ -1,5 +1,6 @@
 package ch9k.eventpool;
 
+import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 
 /**
@@ -7,7 +8,8 @@ import com.google.common.collect.Multimap;
  * @author Pieter De Baets
  */
 public class EventPool {
-    private Multimap<String,EventListener> listeners;
+    private Multimap<String,EventListener> listeners = ArrayListMultimap.create();
+    private EventHeritageBuilder eventHeritage = new EventHeritageBuilder();
 
     /**
      * Add a new Event-listener that will listen to a given set of events

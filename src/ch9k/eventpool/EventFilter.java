@@ -5,7 +5,7 @@ package ch9k.eventpool;
  * @author Pieter De Baets
  */
 public class EventFilter {
-    public String[] getEventIds() {
+    public String[] getMatchedEventIds() {
         return null;
     }
 }

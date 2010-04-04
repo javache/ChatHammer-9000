@@ -8,20 +8,22 @@ import static org.junit.Assert.*;
  * @author Pieter De Baets
  */
 public class EventHeritageBuilderTest {
-    public EventHeritageBuilderTest() {}
-
+    /**
+     * Test of getIds method, of class EventHeritageBuilder.
+     */
     @Test
     public void testGetIds() {
         Collection<String> list;
+        EventHeritageBuilder instance = new EventHeritageBuilder();
         
-        list = EventHeritageBuilder.getIds(Event.class);
+        list = instance.getIds(Event.class);
         System.out.println(list);
         assertEquals(1, list.size());
 
-        list = EventHeritageBuilder.getIds(EventChild.class);
+        list = instance.getIds(EventChild.class);
         assertEquals(2, list.size());
 
-        list = EventHeritageBuilder.getIds(EventChildChild.class);
+        list = instance.getIds(EventChildChild.class);
         assertEquals(3, list.size());
         String[] expected = {
             "ch9k.eventpool.EventHeritageBuilderTest$EventChildChild",
@@ -31,6 +33,12 @@ public class EventHeritageBuilderTest {
         assertArrayEquals(expected, list.toArray(new String[0]));
     }
 
-    public class EventChild extends Event {}
+    public class EventChild extends Event {
+        @Override
+        public Object getSource() {
+            return null;
+        }
+    }
+    
     public class EventChildChild extends EventChild {}
 }
