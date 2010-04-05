@@ -31,7 +31,7 @@ public class ContactList {
         return contacts;
     }
 
-    //throws contact allready in list exception or returns a boolean
+    //throws contact already in list exception or returns a boolean
     /**
      * Add a contact to the ContactList.
      * @param contact
@@ -43,7 +43,7 @@ public class ContactList {
             contacts.add(contact);
         } else {
             // TODO throw the right exception
-            throw new Exception("Contact allready in List");
+            throw new Exception("Contact already in List");
         }
     }
 

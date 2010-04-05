@@ -7,9 +7,7 @@ package ch9k.chat;
 public class ConversationSubject {
     private String[] subjects;
 
-
     public String[] getSubjects() {
         return subjects;
     }
-
 }

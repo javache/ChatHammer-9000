@@ -18,7 +18,7 @@ public class Contact {
      * Constructor.
      * @param username The username of the new contact.
      * @param ip The ip of the new contact.
-     * @param blocked Whether or not the new contact was allready blocked.
+     * @param blocked Whether or not the new contact was already blocked.
      */
     public Contact(String username, InetAddress ip, boolean blocked) {
         this.username = username;

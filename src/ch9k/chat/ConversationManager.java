@@ -17,7 +17,7 @@ public class ConversationManager {
     public Conversation startConversation(Contact contact) {
         // TODO pass true current active plugins
         Conversation conversation = new Conversation(contact, true, null);
-        // TODO what if there is allready a conversation with this contact?
+        // TODO what if there is already a conversation with this contact?
         conversations.put(contact, conversation);
         return conversation;
     }
