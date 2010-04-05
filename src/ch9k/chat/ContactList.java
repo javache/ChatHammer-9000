@@ -6,7 +6,7 @@ import java.util.Set;
 
 /**
  * List of al the contacts of the current user.
- * @author jpanneel
+ * @author Jens Panneel
  */
 public class ContactList {
     private List<Contact> contacts;
@@ -19,6 +19,7 @@ public class ContactList {
      * In the ContactList there is need for an ordening. This could be done here.
      */
     public ContactList(Set<Contact> contacts) {
+        // TODO some sort of sorting/ordening
         this.contacts = new ArrayList<Contact>(contacts);
     }
 
@@ -34,14 +35,19 @@ public class ContactList {
     /**
      * Add a contact to the ContactList.
      * @param contact
+     * @throws Exception
+     *
      */
-    public void addContact(Contact contact) {
+    public void addContact(Contact contact) throws Exception {
         if (!contacts.contains(contact)){
             contacts.add(contact);
+        } else {
+            // TODO throw the right exception
+            throw new Exception("Contact allready in List");
         }
     }
 
-    //throws contact not in list exception or returns a boolean
+    //throws contact not in list exception or returns a boolean or just dont check. Will only be called on excisting contacts...
     /**
      * Remove the given contact from the ContactList
      * @param contact

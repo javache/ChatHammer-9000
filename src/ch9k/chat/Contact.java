@@ -99,4 +99,6 @@ public class Contact {
         this.blocked = blocked;
     }
 
+    // TODO equals and hashcode
+
 }
