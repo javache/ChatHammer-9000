@@ -17,7 +17,7 @@ public class EventPoolTest {
         EventPool instance = new EventPool();
         instance.addListener(listener, filter);
         // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        // fail("The test case is a prototype.");
     }
 
     /**

@@ -8,11 +8,18 @@ import static org.junit.Assert.*;
  */
 public class EventFilterTest {    
     /**
-     * Test of getEventIds method, of class EventFilter.
+     * Test of getMatchedEventIds method, of class EventFilter.
      */
     @Test
-    public void testGetEventIds() {
-        EventFilter instance = new EventFilter();
+    public void testMatchedGetEventIds() {
+        EventFilter instance = new EventFilterImpl();
         assertArrayEquals(null, instance.getMatchedEventIds());
+    }
+
+    public class EventFilterImpl implements EventFilter {
+        @Override
+        public String[] getMatchedEventIds() {
+            return null;
+        }
     }
 }
