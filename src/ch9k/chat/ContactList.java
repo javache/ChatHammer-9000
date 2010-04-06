@@ -1,15 +1,14 @@
 package ch9k.chat;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * List of al the contacts of the current user.
  * @author Jens Panneel
  */
 public class ContactList {
-    private List<Contact> contacts;
+    private Set<Contact> contacts;
 
     /**
      * Constructor
@@ -20,14 +19,14 @@ public class ContactList {
      */
     public ContactList(Set<Contact> contacts) {
         // TODO some sort of sorting/ordening
-        this.contacts = new ArrayList<Contact>(contacts);
+        this.contacts = new TreeSet<Contact>(contacts);
     }
 
     /**
      * Get a list of all the contacts from the current user
      * @return contacts
      */
-    public List<Contact> getContacts() {
+    public Set<Contact> getContacts() {
         return contacts;
     }
 
