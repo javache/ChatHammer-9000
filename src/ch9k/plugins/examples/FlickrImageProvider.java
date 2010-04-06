@@ -58,7 +58,7 @@ public class FlickrImageProvider {
         searchParameters.setText(text);
         LOGGER.info("Searching for: " + text);
 
-        /* Now search for the text. We limit ourselves to 10 photos. */
+        /* Now search for the text. We limit ourselves to maxResuls photos. */
         PhotoList photoList;
         try {
             photoList = photosInterface.search(searchParameters, maxResults, 0);
