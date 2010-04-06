@@ -22,24 +22,28 @@ public class Connection {
     // a queue of events to be send
     private Queue<NetworkEvent> sendQueue;
 
+    private Socket socket;
+
     /**
      * Constructor
      * @param ip 
      */
-    public Connection(InetAddress ip) {
-        target = ip;
+    public Connection(InetAddress ip) throws Exception{
+        socket = new Socket(ip,DEFAULT_PORT);
+    }
+    
+    public Connection(String host) throws Exception {
+        socket = new Socket(host,DEFAULT_PORT);        
     }
     
     /**
-     * Send a NetworkEvent
-     * @param networkEvent
+     * send an object
+     * @param obj the Object to be send
      */
-    public void sendEvent(NetworkEvent networkEvent) {
-        Socket socket;
+    public void sendObject(Object obj) {
         try {
-            socket = new Socket(target,DEFAULT_PORT);
             ObjectOutputStream stream = new ObjectOutputStream(socket.getOutputStream());
-            stream.writeObject(networkEvent);
+            stream.writeObject(obj);
         } catch(IOException e) {
             // TODO do something with that exception
         }
