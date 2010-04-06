@@ -26,7 +26,7 @@ public class FlickrImageProvider {
      * Logger, well, to log.
      */
     private final static Logger LOGGER =
-            Logger.getLogger("ch9k.plugins.examples.FlickrImageProvider");
+            Logger.getLogger(FlickrImageProvider.class.getName());
 
     /**
      * Constructor.
@@ -64,6 +64,7 @@ public class FlickrImageProvider {
             photoList = photosInterface.search(searchParameters, maxResults, 0);
         } catch (Exception exception) {
             // TODO: Do something proper.
+            // TODO: do not fucking catch *each* exception
             return null;
         }
 
