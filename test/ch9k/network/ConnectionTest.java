@@ -2,6 +2,7 @@ package ch9k.network;
 
 import org.junit.Test;
 import static org.junit.Assert.*;
+import junit.framework.TestCase;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.io.ObjectInputStream;
@@ -10,7 +11,7 @@ import java.io.IOException;
 
 import ch9k.eventpool.*;
 
-public class ConnectionTest {
+public class ConnectionTest extends TestCase {
 
     
     private class TestListener implements EventListener {
