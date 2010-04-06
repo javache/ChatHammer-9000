@@ -28,11 +28,11 @@ public class Connection {
      * Constructor
      * @param ip 
      */
-    public Connection(InetAddress ip) throws Exception{
+    public Connection(InetAddress ip) throws IOException{
         socket = new Socket(ip,DEFAULT_PORT);
     }
     
-    public Connection(String host) throws Exception {
+    public Connection(String host) throws IOException {
         socket = new Socket(host,DEFAULT_PORT);        
     }
     
