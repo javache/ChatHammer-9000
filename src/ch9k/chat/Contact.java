@@ -7,7 +7,7 @@ import java.net.InetAddress;
  * This holds the contacts ip, username, status, and knows whether a contact is online or offline and blocked or not.
  * @author Jens Panneel
  */
-public class Contact {
+public class Contact implements Comparable<Contact>{
     private InetAddress ip;
     private String username;
     private String status;
@@ -125,4 +125,15 @@ public class Contact {
         return hash;
     }
 
+    @Override
+    public int compareTo(Contact contact) {
+        if(this.equals(contact)) {
+            return 0;
+        }
+        int compareUsername = this.getUsername().compareTo(contact.getUsername());
+        if(compareUsername == 0) {
+            compareUsername++;
+        }
+        return compareUsername;
+    }
 }
