@@ -52,7 +52,6 @@ public class ContactList {
         if(!contacts.remove(contact)) {
             //TODE throw the right exception
         }
-
     }
 
 }

@@ -5,6 +5,9 @@
 
 package ch9k.chat;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.HashSet;
 import java.util.Set;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -56,26 +59,32 @@ public class ContactListTest {
      * Test of addContact method, of class ContactList.
      */
     @Test
-    public void testAddContact() throws Exception {
+    public void testAddContact() throws UnknownHostException  {
         System.out.println("addContact");
-        Contact contact = null;
-        ContactList instance = null;
-        instance.addContact(contact);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        ContactList contactList = new ContactList(new HashSet<Contact>());
+        Contact contact = new Contact("JPanneel", InetAddress.getByName("google.be"), true);
+        contactList.addContact(contact);
+        assertEquals(1, contactList.getContacts().size());
+        contactList.addContact(contact);
+        assertEquals(1, contactList.getContacts().size());
     }
 
     /**
      * Test of removeContact method, of class ContactList.
      */
     @Test
-    public void testRemoveContact() {
+    public void testRemoveContact() throws UnknownHostException {
         System.out.println("removeContact");
-        Contact contact = null;
-        ContactList instance = null;
-        instance.removeContact(contact);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        ContactList contactList = new ContactList(new HashSet<Contact>());
+        Contact contact1 = new Contact("JPanneel", InetAddress.getByName("google.be"), true);
+        Contact contact2 = new Contact("JPanneel", InetAddress.getByName("ugent.be"), true);
+        contactList.removeContact(contact1);
+        assertEquals(0, contactList.getContacts().size());
+        contactList.addContact(contact1);
+        contactList.removeContact(contact2);
+        assertEquals(1, contactList.getContacts().size());
+        contactList.removeContact(contact1);
+        assertEquals(0, contactList.getContacts().size());
     }
 
 }
