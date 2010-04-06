@@ -6,6 +6,7 @@
 package ch9k.chat;
 
 import java.net.InetAddress;
+import java.net.UnknownHostException;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -164,29 +165,28 @@ public class ContactTest {
      * Test of equals method, of class Contact.
      */
     @Test
-    public void testEquals() {
+    public void testEquals() throws UnknownHostException {
         System.out.println("equals");
-        Object obj = null;
-        Contact instance = null;
-        boolean expResult = false;
-        boolean result = instance.equals(obj);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        Contact instance1 = new Contact("JPanneel", InetAddress.getByName("google.be"), false);
+        Contact instance2 = new Contact("JPanneel", InetAddress.getByName("google.be"), false);
+        assertTrue(instance1.equals(instance2));
+        Contact instance3 = new Contact("JPanneel", InetAddress.getByName("ugent.be"), false);
+        assertFalse(instance1.equals(instance3));
+        Contact instance4 = new Contact("Javache", InetAddress.getByName("ugent.be"), false);
+        assertFalse(instance3.equals(instance4));
     }
 
     /**
      * Test of hashCode method, of class Contact.
      */
     @Test
-    public void testHashCode() {
+    public void testHashCode() throws UnknownHostException {
         System.out.println("hashCode");
-        Contact instance = null;
-        int expResult = 0;
-        int result = instance.hashCode();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        Contact instance1 = new Contact("JPanneel", InetAddress.getByName("google.be"), false);
+        Contact instance2 = new Contact("JPanneel", InetAddress.getByName("google.be"), false);
+        assertEquals(instance1.hashCode(), instance2.hashCode());
+        Contact instance3 = new Contact("Javache", InetAddress.getByName("google.be"), false);
+        assertNotSame(instance1.hashCode(), instance3.hashCode());
     }
 
 }
