@@ -99,6 +99,30 @@ public class Contact {
         this.blocked = blocked;
     }
 
-    // TODO equals and hashcode
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Contact other = (Contact) obj;
+        if (this.ip != other.ip && (this.ip == null || !this.ip.equals(other.ip))) {
+            return false;
+        }
+        if ((this.username == null) ? (other.username != null) : !this.username.equals(other.username)) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 79 * hash + (this.ip != null ? this.ip.hashCode() : 0);
+        hash = 79 * hash + (this.username != null ? this.username.hashCode() : 0);
+        return hash;
+    }
 
 }
