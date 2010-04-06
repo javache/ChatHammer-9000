@@ -37,12 +37,9 @@ public class ContactList {
      * @throws Exception
      *
      */
-    public void addContact(Contact contact) throws Exception {
-        if (!contacts.contains(contact)){
-            contacts.add(contact);
-        } else {
-            // TODO throw the right exception
-            throw new Exception("Contact already in List");
+    public void addContact(Contact contact) {
+        if(!contacts.add(contact)) {
+            //TODO throw the right exception
         }
     }
 
@@ -52,7 +49,10 @@ public class ContactList {
      * @param contact
      */
     public void removeContact(Contact contact) {
-        contacts.remove(contact);
+        if(!contacts.remove(contact)) {
+            //TODE throw the right exception
+        }
+
     }
 
 }
