@@ -1,12 +1,14 @@
 package ch9k.eventpool;
 
 import java.net.InetAddress;
+import java.io.Serializable;
+
 
 /**
  * Base event-class that can be sent over the network
  * @author Pieter De Baets
  */
-public class NetworkEvent extends Event {
+public class NetworkEvent extends Event implements Serializable {
     private InetAddress source;
     private InetAddress target;
 
