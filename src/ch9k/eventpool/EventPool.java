@@ -9,6 +9,14 @@ import java.util.Iterator;
  * @author Pieter De Baets
  */
 public class EventPool {
+    
+    private static EventPool POOL = new EventPool();
+    
+    public static EventPool getInstance() {
+        return POOL;
+    }
+    
+    
     private Multimap<String,EventListener> listeners = ArrayListMultimap.create();
 
     /**
@@ -42,7 +50,7 @@ public class EventPool {
      * @param networkEvent
      */
     public void raiseEvent(NetworkEvent networkEvent) {
-        
+
     }
 
     private void sendEvent(String next, Event event) {
