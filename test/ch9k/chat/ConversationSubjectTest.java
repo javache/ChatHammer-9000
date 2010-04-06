@@ -46,7 +46,7 @@ public class ConversationSubjectTest {
         ConversationSubject instance = new ConversationSubject();
         String[] expResult = null;
         String[] result = instance.getSubjects();
-        assertEquals(expResult, result);
+        assertArrayEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
     }
