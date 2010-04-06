@@ -8,6 +8,8 @@ import java.io.ObjectInputStream;
 import java.io.IOException;
 
 import ch9k.eventpool.NetworkEvent;
+import ch9k.eventpool.Event;
+import ch9k.eventpool.EventPool;
 
 /**
  * 
@@ -26,6 +28,9 @@ public class Connection {
     // the actual socket used to transfer objects
     private Socket socket;
 
+    private ObjectOutputStream out;
+    private ObjectInputStream in;
+
     // used by the listenThread to see if it should keep listening 
     private boolean keepListening;
 
@@ -35,13 +40,18 @@ public class Connection {
      */
     public Connection(InetAddress ip) throws IOException{
         socket = new Socket(ip,DEFAULT_PORT);
-        keepListening = true;
-        startListenThread();
+        setup();
     }
     
     public Connection(String host) throws IOException {
         socket = new Socket(host,DEFAULT_PORT);
+        setup();
+    }
+    
+    private void setup() throws IOException {
         keepListening = true;
+        out = new ObjectOutputStream(socket.getOutputStream());
+        in = new ObjectInputStream(socket.getInputStream());        
         startListenThread();
     }
     
@@ -71,10 +81,10 @@ public class Connection {
      */
     public void sendObject(Object obj) {
         try {
-            ObjectOutputStream stream = new ObjectOutputStream(socket.getOutputStream());
-            stream.writeObject(obj);
+            out.writeObject(obj);
         } catch(IOException e) {
             // TODO do something with that exception
+            System.out.println(e);
         }
     }
     
@@ -85,15 +95,16 @@ public class Connection {
         new Thread(new Runnable(){
             public void run() {
                 try {
-                    ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
                     while(keepListening) {
                         NetworkEvent ev = (NetworkEvent)in.readObject();
-                        EventPool.getInstance().raiseEvent(ev);
+                        System.out.println("event received");
+                        // down cast because it will end up in infinite loop otherwise (WTF)
+                        EventPool.getInstance().raiseEvent((Event)ev);
                     }
                 } catch (IOException e) {
-                    
+                    System.out.println(e);
                 } catch (ClassNotFoundException e) {
-                    
+                    System.out.println(e);
                 }
             }
         }).start();
