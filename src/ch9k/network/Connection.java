@@ -3,6 +3,8 @@ package ch9k.network;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.util.Queue;
+import java.io.ObjectOutputStream;
+import java.io.IOException;
 
 import ch9k.eventpool.NetworkEvent;
 
@@ -33,7 +35,14 @@ public class Connection {
      * @param networkEvent
      */
     public void sendEvent(NetworkEvent networkEvent) {
-        
+        Socket socket;
+        try {
+            socket = new Socket(target,DEFAULT_PORT);
+            ObjectOutputStream stream = new ObjectOutputStream(socket.getOutputStream());
+            stream.writeObject(networkEvent);
+        } catch(IOException e) {
+            // TODO do something with that exception
+        }
     }
     
 }
