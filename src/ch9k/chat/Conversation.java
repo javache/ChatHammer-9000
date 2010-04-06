@@ -102,7 +102,7 @@ public class Conversation {
      * Close this conversation
      */
     public void close() {
-        // TODO implement close()
+        // TODO implement close() : raise event
     }
 
 }
