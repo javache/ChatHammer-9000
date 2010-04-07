@@ -3,6 +3,7 @@ package ch9k.network;
 import java.util.Map;
 import java.util.HashMap;
 import java.net.InetAddress;
+import java.io.IOException;
 
 import ch9k.eventpool.NetworkEvent;
 
@@ -14,12 +15,26 @@ public class ConnectionManager {
 
     private Map<InetAddress,Connection> connectionMap;
     
+    public ConnectionManager() {
+        connectionMap = new HashMap<InetAddress,Connection>();
+    }
+    
     /**
      * Send a NetworkEvent
      * @param networkEvent 
      */
     public void sendEvent(NetworkEvent networkEvent) {
+        InetAddress target = networkEvent.getTarget();
         
+        if (!connectionMap.containsKey(target)) {
+            try {
+                connectionMap.put(target,new Connection(target));
+            } catch(IOException e) {
+                
+            }
+        }
+        
+        connectionMap.get(target).sendEvent(networkEvent);
     }
     
     /**

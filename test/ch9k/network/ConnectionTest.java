@@ -31,35 +31,6 @@ public class ConnectionTest extends TestCase {
         
     }
     
-    private class DirectResponseServer implements Runnable {
-        public void run() {
-            try {
-                ServerSocket server = new ServerSocket(1337);
-                while(true) {
-                    final Socket s = server.accept();
-                    new Thread(new Runnable(){
-                        public void run() {
-                            try {
-                                ObjectInputStream in = new ObjectInputStream(s.getInputStream());
-                                ObjectOutputStream out = new ObjectOutputStream(s.getOutputStream());
-                                while(true) {
-                                    Object obj = in.readObject();
-                                    System.out.println("event received on other side");
-                                    out.writeObject(obj);
-                                }
-                            } catch (IOException e) {
-
-                            } catch (ClassNotFoundException e) {
-
-                            }
-                        }
-                    }).start();
-                }
-           } catch (IOException e) {
-
-           }
-        }
-    }
     
     @Test
     public void testSendEvent() {
