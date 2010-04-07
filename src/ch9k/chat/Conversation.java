@@ -67,4 +67,28 @@ public class Conversation {
         // TODO implement close() : raise event
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Conversation other = (Conversation) obj;
+        if (this.contact != other.contact && (this.contact == null || !this.contact.equals(other.contact))) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 67 * hash + (this.contact != null ? this.contact.hashCode() : 0);
+        return hash;
+    }
+
+
+
 }
