@@ -15,6 +15,9 @@ import ch9k.eventpool.NetworkEvent;
  */
 public class ConnectionManager {
 
+    /**
+     * a Map to store all the connections.
+     */
     private Map<InetAddress,Connection> connectionMap;
     
     public ConnectionManager() {
@@ -80,7 +83,7 @@ public class ConnectionManager {
      
      
      /**
-      * this will start a thread that will accept incoming connections on port 1337
+      * this will start a thread that will accept incoming connections
       * once a client connects, create a Connection object with it and add it to the Map
       */
      private void startListenThread() {

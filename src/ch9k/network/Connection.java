@@ -27,7 +27,8 @@ public class Connection {
 
     // the actual socket used to transfer objects
     private Socket socket;
-
+    
+    // the 2 streams used to transfer objects
     private ObjectOutputStream out;
     private ObjectInputStream in;
 
