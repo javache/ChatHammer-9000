@@ -42,14 +42,21 @@ public class ConnectionManagerTest extends TestCase {
         DirectResponseServer server = new DirectResponseServer();
         server.start();
         
-        connMan.sendEvent(new TestNetworkEvent());
+        // the number of events to send
+        int n = 3;
+
+        for (int i = 0; i < n; i++) {
+            connMan.sendEvent(new TestNetworkEvent());            
+        }
+
+        // we should sleep +- 150 ms per event, to make sure they're send
         try {    
-            Thread.sleep(500);
+            Thread.sleep(150*n);
         } catch (InterruptedException e) {
             
         }
         server.stop();        
-        assertEquals(1,list.getReceived());
+        assertEquals(n,list.getReceived());
     }
     
     @Test
