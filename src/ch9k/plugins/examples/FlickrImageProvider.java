@@ -15,7 +15,7 @@ public class FlickrImageProvider {
     /**
      * Flickr API key for ch9k.
      */
-    private final static String API_KEY = "421079f2d0a110192bdd2e46dc603c77";
+    private static final String API_KEY = "421079f2d0a110192bdd2e46dc603c77";
 
     /**
      * Flickr API handle.
@@ -25,7 +25,7 @@ public class FlickrImageProvider {
     /**
      * Logger, well, to log.
      */
-    private final static Logger LOGGER =
+    private static final Logger LOGGER =
             Logger.getLogger(FlickrImageProvider.class.getName());
 
     /**
