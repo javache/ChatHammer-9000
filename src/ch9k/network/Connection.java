@@ -17,7 +17,7 @@ import ch9k.eventpool.EventPool;
  */
 public class Connection {
     
-    public static int DEFAULT_PORT = 1337;
+    public static int DEFAULT_PORT = 9001;
     
     // the remote ip
     private InetAddress target;

@@ -8,13 +8,13 @@ import java.io.IOException;
 
 /**
  * This is a test helper class
- * When it receives an object on port 1337,
+ * When it receives an object on DEFAULT_PORT,
  * it will resend it to the sender
  */
 public class DirectResponseServer implements Runnable {
     public void run() {
         try {
-            ServerSocket server = new ServerSocket(1337);
+            ServerSocket server = new ServerSocket(Connection.DEFAULT_PORT);
             while(true) {
                 final Socket s = server.accept();
                 new Thread(new Runnable(){
