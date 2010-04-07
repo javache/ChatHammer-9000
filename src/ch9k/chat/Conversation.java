@@ -1,5 +1,7 @@
 package ch9k.chat;
 
+import java.util.Date;
+
 /**
  * Represents a conversation between two users.
  * @author Jens Panneel
@@ -7,6 +9,7 @@ package ch9k.chat;
 public class Conversation {
     private Contact contact;
     private boolean initiated;
+    private Date starttime;
     private ConversationSubject subject;
 
     /**
@@ -18,6 +21,7 @@ public class Conversation {
     public Conversation(Contact contact, boolean initiatedByMe) {
         this.contact = contact;
         this.initiated = initiatedByMe;
+        this.starttime = new Date();
     }
 
     /**
@@ -50,6 +54,10 @@ public class Conversation {
      */
     public void setSubject(ConversationSubject subject) {
         this.subject = subject;
+    }
+
+    public Date getStartTime() {
+        return starttime;
     }
 
     /**
