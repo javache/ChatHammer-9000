@@ -130,7 +130,8 @@ public class Contact implements Comparable<Contact>{
         if(this.equals(contact)) {
             return 0;
         }
-        int compareUsername = this.getUsername().compareTo(contact.getUsername());
+        //
+        int compareUsername = this.getUsername().compareToIgnoreCase(contact.getUsername());
         if(compareUsername == 0) {
             compareUsername++;
         }
