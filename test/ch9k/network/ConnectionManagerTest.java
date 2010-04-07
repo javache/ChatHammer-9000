@@ -10,10 +10,11 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.IOException;
 
+
 import ch9k.eventpool.*;
 
-public class ConnectionTest extends TestCase {
-
+public class ConnectionManagerTest extends TestCase {
+    
     
     private class TestListener implements EventListener {
         private int received;
@@ -33,28 +34,26 @@ public class ConnectionTest extends TestCase {
     }
     
     
+    
     @Test
     public void testSendEvent() {
-        EventPool pool = EventPool.getInstance();
+        ConnectionManager connMan = new ConnectionManager();
         TestListener list = new TestListener();
-        pool.addListener(list,new TypeEventFilter(TestNetworkEvent.class));
+        EventPool.getInstance().addListener(list,new TypeEventFilter(TestNetworkEvent.class));
         new Thread(new DirectResponseServer()).start();
-        try {
-            Connection conn = new Connection(InetAddress.getLocalHost());
-            conn.sendEvent(new TestNetworkEvent());
+        
+        connMan.sendEvent(new TestNetworkEvent());
+        try {    
             Thread.sleep(500);
-            assertEquals(1,list.getReceived());
-            conn.sendEvent(new TestNetworkEvent());
-            Connection conn2 = new Connection(InetAddress.getLocalHost());
-            conn.sendEvent(new TestNetworkEvent());
-            conn2.sendEvent(new TestNetworkEvent());
-            Thread.sleep(1000);
-            assertEquals(4,list.getReceived());
-        } catch (Exception e) {
-            System.out.println(e);
+        } catch (InterruptedException e) {
+            
         }
-
+        
+        assertEquals(1,list.getReceived());
+        
+        
         
     }
+    
     
 }

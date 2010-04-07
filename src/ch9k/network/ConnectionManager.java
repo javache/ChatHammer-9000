@@ -30,7 +30,8 @@ public class ConnectionManager {
             try {
                 connectionMap.put(target,new Connection(target));
             } catch(IOException e) {
-                
+                System.out.println(target);
+                System.out.println(e);
             }
         }
         

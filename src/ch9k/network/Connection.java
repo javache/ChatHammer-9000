@@ -38,13 +38,8 @@ public class Connection {
      * Constructor
      * @param ip 
      */
-    public Connection(InetAddress ip) throws IOException{
+    public Connection(InetAddress ip) throws IOException {
         socket = new Socket(ip,DEFAULT_PORT);
-        setup();
-    }
-    
-    public Connection(String host) throws IOException {
-        socket = new Socket(host,DEFAULT_PORT);
         setup();
     }
     
