@@ -5,8 +5,6 @@ import java.util.HashMap;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.SocketException;
-import java.net.ConnectException;
 import java.io.IOException;
 import java.util.logging.Logger;
 import java.util.Iterator;
