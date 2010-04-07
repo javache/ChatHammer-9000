@@ -15,7 +15,7 @@ public class FlickrImageProviderTest {
     @Test
     public void testSearchFlickr() throws MalformedURLException {
         FlickrImageProvider instance = new FlickrImageProvider();
-        String[] results = instance.searchFlickr("lolcat", 10);
+        String[] results = instance.getImageUrls("lolcat", 10);
 
         /* Check that we get enough results back. */
         assertEquals(results.length, 10);

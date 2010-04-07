@@ -1,17 +1,18 @@
 package ch9k.plugins.examples;
 
+import ch9k.plugins.ImageProvider;
 import com.aetrion.flickr.Flickr;
+import com.aetrion.flickr.photos.Photo;
+import com.aetrion.flickr.photos.PhotoList;
 import com.aetrion.flickr.photos.PhotosInterface;
 import com.aetrion.flickr.photos.SearchParameters;
-import com.aetrion.flickr.photos.PhotoList;
-import com.aetrion.flickr.photos.Photo;
 import java.util.logging.Logger;
 
 /**
  * Class that gives us the ability to look up images on Flickr.
  * @author Jasper Van der Jeugt
  */
-public class FlickrImageProvider {
+public class FlickrImageProvider extends ImageProvider {
     /**
      * Flickr API key for ch9k.
      */
@@ -35,22 +36,8 @@ public class FlickrImageProvider {
         flickr = new Flickr(API_KEY);
     }
 
-    /**
-     * Search for some text on Flickr.
-     * @param text Text to search for.
-     * @return List of URL's.
-     */
-    public String[] searchFlickr(String text) {
-        return searchFlickr(text, 10);
-    }
-
-    /**
-     * Search for some text on Flickr.
-     * @param text Text to search for.
-     * @param maxResults Maximum results to return.
-     * @return List of URL's.
-     */
-    public String[] searchFlickr(String text, int maxResults) {
+    @Override
+    public String[] getImageUrls(String text, int maxResults) {
         /* We first need to initialize our photos interface, and construct
          * search parameters based on the text. */
         PhotosInterface photosInterface = flickr.getPhotosInterface();
@@ -78,13 +65,5 @@ public class FlickrImageProvider {
         }
 
         return urls;
-    }
-
-    /**
-     * Main function for testing purposes. Searches for "lolcat" on Flickr.
-     */
-    public static void main(String[] args) {
-        FlickrImageProvider f = new FlickrImageProvider();
-        f.searchFlickr("lolcat");
     }
 }
