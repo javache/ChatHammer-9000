@@ -2,6 +2,10 @@ package ch9k.network;
 
 import java.net.InetAddress;
 import java.net.Socket;
+import java.net.SocketException;
+import java.net.ConnectException;
+
+
 import java.util.Queue;
 import java.io.ObjectOutputStream;
 import java.io.ObjectInputStream;
@@ -40,9 +44,17 @@ public class Connection {
      * Constructor
      * @param ip 
      */
-    public Connection(InetAddress ip) throws IOException {
-        socket = new Socket(ip,DEFAULT_PORT);
-        setup();
+    public Connection(InetAddress ip) throws ConnectException,SocketException {
+        try {
+            socket = new Socket(ip,DEFAULT_PORT);
+            setup();
+        } catch (ConnectException e) {
+            throw e;
+        } catch (SocketException e) {
+            throw e;
+        } catch (IOException e) {
+            
+        }
     }
 
     /**
@@ -50,9 +62,15 @@ public class Connection {
      * out of a connected socket.
      * @param s The socket that connected
      */
-    public Connection(Socket s) throws IOException {
-        socket = s;
-        setup();
+    public Connection(Socket s) throws SocketException {
+        try {
+            socket = s;
+            setup();
+        } catch (SocketException e) {
+            throw e;
+        } catch (IOException e) {
+            
+        }
     }
     
     private void setup() throws IOException {

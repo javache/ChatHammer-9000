@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
+import java.net.ConnectException;
 import java.io.IOException;
 import java.util.logging.Logger;
 
@@ -39,15 +41,25 @@ public class ConnectionManager implements EventListener {
      */
     public void sendEvent(NetworkEvent networkEvent) {
         InetAddress target = networkEvent.getTarget();
+        
         LOGGER.info("sending a NetworkEvent to " + target);
         
         // first try to connect to the target
         if (!connectionMap.containsKey(target)) {
             try {
                 connectionMap.put(target,new Connection(target));
-            } catch(IOException e) {
-                LOGGER.warning("Could not connect to " + target);
-                // TODO: useful exception handling here
+            } catch (ConnectException ex) {
+                // we could not connect
+                // TODO handle that
+                if (checkHeartbeat()) {
+                    signalOffline(target);
+                } else {
+                    signalGlobalConnectionFailure();
+                }
+                
+                return;
+            } catch (SocketException ex) {
+
             }
         }
         
@@ -84,6 +96,27 @@ public class ConnectionManager implements EventListener {
       * handle a UserDisconnectedEvent
       */
      public void handleEvent(Event ev) {
+         
+     }
+     
+     /**
+      * check if we are online
+      */
+     private boolean checkHeartbeat() {
+         return true;
+     }
+     
+     /**
+      * sends an event signalling that target is offline
+      */
+     private void signalOffline(InetAddress target) {
+         
+     }
+     
+     /**
+      * sends an event because we appear to be without internet
+      */
+     private void signalGlobalConnectionFailure() {
          
      }
      
