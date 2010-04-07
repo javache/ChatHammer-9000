@@ -8,6 +8,5 @@ import org.junit.runners.Suite;
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-    ch9k.plugins.flickr.FlickrImageProviderPlugin.class,
-})
+    ch9k.plugins.flickr.FlickrImageProviderPlugin.class})
 public class FlickrSuite {}
