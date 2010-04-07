@@ -5,12 +5,11 @@
 
 package ch9k.chat;
 
-import ch9k.plugins.Plugin;
-import java.util.Set;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.Date;
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -19,24 +18,21 @@ import static org.junit.Assert.*;
  * @author jpanneel
  */
 public class ConversationTest {
+    private Contact contact;
+    private Conversation conversation;
 
     public ConversationTest() {
     }
 
-    @BeforeClass
-    public static void setUpClass() throws Exception {
-    }
-
-    @AfterClass
-    public static void tearDownClass() throws Exception {
-    }
-
     @Before
-    public void setUp() {
+    public void setUp() throws UnknownHostException {
+        contact = new Contact("JPanneel", InetAddress.getByName("google.be"), false);
+        conversation = new Conversation(contact, true);
     }
 
     @After
     public void tearDown() {
+        contact = null;
     }
 
     /**
@@ -45,12 +41,7 @@ public class ConversationTest {
     @Test
     public void testInitatedByMe() {
         System.out.println("initatedByMe");
-        Conversation instance = null;
-        boolean expResult = false;
-        boolean result = instance.initatedByMe();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        assertTrue(conversation.initatedByMe());
     }
 
     /**
@@ -59,12 +50,7 @@ public class ConversationTest {
     @Test
     public void testGetContact() {
         System.out.println("getContact");
-        Conversation instance = null;
-        Contact expResult = null;
-        Contact result = instance.getContact();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        assertEquals(contact, conversation.getContact());
     }
 
     /**
@@ -73,12 +59,9 @@ public class ConversationTest {
     @Test
     public void testGetSubject() {
         System.out.println("getSubject");
-        Conversation instance = null;
-        ConversationSubject expResult = null;
-        ConversationSubject result = instance.getSubject();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        ConversationSubject conversationSubject = new ConversationSubject(conversation, new String[2]);
+        conversation.setSubject(conversationSubject);
+        assertEquals(conversationSubject, conversation.getSubject());
     }
 
     /**
@@ -87,51 +70,49 @@ public class ConversationTest {
     @Test
     public void testSetSubject() {
         System.out.println("setSubject");
-        ConversationSubject subject = null;
-        Conversation instance = null;
-        instance.setSubject(subject);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        ConversationSubject conversationSubject = new ConversationSubject(conversation, new String[2]);
+        conversation.setSubject(conversationSubject);
+        assertEquals(conversationSubject, conversation.getSubject());
     }
 
     /**
-     * Test of getActivePlugins method, of class Conversation.
+     * Test of getStartTime method, of class Conversation.
      */
     @Test
-    public void testGetActivePlugins() {
-        System.out.println("getActivePlugins");
-        Conversation instance = null;
-        Set expResult = null;
-        Set result = instance.getActivePlugins();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+    public void testGetStartTime() {
+        System.out.println("getStartTime");
+        // this Java thing is so fast it gets the same time!...
+        assertTrue(conversation.getStartTime().before(new Date()) || conversation.getStartTime().equals(new Date()));
     }
 
     /**
-     * Test of deletePlugin method, of class Conversation.
+     * Test of addChatMessage method, of class Conversation.
      */
     @Test
-    public void testDeletePlugin() {
-        System.out.println("deletePlugin");
-        Class<? extends Plugin> plugin = null;
-        Conversation instance = null;
-        instance.deletePlugin(plugin);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+    public void testAddChatMessage() {
+        System.out.println("addChatMessage");
+        assertEquals(0, conversation.getChatMessages(10).length);
+        conversation.addChatMessage(new ChatMessage("JPanneel", "Hey!"));
+        assertEquals(1, conversation.getChatMessages(10).length);
     }
 
     /**
-     * Test of addPlugin method, of class Conversation.
+     * Test of getChatMessages method, of class Conversation.
      */
     @Test
-    public void testAddPlugin() throws Exception {
-        System.out.println("addPlugin");
-        Class<? extends Plugin> plugin = null;
-        Conversation instance = null;
-        instance.addPlugin(plugin);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+    public void testGetChatMessages() {
+        System.out.println("getChatMessages");
+        assertEquals(0, conversation.getChatMessages(10).length);
+        conversation.addChatMessage(new ChatMessage("JPanneel", "Hey!"));
+        conversation.addChatMessage(new ChatMessage("Wendy", "O dag lieverd"));
+        conversation.addChatMessage(new ChatMessage("JPanneel", "Hoe gaat het met de overkant?"));
+        conversation.addChatMessage(new ChatMessage("Wendy", "Goed, maar ik mis je wel!"));
+        conversation.addChatMessage(new ChatMessage("JPanneel", "Ik weet het :)"));
+        assertEquals(5, conversation.getChatMessages(10).length);
+        assertEquals("Hey!", conversation.getChatMessages(10)[0]);
+        assertEquals("Ik weet het :)", conversation.getChatMessages(10)[4]);
+        assertEquals(3, conversation.getChatMessages(3).length);
+        assertEquals("Hoe gaat het met de overkant?", conversation.getChatMessages(3)[0]);
     }
 
     /**
@@ -143,7 +124,28 @@ public class ConversationTest {
         Conversation instance = null;
         instance.close();
         // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        fail("close() not yet implemented");
+    }
+
+    /**
+     * Test of equals method, of class Conversation.
+     */
+    @Test
+    public void testEquals() {
+        System.out.println("equals");
+        assertTrue(conversation.equals(conversation));
+        assertFalse(conversation.equals(new Conversation(new Contact("Javache", null, true), true)));
+    }
+
+    /**
+     * Test of hashCode method, of class Conversation.
+     */
+    @Test
+    public void testHashCode() {
+        System.out.println("hashCode");
+        assertEquals(conversation.hashCode(), conversation.hashCode());
+        Conversation conversation1 = new Conversation(new Contact("Javache", null, true), true);
+        assertNotSame(conversation.hashCode(), conversation1.hashCode());
     }
 
 }
