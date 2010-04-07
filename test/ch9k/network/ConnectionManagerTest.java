@@ -52,18 +52,20 @@ public class ConnectionManagerTest extends TestCase {
         assertEquals(1,list.getReceived());
     }
     
-    @Test(expected=ConnectException.class)
-    public void testShouldRaiseConnectException() throws IOException {
+    @Test
+    public void testShouldRaiseConnectException() {
+        boolean raised = false;
         ConnectionManager connMan = new ConnectionManager();
         try {
             Socket s = new Socket("localhost",Connection.DEFAULT_PORT);
         } catch (UnknownHostException e) {
             
+        } catch (ConnectException e){
+            raised = true;
         } catch (IOException e) {
-            if (e.getClass() == ConnectException.class) {
-                throw e;
-            }
+            
         }
+        assertEquals(true,raised);
     }
     
     @Test
