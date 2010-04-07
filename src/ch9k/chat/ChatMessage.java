@@ -40,7 +40,7 @@ public class ChatMessage implements Comparable<ChatMessage>{
 
     /**
      * Get the time of this
-     * @return ip
+     * @return time
      */
     public Date getTime() {
         return time;
