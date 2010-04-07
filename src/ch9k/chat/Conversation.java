@@ -1,6 +1,7 @@
 package ch9k.chat;
 
 import java.util.Date;
+import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -74,6 +75,25 @@ public class Conversation {
      */
     public void addChatMessage(ChatMessage chatMessage) {
         conversation.add(chatMessage);
+    }
+
+    /**
+     * Get the n last messages as Strings.
+     * Most recent message will be last in line.
+     * When there arent n messages the size of the returned array will be reduced to the number of messages.
+     * @param n The number of messages to return
+     * @return String[]
+     */
+    public String[] getChatMessages(int n) {
+        if(n > conversation.size()) {
+            n = conversation.size();
+        }
+        String[] messages = new String[n];
+        Iterator<ChatMessage> it = ((TreeSet<ChatMessage>)conversation).descendingIterator();
+        while(--n >= 0) {
+            messages[n] = it.next().getText();
+        }
+        return messages;
     }
 
     /**
