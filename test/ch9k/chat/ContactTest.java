@@ -8,9 +8,7 @@ package ch9k.chat;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -19,24 +17,23 @@ import static org.junit.Assert.*;
  * @author jpanneel
  */
 public class ContactTest {
+    private Contact contact;
+    private InetAddress ip;
+    private String username;
 
     public ContactTest() {
     }
 
-    @BeforeClass
-    public static void setUpClass() throws Exception {
-    }
-
-    @AfterClass
-    public static void tearDownClass() throws Exception {
-    }
-
     @Before
-    public void setUp() {
+    public void setUp() throws UnknownHostException {
+        username = "JPanneel";
+        ip = InetAddress.getByName("google.be");
+        contact = new Contact(username, ip, false);
     }
 
     @After
     public void tearDown() {
+        contact = null;
     }
 
     /**
@@ -45,25 +42,18 @@ public class ContactTest {
     @Test
     public void testGetIp() {
         System.out.println("getIp");
-        Contact instance = null;
-        InetAddress expResult = null;
-        InetAddress result = instance.getIp();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        assertEquals(contact.getIp(), ip);
     }
 
     /**
      * Test of setIp method, of class Contact.
      */
     @Test
-    public void testSetIp() {
+    public void testSetIp() throws UnknownHostException {
         System.out.println("setIp");
-        InetAddress ip = null;
-        Contact instance = null;
-        instance.setIp(ip);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        InetAddress ip2 = InetAddress.getByName("ugent.be");
+        contact.setIp(ip2);
+        assertEquals(ip2, contact.getIp());
     }
 
     /**
@@ -72,12 +62,7 @@ public class ContactTest {
     @Test
     public void testGetUsername() {
         System.out.println("getUsername");
-        Contact instance = null;
-        String expResult = "";
-        String result = instance.getUsername();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        assertEquals(contact.getUsername(), username);
     }
 
     /**
@@ -86,12 +71,9 @@ public class ContactTest {
     @Test
     public void testGetStatus() {
         System.out.println("getStatus");
-        Contact instance = null;
-        String expResult = "";
-        String result = instance.getStatus();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        String status = "Having Great Sex!";
+        contact.setStatus(status);
+        assertEquals(contact.getStatus(), status);
     }
 
     /**
@@ -100,11 +82,9 @@ public class ContactTest {
     @Test
     public void testSetStatus() {
         System.out.println("setStatus");
-        String status = "";
-        Contact instance = null;
-        instance.setStatus(status);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        String status = "Having Great Sex!";
+        contact.setStatus(status);
+        assertEquals(status, contact.getStatus());
     }
 
     /**
@@ -113,12 +93,9 @@ public class ContactTest {
     @Test
     public void testIsOnline() {
         System.out.println("isOnline");
-        Contact instance = null;
-        boolean expResult = false;
-        boolean result = instance.isOnline();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        assertFalse(contact.isOnline());
+        contact.setOnline(true);
+        assertTrue(contact.isOnline());
     }
 
     /**
@@ -127,11 +104,9 @@ public class ContactTest {
     @Test
     public void testSetOnline() {
         System.out.println("setOnline");
-        boolean online = false;
-        Contact instance = null;
-        instance.setOnline(online);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        assertFalse(contact.isOnline());
+        contact.setOnline(true);
+        assertTrue(contact.isOnline());
     }
 
     /**
@@ -140,12 +115,9 @@ public class ContactTest {
     @Test
     public void testIsBlocked() {
         System.out.println("isBlocked");
-        Contact instance = null;
-        boolean expResult = false;
-        boolean result = instance.isBlocked();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        assertFalse(contact.isBlocked());
+        contact.setBlocked(true);
+        assertTrue(contact.isBlocked());
     }
 
     /**
@@ -154,11 +126,9 @@ public class ContactTest {
     @Test
     public void testSetBlocked() {
         System.out.println("setBlocked");
-        boolean blocked = false;
-        Contact instance = null;
-        instance.setBlocked(blocked);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        assertFalse(contact.isBlocked());
+        contact.setBlocked(true);
+        assertTrue(contact.isBlocked());
     }
 
     /**
@@ -187,6 +157,21 @@ public class ContactTest {
         assertEquals(instance1.hashCode(), instance2.hashCode());
         Contact instance3 = new Contact("Javache", InetAddress.getByName("google.be"), false);
         assertNotSame(instance1.hashCode(), instance3.hashCode());
+    }
+
+    /**
+     * Test of compareTo method, of class Contact.
+     */
+    @Test
+    public void testCompareTo() throws UnknownHostException {
+        System.out.println("compareTo");
+        assertTrue(contact.compareTo(contact) == 0);
+        Contact contact2 = new Contact("Javache", InetAddress.getByName("google.be"), false);
+        assertTrue(contact.compareTo(contact2) > 0);
+        Contact contact3 = new Contact("Zeusje", InetAddress.getByName("google.be"), false);
+        assertTrue(contact.compareTo(contact3) < 0);
+        Contact contact4 = new Contact("Zeusje", InetAddress.getByName("ugent.be"), false);
+        assertTrue(contact3.compareTo(contact4) > 0);
     }
 
 }
