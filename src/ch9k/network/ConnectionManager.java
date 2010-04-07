@@ -22,6 +22,9 @@ public class ConnectionManager implements EventListener {
      */
     private Map<InetAddress,Connection> connectionMap;
     
+    ServerSocket server;
+    
+    
     public ConnectionManager() {
         connectionMap = new HashMap<InetAddress,Connection>();
     }
@@ -51,6 +54,10 @@ public class ConnectionManager implements EventListener {
          for (Connection conn : connectionMap.values()) {
              // TODO should we send the events?
          }
+         try {
+             // this will cause the listenerthread to crash, and close
+             server.close();
+         } catch(Exception e) {}
      }
      
      /**
@@ -79,7 +86,7 @@ public class ConnectionManager implements EventListener {
           */
          public void run() {
              try {
-                 ServerSocket server = new ServerSocket(Connection.DEFAULT_PORT);
+                 server = new ServerSocket(Connection.DEFAULT_PORT);
                  while (true) {
                      Socket client = server.accept();
                      Connection conn = new Connection(client);
