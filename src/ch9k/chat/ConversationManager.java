@@ -15,8 +15,8 @@ public class ConversationManager {
      * @return conversation The started conversation
      */
     public Conversation startConversation(Contact contact) {
-        // TODO pass true current active plugins
-        Conversation conversation = new Conversation(contact, true, null);
+        // TODO pass true the correct boolean, get info from event
+        Conversation conversation = new Conversation(contact, true);
         // TODO what if there is already a conversation with this contact?
         conversations.put(contact, conversation);
         return conversation;
