@@ -6,9 +6,7 @@
 package ch9k.chat;
 
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -18,23 +16,19 @@ import static org.junit.Assert.*;
  */
 public class ConversationManagerTest {
 
+    private ConversationManager conversationManager;
+
     public ConversationManagerTest() {
-    }
-
-    @BeforeClass
-    public static void setUpClass() throws Exception {
-    }
-
-    @AfterClass
-    public static void tearDownClass() throws Exception {
     }
 
     @Before
     public void setUp() {
+        conversationManager = new ConversationManager();
     }
 
     @After
     public void tearDown() {
+        conversationManager = null;
     }
 
     /**
@@ -43,13 +37,10 @@ public class ConversationManagerTest {
     @Test
     public void testStartConversation() {
         System.out.println("startConversation");
-        Contact contact = null;
-        ConversationManager instance = new ConversationManager();
-        Conversation expResult = null;
-        Conversation result = instance.startConversation(contact);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        Contact contact = new Contact("Javache", null, true);
+        Conversation conversation = new Conversation(contact, true);
+        assertEquals(conversation, conversationManager.startConversation(contact));
+        assertEquals(conversation, conversationManager.getConversation(contact));
     }
 
     /**
@@ -62,7 +53,7 @@ public class ConversationManagerTest {
         ConversationManager instance = new ConversationManager();
         instance.closeConversation(contact);
         // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        fail("Close() is yet to be implemented");
     }
 
     /**
@@ -71,13 +62,10 @@ public class ConversationManagerTest {
     @Test
     public void testGetConversation() {
         System.out.println("getConversation");
-        Contact contact = null;
-        ConversationManager instance = new ConversationManager();
-        Conversation expResult = null;
-        Conversation result = instance.getConversation(contact);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        Contact contact = new Contact("Javache", null, true);
+        Conversation conversation = new Conversation(contact, true);
+        assertEquals(conversation, conversationManager.startConversation(contact));
+        assertEquals(conversation, conversationManager.getConversation(contact));
     }
 
 }
