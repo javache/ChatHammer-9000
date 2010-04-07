@@ -1,26 +1,42 @@
 package ch9k.eventpool;
 
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.Multimap;
-import java.util.Iterator;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Distributes events across the application
  * @author Pieter De Baets
  */
 public class EventPool {
-    
-    private EventPool() {}
-    
+    /**
+     * Constructor
+     */
+    public EventPool() {}
+
+    /**
+     * Get the singleton-instance of EventPool
+     * @return pool
+     */
     public static EventPool getInstance() {
         return SingletonHolder.INSTANCE;
     }
-    
+
+    /* Helper-class for singleton, aka Bill Pugh's method */
     private static class SingletonHolder { 
          private static final EventPool INSTANCE = new EventPool();
     }
 
-    private Multimap<String,EventListener> listeners = ArrayListMultimap.create();
+    private List<FilteredListener> listeners = new ArrayList<FilteredListener>();
+
+    private class FilteredListener {
+        public EventFilter filter;
+        public EventListener listener;
+
+        public FilteredListener(EventFilter filter, EventListener listener) {
+            this.filter = filter;
+            this.listener = listener;
+        }
+    }
 
     /**
      * Add a new Event-listener that will listen to a given set of events
@@ -29,10 +45,7 @@ public class EventPool {
      * @param filter
      */
     public void addListener(EventListener listener, EventFilter filter) {
-        // TODO add eventfilter too, sometimes..
-        for(String className : filter.getMatchedEventIds()) {
-            listeners.put(className, listener);
-        }
+        listeners.add(new FilteredListener(filter, listener));
     }
 
     /**
@@ -40,10 +53,10 @@ public class EventPool {
      * @param event
      */
     public void raiseEvent(Event event) {
-        EventHeritageIterator classIterator = new EventHeritageIterator(event.getClass());
-        
-        while(classIterator.hasNext()) {
-            sendEvent(classIterator.next(), event);
+        for(FilteredListener pair : listeners) {
+            if(pair.filter.accept(event)) {
+                pair.listener.handleEvent(event);
+            }
         }
     }
 
@@ -54,11 +67,5 @@ public class EventPool {
      */
     public void raiseEvent(NetworkEvent networkEvent) {
 
-    }
-
-    private void sendEvent(String next, Event event) {
-        for(EventListener listener : listeners.get(next)) {
-            listener.handleEvent(event);
-        }
     }
 }

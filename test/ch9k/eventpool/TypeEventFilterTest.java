@@ -12,9 +12,26 @@ public class TypeEventFilterTest {
      * Test of getMatchedEventIds method, of class TypeEventFilter.
      */
     @Test
-    public void testGetMatchedEventIds() {
-        TypeEventFilter instance = new TypeEventFilter(Event.class);
-        assertArrayEquals(new String[] { "ch9k.eventpool.Event" },
-                instance.getMatchedEventIds());
+    public void testAccept() {
+        TypeEventFilter instance = new TypeEventFilter(EventA.class);
+        assertTrue(instance.accept(new EventA()));
+        assertFalse(instance.accept(new EventB()));
+        assertTrue(instance.accept(new EventAChild()));
+    }
+
+    public class EventA extends Event {
+        @Override
+        public Object getSource() {
+            return null;
+        }
+    }
+
+    public class EventAChild extends EventA {}
+    
+    public class EventB extends Event {
+        @Override
+        public Object getSource() {
+            return null;
+        }
     }
 }

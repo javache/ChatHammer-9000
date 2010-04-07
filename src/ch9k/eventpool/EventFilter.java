@@ -5,5 +5,13 @@ package ch9k.eventpool;
  * @author Pieter De Baets
  */
 public interface EventFilter {
-    public String[] getMatchedEventIds();
+    /**
+     * Check if the listener associated with this eventfilter wants
+     * to receive this event
+     * @param event
+     * @return accepts
+     */
+    public boolean accept(Event event);
+    
+    //public String[] getMatchedEventIds();
 }

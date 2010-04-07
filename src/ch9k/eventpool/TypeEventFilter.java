@@ -5,18 +5,18 @@ package ch9k.eventpool;
  * @author Pieter De Baets
  */
 public class TypeEventFilter implements EventFilter {
-    private String type;
+    private Class<? extends Event> type;
 
     /**
      * Construct a new TypeEventFilter
      * @param type
      */
     public TypeEventFilter(Class<? extends Event> type) {
-        this.type = type.getName();
+        this.type = type;
     }
 
     @Override
-    public String[] getMatchedEventIds() {
-        return new String[] { type };
+    public boolean accept(Event event) {
+        return type.isInstance(event);
     }
 }
