@@ -93,26 +93,25 @@ public class Connection {
      /**
       * start listening for incoming events and send them to the EventPool
       */
-     private void startListenThread() {
-         new Thread(new Runnable(){
-             public void run() {
-                 try {
-                     while(keepListening) {
-                         NetworkEvent ev = (NetworkEvent)in.readObject();
-                         // down cast because it will end up in infinite loop otherwise (WTF)
-                         EventPool.getInstance().raiseEvent((Event)ev);
-                     }
-                 } catch (EOFException e) {
-                     // This happens when the socket on the other side closes
-                     // TODO handle that case properly
-                 } catch (IOException e) {
-                     System.out.println(e);
-                 } catch (ClassNotFoundException e) {
-                     System.out.println(e);
-                 } 
-             }
-         }).start();
-     }
-    
+    private void startListenThread() {
+        new Thread(new Runnable(){
+            public void run() {
+                try {
+                    while(keepListening) {
+                        NetworkEvent ev = (NetworkEvent)in.readObject();
+                        // down cast because it will end up in infinite loop otherwise (WTF)
+                        EventPool.getInstance().raiseEvent((Event)ev);
+                    }
+                } catch (EOFException e) {
+                    // This happens when the socket on the other side closes
+                    // TODO handle that case properly
+                } catch (IOException e) {
+                    System.out.println(e);
+                } catch (ClassNotFoundException e) {
+                    System.out.println(e);
+                } 
+            }
+        }).start();
+    }
     
 }
