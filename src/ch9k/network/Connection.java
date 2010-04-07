@@ -79,6 +79,21 @@ public class Connection {
     }
     
     /**
+     * sends a PingEvent to the target,
+     * if it errors, returns false
+     * else true
+     */
+    public boolean hasConnection() {
+        boolean connection = true;
+        try {
+            sendEvent(new ch9k.network.events.PingEvent());
+        } catch (IOException e) {
+            connection = false;
+        }
+        return connection;
+    }
+    
+    /**
      * send a NetworkEvent
      * @param ev The event to be send
      */

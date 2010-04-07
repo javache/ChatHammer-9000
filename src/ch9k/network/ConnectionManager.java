@@ -9,7 +9,7 @@ import java.net.SocketException;
 import java.net.ConnectException;
 import java.io.IOException;
 import java.util.logging.Logger;
-
+import java.util.Iterator;
 
 import ch9k.eventpool.NetworkEvent;
 import ch9k.eventpool.EventListener;
@@ -49,19 +49,14 @@ public class ConnectionManager implements EventListener {
             try {
                 connectionMap.put(target,new Connection(target));
             } catch (IOException ex) {
-                if (checkHeartbeat()) {
-                    signalOffline(target);
-                } else {
-                    signalGlobalConnectionFailure();
-                }
+                handleNetworkError(target);
             }
         }
-        
         // next try to send it
         try {
             connectionMap.get(target).sendEvent(networkEvent);
         } catch (IOException e) {
-            
+            handleNetworkError(target);
         }
     }
     
@@ -94,10 +89,42 @@ public class ConnectionManager implements EventListener {
      }
      
      /**
+      * Handle a network error
+      * @param target The InetAddress which failed
+      */
+     private void handleNetworkError(InetAddress target) {
+         if (checkHeartbeat()) {
+             signalOffline(target);
+         } else {
+             signalGlobalConnectionFailure();
+         }
+     }
+     
+     /**
       * check if we are online
+      * first it will try to open a Connection to any of it's online contacts
+      * if there are no other online
+      * it will try to open a connection to google.com
       */
      private boolean checkHeartbeat() {
-         return true;
+         boolean online = false;
+         // only one connection to test with
+         if (connectionMap.values().size() == 1) {
+            online = true;
+            try {
+                new Socket("www.google.com",80);
+            } catch (Exception e) {
+                online = false;
+            }
+         } else {
+             Iterator<Connection> it = connectionMap.values().iterator();
+             while(it.hasNext() && ! online) {
+                 Connection conn = it.next();
+                 online = conn.hasConnection();
+             }
+         }
+         
+         return online;
      }
      
      /**
