@@ -8,6 +8,7 @@ import org.junit.runners.Suite;
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-    ch9k.plugins.examples.FlickrImageProvider.class
+    ch9k.plugins.examples.FlickrImageProvider.class,
+    ch9k.plugins.examples.GoogleImageProvider.class
 })
 public class ExamplesSuite {}
