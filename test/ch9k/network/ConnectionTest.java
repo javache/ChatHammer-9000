@@ -43,13 +43,13 @@ public class ConnectionTest extends TestCase {
         try {
             Connection conn = new Connection(InetAddress.getLocalHost());
             conn.sendEvent(new TestNetworkEvent());
-            Thread.sleep(500);
+            Thread.sleep(10);
             assertEquals(1,list.getReceived());
             conn.sendEvent(new TestNetworkEvent());
             Connection conn2 = new Connection(InetAddress.getLocalHost());
             conn.sendEvent(new TestNetworkEvent());
             conn2.sendEvent(new TestNetworkEvent());
-            Thread.sleep(1000);
+            Thread.sleep(40);
             assertEquals(4,list.getReceived());
         } catch (Exception e) {
             System.out.println(e);

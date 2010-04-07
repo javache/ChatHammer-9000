@@ -49,9 +49,9 @@ public class ConnectionManagerTest extends TestCase {
             connMan.sendEvent(new TestNetworkEvent());            
         }
 
-        // we should sleep +- 150 ms per event, to make sure they're send
+        // we should sleep +- 10 ms per event, to make sure they're send
         try {    
-            Thread.sleep(150*n);
+            Thread.sleep(10*n);
         } catch (InterruptedException e) {
             
         }
