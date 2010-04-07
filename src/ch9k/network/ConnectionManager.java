@@ -8,12 +8,14 @@ import java.net.Socket;
 import java.io.IOException;
 
 import ch9k.eventpool.NetworkEvent;
+import ch9k.eventpool.EventListener;
+import ch9k.eventpool.Event;
 
 /**
  * Handles all connections to remote hosts
  * @author nudded
  */
-public class ConnectionManager {
+public class ConnectionManager implements EventListener {
 
     /**
      * a Map to store all the connections.
@@ -35,8 +37,7 @@ public class ConnectionManager {
             try {
                 connectionMap.put(target,new Connection(target));
             } catch(IOException e) {
-                System.out.println(target);
-                System.out.println(e);
+                // TODO: useful exception handling here
             }
         }
         connectionMap.get(target).sendEvent(networkEvent);
@@ -44,15 +45,26 @@ public class ConnectionManager {
     
     /**
      * Disconnect from all connections
+     * send a disconnection Event to all the Connections
      */
      public void disconnect() {
-         
+         for (Connection conn : connectionMap.values()) {
+             // TODO should we send the events?
+         }
      }
+     
      /**
       * call this method when everything is setup to start accepting incoming events
       */
      public void readyForIncomingConnections() {
          startListenThread();
+     }
+     
+     /**
+      * handle a UserDisconnectedEvent
+      */
+     public void handleEvent(Event ev) {
+         
      }
      
      /**
