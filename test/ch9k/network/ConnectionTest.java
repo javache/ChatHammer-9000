@@ -38,7 +38,8 @@ public class ConnectionTest extends TestCase {
         EventPool pool = EventPool.getInstance();
         TestListener list = new TestListener();
         pool.addListener(list,new TypeEventFilter(TestNetworkEvent.class));
-        new Thread(new DirectResponseServer()).start();
+        DirectResponseServer server = new DirectResponseServer();
+        server.start();
         try {
             Connection conn = new Connection(InetAddress.getLocalHost());
             conn.sendEvent(new TestNetworkEvent());
@@ -53,8 +54,7 @@ public class ConnectionTest extends TestCase {
         } catch (Exception e) {
             System.out.println(e);
         }
-
-        
+        server.stop();
     }
     
 }

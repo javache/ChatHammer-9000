@@ -36,7 +36,6 @@ public class ConnectionManager {
                 System.out.println(e);
             }
         }
-        
         connectionMap.get(target).sendEvent(networkEvent);
     }
     

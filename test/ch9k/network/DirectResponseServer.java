@@ -11,31 +11,62 @@ import java.io.IOException;
  * When it receives an object on DEFAULT_PORT,
  * it will resend it to the sender
  */
-public class DirectResponseServer implements Runnable {
-    public void run() {
+public class DirectResponseServer {
+    
+    private boolean shouldRun;
+    
+    private ServerSocket server;
+    
+    public DirectResponseServer() {
+        shouldRun = true;
+        server = null;
         try {
-            ServerSocket server = new ServerSocket(Connection.DEFAULT_PORT);
-            while(true) {
-                final Socket s = server.accept();
-                new Thread(new Runnable(){
-                    public void run() {
-                        try {
-                            ObjectInputStream in = new ObjectInputStream(s.getInputStream());
-                            ObjectOutputStream out = new ObjectOutputStream(s.getOutputStream());
-                            while(true) {
-                                Object obj = in.readObject();
-                                out.writeObject(obj);
+            server = new ServerSocket(Connection.DEFAULT_PORT);
+        } catch (IOException e) {
+
+        }
+    }
+    
+    public void stop() {
+        shouldRun = false;
+        try {
+            server.close();
+        } catch (IOException e) {
+            
+        }
+    }
+    
+    public void start() {
+        new Thread(new Runner()).start();
+    }
+    
+    private class Runner implements Runnable {
+        
+        public void run() {
+            try {
+                while(shouldRun) {
+                    final Socket s = server.accept();
+                        new Thread(new Runnable(){
+                            public void run() {
+                                try {
+                                    ObjectInputStream in = new ObjectInputStream(s.getInputStream());
+                                    ObjectOutputStream out = new ObjectOutputStream(s.getOutputStream());
+                                    while(true) {
+                                        Object obj = in.readObject();
+                                        out.writeObject(obj);
+                                    }
+                                } catch (IOException e) {
+
+                                } catch (ClassNotFoundException e) {
+
+                                }
                             }
-                        } catch (IOException e) {
-
-                        } catch (ClassNotFoundException e) {
-
-                        }
-                    }
-                }).start();
+                        }).start();
+                }
+                server.close();
+            } catch (IOException e) {
+                    
             }
-       } catch (IOException e) {
-
-       }
+        }
     }
 }
