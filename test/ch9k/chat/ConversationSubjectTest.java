@@ -1,8 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package ch9k.chat;
 
 import org.junit.After;
@@ -12,7 +7,7 @@ import static org.junit.Assert.*;
 
 /**
  *
- * @author jpanneel
+ * @author Jens Panneel
  */
 public class ConversationSubjectTest {
     private ConversationSubject conversationSubject;

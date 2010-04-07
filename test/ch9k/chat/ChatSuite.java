@@ -1,8 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package ch9k.chat;
 
 import org.junit.runner.RunWith;
@@ -10,7 +5,7 @@ import org.junit.runners.Suite;
 
 /**
  *
- * @author jpanneel
+ * @author Jens Panneel
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({ch9k.chat.ChatMessageTest.class,
