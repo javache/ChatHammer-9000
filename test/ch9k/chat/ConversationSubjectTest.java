@@ -6,9 +6,7 @@
 package ch9k.chat;
 
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -17,24 +15,27 @@ import static org.junit.Assert.*;
  * @author jpanneel
  */
 public class ConversationSubjectTest {
+    private ConversationSubject conversationSubject;
+    private Conversation conversation;
+    private String[] subjects;
 
     public ConversationSubjectTest() {
     }
 
-    @BeforeClass
-    public static void setUpClass() throws Exception {
-    }
-
-    @AfterClass
-    public static void tearDownClass() throws Exception {
-    }
-
     @Before
     public void setUp() {
+        conversation = new Conversation(new Contact("JPanneel", null, true), true);
+        subjects = new String[2];
+        subjects[0] = "Hey";
+        subjects[1] = "Hoi!";
+        conversationSubject = new ConversationSubject(conversation, subjects);
     }
 
     @After
     public void tearDown() {
+        conversationSubject = null;
+        conversation = null;
+        subjects = null;
     }
 
     /**
@@ -43,12 +44,18 @@ public class ConversationSubjectTest {
     @Test
     public void testGetSubjects() {
         System.out.println("getSubjects");
-        ConversationSubject instance = new ConversationSubject();
-        String[] expResult = null;
-        String[] result = instance.getSubjects();
-        assertArrayEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        String[] subjects2 = conversationSubject.getSubjects();
+        assertEquals(subjects2.length, subjects.length);
+        assertEquals(subjects2[0], subjects[0]);
+        assertEquals(subjects2[1], subjects[1]);
     }
 
+     /**
+     * Test of getConversation method, of class ConversationSubject.
+     */
+    @Test
+    public void testGetConversation() {
+        System.out.println("getConversation");
+        assertEquals(conversationSubject.getConversation(), conversation);
+    }
 }
