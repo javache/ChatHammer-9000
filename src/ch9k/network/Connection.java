@@ -17,7 +17,7 @@ import ch9k.eventpool.EventPool;
  */
 public class Connection {
     
-    private static int DEFAULT_PORT = 1337;
+    public static int DEFAULT_PORT = 1337;
     
     // the remote ip
     private InetAddress target;
@@ -40,6 +40,16 @@ public class Connection {
      */
     public Connection(InetAddress ip) throws IOException {
         socket = new Socket(ip,DEFAULT_PORT);
+        setup();
+    }
+
+    /**
+     * constructor used by ConnectionManager, constructs a Connection
+     * out of a connected socket.
+     * @param s The socket that connected
+     */
+    public Connection(Socket s) throws IOException {
+        socket = s;
         setup();
     }
     
@@ -82,7 +92,6 @@ public class Connection {
             System.out.println(e);
         }
     }
-    
     
      /**
       * start listening for incoming events and send them to the EventPool
