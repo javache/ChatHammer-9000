@@ -1,6 +1,8 @@
 package ch9k.chat;
 
 import java.util.Date;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * Represents a conversation between two users.
@@ -11,6 +13,7 @@ public class Conversation {
     private boolean initiated;
     private Date starttime;
     private ConversationSubject subject;
+    private Set<ChatMessage> conversation;
 
     /**
      * Constructor
@@ -19,9 +22,10 @@ public class Conversation {
      * @param activePlugins The list of the current active plugins on the initiators side.
      */
     public Conversation(Contact contact, boolean initiatedByMe) {
+        this.starttime = new Date();
+        this.conversation = new TreeSet<ChatMessage>();
         this.contact = contact;
         this.initiated = initiatedByMe;
-        this.starttime = new Date();
     }
 
     /**
@@ -56,8 +60,20 @@ public class Conversation {
         this.subject = subject;
     }
 
+    /**
+     * Get the date/time on witch this conversation was started
+     * @return starttime
+     */
     public Date getStartTime() {
         return starttime;
+    }
+
+    /**
+     * Adds a message to this Conversation.
+     * @param chatMessage
+     */
+    public void addChatMessage(ChatMessage chatMessage) {
+        conversation.add(chatMessage);
     }
 
     /**
@@ -88,7 +104,5 @@ public class Conversation {
         hash = 67 * hash + (this.contact != null ? this.contact.hashCode() : 0);
         return hash;
     }
-
-
-
+    
 }
