@@ -48,18 +48,12 @@ public class ConnectionManager implements EventListener {
         if (!connectionMap.containsKey(target)) {
             try {
                 connectionMap.put(target,new Connection(target));
-            } catch (ConnectException ex) {
-                // we could not connect
-                // TODO handle that
+            } catch (IOException ex) {
                 if (checkHeartbeat()) {
                     signalOffline(target);
                 } else {
                     signalGlobalConnectionFailure();
                 }
-                
-                return;
-            } catch (SocketException ex) {
-
             }
         }
         

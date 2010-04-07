@@ -44,17 +44,9 @@ public class Connection {
      * Constructor
      * @param ip 
      */
-    public Connection(InetAddress ip) throws ConnectException,SocketException {
-        try {
-            socket = new Socket(ip,DEFAULT_PORT);
-            setup();
-        } catch (ConnectException e) {
-            throw e;
-        } catch (SocketException e) {
-            throw e;
-        } catch (IOException e) {
-            
-        }
+    public Connection(InetAddress ip) throws IOException {
+        socket = new Socket(ip,DEFAULT_PORT);
+        setup();
     }
 
     /**
@@ -62,15 +54,9 @@ public class Connection {
      * out of a connected socket.
      * @param s The socket that connected
      */
-    public Connection(Socket s) throws SocketException {
-        try {
-            socket = s;
-            setup();
-        } catch (SocketException e) {
-            throw e;
-        } catch (IOException e) {
-            
-        }
+    public Connection(Socket s) throws IOException {
+        socket = s;
+        setup();
     }
     
     private void setup() throws IOException {
