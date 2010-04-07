@@ -10,13 +10,16 @@ import java.util.Iterator;
  */
 public class EventPool {
     
-    private static EventPool POOL = new EventPool();
+    private EventPool() {}
     
     public static EventPool getInstance() {
-        return POOL;
+        return SingletonHolder.INSTANCE;
     }
     
-    
+    private static class SingletonHolder { 
+         private static final EventPool INSTANCE = new EventPool();
+    }
+
     private Multimap<String,EventListener> listeners = ArrayListMultimap.create();
 
     /**

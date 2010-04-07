@@ -15,7 +15,7 @@ public class EventPoolTest {
     public void testAddListener() {
         EventListener listener = null;
         EventFilter filter = new TypeEventFilter(Event.class);
-        EventPool pool = new EventPool();
+        EventPool pool = EventPool.getInstance();
         pool.addListener(listener, filter);
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
@@ -26,7 +26,7 @@ public class EventPoolTest {
      */
     @Test
     public void testBasicRaiseEvent() {
-        EventPool pool = new EventPool();
+        EventPool pool = EventPool.getInstance();
         Event event = new MyEvent();
 
         EventListener listener = createMock(EventListener.class);
@@ -51,7 +51,7 @@ public class EventPoolTest {
     @Test
     public void testRaiseEvent_NetworkEvent() {
         NetworkEvent networkEvent = null;
-        EventPool instance = new EventPool();
+        EventPool instance = EventPool.getInstance();
         instance.raiseEvent(networkEvent);
         // TODO review the generated test code and remove the default call to fail.
         // TODO test with a network-mock object
