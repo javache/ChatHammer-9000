@@ -6,6 +6,7 @@ import java.util.Queue;
 import java.io.ObjectOutputStream;
 import java.io.ObjectInputStream;
 import java.io.IOException;
+import java.io.EOFException;
 
 import ch9k.eventpool.NetworkEvent;
 import ch9k.eventpool.Event;
@@ -77,7 +78,7 @@ public class Connection {
      * send a NetworkEvent
      * @param ev The event to be send
      */
-    public void sendEvent(NetworkEvent ev){
+    public void sendEvent(NetworkEvent ev) throws IOException {
         sendObject(ev);
     }
     
@@ -85,13 +86,8 @@ public class Connection {
      * send an object
      * @param obj the Object to be send
      */
-    public void sendObject(Object obj) {
-        try {
-            out.writeObject(obj);
-        } catch(IOException e) {
-            // TODO do something with that exception
-            System.out.println(e);
-        }
+    public void sendObject(Object obj) throws IOException {
+        out.writeObject(obj);
     }
     
      /**
@@ -106,11 +102,14 @@ public class Connection {
                          // down cast because it will end up in infinite loop otherwise (WTF)
                          EventPool.getInstance().raiseEvent((Event)ev);
                      }
+                 } catch (EOFException e) {
+                     // This happens when the socket on the other side closes
+                     // TODO handle that case properly
                  } catch (IOException e) {
                      System.out.println(e);
                  } catch (ClassNotFoundException e) {
                      System.out.println(e);
-                 }
+                 } 
              }
          }).start();
      }

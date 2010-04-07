@@ -6,6 +6,8 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.io.IOException;
+import java.util.logging.Logger;
+
 
 import ch9k.eventpool.NetworkEvent;
 import ch9k.eventpool.EventListener;
@@ -24,6 +26,8 @@ public class ConnectionManager implements EventListener {
     
     ServerSocket server;
     
+    private static final Logger LOGGER =
+            Logger.getLogger(ConnectionManager.class.getName());
     
     public ConnectionManager() {
         connectionMap = new HashMap<InetAddress,Connection>();
@@ -35,15 +39,24 @@ public class ConnectionManager implements EventListener {
      */
     public void sendEvent(NetworkEvent networkEvent) {
         InetAddress target = networkEvent.getTarget();
+        LOGGER.info("sending a NetworkEvent to " + target);
         
+        // first try to connect to the target
         if (!connectionMap.containsKey(target)) {
             try {
                 connectionMap.put(target,new Connection(target));
             } catch(IOException e) {
+                LOGGER.warning("Could not connect to " + target);
                 // TODO: useful exception handling here
             }
         }
-        connectionMap.get(target).sendEvent(networkEvent);
+        
+        // next try to send it
+        try {
+            connectionMap.get(target).sendEvent(networkEvent);
+        } catch (IOException e) {
+            
+        }
     }
     
     /**

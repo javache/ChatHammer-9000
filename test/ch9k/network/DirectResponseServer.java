@@ -33,6 +33,8 @@ public class DirectResponseServer {
             server.close();
         } catch (IOException e) {
             
+        } catch (NullPointerException e) {
+            
         }
     }
     
