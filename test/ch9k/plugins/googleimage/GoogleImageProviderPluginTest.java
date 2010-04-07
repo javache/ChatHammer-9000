@@ -1,4 +1,4 @@
-package ch9k.plugins.examples;
+package ch9k.plugins.googleimage;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -8,13 +8,13 @@ import static org.junit.Assert.*;
 /**
  * @author Jasper Van der Jeugt
  */
-public class GoogleImageProviderTest {    
+public class GoogleImageProviderPluginTest {    
     /**
-     * Test of getImageUrls method, of class GoogleImageProvider.
+     * Test of getImageUrls method, of class GoogleImageProviderPlugin.
      */
     @Test
     public void testGetImageUrls() throws MalformedURLException {
-        GoogleImageProvider instance = new GoogleImageProvider();
+        GoogleImageProviderPlugin instance = new GoogleImageProviderPlugin();
         String[] results = instance.getImageUrls("lolcat", 10);
 
         /* Check that we don't get too much results back. */

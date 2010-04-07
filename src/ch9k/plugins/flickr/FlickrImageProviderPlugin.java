@@ -1,4 +1,4 @@
-package ch9k.plugins.examples;
+package ch9k.plugins.flickr;
 
 import ch9k.plugins.ImageProvider;
 import com.aetrion.flickr.Flickr;
@@ -12,7 +12,7 @@ import java.util.logging.Logger;
  * Class that gives us the ability to look up images on Flickr.
  * @author Jasper Van der Jeugt
  */
-public class FlickrImageProvider extends ImageProvider {
+public class FlickrImageProviderPlugin extends ImageProvider {
     /**
      * Flickr API key for ch9k.
      */
@@ -27,12 +27,12 @@ public class FlickrImageProvider extends ImageProvider {
      * Logger, well, to log.
      */
     private static final Logger LOGGER =
-            Logger.getLogger(FlickrImageProvider.class.getName());
+            Logger.getLogger(FlickrImageProviderPlugin.class.getName());
 
     /**
      * Constructor.
      */
-    FlickrImageProvider() {
+    FlickrImageProviderPlugin() {
         flickr = new Flickr(API_KEY);
     }
 

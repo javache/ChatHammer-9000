@@ -1,4 +1,4 @@
-package ch9k.plugins.examples;
+package ch9k.plugins.googleimage;
 
 import ch9k.plugins.ImageProvider;
 import java.io.BufferedReader;
@@ -18,12 +18,12 @@ import org.json.JSONException;
  * Class that gives us the ability to look up images on Flickr.
  * @author Jasper Van der Jeugt
  */
-public class GoogleImageProvider extends ImageProvider {
+public class GoogleImageProviderPlugin extends ImageProvider {
     /**
      * Logger, well, to log.
      */
     private static final Logger LOGGER =
-            Logger.getLogger(GoogleImageProvider.class.getName());
+            Logger.getLogger(GoogleImageProviderPlugin.class.getName());
 
 
     /**
@@ -41,7 +41,7 @@ public class GoogleImageProvider extends ImageProvider {
     /**
      * Constructor.
      */
-    GoogleImageProvider() {
+    GoogleImageProviderPlugin() {
     }
 
     @Override

@@ -1,4 +1,4 @@
-package ch9k.plugins.examples;
+package ch9k.plugins.flickr;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -8,13 +8,13 @@ import static org.junit.Assert.*;
 /**
  * @author Jasper Van der Jeugt
  */
-public class FlickrImageProviderTest {    
+public class FlickrImageProviderPluginTest {    
     /**
-     * Test of getImageUrls method, of class FlickrImageProvider.
+     * Test of getImageUrls method, of class FlickrImageProviderPlugin.
      */
     @Test
     public void testGetImageUrls() throws MalformedURLException {
-        FlickrImageProvider instance = new FlickrImageProvider();
+        FlickrImageProviderPlugin instance = new FlickrImageProviderPlugin();
         String[] results = instance.getImageUrls("lolcat", 10);
 
         /* Check that we get enough results back. */
