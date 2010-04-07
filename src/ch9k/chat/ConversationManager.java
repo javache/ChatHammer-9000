@@ -1,5 +1,6 @@
 package ch9k.chat;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -8,6 +9,10 @@ import java.util.Map;
  */
 public class ConversationManager {
     private Map<Contact, Conversation> conversations;
+
+    public ConversationManager() {
+        conversations = new HashMap<Contact, Conversation>();
+    }
 
     /**
      * Start a conversation with the given contact
