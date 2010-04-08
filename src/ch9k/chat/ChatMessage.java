@@ -46,11 +46,11 @@ public class ChatMessage implements Comparable<ChatMessage>{
         return time;
     }
 
-    @Override
     /**
      * Compares To ChatMessages ordered by time
      * @param chatMessage The ChatMessage to compare with this one.
      */
+    @Override
     public int compareTo(ChatMessage chatMessage) {
         if(this.equals(chatMessage)) {
             return 0;
@@ -89,5 +89,4 @@ public class ChatMessage implements Comparable<ChatMessage>{
         hash = 53 * hash + (this.time != null ? this.time.hashCode() : 0);
         return hash;
     }
-
 }

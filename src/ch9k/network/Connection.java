@@ -2,16 +2,11 @@ package ch9k.network;
 
 import java.net.InetAddress;
 import java.net.Socket;
-import java.net.SocketException;
-import java.net.ConnectException;
-
-
 import java.util.Queue;
 import java.io.ObjectOutputStream;
 import java.io.ObjectInputStream;
 import java.io.IOException;
 import java.io.EOFException;
-
 
 import ch9k.network.events.UserDisconnectedEvent;
 import ch9k.eventpool.NetworkEvent;

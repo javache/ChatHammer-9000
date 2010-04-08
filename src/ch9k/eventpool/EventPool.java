@@ -1,18 +1,16 @@
 package ch9k.eventpool;
 
+import ch9k.network.ConnectionManager;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * Distributes events across the application
  * @author Pieter De Baets
  */
 public class EventPool {
-    /**
-     * Constructor
-     */
-    public EventPool() {}
-
     /**
      * Get the singleton-instance of EventPool
      * @return pool
@@ -38,6 +36,33 @@ public class EventPool {
         }
     }
 
+    private ConnectionManager network = new ConnectionManager();
+    private BlockingQueue<Event> eventQueue = new LinkedBlockingQueue<Event>();
+    private Thread eventProcessor;
+
+    /**
+     * Constructor
+     */
+    public EventPool() {
+        // start listening
+        network.readyForIncomingConnections();
+
+        // start the event-processing thread
+        eventProcessor = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while(true) {
+                    try {
+                        broadcastEvent(eventQueue.take());
+                    } catch (InterruptedException ex) {
+                        // do nothing
+                    }
+                }
+            }
+        }, "EventPool-processor");
+        eventProcessor.start();
+    }
+
     /**
      * Add a new Event-listener that will listen to a given set of events
      * as defined by the filter.
@@ -53,11 +78,7 @@ public class EventPool {
      * @param event
      */
     public void raiseEvent(Event event) {
-        for(FilteredListener pair : listeners) {
-            if(pair.filter.accept(event)) {
-                pair.listener.handleEvent(event);
-            }
-        }
+        eventQueue.add(event);
     }
 
     /**
@@ -66,6 +87,15 @@ public class EventPool {
      * @param networkEvent
      */
     public void raiseEvent(NetworkEvent networkEvent) {
+        network.sendEvent(networkEvent);
+        eventQueue.add(networkEvent);
+    }
 
+    private void broadcastEvent(Event event) {
+        for(FilteredListener pair : listeners) {
+            if(pair.filter.accept(event)) {
+                pair.listener.handleEvent(event);
+            }
+        }
     }
 }

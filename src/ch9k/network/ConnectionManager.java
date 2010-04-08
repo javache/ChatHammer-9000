@@ -9,12 +9,12 @@ import java.io.IOException;
 import java.util.logging.Logger;
 import java.util.Iterator;
 
-import ch9k.network.events.*;
-
 import ch9k.eventpool.NetworkEvent;
 import ch9k.eventpool.EventListener;
 import ch9k.eventpool.Event;
 import ch9k.eventpool.EventPool;
+import ch9k.network.events.CouldNotConnectEvent;
+import ch9k.network.events.NetworkConnectionLostEvent;
 
 /**
  * Handles all connections to remote hosts

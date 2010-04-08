@@ -9,14 +9,6 @@ import static org.easymock.EasyMock.*;
  */
 public class EventPoolTest {
     /**
-     * Test of addListener method, of class EventPool.
-     */
-    @Test
-    public void testAddListener() {
-        fail("The test case is a prototype.");
-    }
-
-    /**
      * Test of raiseEvent method, of class EventPool.
      */
     @Test
@@ -38,13 +30,5 @@ public class EventPoolTest {
         public Object getSource() {
             return null;
         }
-    }
-
-    /**
-     * Test of raiseEvent method, of class EventPool.
-     */
-    @Test
-    public void testRaiseEvent_NetworkEvent() {
-        fail("The test case is a prototype.");
     }
 }
