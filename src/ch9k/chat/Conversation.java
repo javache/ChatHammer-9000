@@ -1,5 +1,6 @@
 package ch9k.chat;
 
+import ch9k.chat.events.NewChatMessageEvent;
 import ch9k.eventpool.Event;
 import ch9k.eventpool.EventListener;
 import java.util.Date;
@@ -129,9 +130,9 @@ public class Conversation implements EventListener {
 
     @Override
     public void handleEvent(Event event) {
-        throw new UnsupportedOperationException("Not supported yet.");
         if(event instanceof NewChatMessageEvent){
-            
+            NewChatMessageEvent newChatMessageEvent = (NewChatMessageEvent) event;
+            conversation.add(newChatMessageEvent.getChatMessage());
         }
     }
     
