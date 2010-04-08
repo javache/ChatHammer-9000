@@ -1,38 +1,65 @@
 package ch9k.network;
 
 import java.util.Map;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.SocketException;
-import java.net.ConnectException;
 import java.io.IOException;
 import java.util.logging.Logger;
 import java.util.Iterator;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import ch9k.eventpool.NetworkEvent;
-import ch9k.eventpool.EventListener;
-import ch9k.eventpool.Event;
+import ch9k.eventpool.EventPool;
+import ch9k.network.events.CouldNotConnectEvent;
+import ch9k.network.events.NetworkConnectionLostEvent;
 
 /**
  * Handles all connections to remote hosts
  * @author nudded
  */
-public class ConnectionManager implements EventListener {
+public class ConnectionManager {
 
     /**
      * a Map to store all the connections.
      */
     private Map<InetAddress,Connection> connectionMap;
     
-    ServerSocket server;
+    /**
+     * Will listen to incoming connections
+     */
+    private ServerSocket server;
     
+    /**
+     * Logger, well does what it says
+     */
     private static final Logger LOGGER =
             Logger.getLogger(ConnectionManager.class.getName());
     
-    public ConnectionManager() {
-        connectionMap = new HashMap<InetAddress,Connection>();
+    /**
+     * a concurrent queue so we can use it in 2 threads
+     */
+    private LinkedBlockingQueue<NetworkEvent> eventQueue;
+    
+    /**
+     * a boolean value used to stop dispatch thread
+     */
+    private boolean keepRunning;
+    
+    /**
+     * The eventpool we should send messages to
+     */
+    private EventPool pool;
+    
+    
+    public ConnectionManager(EventPool pool) {
+        eventQueue = new LinkedBlockingQueue<NetworkEvent>();
+        connectionMap = new ConcurrentHashMap<InetAddress,Connection>();
+        this.pool = pool;
+        
+        keepRunning = true;
+        startDispatchThread();
     }
     
     /**
@@ -40,24 +67,8 @@ public class ConnectionManager implements EventListener {
      * @param networkEvent 
      */
     public void sendEvent(NetworkEvent networkEvent) {
-        InetAddress target = networkEvent.getTarget();
-        
-        LOGGER.info("sending a NetworkEvent to " + target);
-        
-        // first try to connect to the target
-        if (!connectionMap.containsKey(target)) {
-            try {
-                connectionMap.put(target,new Connection(target));
-            } catch (IOException ex) {
-                handleNetworkError(target);
-            }
-        }
-        // next try to send it
-        try {
-            connectionMap.get(target).sendEvent(networkEvent);
-        } catch (IOException e) {
-            handleNetworkError(target);
-        }
+        // add to the queue, the dispatch thread will take it from there
+        eventQueue.add(networkEvent);
     }
     
     /**
@@ -65,8 +76,9 @@ public class ConnectionManager implements EventListener {
      * send a disconnection Event to all the Connections
      */
      public void disconnect() {
+         keepRunning = false;
          for (Connection conn : connectionMap.values()) {
-             // TODO should we send the events?
+             conn.close();
          }
          try {
              // this will cause the listenerthread to crash, and close
@@ -79,13 +91,6 @@ public class ConnectionManager implements EventListener {
       */
      public void readyForIncomingConnections() {
          startListenThread();
-     }
-     
-     /**
-      * handle a UserDisconnectedEvent
-      */
-     public void handleEvent(Event ev) {
-         
      }
      
      /**
@@ -131,14 +136,14 @@ public class ConnectionManager implements EventListener {
       * sends an event signalling that target is offline
       */
      private void signalOffline(InetAddress target) {
-         
+         pool.raiseEvent(new CouldNotConnectEvent(this,target));
      }
      
      /**
       * sends an event because we appear to be without internet
       */
      private void signalGlobalConnectionFailure() {
-         
+         pool.raiseEvent(new NetworkConnectionLostEvent(this));
      }
      
      /**
@@ -156,12 +161,12 @@ public class ConnectionManager implements EventListener {
                  server = new ServerSocket(Connection.DEFAULT_PORT);
                  while (true) {
                      Socket client = server.accept();
-                     Connection conn = new Connection(client);
+                     Connection conn = new Connection(client,pool);
                      // TODO worry about synchronisation later
                      connectionMap.put(client.getInetAddress(),conn);
                  }
              } catch (IOException e) {
-                 
+                 // if this fails it would appear as if nothing ever happened
              }
          }
          
@@ -175,5 +180,44 @@ public class ConnectionManager implements EventListener {
      private void startListenThread() {
          new Thread(new SocketHandler()).start();
      }
+     
+     private Connection getOrCreateConnection(InetAddress target) {
+         if (!connectionMap.containsKey(target)) {
+             try {
+                 connectionMap.put(target,new Connection(target,pool));
+             } catch (IOException ex) {
+                 handleNetworkError(target);
+                 return null;
+             }
+         }
+         return connectionMap.get(target);    
+     }
+     
+     private class Dispatcher implements Runnable {
+         /**
+          * send NetworkEvents available on the networkQueue
+          */
+         public void run() {
+              // next try to send it
+             while(keepRunning) {
+                  try {
+                      NetworkEvent ev = eventQueue.take();
+                      try {
+                          Connection conn = getOrCreateConnection(ev.getTarget());
+                          conn.sendEvent(ev);
+                      } catch (IOException e) {
+                          handleNetworkError(ev.getTarget());
+                      }
+                  } catch (InterruptedException e) {
+                      
+                  }
+             }
+         }
+     }
+     
+     private void startDispatchThread() {
+         new Thread(new Dispatcher()).start();
+     }
+     
      
 }

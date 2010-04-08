@@ -1,26 +1,74 @@
 package ch9k.eventpool;
 
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.Multimap;
-import java.util.Iterator;
+import ch9k.network.ConnectionManager;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.logging.Logger;
 
 /**
  * Distributes events across the application
  * @author Pieter De Baets
  */
 public class EventPool {
-    
-    private EventPool() {}
-    
-    public static EventPool getInstance() {
+    /**
+     * Get the application-wide EventPool
+     * @return pool
+     */
+    public static EventPool getAppPool() {
         return SingletonHolder.INSTANCE;
     }
-    
+
+    /* Helper-class for singleton, aka Bill Pugh's method */
     private static class SingletonHolder { 
-         private static final EventPool INSTANCE = new EventPool();
+         private static final EventPool INSTANCE = new EventPool(true);
     }
 
-    private Multimap<String,EventListener> listeners = ArrayListMultimap.create();
+    private List<FilteredListener> listeners = new ArrayList<FilteredListener>();
+
+    private class FilteredListener {
+        public EventFilter filter;
+        public EventListener listener;
+
+        public FilteredListener(EventFilter filter, EventListener listener) {
+            this.filter = filter;
+            this.listener = listener;
+        }
+    }
+
+    private ConnectionManager network = new ConnectionManager(this);
+    private BlockingQueue<Event> eventQueue = new LinkedBlockingQueue<Event>();
+    private Thread eventProcessor;
+
+    /**
+     * Constructor
+     */
+    public EventPool() {
+        this(false);
+    }
+
+    private EventPool(boolean startListening) {
+        // start listening?
+        if(startListening) {
+            network.readyForIncomingConnections();
+        }
+
+        // start the event-processing thread
+        eventProcessor = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while(true) {
+                    try {
+                        broadcastEvent(eventQueue.take());
+                    } catch (InterruptedException ex) {
+                        // do nothing
+                    }
+                }
+            }
+        }, "EventPool-processor");
+        eventProcessor.start();
+    }
 
     /**
      * Add a new Event-listener that will listen to a given set of events
@@ -29,10 +77,7 @@ public class EventPool {
      * @param filter
      */
     public void addListener(EventListener listener, EventFilter filter) {
-        // TODO add eventfilter too, sometimes..
-        for(String className : filter.getMatchedEventIds()) {
-            listeners.put(className, listener);
-        }
+        listeners.add(new FilteredListener(filter, listener));
     }
 
     /**
@@ -40,11 +85,7 @@ public class EventPool {
      * @param event
      */
     public void raiseEvent(Event event) {
-        EventHeritageIterator classIterator = new EventHeritageIterator(event.getClass());
-        
-        while(classIterator.hasNext()) {
-            sendEvent(classIterator.next(), event);
-        }
+        eventQueue.add(event);
     }
 
     /**
@@ -53,12 +94,15 @@ public class EventPool {
      * @param networkEvent
      */
     public void raiseEvent(NetworkEvent networkEvent) {
-
+        network.sendEvent(networkEvent);
+        eventQueue.add(networkEvent);
     }
 
-    private void sendEvent(String next, Event event) {
-        for(EventListener listener : listeners.get(next)) {
-            listener.handleEvent(event);
+    private void broadcastEvent(Event event) {
+        for(FilteredListener pair : listeners) {
+            if(pair.filter.accept(event)) {
+                pair.listener.handleEvent(event);
+            }
         }
     }
 }

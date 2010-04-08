@@ -8,20 +8,12 @@ import static org.junit.Assert.*;
  */
 public class EventTest {
     /**
-     * Test of isHandled method, of class Event.
+     * Test of isHandledsetHandled method, of class Event.
      */
     @Test
-    public void testIsHandled() {
+    public void testHandled() {
         Event instance = new EventImpl();
         assertEquals(false, instance.isHandled());
-    }
-
-    /**
-     * Test of setHandled method, of class Event.
-     */
-    @Test
-    public void testSetHandled() {
-        Event instance = new EventImpl();
         instance.setHandled(true);
         assertEquals(true, instance.isHandled());
     }

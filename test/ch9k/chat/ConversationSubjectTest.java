@@ -1,40 +1,22 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package ch9k.chat;
 
-import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
- *
- * @author jpanneel
+ * @author Jens Panneel
  */
 public class ConversationSubjectTest {
-
-    public ConversationSubjectTest() {
-    }
-
-    @BeforeClass
-    public static void setUpClass() throws Exception {
-    }
-
-    @AfterClass
-    public static void tearDownClass() throws Exception {
-    }
+    private ConversationSubject conversationSubject;
+    private Conversation conversation;
+    private String[] subjects;
 
     @Before
     public void setUp() {
-    }
-
-    @After
-    public void tearDown() {
+        conversation = new Conversation(new Contact("JPanneel", null, true), true);
+        subjects = new String[] { "subject-a", "subject-b" };
+        conversationSubject = new ConversationSubject(conversation, subjects);
     }
 
     /**
@@ -42,13 +24,14 @@ public class ConversationSubjectTest {
      */
     @Test
     public void testGetSubjects() {
-        System.out.println("getSubjects");
-        ConversationSubject instance = new ConversationSubject();
-        String[] expResult = null;
-        String[] result = instance.getSubjects();
-        assertArrayEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        assertArrayEquals(subjects, conversationSubject.getSubjects());
     }
 
+     /**
+     * Test of getConversation method, of class ConversationSubject.
+     */
+    @Test
+    public void testGetConversation() {
+        assertEquals(conversation, conversationSubject.getConversation());
+    }
 }

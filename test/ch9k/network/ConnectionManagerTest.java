@@ -1,89 +1,68 @@
 package ch9k.network;
 
+import ch9k.eventpool.Event;
+import ch9k.eventpool.EventListener;
+import ch9k.eventpool.EventPool;
+import ch9k.eventpool.TypeEventFilter;
+import java.io.IOException;
+import java.net.ConnectException;
+import java.net.Socket;
+import java.net.UnknownHostException;
+import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import junit.framework.TestCase;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.net.InetAddress;
-import java.net.ConnectException;
-import java.net.UnknownHostException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.IOException;
 
-import ch9k.eventpool.*;
+public class ConnectionManagerTest {
+    private TestListener testListener;
+    private ConnectionManager connectionManager;
+    private DirectResponseServer echoServer;
 
-public class ConnectionManagerTest extends TestCase {
-    
-    
     private class TestListener implements EventListener {
-        private int received;
-        
-        public TestListener() {
-            received = 0;
-        }
-        
-        public void handleEvent(Event ev){
+        public int received = 0;
+
+        @Override
+        public void handleEvent(Event ev) {
             received++;
         }
-        
-        public int getReceived(){
-            return received;
-        }
-        
+    }
+
+    @Before
+    public void setUp() throws IOException {
+        EventPool pool = new EventPool();
+        testListener = new TestListener();
+        pool.addListener(testListener, new TypeEventFilter(TestNetworkEvent.class));
+
+        connectionManager = new ConnectionManager(pool);
     }
 
     @Test
-    public void testSendEvent() {
-        ConnectionManager connMan = new ConnectionManager();
-        TestListener list = new TestListener();
-        EventPool.getInstance().addListener(list,new TypeEventFilter(TestNetworkEvent.class));
-        DirectResponseServer server = new DirectResponseServer();
-        server.start();
-        
-        // the number of events to send
-        int n = 3;
+    public void testSendEvent() throws IOException, InterruptedException {
+        DirectResponseServer echoServer = new DirectResponseServer();
+        echoServer.start();
 
+        // number of events to send
+        int n = 3;
         for (int i = 0; i < n; i++) {
-            connMan.sendEvent(new TestNetworkEvent());            
+            connectionManager.sendEvent(new TestNetworkEvent());
         }
 
         // we should sleep +- 10 ms per event, to make sure they're send
-        try {    
-            Thread.sleep(10*n);
-        } catch (InterruptedException e) {
-            
-        }
-        server.stop();        
-        assertEquals(n,list.getReceived());
+        Thread.sleep(50*n);
+        assertEquals(n, testListener.received);
+
+        echoServer.stop();
     }
     
-    @Test
-    public void testShouldRaiseConnectException() {
-        boolean raised = false;
-        ConnectionManager connMan = new ConnectionManager();
-        try {
-            Socket s = new Socket("localhost",Connection.DEFAULT_PORT);
-        } catch (UnknownHostException e) {
-            
-        } catch (ConnectException e){
-            raised = true;
-        } catch (IOException e) {
-            
-        }
-        assertEquals(true,raised);
+    @Test(expected=ConnectException.class)
+    public void testShouldRaiseConnectException() throws UnknownHostException,
+            IOException {
+        Socket s = new Socket("localhost", Connection.DEFAULT_PORT);
     }
     
     @Test
     public void testShouldNotRaiseConnectException() throws ConnectException,IOException {
-        ConnectionManager connMan = new ConnectionManager();
-        connMan.readyForIncomingConnections();
-        try {
-            Socket s = new Socket("localhost",Connection.DEFAULT_PORT);
-        } catch (UnknownHostException e) {
-
-        } 
+        connectionManager.readyForIncomingConnections();
+        Socket s = new Socket("localhost", Connection.DEFAULT_PORT);
+        s.close();
     }
-    
 }

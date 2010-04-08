@@ -17,14 +17,9 @@ public class DirectResponseServer {
     
     private ServerSocket server;
     
-    public DirectResponseServer() {
+    public DirectResponseServer() throws IOException {
         shouldRun = true;
-        server = null;
-        try {
-            server = new ServerSocket(Connection.DEFAULT_PORT);
-        } catch (IOException e) {
-
-        }
+        server = new ServerSocket(Connection.DEFAULT_PORT);
     }
     
     public void stop() {
@@ -43,27 +38,26 @@ public class DirectResponseServer {
     }
     
     private class Runner implements Runnable {
-        
         public void run() {
             try {
                 while(shouldRun) {
                     final Socket s = server.accept();
-                        new Thread(new Runnable(){
-                            public void run() {
-                                try {
-                                    ObjectInputStream in = new ObjectInputStream(s.getInputStream());
-                                    ObjectOutputStream out = new ObjectOutputStream(s.getOutputStream());
-                                    while(true) {
-                                        Object obj = in.readObject();
-                                        out.writeObject(obj);
-                                    }
-                                } catch (IOException e) {
-
-                                } catch (ClassNotFoundException e) {
-
+                    new Thread(new Runnable(){
+                        public void run() {
+                            try {
+                                ObjectInputStream in = new ObjectInputStream(s.getInputStream());
+                                ObjectOutputStream out = new ObjectOutputStream(s.getOutputStream());
+                                while(true) {
+                                    Object obj = in.readObject();
+                                    out.writeObject(obj);
                                 }
+                            } catch (IOException e) {
+
+                            } catch (ClassNotFoundException e) {
+
                             }
-                        }).start();
+                        }
+                    }).start();
                 }
                 server.close();
             } catch (IOException e) {

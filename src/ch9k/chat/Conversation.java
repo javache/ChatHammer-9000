@@ -1,20 +1,25 @@
 package ch9k.chat;
 
-import ch9k.plugins.Plugin;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import ch9k.chat.events.ConversationEventFilter;
+import ch9k.chat.events.NewChatMessageEvent;
+import ch9k.eventpool.Event;
+import ch9k.eventpool.EventListener;
+import ch9k.eventpool.EventPool;
+import java.util.Date;
+import java.util.Iterator;
 import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * Represents a conversation between two users.
  * @author Jens Panneel
  */
-public class Conversation {
+public class Conversation implements EventListener {
     private Contact contact;
     private boolean initiated;
-    private Map<Class<? extends Plugin>, Plugin> activePlugins;
+    private Date starttime;
     private ConversationSubject subject;
+    private Set<ChatMessage> conversation;
 
     /**
      * Constructor
@@ -22,17 +27,12 @@ public class Conversation {
      * @param initiatedByMe Is this conversation started by me?
      * @param activePlugins The list of the current active plugins on the initiators side.
      */
-    public Conversation(Contact contact, boolean initiatedByMe, List<Class<? extends Plugin>> activePlugins) {
+    public Conversation(Contact contact, boolean initiatedByMe) {
+        this.starttime = new Date();
+        this.conversation = new TreeSet<ChatMessage>();
         this.contact = contact;
         this.initiated = initiatedByMe;
-        this.activePlugins = new HashMap<Class<? extends Plugin>, Plugin>();
-        for(Class<? extends Plugin> plugin : activePlugins) {
-            try {
-                addPlugin(plugin);
-            } catch (Exception ex) {
-                // TODO catch it here
-            }
-        }
+        EventPool.getAppPool().addListener(this, new ConversationEventFilter(this));
     }
 
     /**
@@ -68,41 +68,76 @@ public class Conversation {
     }
 
     /**
-     * Get a list of all current active plugins from this conversation.
-     * @return activePlugins
+     * Get the date/time on witch this conversation was started
+     * @return starttime
      */
-    public Set<Plugin> getActivePlugins() {
-        return (Set<Plugin>) activePlugins.values();
+    public Date getStartTime() {
+        return starttime;
     }
 
     /**
-     * Delete the instance of this plugin from this conversation
-     * @param plugin Class<? extends Plugin>
+     * Adds a message to this Conversation.
+     * @param chatMessage
      */
-    public void deletePlugin(Class<? extends Plugin> plugin) {
-        activePlugins.remove(plugin);
+    public void addMessage(ChatMessage chatMessage) {
+        conversation.add(chatMessage);
     }
 
     /**
-     * Add an instance of plugin to this conversation, throws exception when there is already such an instance
-     * @param plugin Class<? extends Plugin>
-     * @throws InstantiationException
-     * @throws IllegalAccessException
-     * will throw plugin conflict exception
+     * Get the n last messages as Strings.
+     * Most recent message will be last in line.
+     * When there arent n messages the size of the returned array will be reduced to the number of messages.
+     * @param n The number of messages to return
+     * @return String[]
      */
-    public void addPlugin(Class<? extends Plugin> plugin) throws InstantiationException, IllegalAccessException {
-        if(!activePlugins.keySet().contains(plugin)) {
-            activePlugins.put(plugin, plugin.newInstance());
-        } else {
-            // TODO throw plugin conflict exception
+    public String[] getMessages(int n) {
+        if(n > conversation.size()) {
+            n = conversation.size();
         }
+        String[] messages = new String[n];
+        Iterator<ChatMessage> it = ((TreeSet<ChatMessage>)conversation).descendingIterator();
+        int i = 0;
+        while(n-- > 0) {
+            messages[n] = it.next().getText();
+        }
+        return messages;
     }
 
     /**
      * Close this conversation
      */
     public void close() {
-        // TODO implement close()
+        // TODO implement close() : raise event
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Conversation other = (Conversation) obj;
+        if (this.contact != other.contact && (this.contact == null || !this.contact.equals(other.contact))) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 67 * hash + (this.contact != null ? this.contact.hashCode() : 0);
+        return hash;
+    }
+
+    @Override
+    public void handleEvent(Event event) {
+        if(event instanceof NewChatMessageEvent){
+            NewChatMessageEvent newChatMessageEvent = (NewChatMessageEvent) event;
+            conversation.add(newChatMessageEvent.getChatMessage());
+        }
+    }
+    
 }

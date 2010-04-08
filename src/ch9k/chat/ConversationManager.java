@@ -1,5 +1,6 @@
 package ch9k.chat;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -9,14 +10,18 @@ import java.util.Map;
 public class ConversationManager {
     private Map<Contact, Conversation> conversations;
 
+    public ConversationManager() {
+        conversations = new HashMap<Contact, Conversation>();
+    }
+
     /**
      * Start a conversation with the given contact
      * @param contact The contact to start a new conversation with.
      * @return conversation The started conversation
      */
     public Conversation startConversation(Contact contact) {
-        // TODO pass true current active plugins
-        Conversation conversation = new Conversation(contact, true, null);
+        // TODO pass true the correct boolean, get info from event
+        Conversation conversation = new Conversation(contact, true);
         // TODO what if there is already a conversation with this contact?
         conversations.put(contact, conversation);
         return conversation;

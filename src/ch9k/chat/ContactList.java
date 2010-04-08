@@ -8,18 +8,17 @@ import java.util.TreeSet;
  * @author Jens Panneel
  */
 public class ContactList {
+    /**
+     * Collection of contacts, a set because you dont want to save
+     * the same contact two times.
+     */
     private Set<Contact> contacts;
 
     /**
      * Constructor
-     * @param contacts The set of all the by configuration known contacts
-     *
-     * contacts is a Set because you dont want to save the same contact two times, and in saving/loading there is no need for an ordening.
-     * In the ContactList there is need for an ordening. This could be done here.
      */
-    public ContactList(Set<Contact> contacts) {
-        // TODO some sort of sorting/ordening
-        this.contacts = new TreeSet<Contact>(contacts);
+    public ContactList() {
+        contacts = new TreeSet<Contact>();
     }
 
     /**
@@ -30,28 +29,21 @@ public class ContactList {
         return contacts;
     }
 
-    //throws contact already in list exception or returns a boolean
     /**
      * Add a contact to the ContactList.
      * @param contact
-     * @throws Exception
-     *
+     * @return added
      */
-    public void addContact(Contact contact) {
-        if(!contacts.add(contact)) {
-            //TODO throw the right exception
-        }
+    public boolean addContact(Contact contact) {
+        return contacts.add(contact);
     }
 
-    //throws contact not in list exception or returns a boolean or just dont check. Will only be called on excisting contacts...
     /**
      * Remove the given contact from the ContactList
      * @param contact
+     * @return removed
      */
-    public void removeContact(Contact contact) {
-        if(!contacts.remove(contact)) {
-            //TODE throw the right exception
-        }
+    public boolean removeContact(Contact contact) {
+        return contacts.remove(contact);
     }
-
 }
