@@ -1,5 +1,7 @@
 package ch9k.chat;
 
+import ch9k.eventpool.Event;
+import ch9k.eventpool.EventListener;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.Set;
@@ -9,7 +11,7 @@ import java.util.TreeSet;
  * Represents a conversation between two users.
  * @author Jens Panneel
  */
-public class Conversation {
+public class Conversation implements EventListener {
     private Contact contact;
     private boolean initiated;
     private Date starttime;
@@ -123,6 +125,14 @@ public class Conversation {
         int hash = 7;
         hash = 67 * hash + (this.contact != null ? this.contact.hashCode() : 0);
         return hash;
+    }
+
+    @Override
+    public void handleEvent(Event event) {
+        throw new UnsupportedOperationException("Not supported yet.");
+        if(event instanceof NewChatMessageEvent){
+            
+        }
     }
     
 }

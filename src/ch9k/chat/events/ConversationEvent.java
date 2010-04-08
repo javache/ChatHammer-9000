@@ -1,5 +1,6 @@
-package ch9k.chat;
+package ch9k.chat.events;
 
+import ch9k.chat.Conversation;
 import ch9k.eventpool.Event;
 
 /**
