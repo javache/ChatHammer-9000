@@ -1,5 +1,6 @@
 package ch9k.chat;
 
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -88,5 +89,13 @@ public class ChatMessage implements Comparable<ChatMessage>{
         hash = 53 * hash + (this.author != null ? this.author.hashCode() : 0);
         hash = 53 * hash + (this.time != null ? this.time.hashCode() : 0);
         return hash;
+    }
+
+    @Override
+    public String toString() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(time);
+
+        return ("<" + calendar.get(Calendar.HOUR) + ":" + calendar.get(Calendar.MINUTE) + ">" + author + ": " + text);
     }
 }

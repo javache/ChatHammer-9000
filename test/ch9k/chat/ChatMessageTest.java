@@ -77,4 +77,13 @@ public class ChatMessageTest {
         ChatMessage differentMessage = new ChatMessage("Javache", "JaJa!");
         assertNotSame(chatMessage.hashCode(), differentMessage.hashCode());
     }
+
+     /**
+     * Test of toString method, of class ChatMessage.
+     */
+    @Test
+    public void testToString() {
+        ChatMessage differentMessage = new ChatMessage("Javache", "JaJa!");
+        System.out.println(chatMessage.toString());
+    }
 }
