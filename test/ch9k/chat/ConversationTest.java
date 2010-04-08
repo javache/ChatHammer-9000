@@ -1,5 +1,7 @@
 package ch9k.chat;
 
+import ch9k.chat.events.NewChatMessageEvent;
+import ch9k.eventpool.EventPool;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Date;
@@ -142,5 +144,19 @@ public class ConversationTest {
         Conversation conversation1 = new Conversation(new Contact("Javache", null, true), true);
         assertNotSame(conversation.hashCode(), conversation1.hashCode());
     }
+
+        /**
+     * Test of handleEvent method, of class Conversation.
+     */
+    @Test
+    public void testHandleEvent() {
+        System.out.println("handleEvent");
+        ChatMessage chatMessage = new ChatMessage("Javache", "lama! lama!");
+        NewChatMessageEvent newChatMessageEvent = new NewChatMessageEvent(chatMessage, conversation);
+        EventPool.getInstance().raiseEvent(newChatMessageEvent);
+        //assertTrue(conversation.getChatMessages(1).length == 1);
+        assertEquals(conversation.getChatMessages(1)[0], "lama! lama!");
+    }
+
 
 }
