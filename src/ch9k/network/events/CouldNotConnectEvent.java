@@ -1,5 +1,7 @@
 package ch9k.network.events;
 
+import java.net.InetAddress;
+
 import ch9k.network.ConnectionManager;
 
 /**
@@ -7,7 +9,16 @@ import ch9k.network.ConnectionManager;
  * ConnectionManager failed to create a connection to a certain ip
  */
 public class CouldNotConnectEvent extends ConnectionManagerEvent {
-    public CouldNotConnectEvent(ConnectionManager source) {
+    
+    private InetAddress ip;
+    
+    public CouldNotConnectEvent(ConnectionManager source,InetAddress ip) {
         super(source);
+        this.ip = ip;
     }
+    
+    public InetAddress getInetAddress() {
+        return ip;
+    }
+    
 }

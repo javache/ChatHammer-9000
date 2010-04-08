@@ -9,9 +9,12 @@ import java.io.IOException;
 import java.util.logging.Logger;
 import java.util.Iterator;
 
+import ch9k.network.events.*;
+
 import ch9k.eventpool.NetworkEvent;
 import ch9k.eventpool.EventListener;
 import ch9k.eventpool.Event;
+import ch9k.eventpool.EventPool;
 
 /**
  * Handles all connections to remote hosts
@@ -129,14 +132,14 @@ public class ConnectionManager implements EventListener {
       * sends an event signalling that target is offline
       */
      private void signalOffline(InetAddress target) {
-         
+         EventPool.getInstance().raiseEvent(new CouldNotConnectEvent(this,target));
      }
      
      /**
       * sends an event because we appear to be without internet
       */
      private void signalGlobalConnectionFailure() {
-         
+         EventPool.getInstance().raiseEvent(new NetworkConnectionLostEvent(this));
      }
      
      /**
