@@ -95,7 +95,7 @@ public class ConversationTest {
         assertEquals("Hey!", conversation.getMessages(5)[0]);
         assertEquals("Ik weet het :)", conversation.getMessages(5)[4]);
         assertEquals(3, conversation.getMessages(3).length);
-        assertEquals("Hoe gaat het met de overkant?", conversation.getMessages(5)[0]);
+        assertEquals("Hoe gaat het met de overkant?", conversation.getMessages(3)[0]);
 
         conversation.addMessage(new ChatMessage("Wendy", "Doei!"));
         assertEquals(5, conversation.getMessages(5).length);

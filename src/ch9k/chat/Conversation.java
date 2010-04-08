@@ -96,7 +96,8 @@ public class Conversation implements EventListener {
         }
         String[] messages = new String[n];
         Iterator<ChatMessage> it = ((TreeSet<ChatMessage>)conversation).descendingIterator();
-        while(--n >= 0) {
+        int i = 0;
+        while(n-- > 0) {
             messages[n] = it.next().getText();
         }
         return messages;
