@@ -1,7 +1,6 @@
 package ch9k.chat.events;
 
 import ch9k.chat.Conversation;
-import ch9k.chat.events.ConversationEvent;
 import ch9k.eventpool.Event;
 import ch9k.eventpool.EventFilter;
 
@@ -26,7 +25,7 @@ public class ConversationEventFilter implements EventFilter {
             return false;
         } else {
             ConversationEvent conversationEvent = (ConversationEvent)event;
-            return conversation.equals(conversationEvent.getSource());
+            return conversation.equals(conversationEvent.getConversation());
         }
     }
 }

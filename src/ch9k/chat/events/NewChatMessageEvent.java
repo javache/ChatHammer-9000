@@ -6,17 +6,18 @@
 package ch9k.chat.events;
 
 import ch9k.chat.ChatMessage;
-import ch9k.eventpool.NetworkEvent;
+import ch9k.chat.Conversation;
 
 /**
  *
  * @author jpanneel
  */
-public class NewChatMessageEvent extends NetworkEvent{
+public class NewChatMessageEvent extends ConversationEvent{
 
     private ChatMessage chatMessage;
 
-    public NewChatMessageEvent(ChatMessage chatMessage) {
+    public NewChatMessageEvent(ChatMessage chatMessage, Conversation conversation) {
+        super(conversation);
         this.chatMessage = chatMessage;
     }
 
