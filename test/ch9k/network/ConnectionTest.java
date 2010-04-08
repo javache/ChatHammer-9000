@@ -12,6 +12,7 @@ import org.junit.Before;
 import static org.junit.Assert.*;
 
 public class ConnectionTest {
+    private EventPool pool;
     private TestListener testListener;
     private DirectResponseServer echoServer;
 
@@ -26,7 +27,7 @@ public class ConnectionTest {
 
     @Before
     public void setUp() throws IOException {
-        EventPool pool = new EventPool();
+        pool = new EventPool();
         testListener = new TestListener();
         pool.addListener(testListener, new TypeEventFilter(TestNetworkEvent.class));
 
@@ -46,17 +47,17 @@ public class ConnectionTest {
      */
     @Test
     public void testSendEvent() throws IOException, InterruptedException {
-        Connection conn = new Connection(InetAddress.getLocalHost());
-        Connection conn2 = new Connection(InetAddress.getLocalHost());
+        Connection conn = new Connection(InetAddress.getLocalHost(), pool);
+        Connection conn2 = new Connection(InetAddress.getLocalHost(), pool);
 
         conn.sendEvent(new TestNetworkEvent());
-        Thread.sleep(10);
+        Thread.sleep(50);
         assertEquals(1, testListener.received);
 
         conn.sendEvent(new TestNetworkEvent());
         conn.sendEvent(new TestNetworkEvent());
         conn2.sendEvent(new TestNetworkEvent());
-        Thread.sleep(30);
+        Thread.sleep(150);
         assertEquals(4, testListener.received);
     }
 }
