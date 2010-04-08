@@ -15,13 +15,13 @@ public class EventPool {
      * Get the application-wide EventPool
      * @return pool
      */
-    public static EventPool getInstance() {
+    public static EventPool getAppPool() {
         return SingletonHolder.INSTANCE;
     }
 
     /* Helper-class for singleton, aka Bill Pugh's method */
     private static class SingletonHolder { 
-         private static final EventPool INSTANCE = new EventPool();
+         private static final EventPool INSTANCE = new EventPool(true);
     }
 
     private List<FilteredListener> listeners = new ArrayList<FilteredListener>();
@@ -36,7 +36,7 @@ public class EventPool {
         }
     }
 
-    private ConnectionManager network = new ConnectionManager();
+    private ConnectionManager network = new ConnectionManager(this);
     private BlockingQueue<Event> eventQueue = new LinkedBlockingQueue<Event>();
     private Thread eventProcessor;
 
@@ -44,8 +44,14 @@ public class EventPool {
      * Constructor
      */
     public EventPool() {
-        // start listening
-        network.readyForIncomingConnections();
+        this(false);
+    }
+
+    private EventPool(boolean startListening) {
+        // start listening?
+        if(startListening) {
+            network.readyForIncomingConnections();
+        }
 
         // start the event-processing thread
         eventProcessor = new Thread(new Runnable() {

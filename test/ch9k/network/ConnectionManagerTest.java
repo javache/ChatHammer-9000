@@ -5,17 +5,13 @@ import ch9k.eventpool.EventListener;
 import ch9k.eventpool.EventPool;
 import ch9k.eventpool.TypeEventFilter;
 import org.junit.Test;
-import junit.framework.TestCase;
 import java.net.Socket;
 import java.net.ConnectException;
 import java.net.UnknownHostException;
 import java.io.IOException;
-
 import static org.junit.Assert.*;
 
-public class ConnectionManagerTest extends TestCase {
-    
-    
+public class ConnectionManagerTest {
     private class TestListener implements EventListener {
         private int received;
         
@@ -34,10 +30,10 @@ public class ConnectionManagerTest extends TestCase {
     }
 
     @Test
-    public void testSendEvent() {
-        ConnectionManager connMan = new ConnectionManager();
+    public void testSendEvent() throws IOException {
+        ConnectionManager connMan = new ConnectionManager(EventPool.getAppPool());
         TestListener list = new TestListener();
-        EventPool.getInstance().addListener(list,new TypeEventFilter(TestNetworkEvent.class));
+        EventPool.getAppPool().addListener(list,new TypeEventFilter(TestNetworkEvent.class));
         DirectResponseServer server = new DirectResponseServer();
         server.start();
         
@@ -61,7 +57,7 @@ public class ConnectionManagerTest extends TestCase {
     @Test
     public void testShouldRaiseConnectException() {
         boolean raised = false;
-        ConnectionManager connMan = new ConnectionManager();
+        ConnectionManager connMan = new ConnectionManager(EventPool.getAppPool());
         try {
             Socket s = new Socket("localhost",Connection.DEFAULT_PORT);
         } catch (UnknownHostException e) {
@@ -76,7 +72,7 @@ public class ConnectionManagerTest extends TestCase {
     
     @Test
     public void testShouldNotRaiseConnectException() throws ConnectException,IOException {
-        ConnectionManager connMan = new ConnectionManager();
+        ConnectionManager connMan = new ConnectionManager(EventPool.getAppPool());
         connMan.readyForIncomingConnections();
         try {
             Socket s = new Socket("localhost",Connection.DEFAULT_PORT);

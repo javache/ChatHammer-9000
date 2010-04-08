@@ -11,8 +11,6 @@ import java.util.Iterator;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import ch9k.eventpool.NetworkEvent;
-import ch9k.eventpool.EventListener;
-import ch9k.eventpool.Event;
 import ch9k.eventpool.EventPool;
 import ch9k.network.events.CouldNotConnectEvent;
 import ch9k.network.events.NetworkConnectionLostEvent;
@@ -49,7 +47,7 @@ public class ConnectionManager {
      */
     private boolean keepRunning;
     
-    public ConnectionManager() {
+    public ConnectionManager(EventPool pool) {
         eventQueue = new LinkedBlockingQueue<NetworkEvent>();
         connectionMap = new ConcurrentHashMap<InetAddress,Connection>();
         keepRunning = true;
@@ -64,8 +62,6 @@ public class ConnectionManager {
         // add to the queue, the dispatch thread will take it from there
         eventQueue.add(networkEvent);
     }
-    
-    
     
     /**
      * Disconnect from all connections
@@ -132,14 +128,14 @@ public class ConnectionManager {
       * sends an event signalling that target is offline
       */
      private void signalOffline(InetAddress target) {
-         EventPool.getInstance().raiseEvent(new CouldNotConnectEvent(this,target));
+         EventPool.getAppPool().raiseEvent(new CouldNotConnectEvent(this,target));
      }
      
      /**
       * sends an event because we appear to be without internet
       */
      private void signalGlobalConnectionFailure() {
-         EventPool.getInstance().raiseEvent(new NetworkConnectionLostEvent(this));
+         EventPool.getAppPool().raiseEvent(new NetworkConnectionLostEvent(this));
      }
      
      /**

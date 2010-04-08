@@ -4,53 +4,59 @@ import ch9k.eventpool.Event;
 import ch9k.eventpool.EventListener;
 import ch9k.eventpool.EventPool;
 import ch9k.eventpool.TypeEventFilter;
-import org.junit.Test;
-import junit.framework.TestCase;
+import java.io.IOException;
 import java.net.InetAddress;
+import org.junit.Test;
+import org.junit.After;
+import org.junit.Before;
+import static org.junit.Assert.*;
 
-public class ConnectionTest extends TestCase {
+public class ConnectionTest {
+    private TestListener testListener;
+    private DirectResponseServer echoServer;
 
-    
     private class TestListener implements EventListener {
-        private int received;
-        
-        public TestListener() {
-            received = 0;
-        }
-        
-        public void handleEvent(Event ev){
+        public int received = 0;
+
+        @Override
+        public void handleEvent(Event ev) {
             received++;
         }
-        
-        public int getReceived(){
-            return received;
-        }
-        
     }
-    
-    
+
+    @Before
+    public void setUp() throws IOException {
+        EventPool pool = new EventPool();
+        testListener = new TestListener();
+        pool.addListener(testListener, new TypeEventFilter(TestNetworkEvent.class));
+
+        echoServer = new DirectResponseServer();
+        echoServer.start();
+    }
+
+    @After
+    public void tearDown() {
+        echoServer.stop();
+    }
+
+    /**
+     * Test of sendEvent method, of class Connection
+     * @throws IOException
+     * @throws InterruptedException 
+     */
     @Test
-    public void testSendEvent() {
-        EventPool pool = EventPool.getInstance();
-        TestListener list = new TestListener();
-        pool.addListener(list,new TypeEventFilter(TestNetworkEvent.class));
-        DirectResponseServer server = new DirectResponseServer();
-        server.start();
-        try {
-            Connection conn = new Connection(InetAddress.getLocalHost());
-            conn.sendEvent(new TestNetworkEvent());
-            Thread.sleep(10);
-            assertEquals(1,list.getReceived());
-            conn.sendEvent(new TestNetworkEvent());
-            Connection conn2 = new Connection(InetAddress.getLocalHost());
-            conn.sendEvent(new TestNetworkEvent());
-            conn2.sendEvent(new TestNetworkEvent());
-            Thread.sleep(40);
-            assertEquals(4,list.getReceived());
-        } catch (Exception e) {
-            System.out.println(e);
-        }
-        server.stop();
+    public void testSendEvent() throws IOException, InterruptedException {
+        Connection conn = new Connection(InetAddress.getLocalHost());
+        Connection conn2 = new Connection(InetAddress.getLocalHost());
+
+        conn.sendEvent(new TestNetworkEvent());
+        Thread.sleep(10);
+        assertEquals(1, testListener.received);
+
+        conn.sendEvent(new TestNetworkEvent());
+        conn.sendEvent(new TestNetworkEvent());
+        conn2.sendEvent(new TestNetworkEvent());
+        Thread.sleep(30);
+        assertEquals(4, testListener.received);
     }
-    
 }

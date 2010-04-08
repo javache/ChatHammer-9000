@@ -17,14 +17,9 @@ public class DirectResponseServer {
     
     private ServerSocket server;
     
-    public DirectResponseServer() {
+    public DirectResponseServer() throws IOException {
         shouldRun = true;
-        server = null;
-        try {
-            server = new ServerSocket(Connection.DEFAULT_PORT);
-        } catch (IOException e) {
-
-        }
+        server = new ServerSocket(Connection.DEFAULT_PORT);
     }
     
     public void stop() {

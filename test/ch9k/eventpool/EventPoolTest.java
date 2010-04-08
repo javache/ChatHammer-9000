@@ -30,7 +30,7 @@ public class EventPoolTest {
 
         pool.addListener(listener, new TypeEventFilter(MyEvent.class));
         pool.raiseEvent(event);
-        Thread.sleep(100); // wait for the event to be propagated
+        Thread.sleep(10); // wait for the event to be propagated
         verify(listener); // assert that the event was received
     }
 

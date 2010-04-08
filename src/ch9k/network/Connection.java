@@ -2,7 +2,6 @@ package ch9k.network;
 
 import java.net.InetAddress;
 import java.net.Socket;
-import java.util.Queue;
 import java.io.ObjectOutputStream;
 import java.io.ObjectInputStream;
 import java.io.IOException;
@@ -125,11 +124,11 @@ public class Connection {
                 try {
                     while(keepListening) {
                         Event ev = (Event)in.readObject();
-                        EventPool.getInstance().raiseEvent(ev);
+                        EventPool.getAppPool().raiseEvent(ev);
                     }
                 } catch (EOFException e) {
                     // This happens when the socket on the other side closes
-                    EventPool.getInstance().raiseEvent(new UserDisconnectedEvent(target));
+                    EventPool.getAppPool().raiseEvent(new UserDisconnectedEvent(target));
                 } catch (IOException e) {
                     System.out.println(e);
                 } catch (ClassNotFoundException e) {
