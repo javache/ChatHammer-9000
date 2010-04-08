@@ -60,8 +60,10 @@ public class ConnectionManagerTest {
     }
     
     @Test
-    public void testShouldNotRaiseConnectException() throws ConnectException,IOException {
+    public void testShouldNotRaiseConnectException() throws ConnectException,IOException,InterruptedException {
         connectionManager.readyForIncomingConnections();
+        // creating a serversocket takes some time, lets wait a bit
+        Thread.sleep(50);
         Socket s = new Socket("localhost", Connection.DEFAULT_PORT);
         s.close();
     }
