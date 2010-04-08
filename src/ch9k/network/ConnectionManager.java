@@ -67,7 +67,7 @@ public class ConnectionManager implements EventListener {
      */
      public void disconnect() {
          for (Connection conn : connectionMap.values()) {
-             // TODO should we send the events?
+             conn.close();
          }
          try {
              // this will cause the listenerthread to crash, and close
