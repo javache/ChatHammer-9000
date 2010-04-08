@@ -118,12 +118,12 @@ public class ContactTest {
         assertTrue(contact1.compareTo(contact) < 0);
 
         // sgn(compare(x, y)) == -sgn(compare(y, x))
-        assertTrue(contact2.compareTo(contact3) > 0);
-        assertTrue(contact3.compareTo(contact2) < 0);
+        assertTrue(contact2.compareTo(contact3) < 0);
+        assertTrue(contact3.compareTo(contact2) > 0);
 
         // transitivity
-        assertTrue(contact1.compareTo(contact2) > 0);
-        assertTrue(contact2.compareTo(contact3) > 0);
-        assertTrue(contact1.compareTo(contact3) > 0);
+        assertTrue(contact1.compareTo(contact2) < 0);
+        assertTrue(contact2.compareTo(contact3) < 0);
+        assertTrue(contact1.compareTo(contact3) < 0);
     }
 }

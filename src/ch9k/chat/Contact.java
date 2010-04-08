@@ -131,6 +131,11 @@ public class Contact implements Comparable<Contact>{
 
         // order by name
         int compareUsername = username.compareToIgnoreCase(contact.getUsername());
-        return (compareUsername == 0) ? compareUsername + 1 : compareUsername;
+        if (compareUsername != 0){
+            return compareUsername;
+        } else {
+            // if same name, ip cannot be the same, so this will never return 0!
+            return this.getIp().toString().compareTo(contact.getIp().toString());
+        }
     }
 }
