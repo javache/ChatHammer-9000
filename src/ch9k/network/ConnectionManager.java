@@ -27,8 +27,14 @@ public class ConnectionManager implements EventListener {
      */
     private Map<InetAddress,Connection> connectionMap;
     
-    ServerSocket server;
+    /**
+     * Will listen to incoming connections
+     */
+    private ServerSocket server;
     
+    /**
+     * Logger, well does what it says
+     */
     private static final Logger LOGGER =
             Logger.getLogger(ConnectionManager.class.getName());
     
@@ -162,7 +168,7 @@ public class ConnectionManager implements EventListener {
                      connectionMap.put(client.getInetAddress(),conn);
                  }
              } catch (IOException e) {
-                 
+                 // if this fails it would appear as if nothing ever happened
              }
          }
          
