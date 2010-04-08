@@ -10,7 +10,6 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
- *
  * @author Jens Panneel
  */
 public class ConversationTest {
@@ -82,13 +81,14 @@ public class ConversationTest {
             new ChatMessage("Wendy", "O dag lieverd"),
             new ChatMessage("JPanneel", "Hoe gaat het met de overkant?"),
             new ChatMessage("Wendy", "Goed, maar ik mis je wel!"),
-            new ChatMessage("JPanneel", "Ik weet het :)")
+            new ChatMessage("JPanneel", "Ik weet het :)"),
+            new ChatMessage("Wendy", "Doei!")
         };
 
         assertEquals(0, conversation.getMessages(5).length);
 
-        for(ChatMessage message : messages) {
-            conversation.addMessage(message);
+        for (int i = 0; i < 5; i++) {
+            conversation.addMessage(messages[i]);
         }
 
         assertEquals(5, conversation.getMessages(10).length);
@@ -97,7 +97,7 @@ public class ConversationTest {
         assertEquals(3, conversation.getMessages(3).length);
         assertEquals("Hoe gaat het met de overkant?", conversation.getMessages(3)[0]);
 
-        conversation.addMessage(new ChatMessage("Wendy", "Doei!"));
+        conversation.addMessage(messages[5]);
         assertEquals(5, conversation.getMessages(5).length);
         assertEquals(6, conversation.getMessages(10).length);
         assertEquals("Hoe gaat het met de overkant?", conversation.getMessages(5)[1]);

@@ -6,19 +6,18 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
- *
  * @author Jens Panneel
  */
 public class ChatMessageTest {
-    private String writer;
+    private String author;
     private String text;
     private ChatMessage chatMessage;
 
     @Before
     public void setUp() {
-        writer = "JPanneel";
+        author = "JPanneel";
         text = "Hey! You!";
-        chatMessage = new ChatMessage(writer, text);
+        chatMessage = new ChatMessage(author, text);
     }
 
     /**
@@ -34,7 +33,7 @@ public class ChatMessageTest {
      */
     @Test
     public void testGetWriter() {
-        assertEquals(chatMessage.getWriter(), writer);
+        assertEquals(chatMessage.getWriter(), author);
     }
 
     /**
@@ -65,7 +64,7 @@ public class ChatMessageTest {
     @Test
     public void testEquals() {
         assertTrue(chatMessage.equals(chatMessage));
-        assertFalse(chatMessage.equals(new ChatMessage(writer, "JaJa!")));
+        assertFalse(chatMessage.equals(new ChatMessage(author, "JaJa!")));
         assertFalse(chatMessage.equals(new ChatMessage("Javache", text)));
         assertFalse(chatMessage.equals(new ChatMessage("Javache", "JaJa!")));
     }
@@ -78,5 +77,4 @@ public class ChatMessageTest {
         ChatMessage differentMessage = new ChatMessage("Javache", "JaJa!");
         assertNotSame(chatMessage.hashCode(), differentMessage.hashCode());
     }
-
 }

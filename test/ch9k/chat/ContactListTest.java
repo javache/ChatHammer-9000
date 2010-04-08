@@ -2,13 +2,11 @@ package ch9k.chat;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.Set;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
- *
  * @author Jens Panneel
  */
 public class ContactListTest {
@@ -67,5 +65,4 @@ public class ContactListTest {
         contactList.removeContact(contact1);
         assertEquals(0, contactList.getContacts().size());
     }
-
 }
