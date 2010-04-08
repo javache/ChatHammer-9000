@@ -18,23 +18,33 @@ import ch9k.eventpool.EventPool;
  * @author nudded
  */
 public class Connection {
-    
+
+    /**
+     * the default port used to create connections
+     * chosen because it's the smallest prime number
+     * OVER 9000
+     */
     public static int DEFAULT_PORT = 9001;
     
-    // the remote ip
+    /**
+     * the remote InetAddress
+     */
     private InetAddress target;
 
-    // a queue of events to be send
-    private Queue<NetworkEvent> sendQueue;
-
-    // the actual socket used to transfer objects
+    /**
+     * the socket used to write to the other side
+     */
     private Socket socket;
     
-    // the 2 streams used to transfer objects
+    /**
+     * Streams used to transfer Objects
+     */
     private ObjectOutputStream out;
     private ObjectInputStream in;
 
-    // used by the listenThread to see if it should keep listening 
+    /**
+     * boolean value to keep the listenThread running
+     */
     private boolean keepListening;
 
     /**
@@ -114,9 +124,8 @@ public class Connection {
             public void run() {
                 try {
                     while(keepListening) {
-                        NetworkEvent ev = (NetworkEvent)in.readObject();
-                        // down cast because it will end up in infinite loop otherwise (WTF)
-                        EventPool.getInstance().raiseEvent((Event)ev);
+                        Event ev = (Event)in.readObject();
+                        EventPool.getInstance().raiseEvent(ev);
                     }
                 } catch (EOFException e) {
                     // This happens when the socket on the other side closes
