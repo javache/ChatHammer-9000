@@ -32,7 +32,7 @@ public class Conversation implements EventListener {
         this.conversation = new TreeSet<ChatMessage>();
         this.contact = contact;
         this.initiated = initiatedByMe;
-        EventPool.getInstance().addListener(this, new ConversationEventFilter(this));
+        EventPool.getAppPool().addListener(this, new ConversationEventFilter(this));
     }
 
     /**

@@ -153,7 +153,7 @@ public class ConversationTest {
         System.out.println("handleEvent");
         ChatMessage chatMessage = new ChatMessage("Javache", "lama! lama!");
         NewChatMessageEvent newChatMessageEvent = new NewChatMessageEvent(chatMessage, conversation);
-        EventPool.getInstance().raiseEvent(newChatMessageEvent);
+        EventPool.getAppPool().raiseEvent(newChatMessageEvent);
         //assertTrue(conversation.getChatMessages(1).length == 1);
         assertEquals(conversation.getChatMessages(1)[0], "lama! lama!");
     }
