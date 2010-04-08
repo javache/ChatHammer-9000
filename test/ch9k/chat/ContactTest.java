@@ -2,7 +2,6 @@ package ch9k.chat;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -16,9 +15,6 @@ public class ContactTest {
     private InetAddress ip;
     private String username;
 
-    public ContactTest() {
-    }
-
     @Before
     public void setUp() throws UnknownHostException {
         username = "JPanneel";
@@ -26,29 +22,16 @@ public class ContactTest {
         contact = new Contact(username, ip, false);
     }
 
-    @After
-    public void tearDown() {
-        contact = null;
-    }
-
     /**
      * Test of getIp method, of class Contact.
      */
     @Test
-    public void testGetIp() {
-        System.out.println("getIp");
+    public void testIp() throws UnknownHostException {
         assertEquals(contact.getIp(), ip);
-    }
 
-    /**
-     * Test of setIp method, of class Contact.
-     */
-    @Test
-    public void testSetIp() throws UnknownHostException {
-        System.out.println("setIp");
-        InetAddress ip2 = InetAddress.getByName("ugent.be");
-        contact.setIp(ip2);
-        assertEquals(ip2, contact.getIp());
+        InetAddress newIp = InetAddress.getByName("ugent.be");
+        contact.setIp(newIp);
+        assertEquals(newIp, contact.getIp());
     }
 
     /**
@@ -56,88 +39,52 @@ public class ContactTest {
      */
     @Test
     public void testGetUsername() {
-        System.out.println("getUsername");
         assertEquals(contact.getUsername(), username);
     }
 
     /**
-     * Test of getStatus method, of class Contact.
+     * Test of getStatus/setStatus method, of class Contact.
      */
     @Test
-    public void testGetStatus() {
-        System.out.println("getStatus");
+    public void testStatus() {
         String status = "Having Great Sex!";
         contact.setStatus(status);
         assertEquals(contact.getStatus(), status);
     }
 
     /**
-     * Test of setStatus method, of class Contact.
+     * Test of isOnline/setOnline method, of class Contact.
      */
     @Test
-    public void testSetStatus() {
-        System.out.println("setStatus");
-        String status = "Having Great Sex!";
-        contact.setStatus(status);
-        assertEquals(status, contact.getStatus());
-    }
-
-    /**
-     * Test of isOnline method, of class Contact.
-     */
-    @Test
-    public void testIsOnline() {
-        System.out.println("isOnline");
+    public void testOnline() {
         assertFalse(contact.isOnline());
         contact.setOnline(true);
         assertTrue(contact.isOnline());
     }
 
     /**
-     * Test of setOnline method, of class Contact.
+     * Test of isBlocked/setBlocked method, of class Contact.
      */
     @Test
-    public void testSetOnline() {
-        System.out.println("setOnline");
-        assertFalse(contact.isOnline());
-        contact.setOnline(true);
-        assertTrue(contact.isOnline());
-    }
-
-    /**
-     * Test of isBlocked method, of class Contact.
-     */
-    @Test
-    public void testIsBlocked() {
-        System.out.println("isBlocked");
+    public void testBlocked() {
         assertFalse(contact.isBlocked());
         contact.setBlocked(true);
         assertTrue(contact.isBlocked());
     }
-
-    /**
-     * Test of setBlocked method, of class Contact.
-     */
-    @Test
-    public void testSetBlocked() {
-        System.out.println("setBlocked");
-        assertFalse(contact.isBlocked());
-        contact.setBlocked(true);
-        assertTrue(contact.isBlocked());
-    }
-
+    
     /**
      * Test of equals method, of class Contact.
      */
     @Test
     public void testEquals() throws UnknownHostException {
-        System.out.println("equals");
         Contact instance1 = new Contact("JPanneel", InetAddress.getByName("google.be"), false);
         Contact instance2 = new Contact("JPanneel", InetAddress.getByName("google.be"), false);
-        assertTrue(instance1.equals(instance2));
         Contact instance3 = new Contact("JPanneel", InetAddress.getByName("ugent.be"), false);
-        assertFalse(instance1.equals(instance3));
         Contact instance4 = new Contact("Javache", InetAddress.getByName("ugent.be"), false);
+
+        assertTrue(instance1.equals(instance2));
+        assertTrue(instance2.equals(instance1));
+        assertFalse(instance1.equals(instance3));
         assertFalse(instance3.equals(instance4));
     }
 
@@ -146,12 +93,12 @@ public class ContactTest {
      */
     @Test
     public void testHashCode() throws UnknownHostException {
-        System.out.println("hashCode");
         Contact instance1 = new Contact("JPanneel", InetAddress.getByName("google.be"), false);
         Contact instance2 = new Contact("JPanneel", InetAddress.getByName("google.be"), false);
-        assertEquals(instance1.hashCode(), instance2.hashCode());
         Contact instance3 = new Contact("Javache", InetAddress.getByName("google.be"), false);
-        assertNotSame(instance1.hashCode(), instance3.hashCode());
+        
+        assertTrue(instance1.hashCode() == instance2.hashCode());
+        assertFalse(instance1.hashCode() == instance3.hashCode());
     }
 
     /**
@@ -159,14 +106,24 @@ public class ContactTest {
      */
     @Test
     public void testCompareTo() throws UnknownHostException {
-        System.out.println("compareTo");
-        assertTrue(contact.compareTo(contact) == 0);
-        Contact contact2 = new Contact("Javache", InetAddress.getByName("google.be"), false);
-        assertTrue(contact.compareTo(contact2) > 0);
-        Contact contact3 = new Contact("Zeusje", InetAddress.getByName("google.be"), false);
-        assertTrue(contact.compareTo(contact3) < 0);
-        Contact contact4 = new Contact("Zeusje", InetAddress.getByName("ugent.be"), false);
-        assertTrue(contact3.compareTo(contact4) > 0);
-    }
+        Contact contact1 = new Contact("Javache", InetAddress.getByName("google.be"), false);
+        Contact contact2 = new Contact("Zeusje", InetAddress.getByName("google.be"), false);
+        Contact contact3 = new Contact("Zeusje", InetAddress.getByName("ugent.be"), false);
 
+        // should be consistent with equals
+        assertTrue(contact.compareTo(contact) == 0);
+
+        // sgn(compare(x, y)) == -sgn(compare(y, x))
+        assertTrue(contact.compareTo(contact1) > 0);
+        assertTrue(contact1.compareTo(contact) < 0);
+
+        // sgn(compare(x, y)) == -sgn(compare(y, x))
+        assertTrue(contact2.compareTo(contact3) > 0);
+        assertTrue(contact3.compareTo(contact2) < 0);
+
+        // transitivity
+        assertTrue(contact1.compareTo(contact2) > 0);
+        assertTrue(contact2.compareTo(contact3) > 0);
+        assertTrue(contact1.compareTo(contact3) > 0);
+    }
 }

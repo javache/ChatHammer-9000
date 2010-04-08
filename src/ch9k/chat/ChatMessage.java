@@ -8,18 +8,18 @@ import java.util.Date;
  */
 public class ChatMessage implements Comparable<ChatMessage>{
     private String text;
-    private String writer;
+    private String author;
     private Date time;
 
     /**
      * Constructor.
-     * @param writer The username of the person who typed this ChatMessage.
+     * @param author The username of the person who typed this ChatMessage.
      * @param text The actual text.
      */
-    public ChatMessage(String writer, String text) {
+    public ChatMessage(String author, String text) {
         this.time = new Date();
         this.text = text;
-        this.writer = writer;
+        this.author = author;
     }
 
     /**
@@ -35,7 +35,7 @@ public class ChatMessage implements Comparable<ChatMessage>{
      * @return writer
      */
     public String getWriter() {
-        return writer;
+        return author;
     }
 
     /**
@@ -65,17 +65,14 @@ public class ChatMessage implements Comparable<ChatMessage>{
 
     @Override
     public boolean equals(Object obj) {
-        if (obj == null) {
+        if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final ChatMessage other = (ChatMessage) obj;
+        ChatMessage other = (ChatMessage) obj;
         if ((this.text == null) ? (other.text != null) : !this.text.equals(other.text)) {
             return false;
         }
-        if ((this.writer == null) ? (other.writer != null) : !this.writer.equals(other.writer)) {
+        if ((this.author == null) ? (other.author != null) : !this.author.equals(other.author)) {
             return false;
         }
         if (this.time != other.time && (this.time == null || !this.time.equals(other.time))) {
@@ -88,7 +85,7 @@ public class ChatMessage implements Comparable<ChatMessage>{
     public int hashCode() {
         int hash = 7;
         hash = 53 * hash + (this.text != null ? this.text.hashCode() : 0);
-        hash = 53 * hash + (this.writer != null ? this.writer.hashCode() : 0);
+        hash = 53 * hash + (this.author != null ? this.author.hashCode() : 0);
         hash = 53 * hash + (this.time != null ? this.time.hashCode() : 0);
         return hash;
     }

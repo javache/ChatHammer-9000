@@ -101,17 +101,15 @@ public class Contact implements Comparable<Contact>{
 
     @Override
     public boolean equals(Object obj) {
-        if (obj == null) {
+        if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final Contact other = (Contact) obj;
+        Contact other = (Contact) obj;
         if (this.ip != other.ip && (this.ip == null || !this.ip.equals(other.ip))) {
             return false;
         }
-        if ((this.username == null) ? (other.username != null) : !this.username.equals(other.username)) {
+        if (this.username != other.username &&
+                (this.username == null || !this.username.equals(other.username))) {
             return false;
         }
         return true;
@@ -130,11 +128,9 @@ public class Contact implements Comparable<Contact>{
         if(this.equals(contact)) {
             return 0;
         }
-        //
-        int compareUsername = this.getUsername().compareToIgnoreCase(contact.getUsername());
-        if(compareUsername == 0) {
-            compareUsername++;
-        }
-        return compareUsername;
+
+        // order by name
+        int compareUsername = username.compareToIgnoreCase(contact.getUsername());
+        return (compareUsername == 0) ? compareUsername + 1 : compareUsername;
     }
 }
