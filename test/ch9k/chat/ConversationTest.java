@@ -139,18 +139,15 @@ public class ConversationTest {
 
     /**
      * Test of handleEvent method, of class Conversation.
+     * @throws InterruptedException 
      */
     @Test
-    public void testHandleEvent() {
+    public void testHandleEvent() throws InterruptedException {
         ChatMessage chatMessage = new ChatMessage("Javache", "lama! lama!");
         NewChatMessageEvent messageEvent = new NewChatMessageEvent(chatMessage, conversation);
         EventPool.getAppPool().raiseEvent(messageEvent);
 
-        // give time to be handled
-        for(int i = 0; i < 10000000; i++){
-            
-        }
-        
+        Thread.sleep(10); // wait for event to be delivered
         assertEquals(1, conversation.getMessages(10).length);
         assertEquals(conversation.getMessages(1)[0], "lama! lama!");
     }
