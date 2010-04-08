@@ -1,8 +1,10 @@
 package ch9k.chat;
 
+import ch9k.chat.events.ConversationEventFilter;
 import ch9k.chat.events.NewChatMessageEvent;
 import ch9k.eventpool.Event;
 import ch9k.eventpool.EventListener;
+import ch9k.eventpool.EventPool;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.Set;
@@ -30,6 +32,7 @@ public class Conversation implements EventListener {
         this.conversation = new TreeSet<ChatMessage>();
         this.contact = contact;
         this.initiated = initiatedByMe;
+        EventPool.getInstance().addListener(this, new ConversationEventFilter(this));
     }
 
     /**
