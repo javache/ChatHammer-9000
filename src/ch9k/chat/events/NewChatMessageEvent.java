@@ -12,8 +12,7 @@ import ch9k.chat.Conversation;
  *
  * @author jpanneel
  */
-public class NewChatMessageEvent extends ConversationEvent{
-
+public class NewChatMessageEvent extends ConversationEvent {
     private ChatMessage chatMessage;
 
     public NewChatMessageEvent(ChatMessage chatMessage, Conversation conversation) {

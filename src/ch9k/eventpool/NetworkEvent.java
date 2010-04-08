@@ -9,8 +9,8 @@ import java.io.Serializable;
  * @author Pieter De Baets
  */
 public class NetworkEvent extends Event implements Serializable {
-    private InetAddress source;
-    private InetAddress target;
+    protected InetAddress source;
+    protected InetAddress target;
 
     /**
      * Get the origin of this Event

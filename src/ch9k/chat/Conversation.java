@@ -79,7 +79,7 @@ public class Conversation implements EventListener {
      * Adds a message to this Conversation.
      * @param chatMessage
      */
-    public void addChatMessage(ChatMessage chatMessage) {
+    public void addMessage(ChatMessage chatMessage) {
         conversation.add(chatMessage);
     }
 
@@ -90,7 +90,7 @@ public class Conversation implements EventListener {
      * @param n The number of messages to return
      * @return String[]
      */
-    public String[] getChatMessages(int n) {
+    public String[] getMessages(int n) {
         if(n > conversation.size()) {
             n = conversation.size();
         }

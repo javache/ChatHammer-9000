@@ -5,7 +5,6 @@ import ch9k.eventpool.EventPool;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Date;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -27,17 +26,11 @@ public class ConversationTest {
         conversation = new Conversation(contact, true);
     }
 
-    @After
-    public void tearDown() {
-        contact = null;
-    }
-
     /**
      * Test of initatedByMe method, of class Conversation.
      */
     @Test
     public void testInitatedByMe() {
-        System.out.println("initatedByMe");
         assertTrue(conversation.initatedByMe());
     }
 
@@ -46,28 +39,16 @@ public class ConversationTest {
      */
     @Test
     public void testGetContact() {
-        System.out.println("getContact");
         assertEquals(contact, conversation.getContact());
     }
 
     /**
-     * Test of getSubject method, of class Conversation.
+     * Test of getSubject/setSubject method, of class Conversation.
      */
     @Test
-    public void testGetSubject() {
-        System.out.println("getSubject");
-        ConversationSubject conversationSubject = new ConversationSubject(conversation, new String[2]);
-        conversation.setSubject(conversationSubject);
-        assertEquals(conversationSubject, conversation.getSubject());
-    }
-
-    /**
-     * Test of setSubject method, of class Conversation.
-     */
-    @Test
-    public void testSetSubject() {
-        System.out.println("setSubject");
-        ConversationSubject conversationSubject = new ConversationSubject(conversation, new String[2]);
+    public void testSubject() {
+        ConversationSubject conversationSubject = new ConversationSubject(
+                conversation, new String[] { "subject-a", "subject-b" });
         conversation.setSubject(conversationSubject);
         assertEquals(conversationSubject, conversation.getSubject());
     }
@@ -76,40 +57,51 @@ public class ConversationTest {
      * Test of getStartTime method, of class Conversation.
      */
     @Test
-    public void testGetStartTime() {
-        System.out.println("getStartTime");
-        // this Java thing is so fast it gets the same time!...
-        assertTrue(conversation.getStartTime().before(new Date()) || conversation.getStartTime().equals(new Date()));
+    public void testGetStartTime() throws InterruptedException {
+        Thread.sleep(10); // wait a little
+        assertTrue(conversation.getStartTime().before(new Date()));
     }
 
     /**
-     * Test of addChatMessage method, of class Conversation.
+     * Test of addMessage method, of class Conversation.
      */
     @Test
-    public void testAddChatMessage() {
-        System.out.println("addChatMessage");
-        assertEquals(0, conversation.getChatMessages(10).length);
-        conversation.addChatMessage(new ChatMessage("JPanneel", "Hey!"));
-        assertEquals(1, conversation.getChatMessages(10).length);
+    public void testAddMessage() {
+        assertEquals(0, conversation.getMessages(10).length);
+        conversation.addMessage(new ChatMessage("JPanneel", "Hey!"));
+        assertEquals(1, conversation.getMessages(10).length);
     }
 
     /**
-     * Test of getChatMessages method, of class Conversation.
+     * Test of getMessages method, of class Conversation.
      */
     @Test
-    public void testGetChatMessages() {
-        System.out.println("getChatMessages");
-        assertEquals(0, conversation.getChatMessages(10).length);
-        conversation.addChatMessage(new ChatMessage("JPanneel", "Hey!"));
-        conversation.addChatMessage(new ChatMessage("Wendy", "O dag lieverd"));
-        conversation.addChatMessage(new ChatMessage("JPanneel", "Hoe gaat het met de overkant?"));
-        conversation.addChatMessage(new ChatMessage("Wendy", "Goed, maar ik mis je wel!"));
-        conversation.addChatMessage(new ChatMessage("JPanneel", "Ik weet het :)"));
-        assertEquals(5, conversation.getChatMessages(10).length);
-        assertEquals("Hey!", conversation.getChatMessages(10)[0]);
-        assertEquals("Ik weet het :)", conversation.getChatMessages(10)[4]);
-        assertEquals(3, conversation.getChatMessages(3).length);
-        assertEquals("Hoe gaat het met de overkant?", conversation.getChatMessages(3)[0]);
+    public void testGetMessages() {
+        ChatMessage[] messages = new ChatMessage[] {
+            new ChatMessage("JPanneel", "Hey!"),
+            new ChatMessage("Wendy", "O dag lieverd"),
+            new ChatMessage("JPanneel", "Hoe gaat het met de overkant?"),
+            new ChatMessage("Wendy", "Goed, maar ik mis je wel!"),
+            new ChatMessage("JPanneel", "Ik weet het :)")
+        };
+
+        assertEquals(0, conversation.getMessages(5).length);
+
+        for(ChatMessage message : messages) {
+            conversation.addMessage(message);
+        }
+
+        assertEquals(5, conversation.getMessages(10).length);
+        assertEquals("Hey!", conversation.getMessages(5)[0]);
+        assertEquals("Ik weet het :)", conversation.getMessages(5)[4]);
+        assertEquals(3, conversation.getMessages(3).length);
+        assertEquals("Hoe gaat het met de overkant?", conversation.getMessages(5)[0]);
+
+        conversation.addMessage(new ChatMessage("Wendy", "Doei!"));
+        assertEquals(5, conversation.getMessages(5).length);
+        assertEquals(6, conversation.getMessages(10).length);
+        assertEquals("Hoe gaat het met de overkant?", conversation.getMessages(5)[1]);
+        assertEquals("Doei!", conversation.getMessages(5)[4]);
     }
 
     /**
@@ -117,9 +109,6 @@ public class ConversationTest {
      */
     @Test
     public void testClose() {
-        System.out.println("close");
-        Conversation instance = null;
-        instance.close();
         // TODO review the generated test code and remove the default call to fail.
         fail("close() not yet implemented");
     }
@@ -129,9 +118,11 @@ public class ConversationTest {
      */
     @Test
     public void testEquals() {
-        System.out.println("equals");
-        assertTrue(conversation.equals(conversation));
-        assertFalse(conversation.equals(new Conversation(new Contact("Javache", null, true), true)));
+        assertTrue(conversation.equals(conversation)); // identity
+
+        Conversation differentConversation = new Conversation(
+                new Contact("Javache", null, true), true);
+        assertFalse(conversation.equals(differentConversation));
     }
 
     /**
@@ -139,24 +130,23 @@ public class ConversationTest {
      */
     @Test
     public void testHashCode() {
-        System.out.println("hashCode");
         assertEquals(conversation.hashCode(), conversation.hashCode());
-        Conversation conversation1 = new Conversation(new Contact("Javache", null, true), true);
-        assertNotSame(conversation.hashCode(), conversation1.hashCode());
+        
+        Conversation differentConversation = new Conversation(
+                new Contact("Javache", null, true), true);
+        assertNotSame(conversation.hashCode(), differentConversation.hashCode());
     }
 
-        /**
+    /**
      * Test of handleEvent method, of class Conversation.
      */
     @Test
     public void testHandleEvent() {
-        System.out.println("handleEvent");
         ChatMessage chatMessage = new ChatMessage("Javache", "lama! lama!");
-        NewChatMessageEvent newChatMessageEvent = new NewChatMessageEvent(chatMessage, conversation);
-        EventPool.getAppPool().raiseEvent(newChatMessageEvent);
-        //assertTrue(conversation.getChatMessages(1).length == 1);
-        assertEquals(conversation.getChatMessages(1)[0], "lama! lama!");
+        NewChatMessageEvent messageEvent = new NewChatMessageEvent(chatMessage, conversation);
+        EventPool.getAppPool().raiseEvent(messageEvent);
+        
+        assertEquals(1, conversation.getMessages(10).length);
+        assertEquals(conversation.getMessages(1)[0], "lama! lama!");
     }
-
-
 }
