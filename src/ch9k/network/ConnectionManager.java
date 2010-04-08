@@ -47,9 +47,17 @@ public class ConnectionManager {
      */
     private boolean keepRunning;
     
+    /**
+     * The eventpool we should send messages to
+     */
+    private EventPool pool;
+    
+    
     public ConnectionManager(EventPool pool) {
         eventQueue = new LinkedBlockingQueue<NetworkEvent>();
         connectionMap = new ConcurrentHashMap<InetAddress,Connection>();
+        this.pool = pool;
+        
         keepRunning = true;
         startDispatchThread();
     }
@@ -128,14 +136,14 @@ public class ConnectionManager {
       * sends an event signalling that target is offline
       */
      private void signalOffline(InetAddress target) {
-         EventPool.getAppPool().raiseEvent(new CouldNotConnectEvent(this,target));
+         pool.raiseEvent(new CouldNotConnectEvent(this,target));
      }
      
      /**
       * sends an event because we appear to be without internet
       */
      private void signalGlobalConnectionFailure() {
-         EventPool.getAppPool().raiseEvent(new NetworkConnectionLostEvent(this));
+         pool.raiseEvent(new NetworkConnectionLostEvent(this));
      }
      
      /**
@@ -153,7 +161,7 @@ public class ConnectionManager {
                  server = new ServerSocket(Connection.DEFAULT_PORT);
                  while (true) {
                      Socket client = server.accept();
-                     Connection conn = new Connection(client);
+                     Connection conn = new Connection(client,pool);
                      // TODO worry about synchronisation later
                      connectionMap.put(client.getInetAddress(),conn);
                  }
@@ -176,7 +184,7 @@ public class ConnectionManager {
      private Connection getOrCreateConnection(InetAddress target) {
          if (!connectionMap.containsKey(target)) {
              try {
-                 connectionMap.put(target,new Connection(target));
+                 connectionMap.put(target,new Connection(target,pool));
              } catch (IOException ex) {
                  handleNetworkError(target);
                  return null;

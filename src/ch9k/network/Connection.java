@@ -45,13 +45,19 @@ public class Connection {
      * boolean value to keep the listenThread running
      */
     private boolean keepListening;
+    
+    /**
+     * The EventPool to send events to
+     */
+     private EventPool pool;
 
     /**
      * Constructor
      * @param ip 
      */
-    public Connection(InetAddress ip) throws IOException {
+    public Connection(InetAddress ip,EventPool pool) throws IOException {
         socket = new Socket(ip,DEFAULT_PORT);
+        this.pool = pool;
         setup();
     }
 
@@ -60,8 +66,9 @@ public class Connection {
      * out of a connected socket.
      * @param s The socket that connected
      */
-    public Connection(Socket s) throws IOException {
+    public Connection(Socket s,EventPool pool) throws IOException {
         socket = s;
+        this.pool = pool;
         setup();
     }
     
@@ -124,11 +131,11 @@ public class Connection {
                 try {
                     while(keepListening) {
                         Event ev = (Event)in.readObject();
-                        EventPool.getAppPool().raiseEvent(ev);
+                        pool.raiseEvent(ev);
                     }
                 } catch (EOFException e) {
                     // This happens when the socket on the other side closes
-                    EventPool.getAppPool().raiseEvent(new UserDisconnectedEvent(target));
+                    pool.raiseEvent(new UserDisconnectedEvent(target));
                 } catch (IOException e) {
                     System.out.println(e);
                 } catch (ClassNotFoundException e) {
