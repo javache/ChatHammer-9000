@@ -7,9 +7,6 @@ import static org.junit.Assert.*;
  * @author Pieter De Baets
  */
 public class MainTest {
-
-    public MainTest() {}
-
 	/**
 	 * Test of main method, of class Main.
 	 */

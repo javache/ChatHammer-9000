@@ -1,16 +1,12 @@
 package ch9k.network;
 
+import ch9k.eventpool.Event;
+import ch9k.eventpool.EventListener;
+import ch9k.eventpool.EventPool;
+import ch9k.eventpool.TypeEventFilter;
 import org.junit.Test;
-import static org.junit.Assert.*;
 import junit.framework.TestCase;
-import java.net.ServerSocket;
-import java.net.Socket;
 import java.net.InetAddress;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.IOException;
-
-import ch9k.eventpool.*;
 
 public class ConnectionTest extends TestCase {
 

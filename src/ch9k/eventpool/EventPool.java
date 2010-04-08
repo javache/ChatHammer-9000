@@ -12,7 +12,7 @@ import java.util.concurrent.LinkedBlockingQueue;
  */
 public class EventPool {
     /**
-     * Get the singleton-instance of EventPool
+     * Get the application-wide EventPool
      * @return pool
      */
     public static EventPool getInstance() {

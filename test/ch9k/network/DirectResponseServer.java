@@ -43,27 +43,26 @@ public class DirectResponseServer {
     }
     
     private class Runner implements Runnable {
-        
         public void run() {
             try {
                 while(shouldRun) {
                     final Socket s = server.accept();
-                        new Thread(new Runnable(){
-                            public void run() {
-                                try {
-                                    ObjectInputStream in = new ObjectInputStream(s.getInputStream());
-                                    ObjectOutputStream out = new ObjectOutputStream(s.getOutputStream());
-                                    while(true) {
-                                        Object obj = in.readObject();
-                                        out.writeObject(obj);
-                                    }
-                                } catch (IOException e) {
-
-                                } catch (ClassNotFoundException e) {
-
+                    new Thread(new Runnable(){
+                        public void run() {
+                            try {
+                                ObjectInputStream in = new ObjectInputStream(s.getInputStream());
+                                ObjectOutputStream out = new ObjectOutputStream(s.getOutputStream());
+                                while(true) {
+                                    Object obj = in.readObject();
+                                    out.writeObject(obj);
                                 }
+                            } catch (IOException e) {
+
+                            } catch (ClassNotFoundException e) {
+
                             }
-                        }).start();
+                        }
+                    }).start();
                 }
                 server.close();
             } catch (IOException e) {
