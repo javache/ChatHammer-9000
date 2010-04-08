@@ -12,6 +12,8 @@ import java.io.ObjectInputStream;
 import java.io.IOException;
 import java.io.EOFException;
 
+
+import ch9k.network.events.UserDisconnectedEvent;
 import ch9k.eventpool.NetworkEvent;
 import ch9k.eventpool.Event;
 import ch9k.eventpool.EventPool;
@@ -123,7 +125,7 @@ public class Connection {
                     }
                 } catch (EOFException e) {
                     // This happens when the socket on the other side closes
-                    // TODO handle that case properly
+                    EventPool.getInstance().raiseEvent(new UserDisconnectedEvent(target));
                 } catch (IOException e) {
                     System.out.println(e);
                 } catch (ClassNotFoundException e) {
