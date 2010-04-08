@@ -145,6 +145,11 @@ public class ConversationTest {
         ChatMessage chatMessage = new ChatMessage("Javache", "lama! lama!");
         NewChatMessageEvent messageEvent = new NewChatMessageEvent(chatMessage, conversation);
         EventPool.getAppPool().raiseEvent(messageEvent);
+
+        // give time to be handled
+        for(int i = 0; i < 10000000; i++){
+            
+        }
         
         assertEquals(1, conversation.getMessages(10).length);
         assertEquals(conversation.getMessages(1)[0], "lama! lama!");
