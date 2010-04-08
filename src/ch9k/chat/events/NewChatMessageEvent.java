@@ -1,8 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package ch9k.chat.events;
 
 import ch9k.chat.ChatMessage;
@@ -10,7 +5,7 @@ import ch9k.chat.Conversation;
 
 /**
  *
- * @author jpanneel
+ * @author Jens Panneel
  */
 public class NewChatMessageEvent extends ConversationEvent {
     private ChatMessage chatMessage;
