@@ -7,4 +7,10 @@ package ch9k.core;
  */
 public class ChatApplication {
 
+    private Account account;
+
+    public Account getAccount() {
+        return account;
+    }
+
 }
