@@ -11,7 +11,6 @@ import java.io.Serializable;
 public class NetworkEvent extends Event implements Serializable {
     protected InetAddress source;
     protected InetAddress target;
-    protected boolean external;
 
     /**
      * Create a new NetworkEvent
@@ -19,7 +18,6 @@ public class NetworkEvent extends Event implements Serializable {
      */
     public NetworkEvent(InetAddress target) {
         this.target = target;
-        external = false;
     }
 
     /**
@@ -37,15 +35,14 @@ public class NetworkEvent extends Event implements Serializable {
      */
     public void setSource(InetAddress source) {
         this.source = source;
-        external = true;
     }
 
     /**
-     * Checks if this event was received externally
+     * Checks if this event was received from an external source
      * @return external
      */
     public boolean isExternal() {
-        return external;
+        return source != null;
     }
 
     /**

@@ -5,6 +5,12 @@ import ch9k.chat.ContactList;
 import ch9k.chat.Conversation;
 import ch9k.chat.ConversationManager;
 import ch9k.core.ChatApplication;
+import ch9k.eventpool.Event;
+import ch9k.eventpool.EventListener;
+import ch9k.eventpool.EventPool;
+import ch9k.eventpool.TypeEventFilter;
+import ch9k.network.Connection;
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import org.junit.Test;
@@ -35,6 +41,37 @@ public class ConversationEventTest {
 
         assertEquals(remoteContactA, conversationEvent.getContact());
         assertNotSame(remoteContactB, conversationEvent.getContact());
+    }
+
+    @Test
+    public void testRemoteGetContact() throws UnknownHostException, IOException, InterruptedException {
+        EventPool localPool = EventPool.getAppPool();
+        EventPool remotePool = new EventPool();
+        Connection remoteConnection = new Connection(InetAddress.getLocalHost(), remotePool);
+
+        ConversationManager manager = ChatApplication.getInstance().getConversationManager();
+        Contact contact = new Contact("Javache", InetAddress.getLocalHost(), true);
+        Conversation localConversation = manager.startConversation(contact);
+
+        DummyListener remoteListener = new DummyListener();
+        remotePool.addListener(remoteListener, new TypeEventFilter(ConversationEvent.class));
+
+        ConversationEvent localEvent = new NewChatMessageEvent(localConversation, null);
+        localPool.raiseEvent(localEvent);
+        Thread.sleep(100); // wait while the event gets transmitted
+
+        ConversationEvent remoteEvent = (ConversationEvent)remoteListener.receivedEvent;
+        assertTrue(remoteEvent.isExternal());
+
+        assertNotSame(contact, remoteEvent.getContact());
+        assertNotSame(localConversation, remoteEvent.getConversation());
+    }
+
+    private class DummyListener implements EventListener {
+        public Event receivedEvent;
+        public void handleEvent(Event event) {
+            receivedEvent = event;
+        }
     }
 
     /**
