@@ -11,6 +11,7 @@ public abstract class ConversationEvent extends NetworkEvent {
     private Conversation conversation;
 
     public ConversationEvent(Conversation conversation) {
+        super(conversation.getContact().getIp());
         this.conversation = conversation;
         this.target = conversation.getContact().getIp();
     }

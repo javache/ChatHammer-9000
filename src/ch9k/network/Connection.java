@@ -11,6 +11,7 @@ import ch9k.network.events.UserDisconnectedEvent;
 import ch9k.eventpool.NetworkEvent;
 import ch9k.eventpool.Event;
 import ch9k.eventpool.EventPool;
+import ch9k.network.events.PingEvent;
 import java.util.logging.Logger;
 
 /**
@@ -104,7 +105,7 @@ public class Connection {
     public boolean hasConnection() {
         boolean connection = true;
         try {
-            sendEvent(new ch9k.network.events.PingEvent());
+            sendEvent(new PingEvent(socket.getInetAddress()));
         } catch (IOException e) {
             connection = false;
         }

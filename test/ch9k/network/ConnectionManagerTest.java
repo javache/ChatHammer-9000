@@ -47,10 +47,11 @@ public class ConnectionManagerTest {
         }
 
         // we should sleep +- 10 ms per event, to make sure they're send
-        Thread.sleep(50*n);
+        Thread.sleep(150*n);
         assertEquals(n, testListener.received);
 
         echoServer.stop();
+        Thread.sleep(50); // wait so server has shutdown for sure
     }
     
     @Test(expected=ConnectException.class)
