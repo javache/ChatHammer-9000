@@ -29,7 +29,7 @@ public class Account {
     /**
      * the hash of the password
      */
-    private byte[] hash;
+    private byte[] passwordHash;
     
     
     /**
@@ -38,10 +38,22 @@ public class Account {
      */
     public Account(String username,String password) {
         this.username = username;
-        this.hash = hash(password);
+        setPassword(password);
     }
-
-
+    /**
+     * will return the password hash
+     * NOTE: trying to print this is just stupid
+     */
+    public byte[] getPasswordHash() {
+        return passwordHash;
+    }
+    
+    /**
+     * method to change the password
+     */
+    public void setPassword(String password) {
+        this.passwordHash = hash(password);
+    }
     /**
      * Getter for the users current contactlist
      * @return Current ContactList
