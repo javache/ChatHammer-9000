@@ -4,3 +4,4 @@ dist
 doc
 nbproject/private
 test-single
+.DS_Store
