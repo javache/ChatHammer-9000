@@ -1,5 +1,6 @@
 package ch9k.chat;
 
+import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -7,7 +8,7 @@ import java.util.Date;
  * Wrapper around a String that represents a chatMessage
  * @author Jens Panneel
  */
-public class ChatMessage implements Comparable<ChatMessage>{
+public class ChatMessage implements Comparable<ChatMessage>, Serializable{
     private String text;
     private String author;
     private Date time;
@@ -35,7 +36,7 @@ public class ChatMessage implements Comparable<ChatMessage>{
      * Get the name of the user that wrote this ChatMessage
      * @return writer
      */
-    public String getWriter() {
+    public String getAuthor() {
         return author;
     }
 

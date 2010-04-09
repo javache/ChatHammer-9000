@@ -29,11 +29,11 @@ public class ChatMessageTest {
     }
 
     /**
-     * Test of getWriter method, of class ChatMessage.
+     * Test of getAuthor method, of class ChatMessage.
      */
     @Test
-    public void testGetWriter() {
-        assertEquals(chatMessage.getWriter(), author);
+    public void testGetAuthor() {
+        assertEquals(chatMessage.getAuthor(), author);
     }
 
     /**
