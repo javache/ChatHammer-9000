@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -99,6 +100,7 @@ public class EventPool {
     }
 
     private void broadcastEvent(Event event) {
+        Logger.getLogger(getClass().getName()).info(event.getClass().toString());
         for(FilteredListener pair : listeners) {
             if(pair.filter.accept(event)) {
                 pair.listener.handleEvent(event);

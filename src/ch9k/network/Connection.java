@@ -1,17 +1,17 @@
 package ch9k.network;
 
-import java.net.InetAddress;
-import java.net.Socket;
-import java.io.ObjectOutputStream;
-import java.io.ObjectInputStream;
-import java.io.IOException;
-import java.io.EOFException;
-
-import ch9k.network.events.UserDisconnectedEvent;
-import ch9k.eventpool.NetworkEvent;
 import ch9k.eventpool.Event;
 import ch9k.eventpool.EventPool;
+import ch9k.eventpool.NetworkEvent;
 import ch9k.network.events.PingEvent;
+import ch9k.network.events.UserDisconnectedEvent;
+import java.io.EOFException;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.InetAddress;
+import java.net.Socket;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -19,7 +19,6 @@ import java.util.logging.Logger;
  * @author nudded
  */
 public class Connection {
-
     /**
      * The default port used to create connections
      * chosen because it's the smallest prime number
@@ -48,9 +47,9 @@ public class Connection {
     private ObjectInputStream in;
 
     /**
-     * boolean value to keep the listenThread running
+     * Thread that listens to the socket
      */
-    private boolean keepListening;
+    private Thread listenerThread;
     
     /**
      * The EventPool to send events to
@@ -59,57 +58,62 @@ public class Connection {
 
     /**
      * Constructor
-     * @param ip 
+     * @param ip
+     * @param pool
+     * @throws IOException
      */
-    public Connection(InetAddress ip,EventPool pool) throws IOException {
-        socket = new Socket(ip,DEFAULT_PORT);
-        this.pool = pool;
-        setup();
+    public Connection(InetAddress ip, EventPool pool) throws IOException {
+        this(new Socket(ip,DEFAULT_PORT), pool);
     }
 
     /**
      * constructor used by ConnectionManager, constructs a Connection
      * out of a connected socket.
-     * @param s The socket that connected
+     * @param socket The socket that connected
+     * @param pool The EventPool this connection will use
+     * @throws IOException
      */
-    public Connection(Socket s,EventPool pool) throws IOException {
-        socket = s;
+    public Connection(Socket socket, EventPool pool) throws IOException {
+        this.socket = socket;
         this.pool = pool;
-        setup();
-    }
-    
-    private void setup() throws IOException {
-        keepListening = true;
+        
+        socket.setKeepAlive(true);
+
         out = new ObjectOutputStream(socket.getOutputStream());
         in = new ObjectInputStream(socket.getInputStream());        
-        startListenThread();
+
+        listenerThread = new Thread(new Runnable() {
+            public void run() {
+                runConnection();
+            }
+        });
+        listenerThread.start();
     }
     
     /**
      * close the socket
      */
     public void close() {
-        keepListening = false;
+        LOGGER.info("Closing connection to " + socket.getInetAddress());
         try {
             socket.close();
         } catch(IOException e) {
-            
+            // TODO handle error?
+            System.out.println(e);
         }
     }
     
     /**
-     * sends a PingEvent to the target,
-     * if it errors, returns false
-     * else true
+     * sends a PingEvent to the target
+     * @return false if pinging the target gives an exception
      */
     public boolean hasConnection() {
-        boolean connection = true;
         try {
             sendEvent(new PingEvent(socket.getInetAddress()));
         } catch (IOException e) {
-            connection = false;
+            return false;
         }
-        return connection;
+        return true;
     }
     
     /**
@@ -130,32 +134,31 @@ public class Connection {
         out.writeObject(obj);
     }
     
-     /**
-      * start listening for incoming events and send them to the EventPool
-      */
-    private void startListenThread() {
-        new Thread(new Runnable(){
-            public void run() {
+    /**
+     * Start listening for incoming events and send them to the EventPool
+     */
+    private void runConnection() {
+        try {
+            while(!socket.isClosed()) {
                 try {
-                    while(keepListening) {
-                        NetworkEvent ev = (NetworkEvent)in.readObject();
-                        ev.setSource(socket.getInetAddress());
-                        LOGGER.info(String.format("Received event %s from %s",
-                                ev.getClass().getName(), ev.getSource()));
-                            
-                        // downcast so we don't send it again
-                        pool.raiseEvent((Event)ev);
-                    }
-                } catch (EOFException e) {
-                    // This happens when the socket on the other side closes
-                    pool.raiseEvent(new UserDisconnectedEvent(socket.getInetAddress()));
-                } catch (IOException e) {
-                    System.out.println(e);
+                    NetworkEvent ev = (NetworkEvent)in.readObject();
+                    ev.setSource(socket.getInetAddress());
+                    LOGGER.info(String.format("Received event %s from %s",
+                            ev.getClass().getName(), ev.getSource()));
+
+                    // downcast so we don't send it again
+                    pool.raiseEvent((Event)ev);
                 } catch (ClassNotFoundException e) {
-                    System.out.println(e);
-                } 
+                    // TODO handle error
+                    System.err.println(e);
+                }
             }
-        }).start();
+        } catch (EOFException e) {
+            // This happens when the socket on the other side closes
+            LOGGER.log(Level.INFO, e.toString());
+            pool.raiseEvent(new UserDisconnectedEvent(socket.getInetAddress()));
+        } catch (IOException e) {
+            LOGGER.log(Level.WARNING, e.toString());
+        }
     }
-    
 }

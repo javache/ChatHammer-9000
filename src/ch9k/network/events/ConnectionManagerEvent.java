@@ -11,6 +11,10 @@ import ch9k.network.ConnectionManager;
 public abstract class ConnectionManagerEvent extends Event {
     private ConnectionManager source;
 
+    /**
+     * 
+     * @param source
+     */
     public ConnectionManagerEvent(ConnectionManager source) {
         this.source = source;
     }

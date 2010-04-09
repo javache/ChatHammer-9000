@@ -47,17 +47,43 @@ public class ConnectionTest {
      */
     @Test
     public void testSendEvent() throws IOException, InterruptedException {
-        Connection conn = new Connection(InetAddress.getLocalHost(), pool);
+        Connection conn1 = new Connection(InetAddress.getLocalHost(), pool);
         Connection conn2 = new Connection(InetAddress.getLocalHost(), pool);
 
-        conn.sendEvent(new TestNetworkEvent());
+        conn1.sendEvent(new TestNetworkEvent());
         Thread.sleep(50);
         assertEquals(1, testListener.received);
 
-        conn.sendEvent(new TestNetworkEvent());
-        conn.sendEvent(new TestNetworkEvent());
+        conn1.sendEvent(new TestNetworkEvent());
+        conn1.sendEvent(new TestNetworkEvent());
         conn2.sendEvent(new TestNetworkEvent());
         Thread.sleep(150);
         assertEquals(4, testListener.received);
+    }
+
+    /**
+     * Test of hasConnection methode, of class Connection
+     * @throws IOException
+     */
+    @Test
+    public void testHasConnection() throws IOException {
+        Connection conn = new Connection(InetAddress.getLocalHost(), pool);
+        assertTrue(conn.hasConnection());
+
+        echoServer.stop(); // connection should now be broken
+        assertFalse(conn.hasConnection());
+    }
+
+    /**
+     * Test of close methode, of class Connection
+     * @throws IOException 
+     */
+    @Test
+    public void testClose() throws IOException {
+        Connection conn = new Connection(InetAddress.getLocalHost(), pool);
+        assertTrue(conn.hasConnection());
+
+        conn.close();
+        assertFalse(conn.hasConnection());
     }
 }

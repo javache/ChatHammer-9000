@@ -13,15 +13,13 @@ public abstract class ImageProvider {
     /**
      * Constructor.
      */
-    public ImageProvider()
-    {
+    public ImageProvider() {
     }
 
     /**
      * Name of method is subject to change.
      */
-    public void onNewText(String text)
-    {
+    public void onNewText(String text) {
         /* Get the URL's from which the images should be loaded. */
         String[] urls = getImageUrls(text);
         
@@ -42,8 +40,7 @@ public abstract class ImageProvider {
      * @param text Text to search for.
      * @return List of URL's.
      */
-    public String[] getImageUrls(String text)
-    {
+    public String[] getImageUrls(String text) {
         return getImageUrls(text, 10);
     }
 
