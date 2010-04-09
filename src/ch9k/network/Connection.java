@@ -137,10 +137,13 @@ public class Connection {
             public void run() {
                 try {
                     while(keepListening) {
-                        Event ev = (Event)in.readObject();
+                        NetworkEvent ev = (NetworkEvent)in.readObject();
+                        ev.setSource(socket.getInetAddress());
                         LOGGER.info(String.format("Received event %s from %s",
-                                ev.getClass().getName(), socket.getInetAddress()));
-                        pool.raiseEvent(ev);
+                                ev.getClass().getName(), ev.getSource()));
+                            
+                        // downcast so we don't send it again
+                        pool.raiseEvent((Event)ev);
                     }
                 } catch (EOFException e) {
                     // This happens when the socket on the other side closes

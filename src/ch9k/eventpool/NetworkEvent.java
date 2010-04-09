@@ -21,6 +21,10 @@ public class NetworkEvent extends Event implements Serializable {
         return source;
     }
 
+    public void setSource(InetAddress source) {
+        this.source = source;
+    }
+
     /**
      * Get the IP this Event was sent to
      * @return target
