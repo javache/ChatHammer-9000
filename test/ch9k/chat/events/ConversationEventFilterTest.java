@@ -22,7 +22,6 @@ public class ConversationEventFilterTest {
      */
     @Test
     public void testAccept() throws UnknownHostException {
-        System.out.println("accept");
         // contact1 acts like local user
         Contact contact1 = new Contact("JPanneel", InetAddress.getByName("google.be"), true);
         // will chat with contact2
