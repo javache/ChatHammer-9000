@@ -33,10 +33,6 @@ public class ConversationManagerTest {
      */
     @Test
     public void testCloseConversation() {
-        Contact contact = null;
-        ConversationManager instance = new ConversationManager();
-        instance.closeConversation(contact);
-        // TODO review the generated test code and remove the default call to fail.
         fail("Close() is yet to be implemented");
     }
 

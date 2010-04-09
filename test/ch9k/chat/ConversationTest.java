@@ -130,11 +130,11 @@ public class ConversationTest {
      * Test of hashCode method, of class Conversation.
      */
     @Test
-    public void testHashCode() {
+    public void testHashCode() throws UnknownHostException {
         assertEquals(conversation.hashCode(), conversation.hashCode());
         
         Conversation differentConversation = new Conversation(
-                new Contact("Javache", null, true), true);
+                new Contact("Javache", InetAddress.getByName("ugent.be"), false), true);
         assertNotSame(conversation.hashCode(), differentConversation.hashCode());
     }
 
