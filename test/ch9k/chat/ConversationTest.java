@@ -155,11 +155,11 @@ public class ConversationTest {
         Conversation conversation1 = new Conversation(contact2, true);
         // JPanneel says Dag to Javache
         ChatMessage chatMessage = new ChatMessage(contact1.getUsername(), "Dag Javache!");
-        NewChatMessageEvent messageEvent = new NewChatMessageEvent(chatMessage, contact2);
+        NewChatMessageEvent messageEvent = new NewChatMessageEvent(conversation1, chatMessage);
         EventPool.getAppPool().raiseEvent(messageEvent);
 
         Thread.sleep(10); // wait for event to be delivered
         assertEquals(1, conversation1.getMessages(10).length);
-        assertEquals(conversation1.getMessages(1)[0], "Dag Javache!");
+        assertEquals("Dag Javache!", conversation1.getMessages(1)[0]);
     }
 }
