@@ -1,5 +1,7 @@
 package ch9k.core;
 
+import java.security.MessageDigest;
+
 import ch9k.chat.ContactList;
 
 /**
@@ -23,6 +25,22 @@ public class Account {
      * Users current status
      */
     private String status;
+    
+    /**
+     * the hash of the password
+     */
+    private byte[] hash;
+    
+    
+    /**
+     * creates a new account in the system.
+     * this class only stores a hash of the password
+     */
+    public Account(String username,String password) {
+        this.username = username;
+        this.hash = hash(password);
+    }
+
 
     /**
      * Getter for the users current contactlist
@@ -56,5 +74,12 @@ public class Account {
         this.status = status;
     }
 
-
+    private byte[] hash(String password) {
+        try {
+            return MessageDigest.getInstance("sha1").digest(password.getBytes());
+        } catch(java.security.NoSuchAlgorithmException e) {
+            // throw new VeerleFackException
+            return null;
+        }
+    }
 }
