@@ -1,5 +1,7 @@
 package ch9k.chat;
 
+import java.net.InetAddress;
+import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -45,5 +47,24 @@ public class ContactList {
      */
     public boolean removeContact(Contact contact) {
         return contacts.remove(contact);
+    }
+
+
+    /**
+     * Get the contact that is know by this info, returns null if no such contact is found
+     * @param ip
+     * @param username
+     * @return contact
+     */
+    public Contact getContact(InetAddress ip, String username) {
+        Iterator<Contact> it = contacts.iterator();
+        Contact contact;
+        while(it.hasNext()){
+            contact = it.next();
+            if(contact.getIp().equals(ip) && contact.getUsername().equals(username)){
+                return contact;
+            }
+        }
+        return null;
     }
 }
