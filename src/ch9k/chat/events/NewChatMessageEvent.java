@@ -1,18 +1,23 @@
 package ch9k.chat.events;
 
 import ch9k.chat.ChatMessage;
-import ch9k.chat.Contact;
+import ch9k.chat.Conversation;
 
 /**
- *
+ * 
  * @author Jens Panneel
  */
 public class NewChatMessageEvent extends ConversationEvent {
-    private ChatMessage chatMessage;
+    private ChatMessage message;
 
-    public NewChatMessageEvent(ChatMessage chatMessage, Contact receiver) {
-        super(receiver);
-        this.chatMessage = chatMessage;
+    /**
+     * Create a new NewChatMessageEvent
+     * @param conversation
+     * @param message
+     */
+    public NewChatMessageEvent(Conversation conversation, ChatMessage message) {
+        super(conversation);
+        this.message = message;
     }
 
     /**
@@ -20,7 +25,6 @@ public class NewChatMessageEvent extends ConversationEvent {
      * @return chatMessage
      */
     public ChatMessage getChatMessage() {
-        return chatMessage;
+        return message;
     }
-
 }

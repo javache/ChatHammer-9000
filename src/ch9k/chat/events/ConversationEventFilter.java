@@ -1,6 +1,6 @@
 package ch9k.chat.events;
 
-import ch9k.chat.Contact;
+import ch9k.chat.Conversation;
 import ch9k.eventpool.Event;
 import ch9k.eventpool.EventFilter;
 
@@ -9,14 +9,14 @@ import ch9k.eventpool.EventFilter;
  * @author Pieter De Baets
  */
 public class ConversationEventFilter implements EventFilter {
-    private Contact contact;
+    private Conversation conversation;
 
     /**
      * Construct a new TypeEventFilter
      * @param conversation
      */
-    public ConversationEventFilter(Contact contact) {
-        this.contact = contact;
+    public ConversationEventFilter(Conversation conversation) {
+        this.conversation = conversation;
     }
 
     @Override
@@ -24,7 +24,7 @@ public class ConversationEventFilter implements EventFilter {
         if(!(event instanceof ConversationEvent)) {
             return false;
         } else {
-            return contact.equals(((NewChatMessageEvent)event).getContact());
+            return conversation.equals(((ConversationEvent)event).getConversation());
         }
     }
 }

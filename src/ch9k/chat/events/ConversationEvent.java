@@ -1,7 +1,9 @@
 package ch9k.chat.events;
 
 import ch9k.chat.Contact;
+import ch9k.chat.ContactList;
 import ch9k.chat.Conversation;
+import ch9k.core.Account;
 import ch9k.core.ChatApplication;
 import ch9k.eventpool.NetworkEvent;
 
@@ -10,30 +12,53 @@ import ch9k.eventpool.NetworkEvent;
  * @author Pieter De Baets
  */
 public abstract class ConversationEvent extends NetworkEvent {
-    private String usernameSender;
-    private String usernameReceiver;
+    private String sender;
+    private String receiver;
+    private transient Contact contact;
+    private transient Conversation conversation;
 
-    public ConversationEvent(Contact receiver) {
-        super(receiver.getIp());
-        this.usernameSender = ChatApplication.getInstance().getAccount().getUsername();
-        this.usernameReceiver = receiver.getUsername();
+    /**
+     * Create a new ConversionEvent
+     * @param conversation
+     */
+    public ConversationEvent(Conversation conversation) {
+        super(conversation.getContact().getIp());
+
+        this.conversation = conversation;
+        contact = conversation.getContact();
+        receiver = contact.getUsername();
+        
+        Account account = ChatApplication.getInstance().getAccount();
+        sender = account.getUsername();
     }
 
     /**
-     * Get the contact the local App is chating with. This will allways return the other chatter.
-     * So when called after local broadcasting source will be null and the other contact will be returned
-     * When called after broadcasting the contact form of the sender wil be returned.
+     * Get the contact this conversation is with.
      * @return contact
      */
     public Contact getContact() {
-        if(source != null) {
-            return ChatApplication.getInstance().getAccount().getContactList().getContact(source, usernameSender);
-        } else {
-            return ChatApplication.getInstance().getAccount().getContactList().getContact(target, usernameReceiver);
+        /*
+         This will allways return the other chatter, so when called after local
+         broadcasting source will be null and the other contact will be returned.
+         When called after broadcasting the contact form of the sender wil be returned.
+        */
+        if(contact == null) {
+            ContactList contacts = ChatApplication.getInstance().getAccount().getContactList();
+            if(isExternal()) contact = contacts.getContact(source, sender);
+            else contact = contacts.getContact(target, receiver);
         }
+        return contact;
     }
 
+    /**
+     * Get the conversation
+     * @return conversation
+     */
     public Conversation getConversation() {
-        return ChatApplication.getInstance().getConversationManager().getConversation(getContact());
+        if(conversation == null) {
+            ChatApplication app = ChatApplication.getInstance();
+            conversation = app.getConversationManager().getConversation(getContact());
+        }
+        return conversation;
     }
 }
