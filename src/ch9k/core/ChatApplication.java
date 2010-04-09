@@ -22,5 +22,9 @@ public class ChatApplication {
     public Account getAccount() {
         return account;
     }
+
+    private ChatApplication() {
+        account = new Account("Tetten", "tetten");
+    }
     
 }

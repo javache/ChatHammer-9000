@@ -39,6 +39,7 @@ public class Account {
     public Account(String username,String password) {
         this.username = username;
         setPassword(password);
+        contactList = new ContactList();
     }
     /**
      * will return the password hash

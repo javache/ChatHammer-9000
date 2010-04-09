@@ -1,6 +1,7 @@
 package ch9k.chat.events;
 
-import ch9k.chat.Conversation;
+import ch9k.chat.Contact;
+import ch9k.core.ChatApplication;
 import ch9k.eventpool.NetworkEvent;
 
 /**
@@ -8,15 +9,27 @@ import ch9k.eventpool.NetworkEvent;
  * @author Pieter De Baets
  */
 public abstract class ConversationEvent extends NetworkEvent {
-    private Conversation conversation;
+    private String usernameSender;
+    private String usernameReceiver;
 
-    public ConversationEvent(Conversation conversation) {
-        super(conversation.getContact().getIp());
-        this.conversation = conversation;
-        this.target = conversation.getContact().getIp();
+    public ConversationEvent(Contact receiver) {
+        super(receiver.getIp());
+        this.usernameSender = ChatApplication.getInstance().getAccount().getUsername();
+        this.usernameReceiver = receiver.getUsername();
     }
 
-    public Conversation getConversation() {
-        return conversation;
+    /**
+     * Get the contact the local App is chating with. This will allways return the other chatter.
+     * So when called after local broadcasting source will be null and the other contact will be returned
+     * When called after broadcasting the contact form of the sender wil be returned.
+     * @return contact
+     */
+    public Contact getContact() {
+        if(source != null) {
+            return ChatApplication.getInstance().getAccount().getContactList().getContact(source, usernameSender);
+        } else {
+            return ChatApplication.getInstance().getAccount().getContactList().getContact(target, usernameReceiver);
+        }
     }
+
 }
