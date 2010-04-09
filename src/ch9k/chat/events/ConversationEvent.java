@@ -1,6 +1,7 @@
 package ch9k.chat.events;
 
 import ch9k.chat.Contact;
+import ch9k.chat.Conversation;
 import ch9k.core.ChatApplication;
 import ch9k.eventpool.NetworkEvent;
 
@@ -32,4 +33,7 @@ public abstract class ConversationEvent extends NetworkEvent {
         }
     }
 
+    public Conversation getConversation() {
+        return ChatApplication.getInstance().getConversationManager().getConversation(getContact());
+    }
 }

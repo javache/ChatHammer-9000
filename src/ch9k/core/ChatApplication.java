@@ -1,5 +1,7 @@
 package ch9k.core;
 
+import ch9k.chat.ConversationManager;
+
 /**
  * The main application, OMG!
  *
@@ -23,8 +25,16 @@ public class ChatApplication {
         return account;
     }
 
+    private ConversationManager conversationManager;
+
+    public ConversationManager getConversationManager() {
+        return conversationManager;
+    }
+
     private ChatApplication() {
         account = new Account("Tetten", "tetten");
+        conversationManager = new ConversationManager();
     }
+
     
 }

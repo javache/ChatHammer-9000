@@ -21,7 +21,7 @@ public class ConversationEventFilter implements EventFilter {
 
     @Override
     public boolean accept(Event event) {
-        if(!(event instanceof NewChatMessageEvent)) {
+        if(!(event instanceof ConversationEvent)) {
             return false;
         } else {
             return contact.equals(((NewChatMessageEvent)event).getContact());
