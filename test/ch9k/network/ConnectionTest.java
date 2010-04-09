@@ -26,10 +26,11 @@ public class ConnectionTest {
     }
 
     @Before
-    public void setUp() throws IOException {
+    public void setUp() throws IOException, InterruptedException {
         pool = new EventPool();
         testListener = new TestListener();
         pool.addListener(testListener, new TypeEventFilter(TestNetworkEvent.class));
+        Thread.sleep(100); // wait for eventpool to start
 
         echoServer = new DirectResponseServer();
         echoServer.start();

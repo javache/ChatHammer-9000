@@ -46,7 +46,11 @@ public class ConversationEventTest {
     @Test
     public void testRemoteGetContact() throws UnknownHostException, IOException, InterruptedException {
         EventPool localPool = EventPool.getAppPool();
+        Thread.sleep(100); // wait for apppool to start up
+
+        // create a remote eventpool
         EventPool remotePool = new EventPool();
+        // and connect it to the local one
         Connection remoteConnection = new Connection(InetAddress.getLocalHost(), remotePool);
 
         ConversationManager manager = ChatApplication.getInstance().getConversationManager();
@@ -61,6 +65,7 @@ public class ConversationEventTest {
         Thread.sleep(100); // wait while the event gets transmitted
 
         ConversationEvent remoteEvent = (ConversationEvent)remoteListener.receivedEvent;
+        assertTrue(remoteEvent != null);
         assertTrue(remoteEvent.isExternal());
 
         assertNotSame(contact, remoteEvent.getContact());

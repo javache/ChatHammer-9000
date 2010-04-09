@@ -127,7 +127,8 @@ public class ConnectionManager {
             online = true;
             try {
                 new Socket("www.google.com", 80);
-            } catch (Exception e) {
+            } catch (IOException ex) {
+                LOGGER.log(Level.WARNING, ex.toString());
                 online = false;
             }
         } else {
@@ -160,6 +161,7 @@ public class ConnectionManager {
             try {
                 connectionMap.put(target, new Connection(target, pool));
             } catch (IOException ex) {
+                LOGGER.log(Level.WARNING, ex.toString());
                 handleNetworkError(target);
                 return null;
             }
@@ -176,8 +178,11 @@ public class ConnectionManager {
                 server = new ServerSocket(Connection.DEFAULT_PORT);
 
                 // run forever
+                LOGGER.info("Started accepting connections!");
                 while (!Thread.interrupted()) {
                     Socket client = server.accept();
+                    LOGGER.info("Accepted a new connection! Source is localhost? "
+                            + (InetAddress.getLocalHost().equals(client.getInetAddress())));
                     Connection conn = new Connection(client, pool);
                     // TODO worry about synchronisation later
                     connectionMap.put(client.getInetAddress(), conn);
@@ -209,7 +214,9 @@ public class ConnectionManager {
                     }
                     try {
                         Connection conn = getOrCreateConnection(ev.getTarget());
-                        conn.sendEvent(ev);
+                        if(conn != null) {
+                            conn.sendEvent(ev);
+                        }
                     } catch (IOException e) {
                         handleNetworkError(ev.getTarget());
                     }
