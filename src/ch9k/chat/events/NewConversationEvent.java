@@ -1,8 +1,9 @@
 package ch9k.chat.events;
 
-import ch9k.chat.Contact;
+import java.net.InetAddress;
 
-import ch9k.eventpool.NetworkEvent
+import ch9k.chat.Contact;
+import ch9k.eventpool.NetworkEvent;
 
 /**
  * This event will be sent when we start a new Conversation
@@ -11,15 +12,9 @@ import ch9k.eventpool.NetworkEvent
  */
 
 public class NewConversationEvent extends NetworkEvent {
-    
-    private Contact contact;
-    
-    public NewConversationEvent(Contact contact) {
-        this.contact = contact;
-    }
-    
-    public Contact getSource() {
-        return contact;
-    }
+ 
+    public NewConversationEvent(InetAddress target) {
+        super(target);
+    } 
     
 }
