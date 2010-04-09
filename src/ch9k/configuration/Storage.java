@@ -25,7 +25,7 @@ public class Storage {
      * @param obj Object to be stored.
      */
     public void store(String id, Persistable obj){
-
+        storage.put(id,obj);
     }
     /**
      * Fetches a previously stored object?
@@ -34,8 +34,7 @@ public class Storage {
      * @return the previously stored object
      */
     public Persistable fetch(String id){
-
-        return null;
+        return storage.get(id);
     }
 
 }
