@@ -1,6 +1,7 @@
 package ch9k.chat;
 
 import ch9k.chat.events.NewChatMessageEvent;
+import ch9k.core.ChatApplication;
 import ch9k.eventpool.EventPool;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -139,16 +140,26 @@ public class ConversationTest {
 
     /**
      * Test of handleEvent method, of class Conversation.
+     * Tests only the local side
      * @throws InterruptedException 
      */
     @Test
-    public void testHandleEvent() throws InterruptedException {
-        ChatMessage chatMessage = new ChatMessage("Javache", "lama! lama!");
-        NewChatMessageEvent messageEvent = new NewChatMessageEvent(chatMessage, conversation);
+    public void testHandleEvent() throws InterruptedException, UnknownHostException {
+        // contact1 "JPanneel" is local user
+        Contact contact1 = new Contact("JPanneel", InetAddress.getByName("google.be"), false);
+        // contact2 "Javache" is remote user.
+        Contact contact2 = new Contact("Javache", InetAddress.getByName("ugent.be"), false);
+        // contact2 is in local contactList
+        ChatApplication.getInstance().getAccount().getContactList().addContact(contact2);
+        // contact1 is the local, so contact2 is in the conversation
+        Conversation conversation1 = new Conversation(contact2, true);
+        // JPanneel says Dag to Javache
+        ChatMessage chatMessage = new ChatMessage(contact1.getUsername(), "Dag Javache!");
+        NewChatMessageEvent messageEvent = new NewChatMessageEvent(chatMessage, contact2);
         EventPool.getAppPool().raiseEvent(messageEvent);
 
         Thread.sleep(10); // wait for event to be delivered
-        assertEquals(1, conversation.getMessages(10).length);
-        assertEquals(conversation.getMessages(1)[0], "lama! lama!");
+        assertEquals(1, conversation1.getMessages(10).length);
+        assertEquals(conversation1.getMessages(1)[0], "Dag Javache!");
     }
 }
