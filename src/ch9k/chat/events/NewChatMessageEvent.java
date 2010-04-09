@@ -1,7 +1,7 @@
 package ch9k.chat.events;
 
 import ch9k.chat.ChatMessage;
-import ch9k.chat.Conversation;
+import ch9k.chat.Contact;
 
 /**
  *
@@ -10,11 +10,15 @@ import ch9k.chat.Conversation;
 public class NewChatMessageEvent extends ConversationEvent {
     private ChatMessage chatMessage;
 
-    public NewChatMessageEvent(ChatMessage chatMessage, Conversation conversation) {
-        super(conversation);
+    public NewChatMessageEvent(ChatMessage chatMessage, Contact receiver) {
+        super(receiver);
         this.chatMessage = chatMessage;
     }
 
+    /**
+     * Get the ChatMessage
+     * @return chatMessage
+     */
     public ChatMessage getChatMessage() {
         return chatMessage;
     }
