@@ -1,5 +1,6 @@
 package ch9k.chat;
 
+import ch9k.core.ChatApplication;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import org.junit.Before;
@@ -64,5 +65,23 @@ public class ContactListTest {
         assertEquals(1, contactList.getContacts().size());
         contactList.removeContact(contact1);
         assertEquals(0, contactList.getContacts().size());
+    }
+
+    /**
+     * Test of removeContact method, of class ContactList.
+     */
+    @Test
+    public void testGetContact() throws UnknownHostException {
+        Contact contact1 = new Contact("JPanneel", InetAddress.getByName("google.be"), false);
+        Contact contact2 = new Contact("JPanneel", InetAddress.getByName("ugent.be"), false);
+
+        contactList.addContact(contact1);
+        contactList.addContact(contact2);
+
+        assertEquals(contact1, contactList.getContact(contact1.getIp(),contact1.getUsername()));
+        assertNull(contactList.getContact(contact2.getIp(),contact1.getUsername()));
+        assertNull(contactList.getContact(contact2.getIp(),contact2.getUsername()));
+        assertNull(contactList.getContact(contact1.getIp(),contact2.getUsername()));
+
     }
 }
