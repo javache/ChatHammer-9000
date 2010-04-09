@@ -12,6 +12,10 @@ public class NetworkEvent extends Event implements Serializable {
     protected InetAddress source;
     protected InetAddress target;
 
+    public NetworkEvent(InetAddress target) {
+        this.target = target;
+    }
+
     /**
      * Get the origin of this Event
      * @return source
