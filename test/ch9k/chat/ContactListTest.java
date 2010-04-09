@@ -73,15 +73,14 @@ public class ContactListTest {
     @Test
     public void testGetContact() throws UnknownHostException {
         Contact contact1 = new Contact("JPanneel", InetAddress.getByName("google.be"), false);
-        Contact contact2 = new Contact("JPanneel", InetAddress.getByName("ugent.be"), false);
+        Contact contact2 = new Contact("Javache", InetAddress.getByName("ugent.be"), false);
 
         contactList.addContact(contact1);
         contactList.addContact(contact2);
 
         assertEquals(contact1, contactList.getContact(contact1.getIp(),contact1.getUsername()));
+        assertNotSame(contact1, contactList.getContact(contact2.getIp(),contact2.getUsername()));
         assertNull(contactList.getContact(contact2.getIp(),contact1.getUsername()));
-        assertNull(contactList.getContact(contact2.getIp(),contact2.getUsername()));
         assertNull(contactList.getContact(contact1.getIp(),contact2.getUsername()));
-
     }
 }
