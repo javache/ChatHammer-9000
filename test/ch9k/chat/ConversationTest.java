@@ -158,7 +158,7 @@ public class ConversationTest {
         NewChatMessageEvent messageEvent = new NewChatMessageEvent(conversation1, chatMessage);
         EventPool.getAppPool().raiseEvent(messageEvent);
 
-        Thread.sleep(10); // wait for event to be delivered
+        Thread.sleep(50); // wait for event to be delivered
         assertEquals(1, conversation1.getMessages(10).length);
         assertEquals("Dag Javache!", conversation1.getMessages(1)[0]);
     }
