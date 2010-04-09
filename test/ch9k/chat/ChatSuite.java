@@ -13,7 +13,10 @@ import org.junit.runners.Suite;
     ch9k.chat.ContactListTest.class,
     ch9k.chat.ConversationTest.class,
     ch9k.chat.ContactTest.class,
-    ch9k.chat.ConversationManagerTest.class
+    ch9k.chat.ConversationManagerTest.class,
+    ch9k.chat.events.ConversationEventFilterTest.class,
+    ch9k.chat.events.ConversationEventTest.class,
+    ch9k.chat.events.NewChatMessageEventTest.class
 })
 
 public class ChatSuite {}
