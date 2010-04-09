@@ -83,7 +83,6 @@ public class ChatMessageTest {
      */
     @Test
     public void testToString() {
-        ChatMessage differentMessage = new ChatMessage("Javache", "JaJa!");
         //System.out.println(chatMessage.toString());
         fail("No assertions.");
     }
