@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.net.ConnectException;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.net.SocketTimeoutException;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -53,6 +54,7 @@ public class ConnectionManagerTest {
     @Test
     public void testSendEvent() throws IOException, InterruptedException {
         DirectResponseServer echoServer = new DirectResponseServer();
+        Thread.sleep(100); // wait so port is free
         echoServer.start();
 
         // number of events to send
@@ -61,7 +63,7 @@ public class ConnectionManagerTest {
             connectionManager.sendEvent(new TestNetworkEvent());
         }
 
-        // we should sleep +- 10 ms per event, to make sure they're send
+        // we should sleep +- 300 ms per event, to make sure they're send
         Thread.sleep(300*n);
         assertEquals(n, testListener.received);
 
@@ -90,7 +92,7 @@ public class ConnectionManagerTest {
         boolean exceptionThrown = false;
         try {
             conn = new Connection(InetAddress.getLocalHost(), new EventPool());
-        } catch(ConnectException ex) {
+        } catch(IOException ex) {
             exceptionThrown = true;
         }
         assertTrue(exceptionThrown);
