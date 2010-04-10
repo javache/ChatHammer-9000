@@ -1,8 +1,17 @@
 package ch9k.chat;
 
+import ch9k.chat.events.CloseConversationEvent;
+import ch9k.chat.events.ConversationEvent;
+import ch9k.chat.events.ConversationEventFilter;
 import ch9k.chat.events.NewChatMessageEvent;
+import ch9k.core.Account;
 import ch9k.core.ChatApplication;
+import ch9k.eventpool.Event;
+import ch9k.eventpool.EventListener;
 import ch9k.eventpool.EventPool;
+import ch9k.eventpool.TypeEventFilter;
+import ch9k.network.Connection;
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Date;
@@ -115,9 +124,22 @@ public class ConversationTest {
      * Test of close method, of class Conversation.
      */
     @Test
-    public void testClose() {
-        // TODO review the generated test code and remove the default call to fail.
-        fail("close() not yet implemented");
+    public void testClose() throws InterruptedException {
+        DummyListener dummyListener = new DummyListener();
+        EventPool.getAppPool().addListener(dummyListener, new TypeEventFilter(CloseConversationEvent.class));
+        conversation.close();
+        Thread.sleep(100);
+
+        CloseConversationEvent closeConversationEvent = (CloseConversationEvent)dummyListener.receivedEvent;
+        assertEquals(conversation, closeConversationEvent.getConversation());
+    }
+
+    private class DummyListener implements EventListener {
+        public Event receivedEvent;
+        @Override
+        public void handleEvent(Event event) {
+            receivedEvent = event;
+        }
     }
 
     /**
@@ -144,28 +166,59 @@ public class ConversationTest {
         assertNotSame(conversation.hashCode(), differentConversation.hashCode());
     }
 
-    /**
+
+     /**
      * Test of handleEvent method, of class Conversation.
-     * Tests only the local side
-     * @throws InterruptedException 
+     * Tests both local and remote side
+     * @throws InterruptedException
      */
     @Test
-    public void testHandleEvent() throws InterruptedException, UnknownHostException {
-        // contact1 "JPanneel" is local user
-        Contact contact1 = new Contact("JPanneel", InetAddress.getByName("google.be"), false);
-        // contact2 "Javache" is remote user.
-        Contact contact2 = new Contact("Javache", InetAddress.getByName("google.be"), false);
-        // contact2 is in local contactList
-        ChatApplication.getInstance().getAccount().getContactList().addContact(contact2);
-        // contact1 is the local, so contact2 is in the conversation
-        Conversation conversation = new Conversation(contact2, true);
-        // JPanneel says Dag to Javache
-        ChatMessage chatMessage = new ChatMessage(contact1.getUsername(), "Dag Javache!");
-        NewChatMessageEvent messageEvent = new NewChatMessageEvent(conversation, chatMessage);
-        EventPool.getAppPool().raiseEvent(messageEvent);
+    public void testHandleEvent() throws UnknownHostException, IOException, InterruptedException {
+        Account localAccount = ChatApplication.getInstance().getAccount();
 
-        Thread.sleep(500); // wait for event to be delivered and sockets to close
-        assertEquals(1, conversation.getMessages(10).length);
-        assertEquals("Dag Javache!", conversation.getMessages(1)[0]);
+        EventPool localPool = EventPool.getAppPool();
+        // wait for apppool to start up
+        Thread.sleep(100);
+
+        // create a remote eventpool
+        EventPool remotePool = new EventPool();
+        // and connect it to the local one
+        Connection remoteConnection = new Connection(InetAddress.getLocalHost(), remotePool);
+        Thread.sleep(100); // wait for thread to get up and running
+
+        // local usernormally doesn't excist as a Contact, this is needed for testing, needs to had the username of the localuser so account.getUsername
+        Contact localContact = new Contact(localAccount.getUsername(), InetAddress.getLocalHost(), false);
+        // needs to be in contactlist. because contactList will act as both local and remote contactList
+        localAccount.getContactList().addContact(localContact);
+        // contact you will be chatting with
+        Contact remoteContact = new Contact("Javache", InetAddress.getLocalHost(), true);
+        // this should normally be in contactList
+        localAccount.getContactList().addContact(remoteContact);
+        // this wil be the local conversation manager, but it will act as both local and remote so there should also be a conversation with the local user
+        ConversationManager localConversationManager = ChatApplication.getInstance().getConversationManager();
+        // this should normally be in the conversationmanager
+        Conversation localConversation = localConversationManager.startConversation(remoteContact, false);
+        // this is the conversation the remote user has with you, it is in the local conversation manager for testing
+        Conversation remoteConversation = localConversationManager.startConversation(localContact, false);
+        // local user types message
+        ChatMessage chatMessage = new ChatMessage(localContact.getUsername(), "Dag Javache, jij jij remoteUser!");
+        ConversationEvent localEvent = new NewChatMessageEvent(localConversation, chatMessage);
+
+        // register remoteConversation as listener to remotePool
+        remotePool.addListener(remoteConversation, new ConversationEventFilter(remoteConversation));
+        // register localConversation as listener to localPool
+        remotePool.addListener(remoteConversation, new ConversationEventFilter(remoteConversation));
+
+        // event is raised on localpool and sended to remotePool
+        localPool.raiseEvent(localEvent);
+        // wait while the event gets transmitted
+        Thread.sleep(500);
+
+        assertEquals(1, remoteConversation.getMessages(10).length);
+        assertEquals("Dag Javache, jij jij remoteUser!", remoteConversation.getMessages(1)[0]);
+
+        assertEquals(1, localConversation.getMessages(10).length);
+        assertEquals("Dag Javache, jij jij remoteUser!", localConversation.getMessages(1)[0]);
     }
+
 }

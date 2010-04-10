@@ -87,6 +87,7 @@ public class ConversationEventTest {
         Thread.sleep(200); 
 
         ConversationEvent remoteEvent = (ConversationEvent)remoteListener.receivedEvent;
+        // not really needed because localContact's ip is already set to localhost. but hey, it is for educational purpose :p
         localAccount.getContactList().getContact(InetAddress.getLocalHost(), localContact.getUsername()).setIp(remoteEvent.getSource());
 
         assertTrue(remoteEvent != null);
