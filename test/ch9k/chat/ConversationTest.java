@@ -148,7 +148,7 @@ public class ConversationTest {
         // contact1 "JPanneel" is local user
         Contact contact1 = new Contact("JPanneel", InetAddress.getByName("google.be"), false);
         // contact2 "Javache" is remote user.
-        Contact contact2 = new Contact("Javache", InetAddress.getByName("ugent.be"), false);
+        Contact contact2 = new Contact("Javache", InetAddress.getByName("google.be"), false);
         // contact2 is in local contactList
         ChatApplication.getInstance().getAccount().getContactList().addContact(contact2);
         // contact1 is the local, so contact2 is in the conversation
