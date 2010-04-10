@@ -75,12 +75,13 @@ public class ChatMessageTest {
      * Test of hashCode method, of class ChatMessage.
      */
     @Test
-    public void testHashCode() {
+    public void testHashCode() throws InterruptedException {
         ChatMessage differentMessage = new ChatMessage("Javache", "JaJa!");
         assertNotSame(chatMessage.hashCode(), differentMessage.hashCode());
         
-        ChatMessage sameMessage = new ChatMessage("JPanneel", "Hey! You!");
-        assertEquals(chatMessage.hashCode(), sameMessage.hashCode());
+        Thread.sleep(5);
+        differentMessage = new ChatMessage("JPanneel", "Hey! You!");
+        assertNotSame(chatMessage.hashCode(), differentMessage.hashCode());
         
     }
 
