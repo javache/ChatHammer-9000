@@ -1,5 +1,18 @@
 package ch9k.chat;
 
+import ch9k.chat.events.CloseConversationEvent;
+import ch9k.chat.events.ConversationEvent;
+import ch9k.chat.events.ConversationEventFilter;
+import ch9k.chat.events.NewChatMessageEvent;
+import ch9k.chat.events.NewConversationEvent;
+import ch9k.core.Account;
+import ch9k.core.ChatApplication;
+import ch9k.eventpool.EventPool;
+import ch9k.eventpool.TypeEventFilter;
+import ch9k.network.Connection;
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -51,4 +64,36 @@ public class ConversationManagerTest {
         assertEquals(conversation, conversationManager.getConversation(contact));
     }
 
+     /**
+     * Test of handleEvent method, of class Conversation.
+     * Tests both local and remote side
+     */
+    @Test
+    public void testLocalHandleEvent() throws UnknownHostException, IOException, InterruptedException {
+        Account localAccount = ChatApplication.getInstance().getAccount();
+        ConversationManager localConversationManager = ChatApplication.getInstance().getConversationManager();
+        Thread.sleep(100);
+
+        EventPool localPool = EventPool.getAppPool();
+        // wait for apppool to start up
+        Thread.sleep(100);
+
+        Contact remoteContact = new Contact("Javache", InetAddress.getByName("google.be"), true);
+        localAccount.getContactList().addContact(remoteContact);
+        
+        ConversationEvent localCreateEvent = new NewConversationEvent(remoteContact);
+
+        localPool.raiseEvent(localCreateEvent);
+        // wait while the event gets transmitted
+        Thread.sleep(500);
+
+        assertNotNull(localConversationManager.getConversation(remoteContact));
+
+        // this will raise an CloseConversationEvent
+        localConversationManager.getConversation(remoteContact).close();
+        Thread.sleep(500);
+        
+        assertNull(localConversationManager.getConversation(remoteContact));
+        
+    }
 }

@@ -25,9 +25,22 @@ public abstract class ConversationEvent extends NetworkEvent {
         super(conversation.getContact().getIp());
 
         this.conversation = conversation;
-        contact = conversation.getContact();
+        this.contact = conversation.getContact();
         receiver = contact.getUsername();
         
+        Account account = ChatApplication.getInstance().getAccount();
+        sender = account.getUsername();
+    }
+
+    /**
+     * Create a new ConversionEvent
+     * @param contact
+     */
+    public ConversationEvent(Contact contact) {
+        super(contact.getIp());
+
+        this.contact = contact;
+        receiver = contact.getUsername();
         Account account = ChatApplication.getInstance().getAccount();
         sender = account.getUsername();
     }

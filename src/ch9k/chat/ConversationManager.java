@@ -1,6 +1,5 @@
 package ch9k.chat;
 
-
 import ch9k.chat.events.CloseConversationEvent;
 import ch9k.chat.events.ConversationEvent;
 import ch9k.chat.events.NewConversationEvent;
@@ -64,6 +63,8 @@ public class ConversationManager implements EventListener{
             CloseConversationEvent closeConversationEvent = (CloseConversationEvent)event;
             if(!closeConversationEvent.isExternal()){
                 this.closeConversation(closeConversationEvent.getContact());
+            } else {
+                // TODO what todo then?
             }
         }
     }

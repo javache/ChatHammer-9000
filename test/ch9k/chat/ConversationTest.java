@@ -127,11 +127,12 @@ public class ConversationTest {
     public void testClose() throws InterruptedException {
         DummyListener dummyListener = new DummyListener();
         EventPool.getAppPool().addListener(dummyListener, new TypeEventFilter(CloseConversationEvent.class));
+        Thread.sleep(100);
         conversation.close();
         Thread.sleep(100);
 
         CloseConversationEvent closeConversationEvent = (CloseConversationEvent)dummyListener.receivedEvent;
-        assertEquals(conversation, closeConversationEvent.getConversation());
+        assertEquals(contact, closeConversationEvent.getContact());
     }
 
         private class DummyListener implements EventListener {

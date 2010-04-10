@@ -1,6 +1,6 @@
 package ch9k.chat.events;
 
-import ch9k.chat.Conversation;
+import ch9k.chat.Contact;
 
 /**
  *
@@ -8,8 +8,8 @@ import ch9k.chat.Conversation;
  */
 public class CloseConversationEvent extends ConversationEvent{
 
-    public CloseConversationEvent(Conversation conversation) {
-        super(conversation);
+    public CloseConversationEvent(Contact contact) {
+        super(contact);
     }
 
 }

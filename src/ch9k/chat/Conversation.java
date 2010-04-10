@@ -109,7 +109,7 @@ public class Conversation implements EventListener {
      */
     public void close() {
         // TODO delete this as listener
-        EventPool.getAppPool().raiseEvent(new CloseConversationEvent(this));
+        EventPool.getAppPool().raiseEvent(new CloseConversationEvent(contact));
     }
 
     @Override
