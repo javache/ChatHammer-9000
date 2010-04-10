@@ -108,7 +108,8 @@ public class EventPool {
 
     private void broadcastEvent(Event event) {
         Logger.getLogger(getClass().getName()).info(event.getClass().toString());
-        for(FilteredListener pair : listeners) {
+        for(int i = 0; i < listeners.size(); i++) {
+            FilteredListener pair = listeners.get(i);
             if(pair.filter.accept(event)) {
                 pair.listener.handleEvent(event);
             }
