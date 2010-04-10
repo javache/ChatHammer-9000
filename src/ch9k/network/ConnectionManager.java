@@ -163,7 +163,7 @@ public class ConnectionManager {
             System.out.println(inetAddress);
         }
         if (!connectionMap.containsKey(target)) {
-            LOGGER.info("Creating connection " + target.toString() + " since we don't have one.");
+            LOGGER.info("Creating connection to " + target.toString() + " since we don't have one.");
             try {
                 connectionMap.put(target, new Connection(target, pool));
             } catch (IOException ex) {
@@ -191,7 +191,7 @@ public class ConnectionManager {
                     // TODO worry about synchronisation later
                     connectionMap.put(client.getInetAddress(), conn);
                     LOGGER.info("Accepted a new connection! Source is localhost? "
-                            + (InetAddress.getLocalHost().hashCode() == client.getInetAddress().hashCode()));
+                            + (InetAddress.getLocalHost().equals(client.getInetAddress())));
                 }
             } catch (IOException ex) {
                 // if this fails it would appear as if nothing ever happened

@@ -82,6 +82,13 @@ public class EventPool {
     }
 
     /**
+     * Remove all registered listeners
+     */
+    public void clearListeners() {
+        listeners.clear();
+    }
+
+    /**
      * Send an event through the system
      * @param event
      */

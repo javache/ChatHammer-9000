@@ -6,6 +6,7 @@ import ch9k.eventpool.EventPool;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Date;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -24,6 +25,11 @@ public class ConversationTest {
     public void setUp() throws UnknownHostException {
         contact = new Contact("JPanneel", InetAddress.getByName("google.be"), false);
         conversation = new Conversation(contact, true);
+    }
+
+    @After
+    public void tearDown() {
+        EventPool.getAppPool().clearListeners();
     }
 
     /**

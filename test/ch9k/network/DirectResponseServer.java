@@ -35,7 +35,7 @@ public class DirectResponseServer {
             }
             server.close();
         } catch (IOException ex) {
-            Logger.log(Level.WARNING,ex.toString());
+            LOGGER.log(Level.WARNING, ex.toString());
         }
     }
     

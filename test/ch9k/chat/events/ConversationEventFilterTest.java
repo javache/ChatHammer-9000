@@ -14,10 +14,6 @@ import static org.junit.Assert.*;
  * @author Jens Panneel
  */
 public class ConversationEventFilterTest {
-
-    public ConversationEventFilterTest() {
-    }
-
     /**
      * Test of accept method, of class ConversationEventFilter.
      */

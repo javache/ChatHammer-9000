@@ -13,7 +13,6 @@ import static org.junit.Assert.*;
  * @author Jens Panneel
  */
 public class NewChatMessageEventTest {
-
     /**
      * Test of getChatMessage method, of class NewChatMessageEvent.
      */

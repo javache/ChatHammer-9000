@@ -53,7 +53,7 @@ public class ConversationEventTest {
         // and connect it to the local one
         Connection remoteConnection = new Connection(InetAddress.getLocalHost(), remotePool);
         Thread.sleep(100);
-        
+
         ConversationManager manager = ChatApplication.getInstance().getConversationManager();
         Contact contact = new Contact("Javache", InetAddress.getLocalHost(), true);
         Conversation localConversation = manager.startConversation(contact);
