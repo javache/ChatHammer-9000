@@ -67,11 +67,13 @@ public class ConnectionTest {
      * @throws IOException
      */
     @Test
-    public void testHasConnection() throws IOException {
+    public void testHasConnection() throws IOException, InterruptedException {
         Connection conn = new Connection(InetAddress.getLocalHost(), pool);
+        Thread.sleep(100);
         assertTrue(conn.hasConnection());
 
         echoServer.stop(); // connection should now be broken
+        Thread.sleep(100);
         assertFalse(conn.hasConnection());
     }
 

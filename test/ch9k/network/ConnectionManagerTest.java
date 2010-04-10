@@ -40,8 +40,9 @@ public class ConnectionManagerTest {
     }
 
     @Before
-    public void setUp() throws IOException {
+    public void setUp() throws IOException, InterruptedException {
         EventPool pool = new EventPool();
+        Thread.sleep(100);
         testListener = new TestListener();
         onlineListener = new OnlineListener();
         pool.addListener(testListener, new TypeEventFilter(TestNetworkEvent.class));
@@ -64,7 +65,7 @@ public class ConnectionManagerTest {
         }
 
         // we should sleep +- 300 ms per event, to make sure they're send
-        Thread.sleep(300*n);
+        Thread.sleep(100*n);
         assertEquals(n, testListener.received);
 
         echoServer.stop();
