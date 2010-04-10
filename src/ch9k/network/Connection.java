@@ -134,6 +134,17 @@ public class Connection {
         out.writeObject(obj);
     }
     
+    private void remoteClosed() {
+        pool.raiseEvent(new UserDisconnectedEvent(socket.getInetAddress()));
+        // at this point, we should close our output (not our input, since it 
+        // might still contain messages)
+        try {
+            socket.shutdownOutput();
+        } catch (IOException ex) {
+            LOGGER.log(Level.WARNING, ex.toString());
+        }
+    }
+    
     /**
      * Start listening for incoming events and send them to the EventPool
      */
@@ -154,9 +165,9 @@ public class Connection {
                 }
             }
         } catch (EOFException e) {
-            // This happens when the socket on the other side closes
-            LOGGER.log(Level.INFO, e.toString());
-            pool.raiseEvent(new UserDisconnectedEvent(socket.getInetAddress()));
+           LOGGER.log(Level.INFO, e.toString());
+           // this happens when the socket on the remote end closes
+           remoteClosed();
         } catch (IOException e) {
             LOGGER.log(Level.WARNING, e.toString());
         }

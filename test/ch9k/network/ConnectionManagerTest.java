@@ -54,7 +54,6 @@ public class ConnectionManagerTest {
     }
 
     /**
-     * @todo for some reason this doesn't always work
      * @throws IOException
      * @throws InterruptedException
      */
