@@ -54,6 +54,7 @@ public class ConnectionManagerTest {
 
     @Test
     public void testSendEvent() throws IOException, InterruptedException {
+        /**
         DirectResponseServer echoServer = new DirectResponseServer();
         Thread.sleep(100); // wait so port is free
         echoServer.start();
@@ -64,9 +65,31 @@ public class ConnectionManagerTest {
             connectionManager.sendEvent(new TestNetworkEvent());
         }
 
-        // we should sleep +- 300 ms per event, to make sure they're send
-        Thread.sleep(100*n);
+        // we should sleep +- 200 ms per event, to make sure they're send
+        Thread.sleep(200*n);
         assertEquals(n, testListener.received);
+
+        echoServer.stop();
+        Thread.sleep(100); // wait so server has shutdown for sure
+        **/
+
+        // what if a contacts pc crashes? 
+        // i think this is a better test. I know it fails know, you should fix that :p
+        // it also fails some other tests just bij changing this
+        DirectResponseServer echoServer = new DirectResponseServer();
+        Thread.sleep(100); // wait so port is free
+        echoServer.start();
+
+        for (int i = 0; i < 3; i++) {
+            connectionManager.sendEvent(new TestNetworkEvent());
+        }
+        connectionManager.sendEvent(new TestNetworkEvent(InetAddress.getByName("google.be")));
+        for (int i = 0; i < 3; i++) {
+            connectionManager.sendEvent(new TestNetworkEvent());
+        }
+        // we should sleep +- 200 ms per event, to make sure they're send
+        Thread.sleep(200*6);
+        assertEquals(6, testListener.received);
 
         echoServer.stop();
         Thread.sleep(100); // wait so server has shutdown for sure
