@@ -7,9 +7,8 @@ import ch9k.chat.Conversation;
 import ch9k.chat.ConversationManager;
 import ch9k.core.Account;
 import ch9k.core.ChatApplication;
-import ch9k.eventpool.Event;
-import ch9k.eventpool.EventListener;
 import ch9k.eventpool.EventPool;
+import ch9k.eventpool.TestListener;
 import ch9k.eventpool.TypeEventFilter;
 import ch9k.network.Connection;
 import java.io.IOException;
@@ -78,7 +77,7 @@ public class ConversationEventTest {
         ConversationEvent localEvent = new NewChatMessageEvent(localConversation, chatMessage);
 
         // listener on remotePpool
-        DummyListener remoteListener = new DummyListener();
+        TestListener remoteListener = new TestListener();
         remotePool.addListener(remoteListener, new TypeEventFilter(ConversationEvent.class));
 
         // event is raised on localpool and sended to remotePool
@@ -86,7 +85,7 @@ public class ConversationEventTest {
         // wait while the event gets transmitted
         Thread.sleep(500);
 
-        ConversationEvent remoteEvent = (ConversationEvent)remoteListener.receivedEvent;
+        ConversationEvent remoteEvent = (ConversationEvent)remoteListener.lastReceivedEvent;
 
         assertTrue(remoteEvent != null);
         // not really needed because localContact's ip is already set to localhost. but hey, it is for educational purpose :p
@@ -105,14 +104,6 @@ public class ConversationEventTest {
         assertNotSame(localConversation, remoteEvent.getConversation());
         assertEquals(remoteConversation, remoteEvent.getConversation());
         
-    }
-
-    private class DummyListener implements EventListener {
-        public Event receivedEvent;
-        @Override
-        public void handleEvent(Event event) {
-            receivedEvent = event;
-        }
     }
 
     /**

@@ -25,6 +25,7 @@ public class ConversationManager implements EventListener{
     /**
      * Start a conversation with the given contact
      * @param contact The contact to start a new conversation with.
+     * @param initiatedByMe Whether the local user started the conversation
      * @return conversation The started conversation
      */
     public Conversation startConversation(Contact contact, boolean initiatedByMe) {

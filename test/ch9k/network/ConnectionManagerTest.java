@@ -3,16 +3,15 @@ package ch9k.network;
 import ch9k.eventpool.Event;
 import ch9k.eventpool.EventListener;
 import ch9k.eventpool.EventPool;
+import ch9k.eventpool.TestListener;
 import ch9k.eventpool.TypeEventFilter;
 import ch9k.network.events.NetworkConnectionLostEvent;
-
 import java.io.IOException;
 import java.net.ConnectException;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.net.SocketTimeoutException;
-import org.junit.Before;
 import org.junit.Test;
+import org.junit.Before;
 import static org.junit.Assert.*;
 
 public class ConnectionManagerTest {
@@ -30,52 +29,19 @@ public class ConnectionManagerTest {
         }
     }
 
-    private class TestListener implements EventListener {
-        public int received = 0;
-
-        @Override
-        public void handleEvent(Event ev) {
-            received++;
-        }
-    }
-
     @Before
     public void setUp() throws IOException, InterruptedException {
         EventPool pool = new EventPool();
-        Thread.sleep(100);
         testListener = new TestListener();
         onlineListener = new OnlineListener();
         pool.addListener(testListener, new TypeEventFilter(TestNetworkEvent.class));
-        pool.addListener(onlineListener,new TypeEventFilter(NetworkConnectionLostEvent.class));
-
+        pool.addListener(onlineListener, new TypeEventFilter(NetworkConnectionLostEvent.class));
 
         connectionManager = new ConnectionManager(pool);
     }
 
     @Test
     public void testSendEvent() throws IOException, InterruptedException {
-        /**
-        DirectResponseServer echoServer = new DirectResponseServer();
-        Thread.sleep(100); // wait so port is free
-        echoServer.start();
-
-        // number of events to send
-        int n = 3;
-        for (int i = 0; i < n; i++) {
-            connectionManager.sendEvent(new TestNetworkEvent());
-        }
-
-        // we should sleep +- 200 ms per event, to make sure they're send
-        Thread.sleep(200*n);
-        assertEquals(n, testListener.received);
-
-        echoServer.stop();
-        Thread.sleep(100); // wait so server has shutdown for sure
-        **/
-
-        // what if a contacts pc crashes? 
-        // i think this is a better test. I know it fails know, you should fix that :p
-        // it also fails some other tests just bij changing this
         DirectResponseServer echoServer = new DirectResponseServer();
         Thread.sleep(100); // wait so port is free
         echoServer.start();
@@ -83,13 +49,14 @@ public class ConnectionManagerTest {
         for (int i = 0; i < 3; i++) {
             connectionManager.sendEvent(new TestNetworkEvent());
         }
-        connectionManager.sendEvent(new TestNetworkEvent(InetAddress.getByName("google.be")));
+        connectionManager.sendEvent(new TestNetworkEvent("google.be"));
         for (int i = 0; i < 3; i++) {
             connectionManager.sendEvent(new TestNetworkEvent());
         }
-        // we should sleep +- 200 ms per event, to make sure they're send
-        Thread.sleep(200*6);
-        assertEquals(6, testListener.received);
+        
+        // sleep a good while, so everything is sent
+        Thread.sleep(1000);
+        assertEquals(6, testListener.receiveCount);
 
         echoServer.stop();
         Thread.sleep(100); // wait so server has shutdown for sure
@@ -124,9 +91,9 @@ public class ConnectionManagerTest {
     
     @Test
     public void shouldNotThinkConnectionIsLost() throws Exception {
-        connectionManager.sendEvent(new UnresponsiveTargetEvent());
+        connectionManager.sendEvent(new TestNetworkEvent("google.be"));
         // wait long enough
-        Thread.sleep(700);
+        Thread.sleep(600);
         assertTrue(onlineListener.online);
     }
     

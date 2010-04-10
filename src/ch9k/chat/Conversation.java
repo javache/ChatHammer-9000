@@ -17,31 +17,29 @@ import java.util.TreeSet;
  */
 public class Conversation implements EventListener {
     private Contact contact;
-    private boolean initiated;
-    private Date starttime;
+    private boolean initiatedByMe;
+    private Date startTime = new Date();
     private ConversationSubject subject;
-    private Set<ChatMessage> conversation;
+    private Set<ChatMessage> conversation = new TreeSet<ChatMessage>();
 
     /**
      * Constructor
      * @param contact The contact you are chatting with.
      * @param initiatedByMe Is this conversation started by me?
-     * @param activePlugins The list of the current active plugins on the initiators side.
      */
     public Conversation(Contact contact, boolean initiatedByMe) {
-        this.starttime = new Date();
-        this.conversation = new TreeSet<ChatMessage>();
         this.contact = contact;
-        this.initiated = initiatedByMe;
+        this.initiatedByMe = initiatedByMe;
+        
         EventPool.getAppPool().addListener(this, new ConversationEventFilter(this));
     }
 
     /**
      * Check whether or not this conversation is started by the current user.
-     * @return initiatad
+     * @return initiatedByMe
      */
     public boolean initatedByMe() {
-        return initiated;
+        return initiatedByMe;
     }
 
     /**
@@ -73,7 +71,7 @@ public class Conversation implements EventListener {
      * @return starttime
      */
     public Date getStartTime() {
-        return starttime;
+        return startTime;
     }
 
     /**
@@ -82,6 +80,7 @@ public class Conversation implements EventListener {
      */
     public void addMessage(ChatMessage chatMessage) {
         conversation.add(chatMessage);
+        // @todo: send event
     }
 
     /**

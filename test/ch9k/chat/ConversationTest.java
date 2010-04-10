@@ -9,6 +9,7 @@ import ch9k.core.ChatApplication;
 import ch9k.eventpool.Event;
 import ch9k.eventpool.EventListener;
 import ch9k.eventpool.EventPool;
+import ch9k.eventpool.TestListener;
 import ch9k.eventpool.TypeEventFilter;
 import ch9k.network.Connection;
 import java.io.IOException;
@@ -39,6 +40,7 @@ public class ConversationTest {
     @After
     public void tearDown() {
         EventPool.getAppPool().clearListeners();
+        ChatApplication.getInstance().getAccount().getContactList().clear();
     }
 
     /**
@@ -122,26 +124,21 @@ public class ConversationTest {
 
     /**
      * Test of close method, of class Conversation.
+     * @throws InterruptedException
      */
     @Test
     public void testClose() throws InterruptedException {
-        DummyListener dummyListener = new DummyListener();
-        EventPool.getAppPool().addListener(dummyListener, new TypeEventFilter(CloseConversationEvent.class));
-        Thread.sleep(100);
+        TestListener testListener = new TestListener();
+        EventPool.getAppPool().addListener(testListener, new TypeEventFilter(CloseConversationEvent.class));
         conversation.close();
         Thread.sleep(100);
 
-        CloseConversationEvent closeConversationEvent = (CloseConversationEvent)dummyListener.receivedEvent;
+        CloseConversationEvent closeConversationEvent = (CloseConversationEvent)testListener.lastReceivedEvent;
         assertEquals(contact, closeConversationEvent.getContact());
-    }
 
-        private class DummyListener implements EventListener {
-            public Event receivedEvent;
-            @Override
-            public void handleEvent(Event event) {
-                receivedEvent = event;
-            }
-        }
+        // wait so everything else properly times out
+        Thread.sleep(400);
+    }
 
     /**
      * Test of equals method, of class Conversation.
@@ -157,6 +154,7 @@ public class ConversationTest {
 
     /**
      * Test of hashCode method, of class Conversation.
+     * @throws UnknownHostException 
      */
     @Test
     public void testHashCode() throws UnknownHostException {
@@ -171,55 +169,55 @@ public class ConversationTest {
      /**
      * Test of handleEvent method, of class Conversation.
      * Tests both local and remote side
-     * @throws InterruptedException
+      * @throws UnknownHostException 
+      * @throws InterruptedException
+      * @throws IOException
      */
     @Test
     public void testHandleEvent() throws UnknownHostException, IOException, InterruptedException {
-        Account localAccount = ChatApplication.getInstance().getAccount();
-
+        // get the local app-pool and let it start
         EventPool localPool = EventPool.getAppPool();
-        // wait for apppool to start up
         Thread.sleep(100);
 
-        // create a remote eventpool
+        // create a remote eventpool and connect it to the local one
         EventPool remotePool = new EventPool();
-        // and connect it to the local one
         Connection remoteConnection = new Connection(InetAddress.getLocalHost(), remotePool);
-        Thread.sleep(100); // wait for thread to get up and running
+        Thread.sleep(100);
 
-        // local usernormally doesn't excist as a Contact, this is needed for testing, needs to had the username of the localuser so account.getUsername
+        // create a contact out of the local user (as seen from the other side)
+        Account localAccount = ChatApplication.getInstance().getAccount();
         Contact localContact = new Contact(localAccount.getUsername(), InetAddress.getLocalHost(), false);
-        // needs to be in contactlist. because contactList will act as both local and remote contactList
-        localAccount.getContactList().addContact(localContact);
-        // contact you will be chatting with
         Contact remoteContact = new Contact("Javache", InetAddress.getLocalHost(), true);
-        // this should normally be in contactList
-        localAccount.getContactList().addContact(remoteContact);
-        // this wil be the local conversation manager, but it will act as both local and remote so there should also be a conversation with the local user
-        ConversationManager localConversationManager = ChatApplication.getInstance().getConversationManager();
-        // this should normally be in the conversationmanager
-        Conversation localConversation = localConversationManager.startConversation(remoteContact, false);
-        // this is the conversation the remote user has with you, it is in the local conversation manager for testing
-        Conversation remoteConversation = localConversationManager.startConversation(localContact, false);
-        // local user types message
+
+        // add both of these contacts to our list, so we can look them up later
+        ContactList contactList = localAccount.getContactList();
+        contactList.addContact(localContact);
+        contactList.addContact(remoteContact);
+
+        // conversation manager will contain the conversation with the remote user, as
+        // well as the conversation with the local one
+        ConversationManager conversationManager = ChatApplication.getInstance().getConversationManager();
+        Conversation localConversation = conversationManager.startConversation(remoteContact, false);
+        Conversation remoteConversation = conversationManager.startConversation(localContact, false);
+
+        // register the remoteConversation specifically with the remote pool
+        // it already registered with the local pool during construction
+        // let's hope that doesn't bring too much problems...
+        remotePool.addListener(remoteConversation, new ConversationEventFilter(remoteConversation));
+
+        // now everything is setup, and a user can type a message
         ChatMessage chatMessage = new ChatMessage(localContact.getUsername(), "Dag Javache, jij jij remoteUser!");
         ConversationEvent localEvent = new NewChatMessageEvent(localConversation, chatMessage);
 
-        // register remoteConversation as listener to remotePool
-        remotePool.addListener(remoteConversation, new ConversationEventFilter(remoteConversation));
-        // register localConversation as listener to localPool
-        remotePool.addListener(remoteConversation, new ConversationEventFilter(remoteConversation));
-
-        // event is raised on localpool and sended to remotePool
+        // raise the event on the local pool, should get sent to remotePool too
         localPool.raiseEvent(localEvent);
-        // wait while the event gets transmitted
-        Thread.sleep(500);
+        Thread.sleep(250);
 
+        // let's check the results!
         assertEquals(1, remoteConversation.getMessages(10).length);
         assertEquals("Dag Javache, jij jij remoteUser!", remoteConversation.getMessages(1)[0]);
 
         assertEquals(1, localConversation.getMessages(10).length);
         assertEquals("Dag Javache, jij jij remoteUser!", localConversation.getMessages(1)[0]);
     }
-
 }

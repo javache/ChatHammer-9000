@@ -9,7 +9,11 @@ public class TestNetworkEvent extends NetworkEvent {
         super(InetAddress.getLocalHost());
     }
 
-    public TestNetworkEvent(InetAddress inetAddress) throws UnknownHostException {
+    public TestNetworkEvent(InetAddress inetAddress) {
         super(inetAddress);
+    }
+
+    public TestNetworkEvent(String hostName) throws UnknownHostException {
+        super(InetAddress.getByName(hostName));
     }
 }

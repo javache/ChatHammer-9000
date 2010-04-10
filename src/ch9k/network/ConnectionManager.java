@@ -213,15 +213,14 @@ public class ConnectionManager {
             try {
                 while (!Thread.interrupted()) {
                     NetworkEvent ev = eventQueue.take();
-                    if (ev == null) {
-                        continue;
-                    }
+                    LOGGER.log(Level.INFO, "Dispatching " + ev.getClass().getName());
                     try {
                         Connection conn = getOrCreateConnection(ev.getTarget());
                         if(conn != null) {
                             conn.sendEvent(ev);
                         }
                     } catch (IOException ex) {
+                        LOGGER.log(Level.WARNING, null, ex);
                         handleNetworkError(ev.getTarget());
                     }
                 }

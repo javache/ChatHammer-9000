@@ -28,9 +28,9 @@ public class Connection {
     public static final int DEFAULT_PORT = 9001;
 
     /**
-     * Amount of time to wait for a scoket
+     * Amount of time to wait for a socket on connect
      */
-    private static final int SOCKET_TIMEOUT = 500;
+    private static final int SOCKET_CONNECT_TIMEOUT = 500;
     
     /**
      * The socket used to write to the other side
@@ -70,7 +70,7 @@ public class Connection {
      */
     public Connection(InetAddress ip, EventPool pool) throws IOException {
         socket = new Socket();
-        socket.connect(new InetSocketAddress(ip, DEFAULT_PORT), SOCKET_TIMEOUT);
+        socket.connect(new InetSocketAddress(ip, DEFAULT_PORT), SOCKET_CONNECT_TIMEOUT);
         this.pool = pool;
 
         init();
@@ -92,7 +92,6 @@ public class Connection {
 
     private void init() throws IOException  {
         socket.setKeepAlive(true);
-        socket.setSoTimeout(SOCKET_TIMEOUT);
 
         out = new ObjectOutputStream(socket.getOutputStream());
         in = new ObjectInputStream(socket.getInputStream());        
@@ -175,17 +174,17 @@ public class Connection {
 
                     // downcast so we don't send it again
                     pool.raiseEvent((Event)ev);
-                } catch (ClassNotFoundException e) {
+                } catch (ClassNotFoundException ex) {
                     // TODO handle error
-                    System.err.println(e);
+                    LOGGER.log(Level.WARNING, null, ex);
                 }
             }
-        } catch (EOFException e) {
-           LOGGER.log(Level.INFO, e.toString());
+        } catch (EOFException ex) {
+           LOGGER.log(Level.INFO, ex.toString());
            // this happens when the socket on the remote end closes
            remoteClosed();
-        } catch (IOException e) {
-            LOGGER.log(Level.WARNING, e.toString());
+        } catch (IOException ex) {
+            LOGGER.log(Level.WARNING, null, ex);
         }
     }
 }

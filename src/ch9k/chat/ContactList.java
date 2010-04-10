@@ -49,6 +49,12 @@ public class ContactList {
         return contacts.remove(contact);
     }
 
+    /**
+     * Debug method: remove all contacts
+     */
+    public void clear() {
+        contacts.clear();
+    }
 
     /**
      * Get the contact that is know by this info, returns null if no such contact is found
