@@ -1,6 +1,5 @@
 package ch9k.chat;
 
-import ch9k.core.ChatApplication;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import org.junit.Before;

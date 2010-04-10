@@ -2,7 +2,6 @@ package ch9k.chat;
 
 import ch9k.chat.events.ConversationEvent;
 import ch9k.chat.events.NewConversationEvent;
-import ch9k.core.Account;
 import ch9k.core.ChatApplication;
 import ch9k.eventpool.EventPool;
 import java.io.IOException;
@@ -18,11 +17,11 @@ import static org.junit.Assert.*;
  */
 public class ConversationManagerTest {
 
-    private ConversationManager conversationManager;
+    private ConversationManager localConversationManager;
 
     @Before
     public void setUp() {
-        conversationManager = new ConversationManager();
+        localConversationManager = new ConversationManager();
     }
 
     /**
@@ -32,8 +31,8 @@ public class ConversationManagerTest {
     public void testStartConversation() {
         Contact contact = new Contact("Javache", null, true);
         Conversation conversation = new Conversation(contact, true);
-        assertEquals(conversation, conversationManager.startConversation(contact, false));
-        assertEquals(conversation, conversationManager.getConversation(contact));
+        assertEquals(conversation, localConversationManager.startConversation(contact, false));
+        assertEquals(conversation, localConversationManager.getConversation(contact));
     }
 
     /**
@@ -42,10 +41,10 @@ public class ConversationManagerTest {
     @Test
     public void testCloseConversation() {
         Contact contact = new Contact("Javache", null, true);
-        Conversation conversation = conversationManager.startConversation(contact, true);
-        assertEquals(conversation, conversationManager.getConversation(contact));
-        conversationManager.closeConversation(contact);
-        assertNull(conversationManager.getConversation(contact));
+        Conversation conversation = localConversationManager.startConversation(contact, true);
+        assertEquals(conversation, localConversationManager.getConversation(contact));
+        localConversationManager.closeConversation(contact);
+        assertNull(localConversationManager.getConversation(contact));
     }
 
     /**
@@ -55,37 +54,36 @@ public class ConversationManagerTest {
     public void testGetConversation() {
         Contact contact = new Contact("Javache", null, true);
         Conversation conversation = new Conversation(contact, true);
-        assertEquals(conversation, conversationManager.startConversation(contact, false));
-        assertEquals(conversation, conversationManager.getConversation(contact));
+        assertEquals(conversation, localConversationManager.startConversation(contact, false));
+        assertEquals(conversation, localConversationManager.getConversation(contact));
     }
 
      /**
      * Test of handleEvent method, of class Conversation.
-     * Tests both local and remote side
+     * Tests only the local side
      */
     @Test
     public void testLocalHandleEvent() throws UnknownHostException, IOException, InterruptedException {
-        Account localAccount = ChatApplication.getInstance().getAccount();
-        ConversationManager localConversationManager = ChatApplication.getInstance().getConversationManager();
         EventPool localPool = EventPool.getAppPool();
         // wait for apppool to start up
         Thread.sleep(100);
 
-        Contact remoteContact = new Contact("Javache", InetAddress.getByName("google.be"), true);
-        localAccount.getContactList().addContact(remoteContact);
-        
+        Contact remoteContact = new Contact("Javache", InetAddress.getLocalHost(), true);
+        ChatApplication.getInstance().getAccount().getContactList().addContact(remoteContact);
+
         ConversationEvent localCreateEvent = new NewConversationEvent(remoteContact);
 
         localPool.raiseEvent(localCreateEvent);
         // wait while the event gets transmitted
-        Thread.sleep(500);
+        Thread.sleep(200);
 
-        assertNotNull(localConversationManager.getConversation(remoteContact));
+        Conversation startedConversation = localConversationManager.getConversation(remoteContact);
+        assertNotNull(startedConversation);
 
         // this will raise an CloseConversationEvent
-        localConversationManager.getConversation(remoteContact).close();
-        Thread.sleep(500);
-        
+        startedConversation.close();
+        Thread.sleep(200);
+
         assertNull(localConversationManager.getConversation(remoteContact));
         
     }

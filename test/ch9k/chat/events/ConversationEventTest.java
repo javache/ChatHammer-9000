@@ -84,15 +84,16 @@ public class ConversationEventTest {
         // event is raised on localpool and sended to remotePool
         localPool.raiseEvent(localEvent);
         // wait while the event gets transmitted
-        Thread.sleep(200); 
+        Thread.sleep(500);
 
         ConversationEvent remoteEvent = (ConversationEvent)remoteListener.receivedEvent;
+
+        assertTrue(remoteEvent != null);
         // not really needed because localContact's ip is already set to localhost. but hey, it is for educational purpose :p
         localAccount.getContactList().getContact(InetAddress.getLocalHost(), localContact.getUsername()).setIp(remoteEvent.getSource());
 
-        assertTrue(remoteEvent != null);
+        
         assertTrue(remoteEvent.isExternal());
-
         assertNotNull(remoteEvent.getSource());
 
         assertNotNull(remoteEvent.getContact());

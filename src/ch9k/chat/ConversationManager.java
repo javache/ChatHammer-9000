@@ -28,11 +28,13 @@ public class ConversationManager implements EventListener{
      * @return conversation The started conversation
      */
     public Conversation startConversation(Contact contact, boolean initiatedByMe) {
-        // TODO pass true the correct boolean, get info from event
-        Conversation conversation = new Conversation(contact, initiatedByMe);
-        // TODO what if there is already a conversation with this contact?
-        conversations.put(contact, conversation);
-        return conversation;
+        if(!conversations.containsKey(contact)) {
+            Conversation conversation = new Conversation(contact, initiatedByMe);
+            conversations.put(contact, conversation);
+            return conversation;
+        } else {
+            return conversations.get(contact);
+        }
     }
 
     /**
