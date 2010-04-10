@@ -1,5 +1,6 @@
 package ch9k.chat.events;
 
+import ch9k.chat.ChatMessage;
 import ch9k.chat.Contact;
 import ch9k.chat.ContactList;
 import ch9k.chat.Conversation;
@@ -61,7 +62,9 @@ public class ConversationEventTest {
         DummyListener remoteListener = new DummyListener();
         remotePool.addListener(remoteListener, new TypeEventFilter(ConversationEvent.class));
 
-        ConversationEvent localEvent = new NewChatMessageEvent(localConversation, null);
+        ChatMessage chatMessage = new ChatMessage(contact.getUsername(), "Dag JPanneel");
+
+        ConversationEvent localEvent = new NewChatMessageEvent(localConversation, chatMessage);
         localPool.raiseEvent(localEvent);
         Thread.sleep(100); // wait while the event gets transmitted
 
@@ -71,6 +74,7 @@ public class ConversationEventTest {
 
         assertNotSame(contact, remoteEvent.getContact());
         assertNotSame(localConversation, remoteEvent.getConversation());
+        
     }
 
     private class DummyListener implements EventListener {
