@@ -52,7 +52,8 @@ public class ConversationEventTest {
         EventPool remotePool = new EventPool();
         // and connect it to the local one
         Connection remoteConnection = new Connection(InetAddress.getLocalHost(), remotePool);
-
+        Thread.sleep(100);
+        
         ConversationManager manager = ChatApplication.getInstance().getConversationManager();
         Contact contact = new Contact("Javache", InetAddress.getLocalHost(), true);
         Conversation localConversation = manager.startConversation(contact);
@@ -62,7 +63,7 @@ public class ConversationEventTest {
 
         ConversationEvent localEvent = new NewChatMessageEvent(localConversation, null);
         localPool.raiseEvent(localEvent);
-        Thread.sleep(100); // wait while the event gets transmitted
+        Thread.sleep(1000); // wait while the event gets transmitted
 
         ConversationEvent remoteEvent = (ConversationEvent)remoteListener.receivedEvent;
         assertTrue(remoteEvent != null);

@@ -159,7 +159,11 @@ public class ConnectionManager {
     }
 
     private Connection getOrCreateConnection(InetAddress target) {
+        for(InetAddress inetAddress : connectionMap.keySet()) {
+            System.out.println(inetAddress);
+        }
         if (!connectionMap.containsKey(target)) {
+            LOGGER.info("Creating connection " + target.toString() + " since we don't have one.");
             try {
                 connectionMap.put(target, new Connection(target, pool));
             } catch (IOException ex) {
@@ -183,11 +187,11 @@ public class ConnectionManager {
                 LOGGER.info("Started accepting connections!");
                 while (!Thread.interrupted()) {
                     Socket client = server.accept();
-                    LOGGER.info("Accepted a new connection! Source is localhost? "
-                            + (InetAddress.getLocalHost().equals(client.getInetAddress())));
                     Connection conn = new Connection(client, pool);
                     // TODO worry about synchronisation later
                     connectionMap.put(client.getInetAddress(), conn);
+                    LOGGER.info("Accepted a new connection! Source is localhost? "
+                            + (InetAddress.getLocalHost().hashCode() == client.getInetAddress().hashCode()));
                 }
             } catch (IOException ex) {
                 // if this fails it would appear as if nothing ever happened

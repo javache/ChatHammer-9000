@@ -46,11 +46,11 @@ public class ConnectionManagerTest {
         }
 
         // we should sleep +- 10 ms per event, to make sure they're send
-        Thread.sleep(150*n);
+        Thread.sleep(1500*n);
         assertEquals(n, testListener.received);
 
         echoServer.stop();
-        Thread.sleep(50); // wait so server has shutdown for sure
+        Thread.sleep(500); // wait so server has shutdown for sure
     }
 
     /**
@@ -60,14 +60,14 @@ public class ConnectionManagerTest {
     @Test
     public void testDisconnect() throws IOException, InterruptedException {
         connectionManager.readyForIncomingConnections();
-        Thread.sleep(50);
+        Thread.sleep(500);
 
         Connection conn = new Connection(InetAddress.getLocalHost(), new EventPool());
         assertTrue(conn.hasConnection());
 
         // close it up
         connectionManager.disconnect();
-        Thread.sleep(200);
+        Thread.sleep(2000);
         assertFalse(conn.hasConnection());
 
         // we shouldn't be able to connect any more
@@ -89,7 +89,7 @@ public class ConnectionManagerTest {
     public void testShouldNotRaiseConnectException() throws IOException, InterruptedException {
         connectionManager.readyForIncomingConnections();
         // creating a serversocket takes some time, lets wait a bit
-        Thread.sleep(50);
+        Thread.sleep(500);
         Socket s = new Socket(InetAddress.getLocalHost(), Connection.DEFAULT_PORT);
         s.close();
     }
