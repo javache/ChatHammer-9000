@@ -78,6 +78,10 @@ public class ChatMessageTest {
     public void testHashCode() {
         ChatMessage differentMessage = new ChatMessage("Javache", "JaJa!");
         assertNotSame(chatMessage.hashCode(), differentMessage.hashCode());
+        
+        ChatMessage sameMessage = new ChatMessage("JPanneel", "Hey! You!");
+        assertEquals(chatMessage.hashCode(), sameMessage.hashCode());
+        
     }
 
      /**
