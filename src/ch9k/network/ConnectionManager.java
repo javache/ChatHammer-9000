@@ -12,7 +12,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -68,6 +67,7 @@ public class ConnectionManager {
      * @param networkEvent 
      */
     public void sendEvent(NetworkEvent networkEvent) {
+        LOGGER.info("Adding event to queue " + networkEvent.getClass().toString());
         // add to the queue, the dispatch thread will take it from there
         eventQueue.add(networkEvent);
     }
@@ -125,7 +125,7 @@ public class ConnectionManager {
         boolean online = false;
         
         // only one connection to test with
-        if (connectionMap.values().size() == 1) {
+        if (connectionMap.values().size() <= 1) {
             online = true;
             try {
                 new Socket("www.google.com", 80);
@@ -159,9 +159,6 @@ public class ConnectionManager {
     }
 
     private Connection getOrCreateConnection(InetAddress target) {
-        for(InetAddress inetAddress : connectionMap.keySet()) {
-            System.out.println(inetAddress);
-        }
         if (!connectionMap.containsKey(target)) {
             LOGGER.info("Creating connection to " + target.toString() + " since we don't have one.");
             try {
@@ -190,8 +187,7 @@ public class ConnectionManager {
                     Connection conn = new Connection(client, pool);
                     // TODO worry about synchronisation later
                     connectionMap.put(client.getInetAddress(), conn);
-                    LOGGER.info("Accepted a new connection! Source is localhost? "
-                            + (InetAddress.getLocalHost().equals(client.getInetAddress())));
+                    LOGGER.info("Accepted a new connection! " + client.getInetAddress());
                 }
             } catch (IOException ex) {
                 // if this fails it would appear as if nothing ever happened
@@ -204,7 +200,9 @@ public class ConnectionManager {
      * Starts a thread that will listen for incoming connections
      */
     private void startListenThread() {
-        new Thread(new Listener()).start();
+        Thread listenThread = new Thread(new Listener());
+        listenThread.setDaemon(true);
+        listenThread.start();
     }
 
     /**
@@ -214,7 +212,7 @@ public class ConnectionManager {
         public void run() {
             try {
                 while (!Thread.interrupted()) {
-                    NetworkEvent ev = eventQueue.poll(200, TimeUnit.MILLISECONDS);
+                    NetworkEvent ev = eventQueue.take();
                     if (ev == null) {
                         continue;
                     }
@@ -223,7 +221,7 @@ public class ConnectionManager {
                         if(conn != null) {
                             conn.sendEvent(ev);
                         }
-                    } catch (IOException e) {
+                    } catch (IOException ex) {
                         handleNetworkError(ev.getTarget());
                     }
                 }
@@ -235,6 +233,7 @@ public class ConnectionManager {
 
     private void startDispatcherThread() {
         dispatcherThread = new Thread(new Dispatcher());
+        dispatcherThread.setDaemon(true);
         dispatcherThread.start();
     }
 }
