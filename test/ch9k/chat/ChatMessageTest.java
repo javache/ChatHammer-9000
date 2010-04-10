@@ -1,6 +1,7 @@
 package ch9k.chat;
 
 import java.util.Date;
+import java.util.regex.Pattern;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -25,7 +26,7 @@ public class ChatMessageTest {
      */
     @Test
     public void testGetText() {
-        assertEquals(chatMessage.getText(), text);
+        assertEquals(text, chatMessage.getText());
     }
 
     /**
@@ -33,15 +34,16 @@ public class ChatMessageTest {
      */
     @Test
     public void testGetAuthor() {
-        assertEquals(chatMessage.getAuthor(), author);
+        assertEquals(author, chatMessage.getAuthor());
     }
 
     /**
      * Test of getTime method, of class ChatMessage.
      */
     @Test
-    public void testGetTime() {
-        assertTrue(chatMessage.getTime().before(new Date()) || chatMessage.getTime().equals(new Date()));
+    public void testGetTime() throws InterruptedException {
+        Thread.sleep(5);
+        assertTrue(chatMessage.getTime().before(new Date()));
     }
 
     /**
@@ -83,7 +85,9 @@ public class ChatMessageTest {
      */
     @Test
     public void testToString() {
-        //System.out.println(chatMessage.toString());
-        fail("No assertions.");
+        String result = chatMessage.toString();
+        // use a regex for matching the date
+        assertTrue(result.matches("^<[0-9:]+> " + Pattern.quote(author) +
+                ": " + Pattern.quote(text)));
     }
 }

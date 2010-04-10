@@ -3,6 +3,7 @@ package ch9k.chat;
 import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Formatter;
 
 /**
  * Wrapper around a String that represents a chatMessage
@@ -94,9 +95,8 @@ public class ChatMessage implements Comparable<ChatMessage>, Serializable{
 
     @Override
     public String toString() {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(time);
-
-        return ("<" + calendar.get(Calendar.HOUR) + ":" + calendar.get(Calendar.MINUTE) + ">" + author + ": " + text);
+        Formatter f = new Formatter();
+        f.format("<%1$tH:%1$tM> %2$s: %3$s", time, author, text);
+        return f.toString();
     }
 }
