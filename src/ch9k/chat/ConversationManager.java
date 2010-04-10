@@ -62,7 +62,9 @@ public class ConversationManager implements EventListener{
 
         if(event instanceof CloseConversationEvent) {
             CloseConversationEvent closeConversationEvent = (CloseConversationEvent)event;
-            this.closeConversation(closeConversationEvent.getContact());
+            if(!closeConversationEvent.isExternal()){
+                this.closeConversation(closeConversationEvent.getContact());
+            }
         }
     }
     

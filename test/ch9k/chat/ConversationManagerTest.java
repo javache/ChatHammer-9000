@@ -33,7 +33,11 @@ public class ConversationManagerTest {
      */
     @Test
     public void testCloseConversation() {
-        fail("Close() is yet to be implemented");
+        Contact contact = new Contact("Javache", null, true);
+        Conversation conversation = conversationManager.startConversation(contact, true);
+        assertEquals(conversation, conversationManager.getConversation(contact));
+        conversationManager.closeConversation(contact);
+        assertNull(conversationManager.getConversation(contact));
     }
 
     /**
