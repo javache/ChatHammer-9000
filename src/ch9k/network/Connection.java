@@ -132,6 +132,7 @@ public class Connection {
      */
     public void sendObject(Object obj) throws IOException {
         out.writeObject(obj);
+        out.flush();
     }
     
     private void remoteClosed() {
