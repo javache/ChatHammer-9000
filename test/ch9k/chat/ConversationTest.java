@@ -134,13 +134,13 @@ public class ConversationTest {
         assertEquals(conversation, closeConversationEvent.getConversation());
     }
 
-    private class DummyListener implements EventListener {
-        public Event receivedEvent;
-        @Override
-        public void handleEvent(Event event) {
-            receivedEvent = event;
+        private class DummyListener implements EventListener {
+            public Event receivedEvent;
+            @Override
+            public void handleEvent(Event event) {
+                receivedEvent = event;
+            }
         }
-    }
 
     /**
      * Test of equals method, of class Conversation.

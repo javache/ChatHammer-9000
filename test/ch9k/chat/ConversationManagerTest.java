@@ -24,7 +24,7 @@ public class ConversationManagerTest {
     public void testStartConversation() {
         Contact contact = new Contact("Javache", null, true);
         Conversation conversation = new Conversation(contact, true);
-        assertEquals(conversation, conversationManager.startConversation(contact));
+        assertEquals(conversation, conversationManager.startConversation(contact, false));
         assertEquals(conversation, conversationManager.getConversation(contact));
     }
 
@@ -43,7 +43,7 @@ public class ConversationManagerTest {
     public void testGetConversation() {
         Contact contact = new Contact("Javache", null, true);
         Conversation conversation = new Conversation(contact, true);
-        assertEquals(conversation, conversationManager.startConversation(contact));
+        assertEquals(conversation, conversationManager.startConversation(contact, false));
         assertEquals(conversation, conversationManager.getConversation(contact));
     }
 
