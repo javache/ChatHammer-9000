@@ -82,7 +82,6 @@ public class ChatMessageTest {
         Thread.sleep(5);
         differentMessage = new ChatMessage("JPanneel", "Hey! You!");
         assertNotSame(chatMessage.hashCode(), differentMessage.hashCode());
-        
     }
 
      /**

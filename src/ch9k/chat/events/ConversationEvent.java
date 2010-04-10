@@ -44,8 +44,11 @@ public abstract class ConversationEvent extends NetworkEvent {
         */
         if(contact == null) {
             ContactList contacts = ChatApplication.getInstance().getAccount().getContactList();
-            if(isExternal()) contact = contacts.getContact(source, sender);
-            else contact = contacts.getContact(target, receiver);
+            if(isExternal()) {
+                contact = contacts.getContact(source, sender);
+            } else {
+                contact = contacts.getContact(target, receiver);
+            }
         }
         return contact;
     }
