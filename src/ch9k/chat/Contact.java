@@ -1,5 +1,13 @@
 package ch9k.chat;
 
+import ch9k.chat.events.ContactOfflineEvent;
+import ch9k.chat.events.ContactOnlineEvent;
+import ch9k.chat.events.ContactStatusChangeEvent;
+import ch9k.chat.events.ContactStatusEvent;
+import ch9k.eventpool.Event;
+import ch9k.eventpool.EventListener;
+import ch9k.eventpool.EventPool;
+import ch9k.eventpool.TypeEventFilter;
 import java.net.InetAddress;
 
 /**
@@ -7,7 +15,7 @@ import java.net.InetAddress;
  * This holds the contacts ip, username, status, and knows whether a contact is online or offline and blocked or not.
  * @author Jens Panneel
  */
-public class Contact implements Comparable<Contact>{
+public class Contact implements Comparable<Contact>, EventListener{
     private InetAddress ip;
     private String username;
     private String status;
@@ -25,6 +33,7 @@ public class Contact implements Comparable<Contact>{
         this.ip = ip;
         this.blocked = blocked;
         online = false;
+        EventPool.getAppPool().addListener(this, new TypeEventFilter(ContactStatusEvent.class));
     }
 
     /**
@@ -136,6 +145,22 @@ public class Contact implements Comparable<Contact>{
         } else {
             // if same name, ip cannot be the same, so this will never return 0!
             return this.getIp().toString().compareTo(contact.getIp().toString());
+        }
+    }
+
+    @Override
+    public void handleEvent(Event event) {
+        if(event instanceof ContactOnlineEvent) {
+            this.setOnline(true);
+        }
+
+        if(event instanceof ContactOfflineEvent) {
+            this.setOnline(false);
+        }
+
+        if(event instanceof ContactStatusChangeEvent) {
+            ContactStatusChangeEvent contactStatusChangeEvent = (ContactStatusChangeEvent)event;
+            this.setStatus(contactStatusChangeEvent.getNewStatus());
         }
     }
 }
