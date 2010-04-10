@@ -5,6 +5,7 @@ import ch9k.chat.Contact;
 import ch9k.chat.ContactList;
 import ch9k.chat.Conversation;
 import ch9k.chat.ConversationManager;
+import ch9k.core.Account;
 import ch9k.core.ChatApplication;
 import ch9k.eventpool.Event;
 import ch9k.eventpool.EventListener;
@@ -37,7 +38,7 @@ public class ConversationEventTest {
         list.addContact(remoteContactB);
 
         ConversationManager manager = ChatApplication.getInstance().getConversationManager();
-        Conversation conversation = manager.startConversation(remoteContactA);
+        Conversation conversation = manager.startConversation(remoteContactA, false);
         ConversationEvent conversationEvent = new NewChatMessageEvent(conversation, null);
 
         assertEquals(remoteContactA, conversationEvent.getContact());
@@ -45,40 +46,68 @@ public class ConversationEventTest {
     }
 
     @Test
-    public void testRemoteGetContact() throws UnknownHostException, IOException, InterruptedException {
+    public void testRemoteGetContactAndConversation() throws UnknownHostException, IOException, InterruptedException {
+        Account localAccount = ChatApplication.getInstance().getAccount();
+
         EventPool localPool = EventPool.getAppPool();
-        Thread.sleep(100); // wait for apppool to start up
+        // wait for apppool to start up
+        Thread.sleep(100); 
 
         // create a remote eventpool
         EventPool remotePool = new EventPool();
         // and connect it to the local one
         Connection remoteConnection = new Connection(InetAddress.getLocalHost(), remotePool);
-        Thread.sleep(100);
+        Thread.sleep(100); // wait for thread to get up and running
 
-        ConversationManager manager = ChatApplication.getInstance().getConversationManager();
-        Contact contact = new Contact("Javache", InetAddress.getLocalHost(), true);
-        Conversation localConversation = manager.startConversation(contact);
+        // local usernormally doesn't excist as a Contact, this is needed for testing, needs to had the username of the localuser so account.getUsername
+        Contact localContact = new Contact(localAccount.getUsername(), InetAddress.getLocalHost(), false);
+        // needs to be in contactlist. because contactList will act as both local and remote contactList
+        localAccount.getContactList().addContact(localContact);
+        // contact you will be chatting with
+        Contact remoteContact = new Contact("Javache", InetAddress.getLocalHost(), true);
+        // this should normally be in contactList
+        localAccount.getContactList().addContact(remoteContact);
+        // this wil be the local conversation manager, but it will act as both local and remote so there should also be a conversation with the local user
+        ConversationManager localConversationManager = ChatApplication.getInstance().getConversationManager();
+        // this should normally be in the conversationmanager
+        Conversation localConversation = localConversationManager.startConversation(remoteContact, false);
+        // this is the conversation the remote user has with you, it is in the local conversation manager for testing
+        Conversation remoteConversation = localConversationManager.startConversation(localContact, false);
+        // local user types message
+        ChatMessage chatMessage = new ChatMessage(localContact.getUsername(), "Dag Javache, jij jij remoteUser!");
+        ConversationEvent localEvent = new NewChatMessageEvent(localConversation, chatMessage);
 
+        // listener on remotePpool
         DummyListener remoteListener = new DummyListener();
         remotePool.addListener(remoteListener, new TypeEventFilter(ConversationEvent.class));
 
-        ChatMessage chatMessage = new ChatMessage(contact.getUsername(), "Dag JPanneel");
-
-        ConversationEvent localEvent = new NewChatMessageEvent(localConversation, chatMessage);
+        // event is raised on localpool and sended to remotePool
         localPool.raiseEvent(localEvent);
-        Thread.sleep(100); // wait while the event gets transmitted
+        // wait while the event gets transmitted
+        Thread.sleep(200); 
 
         ConversationEvent remoteEvent = (ConversationEvent)remoteListener.receivedEvent;
+        localAccount.getContactList().getContact(InetAddress.getLocalHost(), localContact.getUsername()).setIp(remoteEvent.getSource());
+
         assertTrue(remoteEvent != null);
         assertTrue(remoteEvent.isExternal());
 
-        assertNotSame(contact, remoteEvent.getContact());
+        assertNotNull(remoteEvent.getSource());
+
+        assertNotNull(remoteEvent.getContact());
+        assertNotNull(remoteEvent.getConversation());
+
+        assertNotSame(remoteContact, remoteEvent.getContact());
+        assertEquals(localContact, remoteEvent.getContact());
+
         assertNotSame(localConversation, remoteEvent.getConversation());
+        assertEquals(remoteConversation, remoteEvent.getConversation());
         
     }
 
     private class DummyListener implements EventListener {
         public Event receivedEvent;
+        @Override
         public void handleEvent(Event event) {
             receivedEvent = event;
         }
@@ -93,8 +122,8 @@ public class ConversationEventTest {
         Contact remoteContactB = new Contact("JPanneel", InetAddress.getByName("google.be"), true);
 
         ConversationManager manager = ChatApplication.getInstance().getConversationManager();
-        Conversation conversationA = manager.startConversation(remoteContactA);
-        Conversation conversationB = manager.startConversation(remoteContactB);
+        Conversation conversationA = manager.startConversation(remoteContactA, false);
+        Conversation conversationB = manager.startConversation(remoteContactB, false);
 
         ConversationEvent conversationEvent = new NewChatMessageEvent(conversationA, null);
 
