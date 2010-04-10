@@ -7,6 +7,9 @@ import java.io.ObjectOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 
 /**
  * This is a test helper class
@@ -16,6 +19,9 @@ import java.util.List;
 public class DirectResponseServer {    
     private ServerSocket server;
     private List<Socket> clients;
+    
+    private static final Logger LOGGER =
+            Logger.getLogger(DirectResponseServer.class.getName());
     
     public DirectResponseServer() throws IOException {
         server = new ServerSocket(Connection.DEFAULT_PORT);
@@ -29,6 +35,7 @@ public class DirectResponseServer {
             }
             server.close();
         } catch (IOException ex) {
+            Logger.log(Level.WARNING,ex.toString());
         }
     }
     
