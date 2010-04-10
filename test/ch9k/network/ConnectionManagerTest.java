@@ -124,7 +124,7 @@ public class ConnectionManagerTest {
     
     @Test
     public void shouldNotThinkConnectionIsLost() throws Exception {
-        connectionManager.sendEvent(new FailNetworkEvent());
+        connectionManager.sendEvent(new UnresponsiveTargetEvent());
         // wait long enough
         Thread.sleep(700);
         assertTrue(onlineListener.online);
