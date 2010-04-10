@@ -158,14 +158,14 @@ public class ConversationTest {
         // contact2 is in local contactList
         ChatApplication.getInstance().getAccount().getContactList().addContact(contact2);
         // contact1 is the local, so contact2 is in the conversation
-        Conversation conversation1 = new Conversation(contact2, true);
+        Conversation conversation = new Conversation(contact2, true);
         // JPanneel says Dag to Javache
         ChatMessage chatMessage = new ChatMessage(contact1.getUsername(), "Dag Javache!");
-        NewChatMessageEvent messageEvent = new NewChatMessageEvent(conversation1, chatMessage);
+        NewChatMessageEvent messageEvent = new NewChatMessageEvent(conversation, chatMessage);
         EventPool.getAppPool().raiseEvent(messageEvent);
 
-        Thread.sleep(50); // wait for event to be delivered
-        assertEquals(1, conversation1.getMessages(10).length);
-        assertEquals("Dag Javache!", conversation1.getMessages(1)[0]);
+        Thread.sleep(500); // wait for event to be delivered and sockets to close
+        assertEquals(1, conversation.getMessages(10).length);
+        assertEquals("Dag Javache!", conversation.getMessages(1)[0]);
     }
 }

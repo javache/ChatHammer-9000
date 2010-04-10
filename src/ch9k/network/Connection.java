@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -24,7 +25,12 @@ public class Connection {
      * chosen because it's the smallest prime number
      * OVER 9000
      */
-    public static int DEFAULT_PORT = 9001;
+    public static final int DEFAULT_PORT = 9001;
+
+    /**
+     * Amount of time to wait for a scoket
+     */
+    private static final int SOCKET_TIMEOUT = 500;
     
     /**
      * The socket used to write to the other side
@@ -63,7 +69,11 @@ public class Connection {
      * @throws IOException
      */
     public Connection(InetAddress ip, EventPool pool) throws IOException {
-        this(new Socket(ip,DEFAULT_PORT), pool);
+        socket = new Socket();
+        socket.connect(new InetSocketAddress(ip, DEFAULT_PORT), SOCKET_TIMEOUT);
+        this.pool = pool;
+
+        init();
     }
 
     /**
@@ -77,7 +87,12 @@ public class Connection {
         this.socket = socket;
         this.pool = pool;
         
+        init();
+    }
+
+    private void init() throws IOException  {
         socket.setKeepAlive(true);
+        socket.setSoTimeout(SOCKET_TIMEOUT);
 
         out = new ObjectOutputStream(socket.getOutputStream());
         in = new ObjectInputStream(socket.getInputStream());        

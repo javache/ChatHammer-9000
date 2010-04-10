@@ -63,7 +63,7 @@ public class ConversationEventTest {
 
         ConversationEvent localEvent = new NewChatMessageEvent(localConversation, null);
         localPool.raiseEvent(localEvent);
-        Thread.sleep(1000); // wait while the event gets transmitted
+        Thread.sleep(100); // wait while the event gets transmitted
 
         ConversationEvent remoteEvent = (ConversationEvent)remoteListener.receivedEvent;
         assertTrue(remoteEvent != null);
