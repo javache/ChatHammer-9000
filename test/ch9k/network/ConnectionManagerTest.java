@@ -4,6 +4,8 @@ import ch9k.eventpool.Event;
 import ch9k.eventpool.EventListener;
 import ch9k.eventpool.EventPool;
 import ch9k.eventpool.TypeEventFilter;
+import ch9k.network.events.NetworkConnectionLostEvent;
+
 import java.io.IOException;
 import java.net.ConnectException;
 import java.net.InetAddress;
@@ -14,7 +16,18 @@ import static org.junit.Assert.*;
 
 public class ConnectionManagerTest {
     private TestListener testListener;
+    private OnlineListener onlineListener;
+
     private ConnectionManager connectionManager;
+
+    private class OnlineListener implements EventListener {
+        public boolean online = true;
+        
+        @Override
+        public void handleEvent(Event ev) {
+            online = false;
+        }
+    }
 
     private class TestListener implements EventListener {
         public int received = 0;
@@ -29,7 +42,10 @@ public class ConnectionManagerTest {
     public void setUp() throws IOException {
         EventPool pool = new EventPool();
         testListener = new TestListener();
+        onlineListener = new OnlineListener();
         pool.addListener(testListener, new TypeEventFilter(TestNetworkEvent.class));
+        pool.addListener(onlineListener,new TypeEventFilter(NetworkConnectionLostEvent.class));
+
 
         connectionManager = new ConnectionManager(pool);
     }
@@ -78,6 +94,14 @@ public class ConnectionManagerTest {
             exceptionThrown = true;
         }
         assertTrue(exceptionThrown);
+    }
+    
+    @Test
+    public void shouldNotThinkConnectionIsLost() throws Exception {
+        connectionManager.sendEvent(new FailNetworkEvent());
+        // wait long enough
+        Thread.sleep(700);
+        assertTrue(onlineListener.online);
     }
     
     @Test(expected=ConnectException.class)
