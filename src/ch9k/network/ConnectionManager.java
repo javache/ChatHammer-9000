@@ -77,6 +77,13 @@ public class ConnectionManager {
      * send a disconnection Event to all the Connections
      */
     public void disconnect() {
+        // stop accepting new connectons
+        try {
+            server.close();
+        } catch (IOException ex) {
+            LOGGER.log(Level.WARNING, ex.toString());
+        }
+        
         // stop sending events
         dispatcherThread.interrupt();
 
@@ -86,12 +93,7 @@ public class ConnectionManager {
         }
         connectionMap.clear();
 
-        // stop accepting new connectons
-        try {
-            server.close();
-        } catch (IOException ex) {
-            LOGGER.log(Level.WARNING, ex.toString());
-        }
+        
     }
 
     /**
