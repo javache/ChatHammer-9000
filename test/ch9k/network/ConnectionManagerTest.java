@@ -38,6 +38,7 @@ public class ConnectionManagerTest {
         pool.addListener(onlineListener, new TypeEventFilter(NetworkConnectionLostEvent.class));
 
         connectionManager = new ConnectionManager(pool);
+        Thread.sleep(100);
     }
 
     @Test

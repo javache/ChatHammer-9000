@@ -29,6 +29,8 @@ public class ContactTest {
 
     @Before
     public void setUp() throws UnknownHostException {
+        ChatApplication.getInstance().getAccount().getContactList().clear();
+        EventPool.getAppPool().clearListeners();
         username = "JPanneel";
         ip = InetAddress.getByName("google.be");
         contact = new Contact(username, ip, false);
@@ -183,6 +185,7 @@ public class ContactTest {
      * Test of handelEvent method, of class Contact.
      * only tests the remote side
      */
+
     @Test
     public void testRemoteHandleEvent() throws UnknownHostException, InterruptedException, IOException {
         // get the local app-pool and let it start
@@ -226,20 +229,23 @@ public class ContactTest {
         assertEquals("", localContact.getStatus());
 
         localPool.raiseEvent(contactOnlineEvent);
-        localPool.raiseEvent(contactBlockedEvent);
-        localPool.raiseEvent(contactStatusChangeEvent);
-        Thread.sleep(900);
-
+        Thread.sleep(100);
         assertTrue(localContact.isOnline());
-        assertTrue(localContact.isBlocked());
+
+        localPool.raiseEvent(contactBlockedEvent);
+        Thread.sleep(100);
+        assertFalse(localContact.isOnline());
+
+        localPool.raiseEvent(contactUnblockedEvent);
+        Thread.sleep(100);
+        assertTrue(localContact.isOnline());
+
+        localPool.raiseEvent(contactStatusChangeEvent);
+        Thread.sleep(100);
         assertEquals(newStatus, localContact.getStatus());
 
         localPool.raiseEvent(contactOfflineEvent);
-        localPool.raiseEvent(contactUnblockedEvent);
-        Thread.sleep(900);
-
+        Thread.sleep(100);
         assertFalse(localContact.isOnline());
-        assertFalse(localContact.isBlocked());
-
     }
 }
