@@ -15,6 +15,7 @@ import ch9k.network.Connection;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -29,11 +30,15 @@ public class ContactTest {
 
     @Before
     public void setUp() throws UnknownHostException {
-        ChatApplication.getInstance().getAccount().getContactList().clear();
-        EventPool.getAppPool().clearListeners();
         username = "JPanneel";
         ip = InetAddress.getByName("google.be");
         contact = new Contact(username, ip, false);
+    }
+
+    @After
+    public void tearDown() {
+        EventPool.getAppPool().clearListeners();
+        ChatApplication.getInstance().getAccount().getContactList().clear();
     }
 
     /**
@@ -148,7 +153,6 @@ public class ContactTest {
     @Test
     public void testHandleEvent() throws UnknownHostException, InterruptedException {
         EventPool eventPool = EventPool.getAppPool();
-        Thread.sleep(100);
 
         ContactStatusEvent contactOnlineEvent = new ContactOnlineEvent(contact);
         ContactStatusEvent contactOfflineEvent = new ContactOfflineEvent(contact);
@@ -166,16 +170,15 @@ public class ContactTest {
         eventPool.raiseEvent(contactOnlineEvent);
         eventPool.raiseEvent(contactBlockedEvent);
         eventPool.raiseEvent(contactStatusChangeEvent);
-        Thread.sleep(300);
+        Thread.sleep(100);
 
         assertTrue(contact.isOnline());
         assertTrue(contact.isBlocked());
         assertEquals(newStatus, contact.getStatus());
 
-
         eventPool.raiseEvent(contactOfflineEvent);
         eventPool.raiseEvent(contactUnblockedEvent);
-        Thread.sleep(200);
+        Thread.sleep(100);
 
         assertFalse(contact.isOnline());
         assertFalse(contact.isBlocked());
@@ -207,9 +210,9 @@ public class ContactTest {
         contactList.addContact(localContact);
         contactList.addContact(remoteContact);
 
-        //remove the remotecontact from the list of local listeners, because we want to test the remote side
+        // remove the remotecontact from the list of local listeners, because we want to test the remote side
         localPool.removeListener(remoteContact);
-        // localy this is not a contact, so not a listener
+        // locally this is not a contact, so not a listener
         localPool.removeListener(localContact);
         // the local contact is a real contact on remote side, so it should listen
         remotePool.addListener(localContact, new ContactStatusEventFilter(localContact));

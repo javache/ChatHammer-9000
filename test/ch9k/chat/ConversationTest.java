@@ -6,8 +6,6 @@ import ch9k.chat.events.ConversationEventFilter;
 import ch9k.chat.events.NewChatMessageEvent;
 import ch9k.core.Account;
 import ch9k.core.ChatApplication;
-import ch9k.eventpool.Event;
-import ch9k.eventpool.EventListener;
 import ch9k.eventpool.EventPool;
 import ch9k.eventpool.TestListener;
 import ch9k.eventpool.TypeEventFilter;
@@ -40,7 +38,7 @@ public class ConversationTest {
     @After
     public void tearDown() {
         EventPool.getAppPool().clearListeners();
-        ChatApplication.getInstance().getAccount().getContactList().getContacts().clear();
+        ChatApplication.getInstance().getAccount().getContactList().clear();
     }
 
     /**
@@ -135,9 +133,6 @@ public class ConversationTest {
 
         CloseConversationEvent closeConversationEvent = (CloseConversationEvent)testListener.lastReceivedEvent;
         assertEquals(contact, closeConversationEvent.getContact());
-
-        // wait so everything else properly times out
-        Thread.sleep(400);
     }
 
     /**
@@ -204,6 +199,7 @@ public class ConversationTest {
         // it already registered with the local pool during construction
         // let's hope that doesn't bring too much problems...
         remotePool.addListener(remoteConversation, new ConversationEventFilter(remoteConversation));
+
         // remote conversation should not listen to localPool
         localPool.removeListener(remoteConversation);
 
@@ -213,7 +209,7 @@ public class ConversationTest {
 
         // raise the event on the local pool, should get sent to remotePool too
         localPool.raiseEvent(localEvent);
-        Thread.sleep(250);
+        Thread.sleep(100);
 
         // let's check the results!
         assertEquals(1, remoteConversation.getMessages(10).length);

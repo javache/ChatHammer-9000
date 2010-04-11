@@ -99,6 +99,7 @@ public class ConnectionManager {
      */
     public void handleNetworkError(InetAddress target) {
         if (checkHeartbeat()) {
+            connectionMap.remove(target);
             // send an event signalling that target is offline
             pool.raiseEvent(new CouldNotConnectEvent(this, target));
         } else {

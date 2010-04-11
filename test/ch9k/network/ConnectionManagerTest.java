@@ -108,7 +108,7 @@ public class ConnectionManagerTest {
     @Test
     public void testShouldNotRaiseConnectException() throws IOException, InterruptedException {
         connectionManager.readyForIncomingConnections();
-        // creating a serversocket takes some time, lets wait a bit
+        // creating a serversocket takes some time, let's wait a bit
         Thread.sleep(100);
         Socket s = new Socket(InetAddress.getLocalHost(), Connection.DEFAULT_PORT);
         s.close();

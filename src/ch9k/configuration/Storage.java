@@ -12,8 +12,7 @@ import org.jdom.input.SAXBuilder;
 import org.jdom.output.XMLOutputter;
 
 /**
- * Used to manage persistable classes and store them on the user's HD
- *
+ * Used to manage persistable classes and store them on the users HD
  * @author Bruno
  */
 public class Storage {
@@ -129,27 +128,29 @@ public class Storage {
      */
     public static File getStorageDirectory(){
         String userHome = System.getProperty("user.home", ".");
+        String operatingSystem = System.getProperty("os.name").toLowerCase();
+        System.out.println(operatingSystem);
+
         File workingDirectory;
-        String sysName = System.getProperty("os.name").toLowerCase();
-        if (sysName.contains("windows")) {
+        if (operatingSystem.contains("windows")) {
             String applicationData = System.getenv("APPDATA");
             if (applicationData != null) {
-                workingDirectory = new File(applicationData, ".CH9K/");
+                workingDirectory = new File(applicationData, "CH9K/");
             } else {
                 workingDirectory = new File(userHome, ".CH9K/");
             }
-        } else if (sysName.contains("mac")) {
+        } else if (operatingSystem.contains("mac")) {
             workingDirectory = new File(userHome, "Library/Application Support/CH9K");
-        } else if (sysName.contains("linux")) {
-            workingDirectory = new File(userHome, ".CH9K/");
         } else {
-            return new File(".");
+            workingDirectory = new File(userHome, ".CH9K/");
         }
 
-        if (!workingDirectory.exists())
-            if (!workingDirectory.mkdirs())
+        if (!workingDirectory.exists()) {
+            if (!workingDirectory.mkdirs()) {
                 throw new RuntimeException("The working directory could not be created: " + workingDirectory);
-
+            }
+        }
+        
         return workingDirectory;
     }
 

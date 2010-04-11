@@ -28,17 +28,14 @@ public class Connection {
      * OVER 9000
      */
     public static final int DEFAULT_PORT = 9001;
-
     /**
      * Amount of time to wait for a socket on connect
      */
     private static final int SOCKET_CONNECT_TIMEOUT = 500;
-    
     /**
      * The socket used to write to the other side
      */
     private Socket socket;
-
     /**
      * I'm a lumberjack, and I'm okay.
      * I sleep all night and I work all day.
@@ -46,33 +43,28 @@ public class Connection {
      * Oh wait, that's a different kind of logging.
      */
     private static final Logger logger = Logger.getLogger(Connection.class);
-
     /**
      * A concurrent queue of events to be sent
      */
     private LinkedBlockingQueue<NetworkEvent> eventQueue =
             new LinkedBlockingQueue<NetworkEvent>();
-    
     /**
      * Streams used to transfer Objects
      */
     private ObjectOutputStream out;
     private ObjectInputStream in;
-
     /**
      * Thread that listens to the socket
      */
     private Thread listenerThread;
-
     /**
      * Thread that writes to the socket
      */
     private Thread writerThread;
-    
     /**
      * The EventPool to send events to
      */
-     private EventPool pool;
+    private EventPool pool;
 
      /**
       * True if the connection is still connecting, do not disturb
@@ -119,7 +111,7 @@ public class Connection {
     public Connection(Socket socket, EventPool pool) throws IOException {
         this.socket = socket;
         this.pool = pool;
-        
+
         init();
     }
 
@@ -127,7 +119,7 @@ public class Connection {
         socket.setKeepAlive(true);
 
         out = new ObjectOutputStream(socket.getOutputStream());
-        in = new ObjectInputStream(socket.getInputStream());        
+        in = new ObjectInputStream(socket.getInputStream());
 
         String threadName = "connection-" + socket.getInetAddress().getHostAddress();
 
@@ -161,7 +153,7 @@ public class Connection {
             logger.warn(ex.toString());
         }
     }
-    
+
     /**
      * sends a PingEvent to the target
      * @return false if pinging the target gives an exception
@@ -181,7 +173,7 @@ public class Connection {
         }
         return true;
     }
-    
+
     /**
      * send a NetworkEvent
      * @param ev The event to be send
@@ -189,7 +181,7 @@ public class Connection {
     public void sendEvent(NetworkEvent ev) {
         eventQueue.add(ev);
     }
-    
+
     /**
      * send an object
      * @param obj the Object to be send
@@ -203,7 +195,7 @@ public class Connection {
             throw new SocketException("No connection was made.");
         }
     }
-    
+
     private void remoteClosed() {
         pool.raiseEvent(new UserDisconnectedEvent(socket.getInetAddress()));
 
@@ -214,7 +206,7 @@ public class Connection {
             logger.warn(ex.toString());
         }
     }
-    
+
     /**
      * Start listening for incoming events and send them to the EventPool
      */
@@ -229,7 +221,6 @@ public class Connection {
             } catch (IOException ex) {
                 logger.warn(ex.toString());
             }
-
             // this happens when the socket on the remote end closes
             remoteClosed();
         }
