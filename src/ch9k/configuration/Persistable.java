@@ -7,7 +7,7 @@ package ch9k.configuration;
 public interface Persistable {
     /**
      * Store the object in its current state.
-     * @return some persistent data.
+     * @return a PersistentDataObject, ready to be stored.
      */
     PersistentDataObject persist();
 
