@@ -12,6 +12,7 @@ import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -45,6 +46,11 @@ public class Connection {
      */
     private static final Logger LOGGER =
             Logger.getLogger(Connection.class.getName());
+
+    /**
+     * A concurrent queue of events to be sent
+     */
+    private LinkedBlockingQueue<NetworkEvent> eventQueue;
     
     /**
      * Streams used to transfer Objects
@@ -56,6 +62,11 @@ public class Connection {
      * Thread that listens to the socket
      */
     private Thread listenerThread;
+
+    /**
+     * Thread that writes to the socket
+     */
+    private Thread writerThread;
     
     /**
      * The EventPool to send events to
@@ -93,15 +104,25 @@ public class Connection {
     private void init() throws IOException  {
         socket.setKeepAlive(true);
 
+        eventQueue = new LinkedBlockingQueue<NetworkEvent>();
         out = new ObjectOutputStream(socket.getOutputStream());
         in = new ObjectInputStream(socket.getInputStream());        
 
         listenerThread = new Thread(new Runnable() {
             public void run() {
-                runConnection();
+                runConnectionListener();
             }
         });
+        listenerThread.setDaemon(true);
         listenerThread.start();
+
+        writerThread = new Thread(new Runnable() {
+            public void run() {
+                runConnectionWriter();
+            }
+        });
+        writerThread.setDaemon(true);
+        writerThread.start();
     }
     
     /**
@@ -123,7 +144,7 @@ public class Connection {
      */
     public boolean hasConnection() {
         try {
-            sendEvent(new PingEvent(socket.getInetAddress()));
+            sendObject(new PingEvent(socket.getInetAddress()));
         } catch (IOException e) {
             return false;
         }
@@ -135,8 +156,8 @@ public class Connection {
      * @param ev The event to be send
      * @throws IOException
      */
-    public void sendEvent(NetworkEvent ev) throws IOException {
-        sendObject(ev);
+    public void sendEvent(NetworkEvent ev) {
+        eventQueue.add(ev);
     }
     
     /**
@@ -144,7 +165,7 @@ public class Connection {
      * @param obj the Object to be send
      * @throws IOException
      */
-    public void sendObject(Object obj) throws IOException {
+    private void sendObject(Object obj) throws IOException {
         out.writeObject(obj);
         out.flush();
     }
@@ -156,14 +177,14 @@ public class Connection {
         try {
             socket.shutdownOutput();
         } catch (IOException ex) {
-            LOGGER.log(Level.WARNING, ex.toString());
+            LOGGER.log(Level.SEVERE, ex.toString());
         }
     }
     
     /**
      * Start listening for incoming events and send them to the EventPool
      */
-    private void runConnection() {
+    private void runConnectionListener() {
         try {
             while(!socket.isClosed()) {
                 try {
@@ -176,7 +197,7 @@ public class Connection {
                     pool.raiseEvent((Event)ev);
                 } catch (ClassNotFoundException ex) {
                     // TODO handle error
-                    LOGGER.log(Level.WARNING, null, ex);
+                    LOGGER.log(Level.SEVERE, null, ex);
                 }
             }
         } catch (EOFException ex) {
@@ -184,7 +205,26 @@ public class Connection {
            // this happens when the socket on the remote end closes
            remoteClosed();
         } catch (IOException ex) {
-            LOGGER.log(Level.WARNING, null, ex);
+            LOGGER.log(Level.SEVERE, null, ex);
+        }
+    }
+
+    /**
+     * Send events from the queue
+     */
+    private void runConnectionWriter() {
+        try {
+            while(!socket.isClosed()) {
+                try {
+                    NetworkEvent ev = eventQueue.take();
+                    sendObject(ev);
+                } catch (IOException ex) {
+                    LOGGER.log(Level.SEVERE, null, ex);
+                }
+            }
+        } catch(InterruptedException ex) {
+            // we should just stop then
+            LOGGER.log(Level.INFO, ex.toString());
         }
     }
 }
