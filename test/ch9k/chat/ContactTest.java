@@ -211,35 +211,35 @@ public class ContactTest {
         // the local contact is a real contact on remote side, so it should listen
         remotePool.addListener(localContact, new ContactStatusEventFilter(localContact));
 
-        // create the events
-        ContactStatusEvent contactOnlineEvent = new ContactOnlineEvent(contact);
-        ContactStatusEvent contactOfflineEvent = new ContactOfflineEvent(contact);
+        // create the events localContact changes status and notifies remotecontact
+        ContactStatusEvent contactOnlineEvent = new ContactOnlineEvent(remoteContact);
+        ContactStatusEvent contactOfflineEvent = new ContactOfflineEvent(remoteContact);
 
-        ContactStatusEvent contactBlockedEvent = new ContactBlockedEvent(contact);
-        ContactStatusEvent contactUnblockedEvent = new ContactUnblockedEvent(contact);
+        ContactStatusEvent contactBlockedEvent = new ContactBlockedEvent(remoteContact);
+        ContactStatusEvent contactUnblockedEvent = new ContactUnblockedEvent(remoteContact);
 
         String newStatus = "on toilet";
-        ContactStatusEvent contactStatusChangeEvent = new ContactStatusChangeEvent(contact, newStatus);
+        ContactStatusEvent contactStatusChangeEvent = new ContactStatusChangeEvent(remoteContact, newStatus);
 
-        assertFalse(contact.isOnline());
-        assertFalse(contact.isBlocked());
-        assertEquals("", contact.getStatus());
+        assertFalse(localContact.isOnline());
+        assertFalse(localContact.isBlocked());
+        assertEquals("", localContact.getStatus());
 
         localPool.raiseEvent(contactOnlineEvent);
         localPool.raiseEvent(contactBlockedEvent);
         localPool.raiseEvent(contactStatusChangeEvent);
-        Thread.sleep(300);
+        Thread.sleep(900);
 
-        assertTrue(contact.isOnline());
-        assertTrue(contact.isBlocked());
-        assertEquals(newStatus, contact.getStatus());
+        assertTrue(localContact.isOnline());
+        assertTrue(localContact.isBlocked());
+        assertEquals(newStatus, localContact.getStatus());
 
         localPool.raiseEvent(contactOfflineEvent);
         localPool.raiseEvent(contactUnblockedEvent);
-        Thread.sleep(200);
+        Thread.sleep(900);
 
-        assertFalse(contact.isOnline());
-        assertFalse(contact.isBlocked());
+        assertFalse(localContact.isOnline());
+        assertFalse(localContact.isBlocked());
 
     }
 }
