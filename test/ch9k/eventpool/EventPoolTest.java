@@ -34,6 +34,25 @@ public class EventPoolTest {
         verify(listener); // assert that the event was received
     }
 
+    /**
+     * Test of removeListener method, of class EventPool.
+     * @throws InterruptedException
+     */
+    @Test
+    public void testRemoveListener() throws InterruptedException {
+        TestListener listener = new TestListener();
+        Event event = new MyEvent();
+        assertTrue(listener.getCount() == 0);
+        pool.addListener(listener, new TypeEventFilter(MyEvent.class));
+        pool.raiseEvent(event);
+        Thread.sleep(100);
+        assertTrue(listener.getCount() == 1);
+        pool.removeListener(listener);
+        pool.raiseEvent(event);
+        Thread.sleep(100);
+        assertTrue(listener.getCount() == 1);
+    }
+
     public class MyEvent extends Event {
         @Override
         public Object getSource() {

@@ -82,6 +82,20 @@ public class EventPool {
     }
 
     /**
+     * remove an EventListener
+     * @param listener
+     */
+    public void removeListener(EventListener listener) {
+        int i = 0;
+        while(i < listeners.size() && listener != listeners.get(i).listener){
+            i++;
+        }
+        if(i < listeners.size()) {
+            listeners.remove(i);
+        }
+    }
+
+    /**
      * Remove all registered listeners
      */
     public void clearListeners() {

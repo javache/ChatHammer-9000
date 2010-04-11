@@ -13,4 +13,8 @@ public class TestListener implements EventListener {
         lastReceivedEvent = event;
         receiveCount++;
     }
+
+    public int getCount() {
+        return receiveCount;
+    }
 }

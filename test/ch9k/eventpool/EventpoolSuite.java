@@ -10,6 +10,7 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({
         ch9k.eventpool.EventTest.class,
         ch9k.eventpool.EventPoolTest.class,
-        ch9k.eventpool.NetworkEventTest.class
+        ch9k.eventpool.NetworkEventTest.class,
+        ch9k.eventpool.TypeEventFilterTest.class
 })
 public class EventpoolSuite {}
