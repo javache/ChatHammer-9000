@@ -5,6 +5,7 @@ import java.security.MessageDigest;
 
 import ch9k.chat.ContactList;
 import ch9k.configuration.Persistable;
+import java.util.Arrays;
 import org.jdom.Element;
 
 /**
@@ -108,12 +109,35 @@ public class Account implements Persistable{
         }
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        Account other = (Account) obj;
+        if (!this.username.equals(other.getUsername())) {
+            return false;
+        }
+        if (Arrays.equals(this.passwordHash,other.getPasswordHash())) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 67 * hash + (this.username != null ? this.username.hashCode() : 0);
+        hash = 67 * hash + Arrays.hashCode(this.passwordHash);
+        return hash;
+    }
+
 
     @Override
     public PersistentDataObject persist() {
         Element pdo = new Element("account");
         pdo.addContent(new Element("username").addContent(username));
-        //Bad idea :p Change to something else
+        pdo.addContent(new Element("status").addContent(status));
         pdo.addContent(new Element("password").addContent(passwordHash.toString()));
         pdo.addContent(contactList.persist().getElement());
 
@@ -124,6 +148,8 @@ public class Account implements Persistable{
     public void load(PersistentDataObject object) {
         Element el = object.getElement();
         username = el.getChildText("username");
+        status = el.getChildText("status");
+        passwordHash = el.getChildText("status").getBytes();
         contactList= new ContactList();
         contactList.load(new PersistentDataObject(el.getChild("contactlist")));
         

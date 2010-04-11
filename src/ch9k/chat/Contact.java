@@ -12,6 +12,10 @@ import ch9k.eventpool.EventPool;
 import ch9k.configuration.Persistable;
 import ch9k.configuration.PersistentDataObject;
 import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.jdom.Element;
 
 /**
  * Representation of a contact aka "Buddy".
@@ -198,11 +202,26 @@ public class Contact implements Comparable<Contact>, EventListener, Persistable 
     
     @Override
     public PersistentDataObject persist() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        Element contact = new Element("contact");
+        contact.addContent(new Element("username").addContent(username));
+        contact.addContent(new Element("ip").addContent(ip.toString()));
+        contact.addContent(new Element("online").addContent(Boolean.toString(online)));
+        contact.addContent(new Element("blocked").addContent(Boolean.toString(blocked)));
+
+        return new PersistentDataObject(contact);
     }
 
     @Override
     public void load(PersistentDataObject object) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        Element el = object.getElement();
+        username = el.getChildText("username");
+        status = el.getChildText("status");
+        try {
+            ip = InetAddress.getByName(el.getChildText("status"));
+        } catch (UnknownHostException ex) {
+            Logger.getLogger(Contact.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        online = Boolean.parseBoolean(el.getChildText("online"));
+        blocked = Boolean.parseBoolean(el.getChildText("blocked"));
     }
 }
