@@ -21,9 +21,11 @@ public class NetworkEventTest {
      * Test of getSource method, of class NetworkEvent.
      */
     @Test
-    public void testGetSource() {
+    public void testGetSetSource() {
         NetworkEvent instance = new NetworkEvent(testIp);
         assertEquals(null, instance.getSource());
+        instance.setSource(testIp);
+        assertEquals(testIp, instance.getSource());
     }
 
     /**
@@ -33,5 +35,16 @@ public class NetworkEventTest {
     public void testGetTarget() {
         NetworkEvent instance = new NetworkEvent(testIp);
         assertEquals(testIp, instance.getTarget());
+    }
+
+    /**
+     * Test of isExternal method, of class NetworkEvent.
+     */
+    @Test
+    public void testIsExternal() {
+        NetworkEvent instance = new NetworkEvent(testIp);
+        assertFalse(instance.isExternal());
+        instance.setSource(testIp);
+        assertTrue(instance.isExternal());
     }
 }
