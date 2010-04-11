@@ -1,5 +1,17 @@
 package ch9k.chat;
 
+import ch9k.chat.events.ContactBlockedEvent;
+import ch9k.chat.events.ContactOfflineEvent;
+import ch9k.chat.events.ContactOnlineEvent;
+import ch9k.chat.events.ContactStatusChangeEvent;
+import ch9k.chat.events.ContactStatusEvent;
+import ch9k.chat.events.ContactStatusEventFilter;
+import ch9k.chat.events.ContactUnblockedEvent;
+import ch9k.core.Account;
+import ch9k.core.ChatApplication;
+import ch9k.eventpool.EventPool;
+import ch9k.network.Connection;
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import org.junit.Before;
@@ -125,5 +137,109 @@ public class ContactTest {
         assertTrue(contact1.compareTo(contact2) < 0);
         assertTrue(contact2.compareTo(contact3) < 0);
         assertTrue(contact1.compareTo(contact3) < 0);
+    }
+
+    /**
+     * Test of handelEvent method, of class Contact.
+     * only tests the local side
+     */
+    @Test
+    public void testHandleEvent() throws UnknownHostException, InterruptedException {
+        EventPool eventPool = EventPool.getAppPool();
+        Thread.sleep(100);
+
+        ContactStatusEvent contactOnlineEvent = new ContactOnlineEvent(contact);
+        ContactStatusEvent contactOfflineEvent = new ContactOfflineEvent(contact);
+
+        ContactStatusEvent contactBlockedEvent = new ContactBlockedEvent(contact);
+        ContactStatusEvent contactUnblockedEvent = new ContactUnblockedEvent(contact);
+
+        String newStatus = "on toilet";
+        ContactStatusEvent contactStatusChangeEvent = new ContactStatusChangeEvent(contact, newStatus);
+
+        assertFalse(contact.isOnline());
+        assertFalse(contact.isBlocked());
+        assertEquals("", contact.getStatus());
+
+        eventPool.raiseEvent(contactOnlineEvent);
+        eventPool.raiseEvent(contactBlockedEvent);
+        eventPool.raiseEvent(contactStatusChangeEvent);
+        Thread.sleep(300);
+
+        assertTrue(contact.isOnline());
+        assertTrue(contact.isBlocked());
+        assertEquals(newStatus, contact.getStatus());
+
+
+        eventPool.raiseEvent(contactOfflineEvent);
+        eventPool.raiseEvent(contactUnblockedEvent);
+        Thread.sleep(200);
+
+        assertFalse(contact.isOnline());
+        assertFalse(contact.isBlocked());
+    }
+
+    /**
+     * Test of handelEvent method, of class Contact.
+     * only tests the remote side
+     */
+    @Test
+    public void testRemoteHandleEvent() throws UnknownHostException, InterruptedException, IOException {
+        // get the local app-pool and let it start
+        EventPool localPool = EventPool.getAppPool();
+        Thread.sleep(100);
+
+        // create a remote eventpool and connect it to the local one
+        EventPool remotePool = new EventPool();
+        Connection remoteConnection = new Connection(InetAddress.getLocalHost(), remotePool);
+        Thread.sleep(100);
+
+        // create a contact out of the local user (as seen from the other side)
+        Account localAccount = ChatApplication.getInstance().getAccount();
+        Contact localContact = new Contact(localAccount.getUsername(), InetAddress.getLocalHost(), false);
+        Contact remoteContact = new Contact("Javache", InetAddress.getLocalHost(), false);
+
+        // add both of these contacts to our list, so we can look them up later
+        ContactList contactList = localAccount.getContactList();
+        contactList.addContact(localContact);
+        contactList.addContact(remoteContact);
+
+        //remove the remotecontact from the list of local listeners, because we want to test the remote side
+        localPool.removeListener(remoteContact);
+        // localy this is not a contact, so not a listener
+        localPool.removeListener(localContact);
+        // the local contact is a real contact on remote side, so it should listen
+        remotePool.addListener(localContact, new ContactStatusEventFilter(localContact));
+
+        // create the events
+        ContactStatusEvent contactOnlineEvent = new ContactOnlineEvent(contact);
+        ContactStatusEvent contactOfflineEvent = new ContactOfflineEvent(contact);
+
+        ContactStatusEvent contactBlockedEvent = new ContactBlockedEvent(contact);
+        ContactStatusEvent contactUnblockedEvent = new ContactUnblockedEvent(contact);
+
+        String newStatus = "on toilet";
+        ContactStatusEvent contactStatusChangeEvent = new ContactStatusChangeEvent(contact, newStatus);
+
+        assertFalse(contact.isOnline());
+        assertFalse(contact.isBlocked());
+        assertEquals("", contact.getStatus());
+
+        localPool.raiseEvent(contactOnlineEvent);
+        localPool.raiseEvent(contactBlockedEvent);
+        localPool.raiseEvent(contactStatusChangeEvent);
+        Thread.sleep(300);
+
+        assertTrue(contact.isOnline());
+        assertTrue(contact.isBlocked());
+        assertEquals(newStatus, contact.getStatus());
+
+        localPool.raiseEvent(contactOfflineEvent);
+        localPool.raiseEvent(contactUnblockedEvent);
+        Thread.sleep(200);
+
+        assertFalse(contact.isOnline());
+        assertFalse(contact.isBlocked());
+
     }
 }

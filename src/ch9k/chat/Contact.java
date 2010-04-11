@@ -4,7 +4,6 @@ import ch9k.chat.events.ContactBlockedEvent;
 import ch9k.chat.events.ContactOfflineEvent;
 import ch9k.chat.events.ContactOnlineEvent;
 import ch9k.chat.events.ContactStatusChangeEvent;
-import ch9k.chat.events.ContactStatusEvent;
 import ch9k.chat.events.ContactStatusEventFilter;
 import ch9k.chat.events.ContactUnblockedEvent;
 import ch9k.eventpool.Event;
@@ -34,7 +33,8 @@ public class Contact implements Comparable<Contact>, EventListener{
         this.username = username;
         this.ip = ip;
         this.blocked = blocked;
-        online = false;
+        this.online = false;
+        this.status = "";
         EventPool.getAppPool().addListener(this, new ContactStatusEventFilter(this));
     }
 

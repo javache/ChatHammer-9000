@@ -40,7 +40,7 @@ public class ConversationTest {
     @After
     public void tearDown() {
         EventPool.getAppPool().clearListeners();
-        ChatApplication.getInstance().getAccount().getContactList().clear();
+        ChatApplication.getInstance().getAccount().getContactList().getContacts().clear();
     }
 
     /**
@@ -204,6 +204,8 @@ public class ConversationTest {
         // it already registered with the local pool during construction
         // let's hope that doesn't bring too much problems...
         remotePool.addListener(remoteConversation, new ConversationEventFilter(remoteConversation));
+        // remote conversation should not listen to localPool
+        localPool.removeListener(remoteConversation);
 
         // now everything is setup, and a user can type a message
         ChatMessage chatMessage = new ChatMessage(localContact.getUsername(), "Dag Javache, jij jij remoteUser!");

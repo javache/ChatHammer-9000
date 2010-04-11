@@ -8,8 +8,8 @@ import ch9k.chat.Contact;
  */
 public class NewConversationEvent extends ConversationEvent {
     /**
-     * Constructor
-     * @param contaxt
+     * Construct a new NewConversationEvent
+     * @param contact
      */
     public NewConversationEvent(Contact contact) {
         // really ugly hierarchy, i could make it beter when i have time ;)

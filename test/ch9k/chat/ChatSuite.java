@@ -8,15 +8,17 @@ import org.junit.runners.Suite;
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-    ch9k.chat.ChatMessageTest.class,
-    ch9k.chat.ConversationSubjectTest.class,
-    ch9k.chat.ContactListTest.class,
-    ch9k.chat.ConversationTest.class,
-    ch9k.chat.ContactTest.class,
-    ch9k.chat.ConversationManagerTest.class,
-    ch9k.chat.events.ConversationEventFilterTest.class,
-    ch9k.chat.events.ConversationEventTest.class,
-    ch9k.chat.events.NewChatMessageEventTest.class
+    ch9k.chat.events.ConversationEventFilterTest.class
+    ,ch9k.chat.events.ConversationEventTest.class
+    ,ch9k.chat.events.NewChatMessageEventTest.class
+    ,ch9k.chat.events.ContactStatusEventFilterTest.class
+    ,ch9k.chat.events.ContactStatusChangeEventTest.class
+    ,ch9k.chat.ChatMessageTest.class
+    ,ch9k.chat.ConversationSubjectTest.class
+    ,ch9k.chat.ContactListTest.class
+    ,ch9k.chat.ConversationTest.class
+    ,ch9k.chat.ContactTest.class
+    ,ch9k.chat.ConversationManagerTest.class
 })
 
 public class ChatSuite {}
