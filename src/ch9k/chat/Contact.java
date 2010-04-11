@@ -1,13 +1,15 @@
 package ch9k.chat;
 
+import ch9k.chat.events.ContactBlockedEvent;
 import ch9k.chat.events.ContactOfflineEvent;
 import ch9k.chat.events.ContactOnlineEvent;
 import ch9k.chat.events.ContactStatusChangeEvent;
 import ch9k.chat.events.ContactStatusEvent;
+import ch9k.chat.events.ContactStatusEventFilter;
+import ch9k.chat.events.ContactUnblockedEvent;
 import ch9k.eventpool.Event;
 import ch9k.eventpool.EventListener;
 import ch9k.eventpool.EventPool;
-import ch9k.eventpool.TypeEventFilter;
 import java.net.InetAddress;
 
 /**
@@ -33,7 +35,7 @@ public class Contact implements Comparable<Contact>, EventListener{
         this.ip = ip;
         this.blocked = blocked;
         online = false;
-        EventPool.getAppPool().addListener(this, new TypeEventFilter(ContactStatusEvent.class));
+        EventPool.getAppPool().addListener(this, new ContactStatusEventFilter(this));
     }
 
     /**
@@ -161,6 +163,24 @@ public class Contact implements Comparable<Contact>, EventListener{
         if(event instanceof ContactStatusChangeEvent) {
             ContactStatusChangeEvent contactStatusChangeEvent = (ContactStatusChangeEvent)event;
             this.setStatus(contactStatusChangeEvent.getNewStatus());
+        }
+
+        if(event instanceof ContactBlockedEvent) {
+            ContactBlockedEvent contactBlockedChangeEvent = (ContactBlockedEvent)event;
+            if(contactBlockedChangeEvent.isExternal()) {
+                this.setOnline(false);
+            } else {
+                this.setBlocked(true);
+            }
+        }
+
+        if(event instanceof ContactUnblockedEvent) {
+            ContactUnblockedEvent contactUnblockedChangeEvent = (ContactUnblockedEvent)event;
+            if(contactUnblockedChangeEvent.isExternal()) {
+                this.setOnline(true);
+            } else {
+                this.setBlocked(false);
+            }
         }
     }
 }

@@ -12,7 +12,7 @@ public class ConversationEventFilter implements EventFilter {
     private Conversation conversation;
 
     /**
-     * Construct a new TypeEventFilter
+     * Construct a new ConversationEventFilter
      * @param conversation
      */
     public ConversationEventFilter(Conversation conversation) {
