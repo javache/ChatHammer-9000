@@ -1,15 +1,18 @@
 package ch9k.core;
 
+import ch9k.configuration.PersistentDataObject;
 import java.security.MessageDigest;
 
 import ch9k.chat.ContactList;
+import ch9k.configuration.Persistable;
+import org.jdom.Element;
 
 /**
  * Local user info
  * 
  * @author Bruno
  */
-public class Account {
+public class Account implements Persistable{
 
     /**
      * The users contactlist
@@ -40,6 +43,15 @@ public class Account {
         this.username = username;
         setPassword(password);
         contactList = new ContactList();
+    }
+    /**
+     * Creates an empty account class, ONLY TO BE USED WHEN LOADING PREVIOUS STATE
+     *
+     * This creates a completely empty Account object, so that we can load data
+     * from a Persistent Data Object we stored previously;
+     */
+    public Account() {
+
     }
     /**
      * will return the password hash
@@ -94,5 +106,26 @@ public class Account {
             // throw new VeerleFackException
             return null;
         }
+    }
+
+
+    @Override
+    public PersistentDataObject persist() {
+        Element pdo = new Element("account");
+        pdo.addContent(new Element("username").addContent(username));
+        //Bad idea :p Change to something else
+        pdo.addContent(new Element("password").addContent(passwordHash.toString()));
+        pdo.addContent(contactList.persist().getElement());
+
+        return new PersistentDataObject(pdo);
+    }
+
+    @Override
+    public void load(PersistentDataObject object) {
+        Element el = object.getElement();
+        username = el.getChildText("username");
+        contactList= new ContactList();
+        contactList.load(new PersistentDataObject(el.getChild("contactlist")));
+        
     }
 }

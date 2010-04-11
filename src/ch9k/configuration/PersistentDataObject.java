@@ -7,8 +7,20 @@ import org.jdom.Element;
  * 
  * @author Bruno
  */
-public class PersistentDataObject extends Element {
+public class PersistentDataObject {
 
-    
+    private Element element;
+
+    public PersistentDataObject(Element element) {
+        this.element = element;
+    }
+
+    public Element getElement() {
+        return element;
+    }
+
+    public String getName(){
+        return element.getName();
+    }
 
 }

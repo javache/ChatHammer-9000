@@ -19,13 +19,17 @@ public class Configuration {
      * PluginManager currently in use
      */
     private PluginManager pluginManager;
+    /**
+     * Storage, used to store stuff
+     */
+    private Storage storage;
 
     /**
      * Getter for account
      * @return account object for current user.
      */
     public Account getAccount() {
-        return account;
+            return account;
     }
 
     /**

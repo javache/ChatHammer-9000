@@ -1,5 +1,7 @@
 package ch9k.chat;
 
+import ch9k.configuration.Persistable;
+import ch9k.configuration.PersistentDataObject;
 import java.net.InetAddress;
 import java.util.Iterator;
 import java.util.Set;
@@ -9,7 +11,7 @@ import java.util.TreeSet;
  * List of al the contacts of the current user.
  * @author Jens Panneel
  */
-public class ContactList {
+public class ContactList implements Persistable {
     /**
      * Collection of contacts, a set because you dont want to save
      * the same contact two times.
@@ -72,5 +74,15 @@ public class ContactList {
             }
         }
         return null;
+    }
+
+    @Override
+    public PersistentDataObject persist() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void load(PersistentDataObject object) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

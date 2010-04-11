@@ -50,12 +50,8 @@ public class Storage {
         try {
             Element root = parser.build(file).getRootElement();
             for (Object obj : root.getChildren()) {
-                Element el = (Element) obj;
-                //Transform element into PersistentDataObject
-                PersistentDataObject child = new PersistentDataObject();
-                child.setName(el.getName());
-                child.setAttributes(el.getAttributes());
-                child.setContent(el);
+                //Transform element into PersistentDataObject and put it in the XMLmap
+                PersistentDataObject child = new PersistentDataObject((Element) obj);
                 xmlMap.put(child.getName(), child);
             }
         } catch (IOException ex) {
@@ -76,7 +72,7 @@ public class Storage {
 
         //Iterate through the persistables, and add them to the XML tree.
         for (Entry<String, Persistable> entry : storage.entrySet()) {
-            PersistentDataObject child = entry.getValue().persist();
+            Element child = entry.getValue().persist().getElement();
             //To be sure, check if the element has the right ID
             if (!child.getName().equals(entry.getKey())) {
                 child.setName(entry.getKey());
