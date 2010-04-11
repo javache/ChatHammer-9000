@@ -40,17 +40,22 @@ public class EventPoolTest {
      */
     @Test
     public void testRemoveListener() throws InterruptedException {
-        TestListener listener = new TestListener();
+        TestListener listener1 = new TestListener();
+        TestListener listener2 = new TestListener();
         Event event = new MyEvent();
-        assertTrue(listener.getCount() == 0);
-        pool.addListener(listener, new TypeEventFilter(MyEvent.class));
+        assertTrue(listener1.getCount() == 0);
+        assertTrue(listener1.getCount() == 0);
+        pool.addListener(listener1, new TypeEventFilter(MyEvent.class));
+        pool.addListener(listener2, new TypeEventFilter(MyEvent.class));
         pool.raiseEvent(event);
         Thread.sleep(100);
-        assertTrue(listener.getCount() == 1);
-        pool.removeListener(listener);
+        assertTrue(listener1.getCount() == 1);
+        assertTrue(listener2.getCount() == 1);
+        pool.removeListener(listener1);
         pool.raiseEvent(event);
         Thread.sleep(100);
-        assertTrue(listener.getCount() == 1);
+        assertTrue(listener1.getCount() == 1);
+        assertTrue(listener2.getCount() == 2);
     }
 
     public class MyEvent extends Event {
