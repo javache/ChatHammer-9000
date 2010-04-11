@@ -22,6 +22,8 @@ public class Storage {
      */
     private HashMap<String, Persistable> storage;
 
+    private HashMap<String, PersistentDataObject> xmlMap;
+
     /**
      * Username, used as filename to store files
      */
@@ -34,21 +36,32 @@ public class Storage {
      * @param username Username we want to open
      * @throws IOException Specified user doesn't exist
      */
-    public Storage(String username) throws IOException {
+    public Storage(String username){
         storage = new HashMap<String, Persistable> ();
+        xmlMap = new HashMap<String, PersistentDataObject> ();
         this.username = username;
 
+        //Check if the users exists, if not, don't even try to parse
+        if(!fileTest(username)) return;
+
+        //Parse the XML file
         SAXBuilder parser = new SAXBuilder();
         File file = new File(getFilePath(), username.toLowerCase());
         try {
             Element root = parser.build(file).getRootElement();
             for (Object obj : root.getChildren()) {
-                Element child = (Element) obj;
-                //initialize it
-                store(child.getName(), null);
+                Element el = (Element) obj;
+                //Transform element into PersistentDataObject
+                PersistentDataObject child = new PersistentDataObject();
+                child.setName(el.getName());
+                child.setAttributes(el.getAttributes());
+                child.setContent(el);
+                xmlMap.put(child.getName(), child);
             }
+        } catch (IOException ex) {
+            //File did not open
         } catch (JDOMException ex) {
-            //Do something, file is probably broken
+            //File did not parse
         }
 
     }
@@ -68,6 +81,7 @@ public class Storage {
             if (!child.getName().equals(entry.getKey())) {
                 child.setName(entry.getKey());
             }
+            child.setAttribute("class", entry.getValue().getClass().toString());
             xml.addContent(child);
         }
         //Now store it somewhere on the HD
@@ -96,15 +110,26 @@ public class Storage {
     }
 
     /**
-     * Fetches a previously stored object?
+     * Fetches a previously stored object
      *
      * @param id name by which the object was stored
-     * @return the previously stored object
+     * @return the previously stored object, or null if ID is unknown
      */
-    public Persistable fetch(String id) {
-        return storage.get(id);
+    public PersistentDataObject fetch(String id) {
+        if(storage.containsKey(id)){
+            return storage.get(id).persist();
+        } else if(xmlMap.containsKey(id)){
+            return xmlMap.get(id);
+        } else {
+            return null;
+        }
     }
 
+    /**
+     * Returns the working directory for our application, OS independent
+     *
+     * @return File representing the directory in which our app stores it's userfiles.
+     */
     private File getFilePath(){
         String userHome = System.getProperty("user.home", ".");
         File workingDirectory;
@@ -129,5 +154,14 @@ public class Storage {
                 throw new RuntimeException("The working directory could not be created: " + workingDirectory);
 
         return workingDirectory;
+    }
+
+    /**
+     * Checks if we have config files for this use
+     * @param username Username for whom we want to check files
+     * @return Exists boolean
+     */
+    public boolean fileTest(String username){
+        return new File(getFilePath(), username.toLowerCase()).exists();
     }
 }
