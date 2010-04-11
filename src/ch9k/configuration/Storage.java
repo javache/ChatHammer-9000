@@ -17,7 +17,15 @@ import org.jdom.output.XMLOutputter;
  * @author Bruno
  */
 public class Storage {
+    /**
+     * Hashmap containing the objects that we want to store
+     */
     private HashMap<String, Persistable> storage;
+
+    /**
+     * Username, used as filename to store files
+     */
+    private String username;
 
     /**
      * Creates and loads a new Storage class for the specified user.
@@ -27,9 +35,11 @@ public class Storage {
      * @throws IOException Specified user doesn't exist
      */
     public Storage(String username) throws IOException {
+        storage = new HashMap<String, Persistable> ();
+        this.username = username;
 
         SAXBuilder parser = new SAXBuilder();
-        File file = new File("ERRORZ");
+        File file = new File(getFilePath(), username.toLowerCase());
         try {
             Element root = parser.build(file).getRootElement();
             for (Object obj : root.getChildren()) {
@@ -62,10 +72,13 @@ public class Storage {
         }
         //Now store it somewhere on the HD
         try {
-            File file = new File("ERRORZ");
+            //Open the right file
+            File file = new File(getFilePath(), username.toLowerCase());
+            //Open the outpustream and write the XML
             FileOutputStream outputstream = new FileOutputStream(file);
             XMLOutputter outputter = new XMLOutputter();
             outputter.output(xml, outputstream);
+            //Close
             outputstream.close();
         } catch (IOException ex) {
             //something went wrong, todo
@@ -90,5 +103,31 @@ public class Storage {
      */
     public Persistable fetch(String id) {
         return storage.get(id);
+    }
+
+    private File getFilePath(){
+        String userHome = System.getProperty("user.home", ".");
+        File workingDirectory;
+        String sysName = System.getProperty("os.name").toLowerCase();
+        if (sysName.contains("windows")) {
+            String applicationData = System.getenv("APPDATA");
+            if (applicationData != null) {
+                workingDirectory = new File(applicationData, ".CH9K/");
+            } else {
+                workingDirectory = new File(userHome, ".CH9K/");
+            }
+        } else if (sysName.contains("mac")) {
+            workingDirectory = new File(userHome, "Library/Application Support/CH9K");
+        } else if (sysName.contains("linux")) {
+            workingDirectory = new File(userHome, ".CH9K/");
+        } else {
+            return new File(".");
+        }
+
+        if (!workingDirectory.exists())
+            if (!workingDirectory.mkdirs())
+                throw new RuntimeException("The working directory could not be created: " + workingDirectory);
+
+        return workingDirectory;
     }
 }
