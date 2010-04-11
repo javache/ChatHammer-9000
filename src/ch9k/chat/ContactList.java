@@ -6,6 +6,7 @@ import java.net.InetAddress;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
+import org.jdom.Element;
 
 /**
  * List of al the contacts of the current user.
@@ -78,11 +79,23 @@ public class ContactList implements Persistable {
 
     @Override
     public PersistentDataObject persist() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        Element contactlist = new Element("contactlist");
+        Iterator<Contact> it = contacts.iterator();
+        Contact contact;
+        while(it.hasNext()){
+            contact = it.next();
+            contactlist.addContent(contact.persist().getElement());
+        }
+        return new PersistentDataObject(contactlist);
     }
 
     @Override
     public void load(PersistentDataObject object) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        for (Object obj : object.getElement().getChildren()) {
+            Element child = (Element) obj;
+            Contact contact = new Contact();
+            contact.load(new PersistentDataObject(child));
+            contacts.add(contact);
+        }
     }
 }

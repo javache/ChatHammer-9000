@@ -9,6 +9,8 @@ import ch9k.chat.events.ContactUnblockedEvent;
 import ch9k.eventpool.Event;
 import ch9k.eventpool.EventListener;
 import ch9k.eventpool.EventPool;
+import ch9k.configuration.Persistable;
+import ch9k.configuration.PersistentDataObject;
 import java.net.InetAddress;
 
 /**
@@ -16,7 +18,7 @@ import java.net.InetAddress;
  * This holds the contacts ip, username, status, and knows whether a contact is online or offline and blocked or not.
  * @author Jens Panneel
  */
-public class Contact implements Comparable<Contact>, EventListener{
+public class Contact implements Comparable<Contact>, EventListener, Persistable {
     private InetAddress ip;
     private String username;
     private String status;
@@ -36,6 +38,16 @@ public class Contact implements Comparable<Contact>, EventListener{
         this.online = false;
         this.status = "";
         EventPool.getAppPool().addListener(this, new ContactStatusEventFilter(this));
+    }
+
+    /**
+     * Creates an empty contact class, ONLY TO BE USED WHEN LOADING PREVIOUS STATE
+     *
+     * This creates a completely empty Contact object, so that we can load data
+     * from a Persistent Data Object we stored previously;
+     */
+    public Contact() {
+
     }
 
     /**
@@ -150,7 +162,7 @@ public class Contact implements Comparable<Contact>, EventListener{
         }
     }
 
-    @Override
+    
     public void handleEvent(Event event) {
         if(event instanceof ContactOnlineEvent) {
             this.setOnline(true);
@@ -182,5 +194,15 @@ public class Contact implements Comparable<Contact>, EventListener{
                 this.setBlocked(false);
             }
         }
+    }
+    
+    @Override
+    public PersistentDataObject persist() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void load(PersistentDataObject object) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }
