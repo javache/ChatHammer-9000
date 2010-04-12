@@ -41,6 +41,7 @@ public class Contact implements Comparable<Contact>, EventListener, Persistable 
         this.blocked = blocked;
         this.online = false;
         this.status = "";
+        EventPool.getAppPool().addListener(this, new ContactStatusEventFilter(this));
     }
 
     /**
@@ -166,6 +167,7 @@ public class Contact implements Comparable<Contact>, EventListener, Persistable 
     }
 
     
+    @Override
     public void handleEvent(Event event) {
         if(event instanceof ContactOnlineEvent) {
             this.setOnline(true);
