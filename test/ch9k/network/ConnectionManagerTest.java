@@ -83,6 +83,7 @@ public class ConnectionManagerTest {
 
         // close it up
         connectionManager.disconnect();
+        Thread.sleep(10);
         assertFalse(connection.hasConnection());
 
         // we shouldn't be able to connect any more

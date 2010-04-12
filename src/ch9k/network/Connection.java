@@ -178,7 +178,8 @@ public class Connection {
         
         try {
             sendObject(new PingEvent(socket.getInetAddress()));
-        } catch (IOException e) {
+        } catch (IOException ex) {
+            LOGGER.info(ex.toString());
             return false;
         }
         return true;

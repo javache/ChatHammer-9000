@@ -18,7 +18,7 @@ public class FlickrImageProviderPluginTest {
         String[] results = instance.getImageUrls("lolcat", 10);
 
         /* Check that we get enough results back. */
-        assertEquals(results.length, 10);
+        assertEquals(10, results.length);
 
         /* Check that we get back URL's. */
         for(String result: results) {
