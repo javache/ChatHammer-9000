@@ -7,6 +7,7 @@ import ch9k.chat.events.ContactStatusChangeEvent;
 import ch9k.chat.events.ContactStatusEvent;
 import ch9k.chat.events.ContactStatusEventFilter;
 import ch9k.chat.events.ContactUnblockedEvent;
+import ch9k.configuration.PersistentDataObject;
 import ch9k.core.Account;
 import ch9k.core.ChatApplication;
 import ch9k.eventpool.EventPool;
@@ -247,5 +248,14 @@ public class ContactTest {
         localPool.raiseEvent(contactOfflineEvent);
         Thread.sleep(100);
         assertFalse(localContact.isOnline());
+    }
+
+    @Test
+    public void testPersist() throws UnknownHostException {
+        Contact instance = new Contact("Javache", InetAddress.getByName("ugent.be"), false);
+        PersistentDataObject pdo = instance.persist();
+        Contact loaded = new Contact();
+        loaded.load(pdo);
+        assertTrue(instance.equals(loaded));
     }
 }

@@ -204,7 +204,7 @@ public class Contact implements Comparable<Contact>, EventListener, Persistable 
     public PersistentDataObject persist() {
         Element contact = new Element("contact");
         contact.addContent(new Element("username").addContent(username));
-        contact.addContent(new Element("ip").addContent(ip.toString()));
+        contact.addContent(new Element("ip").addContent(ip.getHostAddress()));
         contact.addContent(new Element("online").addContent(Boolean.toString(online)));
         contact.addContent(new Element("blocked").addContent(Boolean.toString(blocked)));
 
@@ -215,12 +215,13 @@ public class Contact implements Comparable<Contact>, EventListener, Persistable 
     public void load(PersistentDataObject object) {
         Element el = object.getElement();
         username = el.getChildText("username");
-        status = el.getChildText("status");
         try {
-            ip = InetAddress.getByName(el.getChildText("status"));
+            ip = InetAddress.getByName(el.getChildText("ip"));
         } catch (UnknownHostException ex) {
             Logger.getLogger(Contact.class.getName()).log(Level.SEVERE, null, ex);
         }
+
+        this.status = "";
         online = Boolean.parseBoolean(el.getChildText("online"));
         blocked = Boolean.parseBoolean(el.getChildText("blocked"));
     }
