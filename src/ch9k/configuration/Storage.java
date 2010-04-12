@@ -126,7 +126,7 @@ public class Storage {
      *
      * @return File representing the directory in which our app stores it's userfiles.
      */
-    private File getFilePath(){
+    public File getFilePath(){
         String userHome = System.getProperty("user.home", ".");
         File workingDirectory;
         String sysName = System.getProperty("os.name").toLowerCase();
