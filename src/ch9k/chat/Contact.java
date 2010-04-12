@@ -13,8 +13,7 @@ import ch9k.configuration.Persistable;
 import ch9k.configuration.PersistentDataObject;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.apache.log4j.Logger;
 import org.jdom.Element;
 
 /**
@@ -219,7 +218,7 @@ public class Contact implements Comparable<Contact>, EventListener, Persistable 
         try {
             ip = InetAddress.getByName(el.getChildText("ip"));
         } catch (UnknownHostException ex) {
-            Logger.getLogger(Contact.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Contact.class).warn(ex.toString());
         }
 
         this.status = "";

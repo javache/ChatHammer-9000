@@ -85,7 +85,7 @@ public class ContactListTest {
     }
 
     @Test
-    public void persistTest() throws UnknownHostException{
+    public void testPersist() throws UnknownHostException{
         Contact contact1 = new Contact("JPanneel", InetAddress.getByName("google.be"), false);
         Contact contact2 = new Contact("Javache", InetAddress.getByName("ugent.be"), false);
         contactList.addContact(contact1);
@@ -96,7 +96,5 @@ public class ContactListTest {
         
         assertTrue(contactList.getContacts().containsAll(loadedList.getContacts()));
         assertTrue(loadedList.getContacts().containsAll(contactList.getContacts()));
-
-
     }
 }

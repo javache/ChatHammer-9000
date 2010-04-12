@@ -9,7 +9,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
-import java.util.logging.Logger;
+import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONException;
@@ -22,8 +22,8 @@ public class GoogleImageProviderPlugin extends ImageProvider {
     /**
      * Logger, well, to log.
      */
-    private static final Logger LOGGER =
-            Logger.getLogger(GoogleImageProviderPlugin.class.getName());
+    private static final Logger logger =
+            Logger.getLogger(GoogleImageProviderPlugin.class);
 
 
     /**
@@ -67,7 +67,7 @@ public class GoogleImageProviderPlugin extends ImageProvider {
                 urls[i] = url;
 
                 /* Log some information as well. */
-                LOGGER.info("Photo result: " +
+                logger.info("Photo result: " +
                         object.getString("titleNoFormatting") + " - " + url);
             }
 

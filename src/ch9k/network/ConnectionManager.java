@@ -11,8 +11,7 @@ import java.net.Socket;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.apache.log4j.Logger;
 
 /**
  * Handles all connections to remote hosts
@@ -22,8 +21,8 @@ public class ConnectionManager {
     /**
      * Logger, well does what it says
      */
-    private static final Logger LOGGER =
-            Logger.getLogger(ConnectionManager.class.getName());
+    private static final Logger logger =
+            Logger.getLogger(ConnectionManager.class);
 
     /**
      * a Map to store all the connections.
@@ -54,7 +53,7 @@ public class ConnectionManager {
      * @param networkEvent 
      */
     public void sendEvent(final NetworkEvent networkEvent) {
-        LOGGER.info("Sending event " + networkEvent.getClass().toString());
+        logger.info("Sending event " + networkEvent.getClass().getName());
 
         Connection connection = connectionMap.get(networkEvent.getTarget());
         if(connection == null) {
@@ -75,7 +74,7 @@ public class ConnectionManager {
                 server.close();
             }
         } catch (IOException ex) {
-            LOGGER.log(Level.WARNING, ex.toString());
+            logger.warn(ex.toString());
         }
 
         // close all listening connections
@@ -123,7 +122,7 @@ public class ConnectionManager {
             try {
                 new Socket("www.google.com", 80);
             } catch (IOException ex) {
-                LOGGER.log(Level.WARNING, ex.toString());
+                logger.warn(ex.toString());
                 online = false;
             }
         } else {
@@ -146,17 +145,17 @@ public class ConnectionManager {
                 server = new ServerSocket(Connection.DEFAULT_PORT);
 
                 // run forever
-                LOGGER.info("Started accepting connections!");
+                logger.info("Started accepting connections!");
                 while (!Thread.interrupted()) {
                     Socket client = server.accept();
                     Connection conn = new Connection(client, pool);
                     // TODO worry about synchronisation later
                     connectionMap.put(client.getInetAddress(), conn);
-                    LOGGER.info("Accepted a new connection! " + client.getInetAddress());
+                    logger.info("Accepted a new connection! " + client.getInetAddress());
                 }
             } catch (IOException ex) {
                 // if this fails it would appear as if nothing ever happened
-                LOGGER.log(Level.WARNING, ex.toString());
+                logger.warn(ex.toString());
             }
         }
     }

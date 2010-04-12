@@ -6,4 +6,4 @@ if [[ $# != 1 ]]; then
 fi
 
 to_test=`echo $1 | sed s:\\\.:/:g`.java
-ant -Djavac.includes="${to_test}" -Dtest.includes="${to_test}" test-single
+ant -Djunit.showoutput=false -Djavac.includes="${to_test}" -Dtest.includes="${to_test}" test-single

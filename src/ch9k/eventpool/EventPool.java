@@ -5,8 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.apache.log4j.Logger;
 
 /**
  * Distributes events across the application
@@ -20,6 +19,11 @@ public class EventPool {
     public static EventPool getAppPool() {
         return SingletonHolder.INSTANCE;
     }
+
+    /**
+     * Logger
+     */
+    private static final Logger logger = Logger.getLogger(EventPool.class);
 
     /* Helper-class for singleton, aka Bill Pugh's method */
     private static class SingletonHolder { 
@@ -121,7 +125,7 @@ public class EventPool {
     }
 
     private void broadcastEvent(Event event) {
-        Logger.getLogger(getClass().getName()).info(event.getClass().toString());
+        logger.info("Sending " + event.getClass().getName());
         for(int i = 0; i < listeners.size(); i++) {
             FilteredListener pair = listeners.get(i);
             if(pair.filter.accept(event)) {

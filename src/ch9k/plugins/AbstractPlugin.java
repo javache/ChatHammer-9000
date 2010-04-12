@@ -2,7 +2,7 @@ package ch9k.plugins;
 
 import ch9k.chat.Conversation;
 import ch9k.chat.events.ConversationEvent;
-import java.util.logging.Logger;
+import org.apache.log4j.Logger;
 
 /**
  * Class implementing Plugin, with several utility functions added.
@@ -18,8 +18,7 @@ public abstract class AbstractPlugin implements Plugin {
      * Logger logger logger
      * Mushroom Mushroom
      */
-    private static final Logger LOGGER =
-            Logger.getLogger(AbstractPlugin.class.getName());
+    private static final Logger logger = Logger.getLogger(AbstractPlugin.class);
 
     /**
      * Ask if a given ConversationEvent is relevant to the conversation this
@@ -50,7 +49,7 @@ public abstract class AbstractPlugin implements Plugin {
         if (this.conversation == conversation) {
             this.conversation = null;
         } else {
-            LOGGER.warning("Trying to unbind a plugin from a conversation it" +
+            logger.warn("Trying to unbind a plugin from a conversation it" +
                     "wasn't bound to.");
         }
     }

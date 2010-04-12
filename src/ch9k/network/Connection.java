@@ -14,8 +14,7 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketException;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.apache.log4j.Logger;
 
 /**
  * Connection sends and receives event over a socket
@@ -46,8 +45,7 @@ public class Connection {
      *
      * Oh wait, that's a different kind of logging.
      */
-    private static final Logger LOGGER =
-            Logger.getLogger(Connection.class.getName());
+    private static final Logger logger = Logger.getLogger(Connection.class);
 
     /**
      * A concurrent queue of events to be sent
@@ -94,12 +92,12 @@ public class Connection {
         new Thread(new Runnable() {
             public void run() {
                 try {
-                    LOGGER.info("Opening connection to " + ip);
+                    logger.info("Opening connection to " + ip);
                     socket.connect(new InetSocketAddress(ip, DEFAULT_PORT),
                             SOCKET_CONNECT_TIMEOUT);
                     init();
                 } catch (IOException ex) {
-                    LOGGER.log(Level.SEVERE, null, ex);
+                    logger.warn(ex.toString());
                     
                     if(manager != null) {
                         manager.handleNetworkError(ip);
@@ -156,12 +154,11 @@ public class Connection {
      * close the socket
      */
     public void close() {
-        LOGGER.info("Closing connection to " + socket.getInetAddress());
+        logger.info("Closing connection to " + socket.getInetAddress());
         try {
             socket.close();
-        } catch(IOException e) {
-            // TODO handle error?
-            System.out.println(e);
+        } catch(IOException ex) {
+            logger.warn(ex.toString());
         }
     }
     
@@ -179,7 +176,7 @@ public class Connection {
         try {
             sendObject(new PingEvent(socket.getInetAddress()));
         } catch (IOException ex) {
-            LOGGER.info(ex.toString());
+            logger.info(ex.toString());
             return false;
         }
         return true;
@@ -214,7 +211,7 @@ public class Connection {
         try {
             socket.shutdownOutput();
         } catch (IOException ex) {
-            LOGGER.log(Level.SEVERE, null, ex);
+            logger.warn(ex.toString());
         }
     }
     
@@ -228,9 +225,9 @@ public class Connection {
                     readEvent();
                 }
             } catch (EOFException ex) {
-                LOGGER.log(Level.INFO, ex.toString());
+                logger.info(ex.toString());
             } catch (IOException ex) {
-                LOGGER.log(Level.SEVERE, null, ex);
+                logger.warn(ex.toString());
             }
 
             // this happens when the socket on the remote end closes
@@ -241,14 +238,14 @@ public class Connection {
             try {
                 NetworkEvent ev = (NetworkEvent)in.readObject();
                 ev.setSource(socket.getInetAddress());
-                LOGGER.info(String.format("Received event %s from %s",
+                logger.info(String.format("Received event %s from %s",
                         ev.getClass().getName(), ev.getSource()));
 
                 // downcast so we don't send it again
                 pool.raiseEvent((Event)ev);
             } catch (ClassNotFoundException ex) {
                 // TODO handle error
-                LOGGER.log(Level.SEVERE, null, ex);
+                logger.warn(ex.toString());
             }
         }
     }
@@ -262,16 +259,16 @@ public class Connection {
                 while(!socket.isClosed()) {
                     try {
                         NetworkEvent ev = eventQueue.take();
-                        LOGGER.info(String.format("Sending event %s to %s",
+                        logger.info(String.format("Sending event %s to %s",
                                 ev.getClass().getName(), ev.getTarget()));
                         sendObject(ev);
                     } catch (IOException ex) {
-                        LOGGER.log(Level.SEVERE, null, ex);
+                        logger.warn(ex.toString());
                     }
                 }
             } catch(InterruptedException ex) {
                 // we should just stop then
-                LOGGER.log(Level.INFO, ex.toString());
+                logger.info(ex.toString());
             }
         }
     }

@@ -8,7 +8,7 @@ import com.aetrion.flickr.photos.PhotoList;
 import com.aetrion.flickr.photos.PhotosInterface;
 import com.aetrion.flickr.photos.SearchParameters;
 import java.io.IOException;
-import java.util.logging.Logger;
+import org.apache.log4j.Logger;
 import org.xml.sax.SAXException;
 
 /**
@@ -29,8 +29,8 @@ public class FlickrImageProviderPlugin extends ImageProvider {
     /**
      * Logger, well, to log.
      */
-    private static final Logger LOGGER =
-            Logger.getLogger(FlickrImageProviderPlugin.class.getName());
+    private static final Logger logger =
+            Logger.getLogger(FlickrImageProviderPlugin.class);
 
     /**
      * Constructor.
@@ -46,7 +46,7 @@ public class FlickrImageProviderPlugin extends ImageProvider {
         PhotosInterface photosInterface = flickr.getPhotosInterface();
         SearchParameters searchParameters = new SearchParameters();
         searchParameters.setText(text);
-        LOGGER.info("Searching for: " + text);
+        logger.info("Searching for " + text);
 
         /* Now search for the text. We limit ourselves to maxResuls photos. */
         PhotoList photoList;
@@ -68,7 +68,7 @@ public class FlickrImageProviderPlugin extends ImageProvider {
         for(int i = 0; i < urls.length; i++) {
             Photo photo = (Photo) photoList.get(i);
             urls[i] = photo.getMediumUrl();
-            LOGGER.info("Photo result: " + photo.getTitle() + " - " +
+            logger.info("Photo result: " + photo.getTitle() + " - " +
                     photo.getMediumUrl());
         }
 

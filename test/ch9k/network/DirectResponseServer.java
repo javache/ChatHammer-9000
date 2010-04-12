@@ -7,9 +7,7 @@ import java.io.ObjectOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
+import org.apache.log4j.Logger;
 
 /**
  * This is a test helper class
@@ -20,8 +18,8 @@ public class DirectResponseServer {
     private ServerSocket server;
     private List<Socket> clients;
     
-    private static final Logger LOGGER =
-            Logger.getLogger(DirectResponseServer.class.getName());
+    private static final Logger logger =
+            Logger.getLogger(DirectResponseServer.class);
     
     public DirectResponseServer() throws IOException {
         server = new ServerSocket(Connection.DEFAULT_PORT);
@@ -35,7 +33,7 @@ public class DirectResponseServer {
             }
             server.close();
         } catch (IOException ex) {
-            LOGGER.log(Level.WARNING, ex.toString());
+            logger.warn(ex.toString());
         }
     }
     
@@ -59,6 +57,7 @@ public class DirectResponseServer {
                     }
                 }).start();
             } catch (IOException ex) {
+                logger.warn(ex.toString());
             }
         }
     }
