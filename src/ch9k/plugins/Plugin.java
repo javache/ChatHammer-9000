@@ -8,14 +8,14 @@ import ch9k.chat.Conversation;
  */
 public interface Plugin {
     /**
-     * Enable this plugin for a specific conversation.
+     * Start this plugin by binding it to a conversation.
      * @param conversation Conversation to enable this plugin for.
      */
-    void enable(Conversation conversation);
+    void bind(Conversation conversation);
 
     /**
-     * Disable this plugin for a specific conversation.
+     * Stop this plugin by unbinding it from it's conversation.
      * @param conversation Conversation to disable this plugin for.
      */
-    void disable(Conversation conversation);
+    void unbind(Conversation conversation);
 }

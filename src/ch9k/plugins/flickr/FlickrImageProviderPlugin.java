@@ -2,11 +2,14 @@ package ch9k.plugins.flickr;
 
 import ch9k.plugins.ImageProvider;
 import com.aetrion.flickr.Flickr;
+import com.aetrion.flickr.FlickrException;
 import com.aetrion.flickr.photos.Photo;
 import com.aetrion.flickr.photos.PhotoList;
 import com.aetrion.flickr.photos.PhotosInterface;
 import com.aetrion.flickr.photos.SearchParameters;
+import java.io.IOException;
 import java.util.logging.Logger;
+import org.xml.sax.SAXException;
 
 /**
  * Class that gives us the ability to look up images on Flickr.
@@ -49,9 +52,14 @@ public class FlickrImageProviderPlugin extends ImageProvider {
         PhotoList photoList;
         try {
             photoList = photosInterface.search(searchParameters, maxResults, 0);
-        } catch (Exception exception) {
-            // TODO: Do something proper.
-            // TODO: do not fucking catch *each* exception
+        } catch (IOException exception) {
+            // TODO: Send warning.
+            return null;
+        } catch (SAXException exception) {
+            // TODO: Send warning.
+            return null;
+        } catch (FlickrException exception) {
+            // TODO: Send warning.
             return null;
         }
 

@@ -83,7 +83,7 @@ public class PluginManager {
         }
 
         /* Couple it with the conversation. */
-        // TODO: Couple with conversation.
+        plugin.bind(conversation);
 
         /* Register plugin. */
         if(conversationPlugins == null) {
@@ -108,7 +108,7 @@ public class PluginManager {
             names.remove(name);
             for(Plugin plugin: instances) {
                 if(plugin.getClass().getName().equals(name)) {
-                    // TODO: Disable plugin, so it doesn't listen anymore.
+                    plugin.unbind(conversation);
                     instances.remove(plugin);
                 }
             }
