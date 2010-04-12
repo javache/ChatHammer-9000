@@ -27,7 +27,7 @@ public class PluginInstaller extends URLClassLoader {
      * Hardcoded for now. Needs to be in Configuration somewhere.
      */
     private static final File INSTALL_DIRECTORY =
-            new File(Storage.getApplicationDirectory(), "plugins");
+            new File(Storage.getStorageDirectory(), "plugins");
 
     /**
      * A reference to the plugin manager.

@@ -39,12 +39,4 @@ public class Configuration {
     public PluginManager getPluginManager() {
         return pluginManager;
     }
-
-    /**
-     * Getter for storage
-     * @return Storage currently in use.
-     */
-    public Storage getStorage() {
-        return storage;
-    }
 }

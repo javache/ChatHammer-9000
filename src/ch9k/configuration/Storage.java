@@ -46,7 +46,7 @@ public class Storage {
 
         //Parse the XML file
         SAXBuilder parser = new SAXBuilder();
-        File file = new File(getApplicationDirectory(), username.toLowerCase());
+        File file = new File(getStorageDirectory(), username.toLowerCase());
         try {
             Element root = parser.build(file).getRootElement();
             for (Object obj : root.getChildren()) {
@@ -84,7 +84,7 @@ public class Storage {
         try {
             //Open the right file
             File file =
-                    new File(getApplicationDirectory(), username.toLowerCase());
+                    new File(getStorageDirectory(), username.toLowerCase());
             //Open the outpustream and write the XML
             FileOutputStream outputstream = new FileOutputStream(file);
             XMLOutputter outputter = new XMLOutputter();
@@ -127,7 +127,7 @@ public class Storage {
      *
      * @return File representing the directory in which our app stores it's userfiles.
      */
-    public static File getApplicationDirectory(){
+    public static File getStorageDirectory(){
         String userHome = System.getProperty("user.home", ".");
         File workingDirectory;
         String sysName = System.getProperty("os.name").toLowerCase();
@@ -159,7 +159,7 @@ public class Storage {
      * @return Exists boolean
      */
     public boolean fileTest(String username){
-        return new File(getApplicationDirectory(),
+        return new File(getStorageDirectory(),
                 username.toLowerCase()).exists();
     }
 }
