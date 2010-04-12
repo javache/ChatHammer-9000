@@ -35,6 +35,7 @@ public class ConnectionManagerTest {
         EventPool pool = new EventPool();
         testListener = new TestListener();
         onlineListener = new OnlineListener();
+        Thread.sleep(50);
         pool.addListener(testListener, new TypeEventFilter(TestNetworkEvent.class));
         pool.addListener(onlineListener, new TypeEventFilter(NetworkConnectionLostEvent.class));
 

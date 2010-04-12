@@ -37,8 +37,9 @@ public class ConnectionTest {
     }
 
     @After
-    public void tearDown() {
+    public void tearDown() throws InterruptedException {
         echoServer.stop();
+        Thread.sleep(50);
     }
 
     /**
