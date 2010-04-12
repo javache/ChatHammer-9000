@@ -72,22 +72,20 @@ public class ConnectionManagerTest {
         connectionManager.readyForIncomingConnections();
         Thread.sleep(100);
 
-        Connection conn = new Connection(InetAddress.getLocalHost(), new EventPool());
-        assertTrue(conn.hasConnection());
+        Connection connection = new Connection(InetAddress.getLocalHost(),
+                new EventPool(), connectionManager);
+        assertTrue(connection.hasConnection());
 
         // close it up
         connectionManager.disconnect();
         Thread.sleep(100);
-        assertFalse(conn.hasConnection());
+        assertFalse(connection.hasConnection());
 
         // we shouldn't be able to connect any more
-        boolean exceptionThrown = false;
-        try {
-            conn = new Connection(InetAddress.getLocalHost(), new EventPool());
-        } catch(IOException ex) {
-            exceptionThrown = true;
-        }
-        assertTrue(exceptionThrown);
+        connection = new Connection(InetAddress.getLocalHost(),
+                new EventPool(), connectionManager);
+        Thread.sleep(100);
+        assertFalse(connection.hasConnection());
     }
     
     @Test

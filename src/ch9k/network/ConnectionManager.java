@@ -57,24 +57,12 @@ public class ConnectionManager {
     public void sendEvent(final NetworkEvent networkEvent) {
         LOGGER.info("Sending event " + networkEvent.getClass().toString());
 
-        Connection conn = connectionMap.get(networkEvent.getTarget());
-        if(conn != null) {
-            conn.sendEvent(networkEvent);
+        Connection connection = connectionMap.get(networkEvent.getTarget());
+        if(connection == null) {
+            connection = new Connection(networkEvent.getTarget(), pool, this);
+            connectionMap.put(networkEvent.getTarget(), connection);
         }
-        else {
-            // start a new thread to create a connection
-            new Thread(new Runnable() {
-                public void run() {
-                    Connection conn = createConnection(networkEvent.getTarget());
-                    if(conn != null) {
-                        conn.sendEvent(networkEvent);
-                    }
-                    else {
-                        handleNetworkError(networkEvent.getTarget());
-                    }
-                }
-            }).start();
-        }
+        connection.sendEvent(networkEvent);
     }
 
     /**
@@ -109,7 +97,7 @@ public class ConnectionManager {
      * Handle a network error
      * @param target The InetAddress which failed
      */
-    private void handleNetworkError(InetAddress target) {
+    public void handleNetworkError(InetAddress target) {
         if (checkHeartbeat()) {
             // send an event signalling that target is offline
             pool.raiseEvent(new CouldNotConnectEvent(this, target));
@@ -146,20 +134,6 @@ public class ConnectionManager {
         }
 
         return online;
-    }
-
-    private Connection createConnection(InetAddress target) {
-        if (!connectionMap.containsKey(target)) {
-            LOGGER.info("Creating connection to " + target.toString() + " since we don't have one.");
-            try {
-                connectionMap.put(target, new Connection(target, pool));
-            } catch (IOException ex) {
-                LOGGER.log(Level.WARNING, ex.toString());
-                handleNetworkError(target);
-                return null;
-            }
-        }
-        return connectionMap.get(target);
     }
 
     /**

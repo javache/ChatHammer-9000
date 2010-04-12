@@ -12,6 +12,7 @@ import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -50,7 +51,8 @@ public class Connection {
     /**
      * A concurrent queue of events to be sent
      */
-    private LinkedBlockingQueue<NetworkEvent> eventQueue;
+    private LinkedBlockingQueue<NetworkEvent> eventQueue =
+            new LinkedBlockingQueue<NetworkEvent>();
     
     /**
      * Streams used to transfer Objects
@@ -73,18 +75,39 @@ public class Connection {
      */
      private EventPool pool;
 
+     /**
+      * True if the connection is still connecting, do not disturb
+      */
+     private boolean connecting = true;
+
     /**
      * Constructor
      * @param ip
      * @param pool
-     * @throws IOException
+     * @param manager 
      */
-    public Connection(InetAddress ip, EventPool pool) throws IOException {
+    public Connection(final InetAddress ip, EventPool pool, final ConnectionManager manager) {
         socket = new Socket();
-        socket.connect(new InetSocketAddress(ip, DEFAULT_PORT), SOCKET_CONNECT_TIMEOUT);
         this.pool = pool;
 
-        init();
+        new Thread(new Runnable() {
+            public void run() {
+                try {
+                    LOGGER.info("Opening connection to " + ip);
+                    socket.connect(new InetSocketAddress(ip, DEFAULT_PORT),
+                            SOCKET_CONNECT_TIMEOUT);
+                    init();
+                } catch (IOException ex) {
+                    LOGGER.log(Level.SEVERE, null, ex);
+                    
+                    if(manager != null) {
+                        manager.handleNetworkError(ip);
+                    }
+
+                    notifyInitComplete();
+                }
+            }
+        }).start();
     }
 
     /**
@@ -101,10 +124,9 @@ public class Connection {
         init();
     }
 
-    private void init() throws IOException  {
+    private void init() throws IOException {
         socket.setKeepAlive(true);
 
-        eventQueue = new LinkedBlockingQueue<NetworkEvent>();
         out = new ObjectOutputStream(socket.getOutputStream());
         in = new ObjectInputStream(socket.getInputStream());        
 
@@ -123,6 +145,16 @@ public class Connection {
         });
         writerThread.setDaemon(true);
         writerThread.start();
+
+        notifyInitComplete();
+    }
+
+    /**
+     * Mark connection as not connecting anymore
+     */
+    private synchronized void notifyInitComplete() {
+        connecting = false;
+        notifyAll();
     }
     
     /**
@@ -142,7 +174,13 @@ public class Connection {
      * sends a PingEvent to the target
      * @return false if pinging the target gives an exception
      */
-    public boolean hasConnection() {
+    public synchronized boolean hasConnection() {
+        while(connecting) {
+            try {
+                wait();
+            } catch (InterruptedException ex) {}
+        }
+        
         try {
             sendObject(new PingEvent(socket.getInetAddress()));
         } catch (IOException e) {
@@ -154,7 +192,6 @@ public class Connection {
     /**
      * send a NetworkEvent
      * @param ev The event to be send
-     * @throws IOException
      */
     public void sendEvent(NetworkEvent ev) {
         eventQueue.add(ev);
@@ -165,9 +202,13 @@ public class Connection {
      * @param obj the Object to be send
      * @throws IOException
      */
-    private void sendObject(Object obj) throws IOException {
-        out.writeObject(obj);
-        out.flush();
+    private synchronized void sendObject(Object obj) throws IOException {
+        if(out != null) {
+            out.writeObject(obj);
+            out.flush();
+        } else {
+            throw new SocketException("No connection was made.");
+        }
     }
     
     private void remoteClosed() {

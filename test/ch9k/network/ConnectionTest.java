@@ -48,8 +48,8 @@ public class ConnectionTest {
      */
     @Test
     public void testSendEvent() throws IOException, InterruptedException {
-        Connection conn1 = new Connection(InetAddress.getLocalHost(), pool);
-        Connection conn2 = new Connection(InetAddress.getLocalHost(), pool);
+        Connection conn1 = new Connection(InetAddress.getLocalHost(), pool, null);
+        Connection conn2 = new Connection(InetAddress.getLocalHost(), pool, null);
 
         conn1.sendEvent(new TestNetworkEvent());
         Thread.sleep(200);
@@ -68,7 +68,7 @@ public class ConnectionTest {
      */
     @Test
     public void testHasConnection() throws IOException, InterruptedException {
-        Connection conn = new Connection(InetAddress.getLocalHost(), pool);
+        Connection conn = new Connection(InetAddress.getLocalHost(), pool, null);
         Thread.sleep(100);
         assertTrue(conn.hasConnection());
 
@@ -83,7 +83,7 @@ public class ConnectionTest {
      */
     @Test
     public void testClose() throws IOException {
-        Connection conn = new Connection(InetAddress.getLocalHost(), pool);
+        Connection conn = new Connection(InetAddress.getLocalHost(), pool, null);
         assertTrue(conn.hasConnection());
 
         conn.close();

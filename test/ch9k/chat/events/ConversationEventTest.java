@@ -55,7 +55,7 @@ public class ConversationEventTest {
         // create a remote eventpool
         EventPool remotePool = new EventPool();
         // and connect it to the local one
-        Connection remoteConnection = new Connection(InetAddress.getLocalHost(), remotePool);
+        Connection remoteConnection = new Connection(InetAddress.getLocalHost(), remotePool, null);
         Thread.sleep(100); // wait for thread to get up and running
 
         // local usernormally doesn't excist as a Contact, this is needed for testing, needs to had the username of the localuser so account.getUsername

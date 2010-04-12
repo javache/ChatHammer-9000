@@ -181,7 +181,7 @@ public class ConversationTest {
 
         // create a remote eventpool and connect it to the local one
         EventPool remotePool = new EventPool();
-        Connection remoteConnection = new Connection(InetAddress.getLocalHost(), remotePool);
+        Connection remoteConnection = new Connection(InetAddress.getLocalHost(), remotePool, null);
         Thread.sleep(100);
 
         // create a contact out of the local user (as seen from the other side)
