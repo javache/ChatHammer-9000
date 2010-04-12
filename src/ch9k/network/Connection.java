@@ -217,6 +217,8 @@ public class Connection {
             while(!socket.isClosed()) {
                 try {
                     NetworkEvent ev = eventQueue.take();
+                    LOGGER.info(String.format("Sending event %s to %s",
+                            ev.getClass().getName(), ev.getTarget()));
                     sendObject(ev);
                 } catch (IOException ex) {
                     LOGGER.log(Level.SEVERE, null, ex);

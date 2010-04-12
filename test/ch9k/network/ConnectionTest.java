@@ -30,10 +30,10 @@ public class ConnectionTest {
         pool = new EventPool();
         testListener = new TestListener();
         pool.addListener(testListener, new TypeEventFilter(TestNetworkEvent.class));
-        Thread.sleep(200); // wait for eventpool to start
 
         echoServer = new DirectResponseServer();
         echoServer.start();
+        Thread.sleep(100); // wait for everything to start
     }
 
     @After
@@ -52,13 +52,13 @@ public class ConnectionTest {
         Connection conn2 = new Connection(InetAddress.getLocalHost(), pool);
 
         conn1.sendEvent(new TestNetworkEvent());
-        Thread.sleep(100);
+        Thread.sleep(200);
         assertEquals(1, testListener.received);
 
         conn1.sendEvent(new TestNetworkEvent());
         conn1.sendEvent(new TestNetworkEvent());
         conn2.sendEvent(new TestNetworkEvent());
-        Thread.sleep(300);
+        Thread.sleep(200);
         assertEquals(4, testListener.received);
     }
 
