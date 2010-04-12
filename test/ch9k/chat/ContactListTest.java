@@ -1,5 +1,6 @@
 package ch9k.chat;
 
+import ch9k.configuration.PersistentDataObject;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import org.junit.Before;
@@ -81,5 +82,21 @@ public class ContactListTest {
         assertNotSame(contact1, contactList.getContact(contact2.getIp(),contact2.getUsername()));
         assertNull(contactList.getContact(contact2.getIp(),contact1.getUsername()));
         assertNull(contactList.getContact(contact1.getIp(),contact2.getUsername()));
+    }
+
+    @Test
+    public void persistTest() throws UnknownHostException{
+        Contact contact1 = new Contact("JPanneel", InetAddress.getByName("google.be"), false);
+        Contact contact2 = new Contact("Javache", InetAddress.getByName("ugent.be"), false);
+        contactList.addContact(contact1);
+        contactList.addContact(contact2);
+
+        PersistentDataObject pdo = contactList.persist();
+        ContactList loadedList = new ContactList(pdo);
+        
+        assertTrue(contactList.getContacts().containsAll(loadedList.getContacts()));
+        assertTrue(loadedList.getContacts().containsAll(contactList.getContacts()));
+
+
     }
 }

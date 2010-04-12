@@ -254,8 +254,8 @@ public class ContactTest {
     public void testPersist() throws UnknownHostException {
         Contact instance = new Contact("Javache", InetAddress.getByName("ugent.be"), false);
         PersistentDataObject pdo = instance.persist();
-        Contact loaded = new Contact();
-        loaded.load(pdo);
-        assertTrue(instance.equals(loaded));
+        Contact loaded = new Contact(pdo);
+
+        assertEquals(instance, loaded);
     }
 }

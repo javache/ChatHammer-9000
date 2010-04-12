@@ -45,15 +45,16 @@ public class Account implements Persistable{
         setPassword(password);
         contactList = new ContactList();
     }
-    /**
-     * Creates an empty account class, ONLY TO BE USED WHEN LOADING PREVIOUS STATE
-     *
-     * This creates a completely empty Account object, so that we can load data
-     * from a Persistent Data Object we stored previously;
-     */
-    public Account() {
 
+    /**
+     * Creates a new object, and immediately restores it to a previous state
+     *
+     * @param data Previously stored state of this object
+     */
+    public Account(PersistentDataObject data) {
+        load(data);
     }
+    
     /**
      * will return the password hash
      * NOTE: trying to print this is just stupid
@@ -150,8 +151,7 @@ public class Account implements Persistable{
         username = el.getChildText("username");
         status = el.getChildText("status");
         passwordHash = el.getChildText("status").getBytes();
-        contactList= new ContactList();
-        contactList.load(new PersistentDataObject(el.getChild("contactlist")));
+        contactList= new ContactList(new PersistentDataObject(el.getChild("contactlist")));
         
     }
 }

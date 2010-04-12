@@ -41,17 +41,16 @@ public class Contact implements Comparable<Contact>, EventListener, Persistable 
         this.blocked = blocked;
         this.online = false;
         this.status = "";
-        EventPool.getAppPool().addListener(this, new ContactStatusEventFilter(this));
     }
 
     /**
-     * Creates an empty contact class, ONLY TO BE USED WHEN LOADING PREVIOUS STATE
+     * Creates a new object, and immediately restores it to a previous state
      *
-     * This creates a completely empty Contact object, so that we can load data
-     * from a Persistent Data Object we stored previously;
+     * @param data Previously stored state of this object
      */
-    public Contact() {
-
+    public Contact(PersistentDataObject data) {
+        load(data);
+        EventPool.getAppPool().addListener(this, new ContactStatusEventFilter(this));
     }
 
     /**

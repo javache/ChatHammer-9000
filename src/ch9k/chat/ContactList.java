@@ -25,6 +25,17 @@ public class ContactList implements Persistable {
     public ContactList() {
         contacts = new TreeSet<Contact>();
     }
+    
+    /**
+     * Creates a new object, and immediately restores it to a previous state
+     * 
+     * @param data Previously stored state of this object
+     */
+    public ContactList(PersistentDataObject data) {
+        contacts = new TreeSet<Contact>();
+        load(data);
+    }
+
 
     /**
      * Get a list of all the contacts from the current user
@@ -76,6 +87,7 @@ public class ContactList implements Persistable {
         }
         return null;
     }
+    
 
     @Override
     public PersistentDataObject persist() {
@@ -93,8 +105,7 @@ public class ContactList implements Persistable {
     public void load(PersistentDataObject object) {
         for (Object obj : object.getElement().getChildren()) {
             Element child = (Element) obj;
-            Contact contact = new Contact();
-            contact.load(new PersistentDataObject(child));
+            Contact contact = new Contact(new PersistentDataObject(child));
             contacts.add(contact);
         }
     }
