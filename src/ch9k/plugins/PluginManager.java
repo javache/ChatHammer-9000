@@ -25,33 +25,37 @@ public class PluginManager {
     private Map<Conversation, List<Plugin>> plugins;
 
     /**
+     * A list of available plugins.
+     */
+    private List<String> availablePlugins;
+
+    /**
+     * A plugin installer.
+     */
+    private PluginInstaller installer;
+
+    /**
      * Constructor.
      */
     public PluginManager() {
-    }
-
-    /**
-     * Load a plugin.
-     * @param name Name of the plugin to load.
-     */
-    public void loadPlugin(String name) {
-        // TODO: Do we need this?
+        availablePlugins = new ArrayList<String>();
+        installer = new PluginInstaller(this);
     }
 
     /**
      * Get a list of available plugins.
      * @return A list of available plugins.
      */
-    public String[] getAvailablePlugins() {
-        /* This list is stored in the configuration. We fetch it from there and
-         * return it. 
-         */
-        String[] availablePlugins = {
-            "ch9k.plugins.googleimage.GoogleImageProviderPlugin",
-            "ch9k.plugins.flickr.FlickrImageProviderPlugin"
-        };
-                                   
+    public List<String> getAvailablePlugins() {
         return availablePlugins;
+    }
+
+    /**
+     * Add an available plugin to the list.
+     * @param String Class name of the plugin to add.
+     */
+    public void addAvailablePlugin(String name) {
+        availablePlugins.add(name);
     }
 
     /**
@@ -69,7 +73,7 @@ public class PluginManager {
         /* Find the class of the new plugin and initialize it. */
         Plugin plugin;
         try {
-            Class pluginClass = Class.forName(name);
+            Class pluginClass = installer.getPluginClass(name);
             plugin = (Plugin) pluginClass.newInstance();
         } catch (ClassNotFoundException exception) {
             // TODO: Show relevant warning.
