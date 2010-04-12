@@ -1,17 +1,21 @@
 package ch9k.plugins;
 
-import java.net.MalformedURLException;
-import java.util.jar.JarFile;
-import java.util.Map;
-import java.util.jar.Manifest;
-import java.util.jar.Attributes;
+import ch9k.configuration.Storage;
 import java.io.File;
 import java.io.FileFilter;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.logging.Logger;
-import ch9k.configuration.Storage;
-import java.net.URLClassLoader;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLClassLoader;
+import java.net.URLConnection;
+import java.util.Map;
+import java.util.jar.Attributes;
+import java.util.jar.JarFile;
+import java.util.jar.Manifest;
+import java.util.logging.Logger;
 
 /**
  * A class that simplifies the process of installing new plugins.
@@ -113,5 +117,50 @@ public class PluginInstaller extends URLClassLoader {
      */
     public Class getPluginClass(String name) throws ClassNotFoundException {
         return findClass(name);
+    }
+
+    /**
+     * Install a plugin from an URL.
+     * @param url URL pointing to a plugin jar.
+     */
+    public void installPlugin(URL url) {
+        LOGGER.info("Installing plugin: " + url);
+        try {
+            /* We take the filename of the url and store the plugin there. */
+            URLConnection connection = url.openConnection();
+            File file = new File(url.getFile());
+            installPlugin(connection.getInputStream(), file.getName());
+        } catch (IOException exception) {
+            // TODO: Show relevant warning.
+            System.out.println(exception);
+            return;
+        }
+    }
+
+    /**
+     * Install a plugin jar from an input stream. This will close the stream
+     * after the read.
+     * @param in Stream to get the plugin from.
+     * @param fileName File name of the plugin.
+     */
+    public void installPlugin(InputStream in, String fileName)
+            throws IOException {
+        /* Open the output file. */
+        File file = new File(INSTALL_DIRECTORY, fileName);
+        OutputStream out = new FileOutputStream(file);
+
+        /* Buffer and buffer length. */
+        byte[] buffer = new byte[1024];
+        int length;
+
+        /* Copy the stream. */
+        while((length = in.read(buffer)) > 0) out.write(buffer, 0, length);
+
+        /* Close the streams. */
+        in.close();
+        out.close();
+
+        /* Register the new plugin. */
+        registerPlugin(file);
     }
 }
