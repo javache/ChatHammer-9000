@@ -11,7 +11,6 @@ import java.net.Socket;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.LinkedBlockingQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -21,20 +20,21 @@ import java.util.logging.Logger;
  */
 public class ConnectionManager {
     /**
+     * Logger, well does what it says
+     */
+    private static final Logger LOGGER =
+            Logger.getLogger(ConnectionManager.class.getName());
+
+    /**
      * a Map to store all the connections.
      */
-    private Map<InetAddress, Connection> connectionMap;
+    private Map<InetAddress, Connection> connectionMap =
+            new ConcurrentHashMap<InetAddress, Connection>();
     
     /**
      * Will listen to incoming connections
      */
     private ServerSocket server;
-
-    /**
-     * Logger, well does what it says
-     */
-    private static final Logger LOGGER =
-            Logger.getLogger(ConnectionManager.class.getName());
     
     /**
      * The eventpool we should send messages to
@@ -46,7 +46,6 @@ public class ConnectionManager {
      * @param pool EventPool where received events will be thrown
      */
     public ConnectionManager(EventPool pool) {
-        connectionMap = new ConcurrentHashMap<InetAddress, Connection>();
         this.pool = pool;
     }
 
@@ -72,7 +71,9 @@ public class ConnectionManager {
     public void disconnect() {
         // stop accepting new connectons
         try {
-            server.close();
+            if(server != null) {
+                server.close();
+            }
         } catch (IOException ex) {
             LOGGER.log(Level.WARNING, ex.toString());
         }
@@ -81,16 +82,16 @@ public class ConnectionManager {
         for (Connection conn : connectionMap.values()) {
             conn.close();
         }
-        connectionMap.clear();
-
-        
+        connectionMap.clear();        
     }
 
     /**
      * Start listening for incoming connections
      */
     public void readyForIncomingConnections() {
-        startListenThread();
+        Thread listenThread = new Thread(new Listener());
+        listenThread.setDaemon(true);
+        listenThread.start();
     }
 
     /**
@@ -158,14 +159,5 @@ public class ConnectionManager {
                 LOGGER.log(Level.WARNING, ex.toString());
             }
         }
-    }
-
-    /**
-     * Starts a thread that will listen for incoming connections
-     */
-    private void startListenThread() {
-        Thread listenThread = new Thread(new Listener());
-        listenThread.setDaemon(true);
-        listenThread.start();
     }
 }

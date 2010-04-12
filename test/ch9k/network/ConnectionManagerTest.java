@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.net.ConnectException;
 import java.net.InetAddress;
 import java.net.Socket;
+import org.junit.After;
 import org.junit.Test;
 import org.junit.Before;
 import static org.junit.Assert.*;
@@ -38,7 +39,11 @@ public class ConnectionManagerTest {
         pool.addListener(onlineListener, new TypeEventFilter(NetworkConnectionLostEvent.class));
 
         connectionManager = new ConnectionManager(pool);
-        Thread.sleep(100);
+    }
+
+    @After
+    public void tearDown() {
+        connectionManager.disconnect();
     }
 
     @Test
@@ -78,20 +83,18 @@ public class ConnectionManagerTest {
 
         // close it up
         connectionManager.disconnect();
-        Thread.sleep(100);
         assertFalse(connection.hasConnection());
 
         // we shouldn't be able to connect any more
         connection = new Connection(InetAddress.getLocalHost(),
                 new EventPool(), connectionManager);
-        Thread.sleep(100);
         assertFalse(connection.hasConnection());
     }
     
     @Test
     public void shouldNotThinkConnectionIsLost() throws Exception {
         connectionManager.sendEvent(new TestNetworkEvent("google.be"));
-        // wait long enough
+        // wait long enough so the connection can timeout
         Thread.sleep(600);
         assertTrue(onlineListener.online);
     }
@@ -100,7 +103,7 @@ public class ConnectionManagerTest {
     public void testShouldRaiseConnectException() throws IOException {
         Socket s = new Socket(InetAddress.getLocalHost(), Connection.DEFAULT_PORT);
     }
-    
+
     @Test
     public void testShouldNotRaiseConnectException() throws IOException, InterruptedException {
         connectionManager.readyForIncomingConnections();

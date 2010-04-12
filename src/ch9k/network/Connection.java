@@ -18,8 +18,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * 
+ * Connection sends and receives event over a socket
  * @author nudded
+ * @author Pieter De Baets
  */
 public class Connection {
     /**
@@ -87,7 +88,7 @@ public class Connection {
      * @param manager 
      */
     public Connection(final InetAddress ip, EventPool pool, final ConnectionManager manager) {
-        socket = new Socket();
+        this.socket = new Socket();
         this.pool = pool;
 
         new Thread(new Runnable() {
@@ -130,19 +131,13 @@ public class Connection {
         out = new ObjectOutputStream(socket.getOutputStream());
         in = new ObjectInputStream(socket.getInputStream());        
 
-        listenerThread = new Thread(new Runnable() {
-            public void run() {
-                runConnectionListener();
-            }
-        });
+        String threadName = "connection-" + socket.getInetAddress().getHostAddress();
+
+        listenerThread = new Thread(new ConnectionListener(), threadName + "-reader");
         listenerThread.setDaemon(true);
         listenerThread.start();
-
-        writerThread = new Thread(new Runnable() {
-            public void run() {
-                runConnectionWriter();
-            }
-        });
+        
+        writerThread = new Thread(new ConnectionWriter(), threadName + "-writer");
         writerThread.setDaemon(true);
         writerThread.start();
 
@@ -213,61 +208,70 @@ public class Connection {
     
     private void remoteClosed() {
         pool.raiseEvent(new UserDisconnectedEvent(socket.getInetAddress()));
-        // at this point, we should close our output (not our input, since it 
-        // might still contain messages)
+
+        // close the output (not the input, since it might still contain messages)
         try {
             socket.shutdownOutput();
         } catch (IOException ex) {
-            LOGGER.log(Level.SEVERE, ex.toString());
+            LOGGER.log(Level.SEVERE, null, ex);
         }
     }
     
     /**
      * Start listening for incoming events and send them to the EventPool
      */
-    private void runConnectionListener() {
-        try {
-            while(!socket.isClosed()) {
-                try {
-                    NetworkEvent ev = (NetworkEvent)in.readObject();
-                    ev.setSource(socket.getInetAddress());
-                    LOGGER.info(String.format("Received event %s from %s",
-                            ev.getClass().getName(), ev.getSource()));
-
-                    // downcast so we don't send it again
-                    pool.raiseEvent((Event)ev);
-                } catch (ClassNotFoundException ex) {
-                    // TODO handle error
-                    LOGGER.log(Level.SEVERE, null, ex);
+    private class ConnectionListener implements Runnable {
+        public void run() {
+            try {
+                while(!socket.isClosed()) {
+                    readEvent();
                 }
+            } catch (EOFException ex) {
+                LOGGER.log(Level.INFO, ex.toString());
+            } catch (IOException ex) {
+                LOGGER.log(Level.SEVERE, null, ex);
             }
-        } catch (EOFException ex) {
-           LOGGER.log(Level.INFO, ex.toString());
-           // this happens when the socket on the remote end closes
-           remoteClosed();
-        } catch (IOException ex) {
-            LOGGER.log(Level.SEVERE, null, ex);
+
+            // this happens when the socket on the remote end closes
+            remoteClosed();
+        }
+
+        private void readEvent() throws IOException {
+            try {
+                NetworkEvent ev = (NetworkEvent)in.readObject();
+                ev.setSource(socket.getInetAddress());
+                LOGGER.info(String.format("Received event %s from %s",
+                        ev.getClass().getName(), ev.getSource()));
+
+                // downcast so we don't send it again
+                pool.raiseEvent((Event)ev);
+            } catch (ClassNotFoundException ex) {
+                // TODO handle error
+                LOGGER.log(Level.SEVERE, null, ex);
+            }
         }
     }
 
     /**
      * Send events from the queue
      */
-    private void runConnectionWriter() {
-        try {
-            while(!socket.isClosed()) {
-                try {
-                    NetworkEvent ev = eventQueue.take();
-                    LOGGER.info(String.format("Sending event %s to %s",
-                            ev.getClass().getName(), ev.getTarget()));
-                    sendObject(ev);
-                } catch (IOException ex) {
-                    LOGGER.log(Level.SEVERE, null, ex);
+    private class ConnectionWriter implements Runnable {
+        public void run() {
+            try {
+                while(!socket.isClosed()) {
+                    try {
+                        NetworkEvent ev = eventQueue.take();
+                        LOGGER.info(String.format("Sending event %s to %s",
+                                ev.getClass().getName(), ev.getTarget()));
+                        sendObject(ev);
+                    } catch (IOException ex) {
+                        LOGGER.log(Level.SEVERE, null, ex);
+                    }
                 }
+            } catch(InterruptedException ex) {
+                // we should just stop then
+                LOGGER.log(Level.INFO, ex.toString());
             }
-        } catch(InterruptedException ex) {
-            // we should just stop then
-            LOGGER.log(Level.INFO, ex.toString());
         }
     }
 }
