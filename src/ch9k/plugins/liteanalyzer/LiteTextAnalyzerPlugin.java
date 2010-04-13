@@ -13,12 +13,7 @@ import java.util.regex.Pattern;
 /**
  * A lite text analyzer. The PRO version is available for onle 29.99 euros!
  */
-public class LiteTextAnalyzer extends TextAnalyzer {
-    /**
-     * Number of last messages to use.
-     */
-    private static final int MAX_MESSSAGES = 10;
-
+public class LiteTextAnalyzerPlugin extends TextAnalyzer {
     /**
      * Number of subjects to return.
      */
@@ -68,10 +63,12 @@ public class LiteTextAnalyzer extends TextAnalyzer {
     }
 
     @Override
-    public String[] getSubject() {
-        /* Obtain the MAX_MESSSAGES last messages from the conversation. */
-        String[] messages = getConversation().getMessages(MAX_MESSSAGES);
-        
+    public int getMaxNumberOfMessages() {
+        return 10;
+    }
+
+    @Override
+    public String[] getSubjects(String[] messages) {
         /* Create a frequency map. */
         Map<String, Integer> frequencies = new TreeMap<String, Integer>();
 
@@ -80,7 +77,7 @@ public class LiteTextAnalyzer extends TextAnalyzer {
             Matcher matcher = punctuation.matcher(message);
             String[] words = matcher.replaceAll("").split("\\s+");
             for(String word: words) {
-                String key = word.trim();
+                String key = word.trim().toLowerCase();
                 Integer frequency = frequencies.get(key);
                 if(frequency == null) frequencies.put(key, 1);
                 else frequencies.put(key, frequency.intValue() + 1);

@@ -35,7 +35,9 @@ public abstract class TextAnalyzer extends AbstractPlugin
         if(!isRelevant(event)) return;
 
         /* Create a new subject. */
-        String[] result = getSubject();
+        String[] messages =
+                getConversation().getMessages(getMaxNumberOfMessages());
+        String[] result = getSubjects(messages);
         ConversationSubject subject =
                 new ConversationSubject(getConversation(), result);
 
@@ -46,8 +48,15 @@ public abstract class TextAnalyzer extends AbstractPlugin
     }
 
     /**
+     * Get the max number of messages to take from the conversation.
+     * @return The max number of messages to take.
+     */
+    public abstract int getMaxNumberOfMessages();
+
+    /**
      * Get the conversation subject as strings.
+     * @param messages The different messages in the conversation.
      * @return Strings representing conversation subjects.
      */
-    public abstract String[] getSubject();
+    public abstract String[] getSubjects(String[] messages);
 }
