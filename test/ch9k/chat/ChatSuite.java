@@ -13,6 +13,7 @@ import org.junit.runners.Suite;
     ,ch9k.chat.events.NewChatMessageEventTest.class
     ,ch9k.chat.events.ContactStatusEventFilterTest.class
     ,ch9k.chat.events.ContactStatusChangeEventTest.class
+    ,ch9k.chat.events.NewConversationSubjectEventTest.class
     ,ch9k.chat.ChatMessageTest.class
     ,ch9k.chat.ConversationSubjectTest.class
     ,ch9k.chat.ContactListTest.class
