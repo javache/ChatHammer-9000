@@ -142,9 +142,18 @@ public class ConnectionManager {
      */
     private class Listener implements Runnable {
         public void run() {
+            /**
+             * try to create a ServerSocket
+             * we do this in a different try catch
+             * because if this one fails
+             * our app will be unusable
+             */
             try {
                 server = new ServerSocket(Connection.DEFAULT_PORT);
-
+            } catch (IOException e) {
+                /* TODO: handle this */
+            } 
+            try {
                 // run forever
                 logger.info("Started accepting connections!");
                 while (!Thread.interrupted()) {
@@ -157,7 +166,7 @@ public class ConnectionManager {
             } catch (IOException ex) {
                 // if this fails it would appear as if nothing ever happened
                 logger.warn(ex.toString());
-            }
+            } 
         }
     }
 }
