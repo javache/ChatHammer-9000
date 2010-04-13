@@ -11,9 +11,6 @@ import java.net.Socket;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import javax.swing.AbstractListModel;
-import javax.swing.event.ChangeListener;
-import javax.swing.event.ChangeEvent;
 import org.apache.log4j.Logger;
 
 /**
@@ -21,7 +18,7 @@ import org.apache.log4j.Logger;
  * @author nudded
  * @author Pieter De Baets
  */
-public class ConnectionManager extends AbstractListModel implements ChangeListener {
+public class ConnectionManager {
     /**
      * Logger, well does what it says
      */
@@ -62,7 +59,7 @@ public class ConnectionManager extends AbstractListModel implements ChangeListen
         Connection connection = connectionMap.get(networkEvent.getTarget());
         if(connection == null) {
             connection = new Connection(networkEvent.getTarget(), pool, this);
-            addConnection(connection, networkEvent.getTarget());
+            connectionMap.put(networkEvent.getTarget(), connection);
         }
         connection.sendEvent(networkEvent);
     }
@@ -82,13 +79,11 @@ public class ConnectionManager extends AbstractListModel implements ChangeListen
         }
 
         // close all listening connections
-        int i = 0;
-        for (Connection conn : connectionMap.values()) {
-            conn.close();
-            i++;
+        int connectionCount = connectionMap.size();
+        for (Connection connection : connectionMap.values()) {
+            connection.close();
         }
         connectionMap.clear();
-        fireContentsChanged(this,0,i-1);
     }
 
     /**
@@ -106,7 +101,7 @@ public class ConnectionManager extends AbstractListModel implements ChangeListen
      */
     public void handleNetworkError(InetAddress target) {
         if (checkHeartbeat()) {
-            removeConnection(target);
+            connectionMap.remove(target);
             // send an event signalling that target is offline
             pool.raiseEvent(new CouldNotConnectEvent(target));
         } else {
@@ -124,7 +119,8 @@ public class ConnectionManager extends AbstractListModel implements ChangeListen
     private boolean checkHeartbeat() {
         boolean online = false;
         
-        // only one connection to test with
+        // we have only one connection to test with, so that's not really
+        // reliable, let's try ping google
         if (connectionMap.values().size() <= 1) {
             online = true;
             try {
@@ -143,56 +139,29 @@ public class ConnectionManager extends AbstractListModel implements ChangeListen
 
         return online;
     }
-
-    public int getSize() {
-        return connectionMap.values().size();
-    }
-    
-    public Object getElementAt(int index) {
-        return connectionMap.values().toArray()[index];
-    }
-    
-    public void stateChanged(ChangeEvent event) {
-        logger.info("connection is writing");
-        fireContentsChanged(this,0,connectionMap.values().size() - 1);
-    }
-
-    private void addConnection(Connection con, InetAddress target) {
-        connectionMap.put(target, con);
-        con.addChangeListener(this);
-        fireContentsChanged(this,0,connectionMap.values().size() - 1);
-    }
-
-    private void removeConnection(InetAddress target) {
-        connectionMap.remove(target);
-        fireContentsChanged(this,0,connectionMap.values().size() - 1);
-    }
     
     /**
      * Accepts incoming connections
      */
     private class Listener implements Runnable {
         public void run() {
-            /**
-             * try to create a ServerSocket
-             * we do this in a different try catch
-             * because if this one fails
-             * our app will be unusable
-             */
+            // try to create a serversocket
+            // (performed in a different try-catch because we need
+            // special handling for when this faisl)
             try {
                 server = new ServerSocket(Connection.DEFAULT_PORT);
             } catch (IOException e) {
                 /* TODO: handle this */
                 pool.raiseEvent(new NetworkConnectionLostEvent());
-            } 
+            }
             try {
                 // run forever
                 logger.info("Started accepting connections!");
                 while (!Thread.interrupted()) {
                     Socket client = server.accept();
-                    Connection conn = new Connection(client, pool);
+                    Connection connection = new Connection(client, pool);
                     // TODO worry about synchronisation later
-                    addConnection(conn, client.getInetAddress());
+                    connectionMap.put(client.getInetAddress(), connection);
                     logger.info("Accepted a new connection! " + client.getInetAddress());
                 }
             } catch (IOException ex) {

@@ -5,7 +5,6 @@ import ch9k.eventpool.EventPool;
 import ch9k.eventpool.NetworkEvent;
 import ch9k.network.events.PingEvent;
 import ch9k.network.events.UserDisconnectedEvent;
-import ch9k.core.Model;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -22,7 +21,7 @@ import org.apache.log4j.Logger;
  * @author nudded
  * @author Pieter De Baets
  */
-public class Connection extends Model {
+public class Connection {
     /**
      * The default port used to create connections
      * chosen because it's the smallest prime number
