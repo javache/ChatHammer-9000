@@ -16,7 +16,7 @@ public class RealLifeTest {
         pool.raiseEvent(new TestNetworkEvent(InetAddress.getByName("10.1.1.129")));
         
         while(true) {
-            
+            Thread.sleep(100);
         }
         
     }
