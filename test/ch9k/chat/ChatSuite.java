@@ -16,7 +16,7 @@ import org.junit.runners.Suite;
     ,ch9k.chat.ChatMessageTest.class
     ,ch9k.chat.ConversationSubjectTest.class
     ,ch9k.chat.ContactListTest.class
-    ,ch9k.chat.ConversationTest.class
+    ,ch9k.chat.ConversationTest.class         
     ,ch9k.chat.ContactTest.class
     ,ch9k.chat.ConversationManagerTest.class
 })

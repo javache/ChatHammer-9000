@@ -11,6 +11,8 @@ import ch9k.configuration.PersistentDataObject;
 import ch9k.core.Account;
 import ch9k.core.ChatApplication;
 import ch9k.eventpool.EventPool;
+import ch9k.eventpool.TestListener;
+import ch9k.eventpool.TypeEventFilter;
 import ch9k.network.Connection;
 import java.io.IOException;
 import java.net.InetAddress;
@@ -85,12 +87,24 @@ public class ContactTest {
      * Test of isBlocked/setBlocked method, of class Contact.
      */
     @Test
-    public void testBlocked() {
+    public void testBlocked() throws InterruptedException {
         assertFalse(contact.isBlocked());
+
+        TestListener testListener = new TestListener();
+        EventPool.getAppPool().addListener(testListener, new TypeEventFilter(ContactStatusEvent.class));
+
         contact.setBlocked(true);
+        Thread.sleep(50);
+
+        assertTrue(testListener.getLastEvent() instanceof ContactOfflineEvent);
         assertTrue(contact.isBlocked());
+
+        contact.setBlocked(false);
+        Thread.sleep(50);
+        assertTrue(testListener.getLastEvent() instanceof ContactOnlineEvent);
+        assertFalse(contact.isBlocked());
     }
-    
+
     /**
      * Test of equals method, of class Contact.
      */
@@ -157,31 +171,23 @@ public class ContactTest {
         ContactStatusEvent contactOnlineEvent = new ContactOnlineEvent(contact);
         ContactStatusEvent contactOfflineEvent = new ContactOfflineEvent(contact);
 
-        ContactStatusEvent contactBlockedEvent = new ContactBlockedEvent(contact);
-        ContactStatusEvent contactUnblockedEvent = new ContactUnblockedEvent(contact);
-
         String newStatus = "on toilet";
         ContactStatusEvent contactStatusChangeEvent = new ContactStatusChangeEvent(contact, newStatus);
 
         assertFalse(contact.isOnline());
-        assertFalse(contact.isBlocked());
         assertEquals("", contact.getStatus());
 
         eventPool.raiseEvent(contactOnlineEvent);
-        eventPool.raiseEvent(contactBlockedEvent);
         eventPool.raiseEvent(contactStatusChangeEvent);
         Thread.sleep(100);
 
         assertTrue(contact.isOnline());
-        assertTrue(contact.isBlocked());
         assertEquals(newStatus, contact.getStatus());
 
         eventPool.raiseEvent(contactOfflineEvent);
-        eventPool.raiseEvent(contactUnblockedEvent);
         Thread.sleep(100);
 
         assertFalse(contact.isOnline());
-        assertFalse(contact.isBlocked());
     }
 
     /**
@@ -221,9 +227,6 @@ public class ContactTest {
         ContactStatusEvent contactOnlineEvent = new ContactOnlineEvent(remoteContact);
         ContactStatusEvent contactOfflineEvent = new ContactOfflineEvent(remoteContact);
 
-        ContactStatusEvent contactBlockedEvent = new ContactBlockedEvent(remoteContact);
-        ContactStatusEvent contactUnblockedEvent = new ContactUnblockedEvent(remoteContact);
-
         String newStatus = "on toilet";
         ContactStatusEvent contactStatusChangeEvent = new ContactStatusChangeEvent(remoteContact, newStatus);
 
@@ -232,14 +235,6 @@ public class ContactTest {
         assertEquals("", localContact.getStatus());
 
         localPool.raiseEvent(contactOnlineEvent);
-        Thread.sleep(100);
-        assertTrue(localContact.isOnline());
-
-        localPool.raiseEvent(contactBlockedEvent);
-        Thread.sleep(100);
-        assertFalse(localContact.isOnline());
-
-        localPool.raiseEvent(contactUnblockedEvent);
         Thread.sleep(100);
         assertTrue(localContact.isOnline());
 

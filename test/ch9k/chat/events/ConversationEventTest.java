@@ -14,6 +14,7 @@ import ch9k.network.Connection;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import org.junit.After;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -22,6 +23,14 @@ import static org.junit.Assert.*;
  * @author Jens Panneel
  */
 public class ConversationEventTest {
+
+    @After
+    public void tearDown() {
+        EventPool.getAppPool().clearListeners();
+        ChatApplication.getInstance().getAccount().getContactList().clear();
+        ChatApplication.getInstance().getConversationManager().clear();
+    }
+
     /**
      * Test of getContact method, of class ConversationEvent.
      * @throws UnknownHostException 
@@ -90,7 +99,7 @@ public class ConversationEventTest {
 
         // raise the event on the local pool, should get sent to remotePool too
         localPool.raiseEvent(localEvent);
-        Thread.sleep(100);
+        Thread.sleep(50);
 
         // let's check the results!
         ConversationEvent remoteEvent = (ConversationEvent)remoteListener.lastReceivedEvent;

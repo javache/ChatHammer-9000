@@ -122,6 +122,11 @@ public class Contact implements Comparable<Contact>, EventListener, Persistable 
      * @param blocked
      */
     public void setBlocked(boolean blocked) {
+        if(blocked) {
+            EventPool.getAppPool().raiseEvent(new ContactOfflineEvent(this));
+        } else {
+            EventPool.getAppPool().raiseEvent(new ContactOnlineEvent(this));
+        }
         this.blocked = blocked;
     }
 
@@ -181,23 +186,6 @@ public class Contact implements Comparable<Contact>, EventListener, Persistable 
             this.setStatus(contactStatusChangeEvent.getNewStatus());
         }
 
-        if(event instanceof ContactBlockedEvent) {
-            ContactBlockedEvent contactBlockedChangeEvent = (ContactBlockedEvent)event;
-            if(contactBlockedChangeEvent.isExternal()) {
-                this.setOnline(false);
-            } else {
-                this.setBlocked(true);
-            }
-        }
-
-        if(event instanceof ContactUnblockedEvent) {
-            ContactUnblockedEvent contactUnblockedChangeEvent = (ContactUnblockedEvent)event;
-            if(contactUnblockedChangeEvent.isExternal()) {
-                this.setOnline(true);
-            } else {
-                this.setBlocked(false);
-            }
-        }
     }
     
     @Override
