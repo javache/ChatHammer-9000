@@ -95,11 +95,15 @@ public class ContactTest {
         Thread.sleep(50);
 
         assertTrue(testListener.getLastEvent() instanceof ContactOfflineEvent);
+        // should tell the blocked contact that you went offline
+        assertEquals(contact, ((ContactOfflineEvent)testListener.getLastEvent()).getContact());
         assertTrue(contact.isBlocked());
 
         contact.setBlocked(false);
         Thread.sleep(50);
         assertTrue(testListener.getLastEvent() instanceof ContactOnlineEvent);
+        // should tell the unblocked contact you came online again
+        assertEquals(contact, ((ContactOnlineEvent)testListener.getLastEvent()).getContact());
         assertFalse(contact.isBlocked());
     }
 
