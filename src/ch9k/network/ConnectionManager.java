@@ -16,10 +16,10 @@ import javax.swing.event.ChangeListener;
 import javax.swing.event.ChangeEvent;
 import org.apache.log4j.Logger;
 
-
 /**
  * Handles all connections to remote hosts
  * @author nudded
+ * @author Pieter De Baets
  */
 public class ConnectionManager extends AbstractListModel implements ChangeListener {
     /**
