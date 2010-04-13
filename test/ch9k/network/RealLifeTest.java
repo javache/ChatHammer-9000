@@ -14,6 +14,7 @@ public class RealLifeTest {
     public void letTheBeastGo() throws Exception {
         EventPool pool = EventPool.getAppPool();
         pool.raiseEvent(new TestNetworkEvent(InetAddress.getByName("10.1.1.74")));
+        Thread.sleep(100);
     }
     
 }
