@@ -17,7 +17,7 @@ import javax.swing.JPanel;
  * @author Jens Panneel
  */
 public class ContactListView extends JPanel {
-    private JList contactListView;
+    private JList list;
 
     /**
      * Create a new ContactListView
@@ -27,17 +27,17 @@ public class ContactListView extends JPanel {
         Account account = ChatApplication.getInstance().getAccount();
         ContactList contactList = account.getContactList();
 
-        contactListView = new JList(contactList);
-        contactListView.setCellRenderer(new ContactListCellRenderer());
+        list = new JList(contactList);
+        list.setCellRenderer(new ContactListCellRenderer());
         
         // add components to the panel
-        add(contactListView);
+        add(list);
     }
 
-    private static void initTest(ContactListView contactListView) {
+    private static void initTest(ContactListView listView) {
         JFrame window = new JFrame("ContactList");
         window.setSize(new Dimension(300, 300));
-        window.getContentPane().add(contactListView);
+        window.setContentPane(listView);
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         window.setVisible(true);
     }
