@@ -22,15 +22,15 @@ public class ContactListCellRenderer extends JLabel implements ListCellRenderer 
         
         String online;
         if(contact.isOnline()) {
-            online = "online";
+            online = "[online]";
         } else {
-            online = "offline";
+            online = "[offline]";
         }
         String blocked = "";
         if(contact.isBlocked()) {
-            blocked = "blocked";
+            blocked = "[blocked]";
         }
-        setText("[" + online + "] "  + "[" + blocked + "] "+ contact.getUsername());
+        setText(online + " " + blocked + " " + contact.getUsername());
         
         if (isSelected) {
             setBackground(list.getSelectionBackground());

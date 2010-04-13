@@ -53,7 +53,7 @@ public class ContactListView extends JPanel{
         ContactList contactList = account.getContactList();
         
         Contact contact1 = new Contact("JPanneel", InetAddress.getByName("google.be"), false);
-        Contact contact2 = new Contact("Jaspervdj", InetAddress.getByName("ugent.be"), true);
+        Contact contact2 = new Contact("Jaspervdj", InetAddress.getByName("ugent.be"), false);
         contactList.addContact(contact1);
         contactList.addContact(contact2);
 
@@ -70,6 +70,8 @@ public class ContactListView extends JPanel{
         contactList.addContact(contact3);
         Thread.sleep(1000);
         contact1.setOnline(true);
+        Thread.sleep(1000);
+        contact2.setBlocked(true);
     }
 
     private class ContactListPupulListener extends MouseAdapter {

@@ -12,13 +12,13 @@ public class ContactUnblockAction extends AbstractAction {
     private Contact contact;
 
     public ContactUnblockAction(Contact contact) {
-        super("Block");
+        super("unlock");
         this.contact = contact;
     }
 
     @Override
-    public void actionPerformed(ActionEvent arg0) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public void actionPerformed(ActionEvent actionEvent) {
+        contact.setBlocked(false);
     }
 
 }
