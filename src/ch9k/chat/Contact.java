@@ -9,6 +9,7 @@ import ch9k.eventpool.EventListener;
 import ch9k.eventpool.EventPool;
 import ch9k.configuration.Persistable;
 import ch9k.configuration.PersistentDataObject;
+import ch9k.core.Model;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import org.apache.log4j.Logger;
@@ -19,7 +20,7 @@ import org.jdom.Element;
  * This holds the contacts ip, username, status, and knows whether a contact is online or offline and blocked or not.
  * @author Jens Panneel
  */
-public class Contact implements Comparable<Contact>, EventListener, Persistable {
+public class Contact extends Model implements Comparable<Contact>, EventListener, Persistable {
     private InetAddress ip;
     private String username;
     private String status;
@@ -88,7 +89,10 @@ public class Contact implements Comparable<Contact>, EventListener, Persistable 
      * @param status
      */
     public void setStatus(String status) {
-        this.status = status;
+        if(!this.status.equals(status)){
+            this.status = status;
+            fireStateChanged();
+        }
     }
 
     /**
@@ -104,7 +108,10 @@ public class Contact implements Comparable<Contact>, EventListener, Persistable 
      * @param online
      */
     public void setOnline(boolean online) {
-        this.online = online;
+        if(this.online != online) {
+            this.online = online;
+            fireStateChanged();
+        }
     }
 
     /**
@@ -120,12 +127,16 @@ public class Contact implements Comparable<Contact>, EventListener, Persistable 
      * @param blocked
      */
     public void setBlocked(boolean blocked) {
+        if(this.blocked != blocked) {
+            this.blocked = blocked;
+            fireStateChanged();
+        }
         if(blocked) {
             EventPool.getAppPool().raiseEvent(new ContactOfflineEvent(this));
         } else {
             EventPool.getAppPool().raiseEvent(new ContactOnlineEvent(this));
         }
-        this.blocked = blocked;
+        
     }
 
     @Override
@@ -167,7 +178,6 @@ public class Contact implements Comparable<Contact>, EventListener, Persistable 
             return this.getIp().toString().compareTo(contact.getIp().toString());
         }
     }
-
     
     @Override
     public void handleEvent(Event event) {
@@ -212,14 +222,4 @@ public class Contact implements Comparable<Contact>, EventListener, Persistable 
         blocked = Boolean.parseBoolean(el.getChildText("blocked"));
     }
 
-    @Override
-    public String toString() {
-        String onlineString;
-        if(online) {
-            onlineString = "Online";
-        } else {
-            onlineString = "Offline";
-        }
-        return "[" + onlineString + "] " + username;
-    }
 }

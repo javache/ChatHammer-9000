@@ -7,13 +7,15 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import javax.swing.AbstractListModel;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import org.jdom.Element;
 
 /**
  * List of al the contacts of the current user.
  * @author Jens Panneel
  */
-public class ContactList extends AbstractListModel implements Persistable {
+public class ContactList extends AbstractListModel implements Persistable, ChangeListener {
     /**
      * Collection of contacts, a set because you dont want to save
      * the same contact two times.
@@ -56,6 +58,7 @@ public class ContactList extends AbstractListModel implements Persistable {
         if(contacts.contains(contact)){
             return false;
         } else {
+            contact.addChangeListener(this);
             contacts.add(contact);
             int i = contacts.indexOf(contact);
             fireIntervalAdded(this, i, i);
@@ -131,5 +134,14 @@ public class ContactList extends AbstractListModel implements Persistable {
     @Override
     public Object getElementAt(int n) {
         return contacts.get(n);
+    }
+
+    @Override
+    public void stateChanged(ChangeEvent changeEvent) {
+        if(changeEvent.getSource() instanceof Contact) {
+            Contact contact = (Contact)changeEvent.getSource();
+            int index = contacts.indexOf(contact);
+            fireContentsChanged(this, index, index);
+        }
     }
 }
