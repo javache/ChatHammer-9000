@@ -13,8 +13,12 @@ public class RealLifeTest {
     @Test
     public void letTheBeastGo() throws Exception {
         EventPool pool = EventPool.getAppPool();
-        pool.raiseEvent(new TestNetworkEvent(InetAddress.getByName("10.1.1.74")));
-        Thread.sleep(100);
+        pool.raiseEvent(new TestNetworkEvent(InetAddress.getByName("10.1.1.129")));
+        
+        while(true) {
+            
+        }
+        
     }
     
 }
