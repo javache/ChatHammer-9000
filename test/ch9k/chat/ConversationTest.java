@@ -39,6 +39,7 @@ public class ConversationTest {
     public void tearDown() {
         EventPool.getAppPool().clearListeners();
         ChatApplication.getInstance().getAccount().getContactList().clear();
+        ChatApplication.getInstance().getConversationManager().clear();
     }
 
     /**
@@ -170,6 +171,9 @@ public class ConversationTest {
      */
     @Test
     public void testHandleEvent() throws UnknownHostException, IOException, InterruptedException {
+        // clear the converstion created in setUp()
+        EventPool.getAppPool().removeListener(conversation);
+
         // get the local app-pool and let it start
         EventPool localPool = EventPool.getAppPool();
         Thread.sleep(100);
@@ -182,7 +186,7 @@ public class ConversationTest {
         // create a contact out of the local user (as seen from the other side)
         Account localAccount = ChatApplication.getInstance().getAccount();
         Contact localContact = new Contact(localAccount.getUsername(), InetAddress.getLocalHost(), false);
-        Contact remoteContact = new Contact("Javache", InetAddress.getLocalHost(), true);
+        Contact remoteContact = new Contact("Jaspervdj", InetAddress.getLocalHost(), true);
 
         // add both of these contacts to our list, so we can look them up later
         ContactList contactList = localAccount.getContactList();
@@ -196,11 +200,8 @@ public class ConversationTest {
         Conversation remoteConversation = conversationManager.startConversation(localContact, false);
 
         // register the remoteConversation specifically with the remote pool
-        // it already registered with the local pool during construction
-        // let's hope that doesn't bring too much problems...
         remotePool.addListener(remoteConversation, new ConversationEventFilter(remoteConversation));
-
-        // remote conversation should not listen to localPool
+        // remove remoteListener from localPool
         localPool.removeListener(remoteConversation);
 
         // now everything is setup, and a user can type a message
@@ -209,7 +210,7 @@ public class ConversationTest {
 
         // raise the event on the local pool, should get sent to remotePool too
         localPool.raiseEvent(localEvent);
-        Thread.sleep(100);
+        Thread.sleep(50);
 
         // let's check the results!
         assertEquals(1, remoteConversation.getMessages(10).length);

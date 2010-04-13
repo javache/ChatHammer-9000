@@ -46,6 +46,10 @@ public class ConversationManager implements EventListener{
         conversations.remove(contact);
     }
 
+    public void clear() {
+        conversations.clear();
+    }
+
     /**
      * Get the conversation you have with the given contact
      * @param contact
