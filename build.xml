@@ -50,7 +50,6 @@
             <attribute name="package"/>
             <attribute name="destination"/>
             <sequential>
-                <echo>${manifest.file}</echo>
                 <jar compress="${jar.compress}" jarfile="${dist.jar.dir}/@{destination}.jar" manifest="${build.classes.dir}/@{package}/${manifest.file}">
                     <fileset dir="${build.classes.dir}">
                         <include name="@{package}/**/*.class" />
