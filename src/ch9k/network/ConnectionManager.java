@@ -11,13 +11,17 @@ import java.net.Socket;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import javax.swing.AbstractListModel;
+import javax.swing.event.ChangeListener;
+import javax.swing.event.ChangeEvent;
 import org.apache.log4j.Logger;
+
 
 /**
  * Handles all connections to remote hosts
  * @author nudded
  */
-public class ConnectionManager {
+public class ConnectionManager extends AbstractListModel implements ChangeListener {
     /**
      * Logger, well does what it says
      */
@@ -58,7 +62,7 @@ public class ConnectionManager {
         Connection connection = connectionMap.get(networkEvent.getTarget());
         if(connection == null) {
             connection = new Connection(networkEvent.getTarget(), pool, this);
-            connectionMap.put(networkEvent.getTarget(), connection);
+            addConnection(connection, networkEvent.getTarget());
         }
         connection.sendEvent(networkEvent);
     }
@@ -78,10 +82,13 @@ public class ConnectionManager {
         }
 
         // close all listening connections
+        int i = 0;
         for (Connection conn : connectionMap.values()) {
             conn.close();
+            i++;
         }
-        connectionMap.clear();        
+        connectionMap.clear();
+        fireContentsChanged(this,0,i-1);
     }
 
     /**
@@ -99,7 +106,7 @@ public class ConnectionManager {
      */
     public void handleNetworkError(InetAddress target) {
         if (checkHeartbeat()) {
-            connectionMap.remove(target);
+            removeConnection(target);
             // send an event signalling that target is offline
             pool.raiseEvent(new CouldNotConnectEvent(target));
         } else {
@@ -137,6 +144,30 @@ public class ConnectionManager {
         return online;
     }
 
+    public int getSize() {
+        return connectionMap.values().size();
+    }
+    
+    public Object getElementAt(int index) {
+        return connectionMap.values().toArray()[index];
+    }
+    
+    public void stateChanged(ChangeEvent event) {
+        logger.info("connection is writing");
+        fireContentsChanged(this,0,connectionMap.values().size() - 1);
+    }
+
+    private void addConnection(Connection con, InetAddress target) {
+        connectionMap.put(target, con);
+        con.addChangeListener(this);
+        fireContentsChanged(this,0,connectionMap.values().size() - 1);
+    }
+
+    private void removeConnection(InetAddress target) {
+        connectionMap.remove(target);
+        fireContentsChanged(this,0,connectionMap.values().size() - 1);
+    }
+    
     /**
      * Accepts incoming connections
      */
@@ -161,7 +192,7 @@ public class ConnectionManager {
                     Socket client = server.accept();
                     Connection conn = new Connection(client, pool);
                     // TODO worry about synchronisation later
-                    connectionMap.put(client.getInetAddress(), conn);
+                    addConnection(conn, client.getInetAddress());
                     logger.info("Accepted a new connection! " + client.getInetAddress());
                 }
             } catch (IOException ex) {
