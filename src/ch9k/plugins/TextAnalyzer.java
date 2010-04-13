@@ -1,9 +1,14 @@
 package ch9k.plugins;
 
-import ch9k.eventpool.EventListener;
-import ch9k.eventpool.Event;
-import ch9k.eventpool.EventPool;
+import ch9k.chat.Conversation;
+import ch9k.chat.ConversationSubject;
 import ch9k.chat.events.NewChatMessageEvent;
+import ch9k.chat.events.NewConversationSubjectEvent;
+import ch9k.eventpool.Event;
+import ch9k.eventpool.EventFilter;
+import ch9k.eventpool.EventListener;
+import ch9k.eventpool.EventPool;
+import ch9k.eventpool.TypeEventFilter;
 
 /**
  * Abstract TextAnalyzer class.
@@ -11,24 +16,33 @@ import ch9k.chat.events.NewChatMessageEvent;
  */
 public abstract class TextAnalyzer extends AbstractPlugin
         implements EventListener {
-    /**
-     * Constructor.
-     */
-    public TextAnalyzer() {
-        // TODO: Register as listener
+    @Override
+    public void enable(Conversation conversation) {
+        super.enable(conversation);
+        EventFilter filter = new TypeEventFilter(NewChatMessageEvent.class);
+        EventPool.getAppPool().addListener(this, filter);
+    }
+
+    @Override
+    public void disable() {
+        EventPool.getAppPool().removeListener(this);
     }
 
     @Override
     public void handleEvent(Event e) {
-        /* Return if the event is no NewChatMessageEvent. */
-        if(!(e instanceof NewChatMessageEvent)) return;
-        NewChatMessageEvent event = (NewChatMessageEvent) e;
-
         /* Return if the event is not relevant. */
+        NewChatMessageEvent event = (NewChatMessageEvent) e;
         if(!isRelevant(event)) return;
 
-        /* For now, we just send new images on new text. */
+        /* Create a new subject. */
         String[] result = getSubject();
+        ConversationSubject subject =
+                new ConversationSubject(getConversation(), result);
+
+        /* Throw the new event. */ 
+        Event subjectEvent =
+                new NewConversationSubjectEvent(getConversation(), subject);
+        EventPool.getAppPool().raiseEvent(subjectEvent);
     }
 
     /**

@@ -1,13 +1,18 @@
 package ch9k.plugins;
 
-import java.net.URL;
-import java.net.MalformedURLException;
-import java.awt.Image;
-import javax.swing.ImageIcon;
-import ch9k.eventpool.EventListener;
-import ch9k.eventpool.Event;
-import ch9k.eventpool.EventPool;
+import ch9k.chat.Conversation;
+import ch9k.chat.ConversationSubject;
 import ch9k.chat.events.NewChatMessageEvent;
+import ch9k.chat.events.NewConversationSubjectEvent;
+import ch9k.eventpool.Event;
+import ch9k.eventpool.EventFilter;
+import ch9k.eventpool.EventListener;
+import ch9k.eventpool.EventPool;
+import ch9k.eventpool.TypeEventFilter;
+import java.awt.Image;
+import java.net.MalformedURLException;
+import java.net.URL;
+import javax.swing.ImageIcon;
 
 /**
  * Class abstracting image providing.
@@ -15,17 +20,24 @@ import ch9k.chat.events.NewChatMessageEvent;
  */
 public abstract class ImageProvider extends AbstractPlugin
         implements EventListener {
-    /**
-     * Constructor.
-     */
-    public ImageProvider() {
-        // TODO: Register as listener
+    @Override
+    public void enable(Conversation conversation) {
+        super.enable(conversation);
+        EventFilter filter =
+                new TypeEventFilter(NewConversationSubjectEvent.class);
+        EventPool.getAppPool().addListener(this, filter);
+    }
+
+    @Override
+    public void disable() {
+        EventPool.getAppPool().removeListener(this);
     }
 
     /**
-     * Name of method is subject to change.
+     * Send new images, searching for text.
+     * @param text Text to search for on the image provider.
      */
-    public void sendNewImages(String text) {
+    private void sendNewImageEvent(String text) {
         /* Get the URL's from which the images should be loaded. */
         String[] urls = getImageUrls(text);
 
@@ -51,15 +63,19 @@ public abstract class ImageProvider extends AbstractPlugin
 
     @Override
     public void handleEvent(Event e) {
-        /* Return if the event is no NewChatMessageEvent. */
-        if(!(e instanceof NewChatMessageEvent)) return;
-        NewChatMessageEvent event = (NewChatMessageEvent) e;
-
         /* Return if the event is not relevant. */
+        NewConversationSubjectEvent event = (NewConversationSubjectEvent) e;
         if(!isRelevant(event)) return;
 
-        /* For now, we just send new images on new text. */
-        sendNewImages(event.getChatMessage().getText());
+        /* Construct a new text to search for by appending subjects. */
+        ConversationSubject subject = event.getConversationSubject();
+        String[] subjects = subject.getSubjects();
+        String text = "";
+        if(subjects.length > 0) text = subjects[0];
+        for(int i = 1; i < subjects.length; i++) text += " " + subjects[i];
+
+        /* Send the new image event. */
+        sendNewImageEvent(text);
     }
 
     /**
