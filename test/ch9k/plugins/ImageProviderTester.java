@@ -1,15 +1,13 @@
 package ch9k.plugins;
 
-import ch9k.eventpool.EventPool;
 import java.net.MalformedURLException;
 import java.net.URL;
-import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
  * @author Jasper Van der Jeugt
  */
-public class ImageProviderTest {    
+public class ImageProviderTester {
     /**
      * Test of getImageUrls method, of any ImageProvider.
      */

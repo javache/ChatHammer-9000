@@ -129,7 +129,6 @@ public class Storage {
     public static File getStorageDirectory(){
         String userHome = System.getProperty("user.home", ".");
         String operatingSystem = System.getProperty("os.name").toLowerCase();
-        System.out.println(operatingSystem);
 
         File workingDirectory;
         if (operatingSystem.contains("windows")) {

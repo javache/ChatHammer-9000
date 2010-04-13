@@ -1,6 +1,6 @@
 package ch9k.plugins.flickr;
 
-import ch9k.plugins.ImageProviderTest;
+import ch9k.plugins.ImageProviderTester;
 import java.net.MalformedURLException;
 import java.net.URL;
 import org.junit.Test;
@@ -15,7 +15,7 @@ public class FlickrImageProviderPluginTest {
      */
     @Test
     public void testGetImageUrls() throws MalformedURLException {
-        ImageProviderTest test = new ImageProviderTest();
+        ImageProviderTester test = new ImageProviderTester();
         test.testGetImageUrls(new FlickrImageProviderPlugin());
     }
 }
