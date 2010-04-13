@@ -53,7 +53,7 @@ public class PluginManager {
 
     /**
      * Add an available plugin to the list.
-     * @param String Class name of the plugin to add.
+     * @param name Class name of the plugin to add.
      */
     public void addAvailablePlugin(String name) {
         availablePlugins.add(name);
@@ -120,7 +120,11 @@ public class PluginManager {
         }
     }
 
-    public static void main(String[] args) {
-        PluginManager p = new PluginManager();
+    /**
+     * Access the plugin installer.
+     * @return The plugin installer.
+     */
+    public PluginInstaller getPluginInstaller() {
+        return installer;
     }
 }

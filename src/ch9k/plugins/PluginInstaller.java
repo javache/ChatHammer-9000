@@ -24,7 +24,7 @@ public class PluginInstaller extends URLClassLoader {
     /**
      * Loggger to get some more output.
      */
-    private static final Logger LOGGER =
+    private static final Logger logger =
             Logger.getLogger(PluginInstaller.class.getName());
 
     /**
@@ -75,7 +75,7 @@ public class PluginInstaller extends URLClassLoader {
      * @param file File to register as plugin.
      */
     public void registerPlugin(File file) {
-        LOGGER.info("Registering plugin: " + file);
+        logger.info("Registering plugin: " + file);
         Manifest manifest = null;
 
         try {
@@ -83,6 +83,7 @@ public class PluginInstaller extends URLClassLoader {
             manifest = jar.getManifest();
         } catch (IOException exception) {
             // TODO: Show relevant warning.
+            logger.warning(exception.toString());
         }
 
         /* Retreat, retreat! */
@@ -100,13 +101,13 @@ public class PluginInstaller extends URLClassLoader {
         }
 
         /* Find the plugin name .*/
-        String pluginName = attributes.getValue("Plugin-Name");
+        String pluginName = attributes.getValue("Plugin-Class");
 
         /* No plugin in this jar. */
         if(pluginName == null) return;
 
         /* Register the plugin class. */
-        LOGGER.info("Plugin found: " + pluginName);
+        logger.info("Plugin found: " + pluginName);
         pluginManager.addAvailablePlugin(pluginName);
     }
 
@@ -124,7 +125,7 @@ public class PluginInstaller extends URLClassLoader {
      * @param url URL pointing to a plugin jar.
      */
     public void installPlugin(URL url) {
-        LOGGER.info("Installing plugin: " + url);
+        logger.info("Installing plugin: " + url);
         try {
             /* We take the filename of the url and store the plugin there. */
             URLConnection connection = url.openConnection();
