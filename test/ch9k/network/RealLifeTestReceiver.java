@@ -11,10 +11,9 @@ public class RealLifeTestReceiver {
     private static class blahListener implements EventListener {
         public void handleEvent(Event ev) {
             TestNetworkEvent event = (TestNetworkEvent)ev;
-            System.out.println(event.getSource());
             if (event.isExternal()) {
                 try {
-                    EventPool.getAppPool().raiseEvent(new TestNetworkEvent(InetAddress.getByName("10.1.1.70")));
+                    EventPool.getAppPool().raiseEvent(new TestNetworkEvent(event.getSource())));
                 } catch (UnknownHostException e) {
                     System.out.println(e);
                 }
