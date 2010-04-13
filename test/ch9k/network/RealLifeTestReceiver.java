@@ -13,7 +13,7 @@ public class RealLifeTestReceiver {
             TestNetworkEvent event = (TestNetworkEvent)ev;
             if (event.isExternal()) {
                 try {
-                    EventPool.getAppPool().raiseEvent(new TestNetworkEvent(event.getSource())));
+                    EventPool.getAppPool().raiseEvent(new TestNetworkEvent(event.getSource()));
                 } catch (UnknownHostException e) {
                     System.out.println(e);
                 }
