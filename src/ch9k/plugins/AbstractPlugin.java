@@ -23,7 +23,7 @@ public abstract class AbstractPlugin implements Plugin {
     /**
      * Ask if a given ConversationEvent is relevant to the conversation this
      * Plugin is coupled with.
-     * @param ConversationEvent The ConversationEvent.
+     * @param event The ConversationEvent.
      * @return If the event is relevant to this Plugin.
      */
     public boolean isRelevant(ConversationEvent event) {
