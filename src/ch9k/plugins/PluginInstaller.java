@@ -15,7 +15,7 @@ import java.util.Map;
 import java.util.jar.Attributes;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
-import java.util.logging.Logger;
+import org.apache.log4j.Logger;
 
 /**
  * A class that simplifies the process of installing new plugins.
@@ -26,7 +26,7 @@ public class PluginInstaller extends URLClassLoader {
      * Mushroom Mushroom
      */
     private static final Logger logger =
-            Logger.getLogger(PluginInstaller.class.getName());
+            Logger.getLogger(PluginInstaller.class);
 
     /**
      * Hardcoded for now. Needs to be in Configuration somewhere.
@@ -84,7 +84,7 @@ public class PluginInstaller extends URLClassLoader {
             manifest = jar.getManifest();
         } catch (IOException exception) {
             // TODO: Show relevant warning.
-            logger.warning(exception.toString());
+            logger.warn(exception.toString());
         }
 
         /* Retreat, retreat! */
