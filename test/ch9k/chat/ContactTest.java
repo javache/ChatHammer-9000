@@ -192,6 +192,7 @@ public class ContactTest {
     /**
      * Test of handelEvent method, of class Contact.
      * only tests the remote side
+     * handshake could not be tested, because remotepool cannot broadcast trough network...
      */
 
     @Test
