@@ -8,6 +8,6 @@ import org.junit.runners.Suite;
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-    be.jaspervdj.googleimage.GoogleImageProviderPlugin.class
+    be.jaspervdj.googleimage.GoogleImageProviderPluginTest.class
 })
 public class GoogleImageSuite {}
