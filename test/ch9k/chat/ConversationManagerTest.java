@@ -48,6 +48,20 @@ public class ConversationManagerTest {
     }
 
     /**
+     * test of clear method, of class ConversationManager.
+     */
+    @Test
+    public void testClear() {
+        Contact contact = new Contact("Javache", null, true);
+        Conversation conversation = localConversationManager.startConversation(contact, true);
+        assertEquals(conversation, localConversationManager.getConversation(contact));
+        localConversationManager.clear();
+        assertNull(localConversationManager.getConversation(contact));
+    }
+
+
+
+    /**
      * Test of getConversation method, of class ConversationManager.
      */
     @Test
