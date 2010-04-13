@@ -1,4 +1,4 @@
-package ch9k.plugins.googleimage;
+package be.jaspervdj.googleimage;
 
 import java.net.MalformedURLException;
 import java.net.URL;

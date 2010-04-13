@@ -1,4 +1,4 @@
-package ch9k.plugins.googleimage;
+package be.jaspervdj.googleimage;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -8,6 +8,6 @@ import org.junit.runners.Suite;
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-    ch9k.plugins.googleimage.GoogleImageProviderPlugin.class
+    be.jaspervdj.googleimage.GoogleImageProviderPlugin.class
 })
 public class GoogleImageSuite {}

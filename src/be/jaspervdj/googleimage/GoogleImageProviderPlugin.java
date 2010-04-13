@@ -1,4 +1,4 @@
-package ch9k.plugins.googleimage;
+package be.jaspervdj.googleimage;
 
 import ch9k.plugins.ImageProvider;
 import java.io.BufferedReader;
