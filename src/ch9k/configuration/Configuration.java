@@ -24,6 +24,30 @@ public class Configuration {
      */
     private Storage storage;
 
+    public Configuration(String username) {
+        //Create new storage object for this user
+        storage = new Storage(username);
+
+        //Create a new pluginManager, should initiate himself
+        pluginManager = new PluginManager();
+    }
+
+    public void loadExisting(){
+        //Load the account object, this might fail tho'
+        PersistentDataObject pdo = storage.fetch("account");
+        if(pdo != null){
+            account = new Account(pdo);
+        } else {
+            account = null;
+        }
+        storage.store("account", account);
+    }
+
+    public void createNew(String username, String password){
+        account = new Account(username, password);
+        storage.store("account", account);
+    }
+
     /**
      * Getter for account
      * @return account object for current user.

@@ -111,10 +111,10 @@ public class Account implements Persistable{
     private String hash(String password) {
         try {
              byte[] digest = MessageDigest.getInstance("sha1").digest(password.getBytes());
-             StringBuffer result = new StringBuffer(digest.length*3);
+             StringBuffer result = new StringBuffer(digest.length*2);
              for(int i=0;i<digest.length;i++)
              {
-                 result.append(" "+Integer.toHexString(digest[i]&0xFF));
+                 result.append(Integer.toHexString(digest[i]&0xFF));
              }
              return new String(result);
         } catch(java.security.NoSuchAlgorithmException e) {
@@ -130,6 +130,14 @@ public class Account implements Persistable{
         }
         Account other = (Account) obj;
         return this.username.equals(other.getUsername()) && this.passwordHash.equals(other.getPasswordHash());
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 89 * hash + (this.username != null ? this.username.hashCode() : 0);
+        hash = 89 * hash + (this.passwordHash != null ? this.passwordHash.hashCode() : 0);
+        return hash;
     }
 
     @Override
