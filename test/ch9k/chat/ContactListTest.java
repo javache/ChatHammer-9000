@@ -3,6 +3,7 @@ package ch9k.chat;
 import ch9k.configuration.PersistentDataObject;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -16,6 +17,11 @@ public class ContactListTest {
     @Before
     public void setUp() {
         contactList = new ContactList();
+    }
+
+    @After
+    public void tearDown() {
+        contactList.clear();
     }
 
     /**

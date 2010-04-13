@@ -211,4 +211,15 @@ public class Contact implements Comparable<Contact>, EventListener, Persistable 
         online = Boolean.parseBoolean(el.getChildText("online"));
         blocked = Boolean.parseBoolean(el.getChildText("blocked"));
     }
+
+    @Override
+    public String toString() {
+        String onlineString;
+        if(online) {
+            onlineString = "Online";
+        } else {
+            onlineString = "Offline";
+        }
+        return "[" + onlineString + "] " + username;
+    }
 }

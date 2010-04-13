@@ -3,27 +3,28 @@ package ch9k.chat;
 import ch9k.configuration.Persistable;
 import ch9k.configuration.PersistentDataObject;
 import java.net.InetAddress;
+import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.List;
+import javax.swing.AbstractListModel;
 import org.jdom.Element;
 
 /**
  * List of al the contacts of the current user.
  * @author Jens Panneel
  */
-public class ContactList implements Persistable {
+public class ContactList extends AbstractListModel implements Persistable {
     /**
      * Collection of contacts, a set because you dont want to save
      * the same contact two times.
      */
-    private Set<Contact> contacts;
+    private List<Contact> contacts;
 
     /**
      * Constructor
      */
     public ContactList() {
-        contacts = new TreeSet<Contact>();
+        contacts = new ArrayList<Contact>();
     }
     
     /**
@@ -32,7 +33,7 @@ public class ContactList implements Persistable {
      * @param data Previously stored state of this object
      */
     public ContactList(PersistentDataObject data) {
-        contacts = new TreeSet<Contact>();
+        contacts = new ArrayList<Contact>();
         load(data);
     }
 
@@ -41,7 +42,7 @@ public class ContactList implements Persistable {
      * Get a list of all the contacts from the current user
      * @return contacts
      */
-    public Set<Contact> getContacts() {
+    public List<Contact> getContacts() {
         return contacts;
     }
 
@@ -51,7 +52,15 @@ public class ContactList implements Persistable {
      * @return added
      */
     public boolean addContact(Contact contact) {
-        return contacts.add(contact);
+        // maybe isert it in a cool order
+        if(contacts.contains(contact)){
+            return false;
+        } else {
+            contacts.add(contact);
+            int i = contacts.indexOf(contact);
+            fireIntervalAdded(this, i, i);
+            return true;
+        }
     }
 
     /**
@@ -60,7 +69,14 @@ public class ContactList implements Persistable {
      * @return removed
      */
     public boolean removeContact(Contact contact) {
-        return contacts.remove(contact);
+        int i = contacts.indexOf(contact);
+        if(i < 0) {
+            return false;
+        } else {
+            contacts.remove(i);
+            fireIntervalRemoved(this, i, i);
+            return true;
+        }
     }
 
     /**
@@ -68,6 +84,7 @@ public class ContactList implements Persistable {
      */
     public void clear() {
         contacts.clear();
+        fireIntervalRemoved(this, 0, 0);
     }
 
     /**
@@ -87,15 +104,11 @@ public class ContactList implements Persistable {
         }
         return null;
     }
-    
 
     @Override
     public PersistentDataObject persist() {
         Element contactlist = new Element("contactlist");
-        Iterator<Contact> it = contacts.iterator();
-        Contact contact;
-        while(it.hasNext()){
-            contact = it.next();
+        for(Contact contact : contacts) {
             contactlist.addContent(contact.persist().getElement());
         }
         return new PersistentDataObject(contactlist);
@@ -106,7 +119,17 @@ public class ContactList implements Persistable {
         for (Object obj : object.getElement().getChildren()) {
             Element child = (Element) obj;
             Contact contact = new Contact(new PersistentDataObject(child));
-            contacts.add(contact);
+            this.addContact(contact);
         }
+    }
+
+    @Override
+    public int getSize() {
+        return contacts.size();
+    }
+
+    @Override
+    public Object getElementAt(int n) {
+        return contacts.get(n);
     }
 }
