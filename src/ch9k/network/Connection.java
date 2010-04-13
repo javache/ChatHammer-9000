@@ -27,7 +27,7 @@ public class Connection {
      * chosen because it's the smallest prime number
      * OVER 9000
      */
-    public static final int DEFAULT_PORT = 9001;
+    public static final int DEFAULT_PORT = 4011;
     /**
      * Amount of time to wait for a socket on connect
      */
