@@ -1,13 +1,13 @@
 package ch9k.plugins;
 
-import java.util.Map;
+import ch9k.chat.Conversation;
+import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Set;
 import java.util.HashSet;
 import java.util.List;
-import java.util.ArrayList;
-import java.net.URL;
-import ch9k.chat.Conversation;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * A singleton to manage plugins.

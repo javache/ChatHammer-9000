@@ -22,7 +22,8 @@ import java.util.logging.Logger;
  */
 public class PluginInstaller extends URLClassLoader {
     /**
-     * Loggger to get some more output.
+     * Logger logger logger
+     * Mushroom Mushroom
      */
     private static final Logger logger =
             Logger.getLogger(PluginInstaller.class.getName());

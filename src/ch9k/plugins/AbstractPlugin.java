@@ -15,12 +15,6 @@ public abstract class AbstractPlugin implements Plugin {
     private Conversation conversation;
 
     /**
-     * Logger logger logger
-     * Mushroom Mushroom
-     */
-    private static final Logger logger = Logger.getLogger(AbstractPlugin.class);
-
-    /**
      * Ask if a given ConversationEvent is relevant to the conversation this
      * Plugin is coupled with.
      * @param event The ConversationEvent.
