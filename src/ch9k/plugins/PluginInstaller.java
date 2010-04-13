@@ -11,7 +11,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.net.URLConnection;
-import java.util.Map;
 import java.util.jar.Attributes;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
@@ -25,8 +24,7 @@ public class PluginInstaller extends URLClassLoader {
      * Logger logger logger
      * Mushroom Mushroom
      */
-    private static final Logger logger =
-            Logger.getLogger(PluginInstaller.class);
+    private static final Logger logger = Logger.getLogger(PluginInstaller.class);
 
     /**
      * Hardcoded for now. Needs to be in Configuration somewhere.
