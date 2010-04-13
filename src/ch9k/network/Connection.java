@@ -5,6 +5,7 @@ import ch9k.eventpool.EventPool;
 import ch9k.eventpool.NetworkEvent;
 import ch9k.network.events.PingEvent;
 import ch9k.network.events.UserDisconnectedEvent;
+import ch9k.core.Model;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -16,12 +17,13 @@ import java.net.SocketException;
 import java.util.concurrent.LinkedBlockingQueue;
 import org.apache.log4j.Logger;
 
+
 /**
  * Connection sends and receives event over a socket
  * @author nudded
  * @author Pieter De Baets
  */
-public class Connection {
+public class Connection extends Model {
     /**
      * The default port used to create connections
      * chosen because it's the smallest prime number
@@ -70,6 +72,11 @@ public class Connection {
       * True if the connection is still connecting, do not disturb
       */
      private boolean connecting = true;
+     
+     /**
+      * This will be true if the connection is writing events
+      */
+     private boolean active;
 
     /**
      * Constructor
@@ -118,6 +125,8 @@ public class Connection {
     private void init() throws IOException {
         socket.setKeepAlive(true);
 
+        active = false;
+        
         out = new ObjectOutputStream(socket.getOutputStream());
         in = new ObjectInputStream(socket.getInputStream());
 
@@ -155,6 +164,15 @@ public class Connection {
     }
 
     /**
+     * is the connection active?
+     * if you had to look here to see what this method does,
+     * you're pretty stupid. Don't you think so?
+     */
+     public boolean isActive() {
+         return active;
+     }     
+     
+    /**
      * sends a PingEvent to the target
      * @return false if pinging the target gives an exception
      */
@@ -164,7 +182,6 @@ public class Connection {
                 wait();
             } catch (InterruptedException ex) {}
         }
-        
         try {
             sendObject(new PingEvent(socket.getInetAddress()));
         } catch (IOException ex) {
@@ -250,9 +267,13 @@ public class Connection {
                 while(!socket.isClosed()) {
                     try {
                         NetworkEvent ev = eventQueue.take();
+                        active = true;
+                        fireStateChanged();
                         logger.info(String.format("Sending event %s to %s",
                                 ev.getClass().getName(), ev.getTarget()));
                         sendObject(ev);
+                        active = false;
+                        fireStateChanged();
                     } catch (IOException ex) {
                         logger.warn(ex.toString());
                     }
