@@ -9,9 +9,9 @@ import static org.junit.Assert.*;
  *
  * @author Jens Panneel
  */
-public class ContactStatusEventFilterTest {
+public class ContactEventFilterTest {
 
-    public ContactStatusEventFilterTest() {
+    public ContactEventFilterTest() {
     }
 
     /**
@@ -22,9 +22,9 @@ public class ContactStatusEventFilterTest {
         Contact contact1 = new Contact("JPanneel", null, true);
         Contact contact2 = new Contact("Javache", null, true);
 
-        ContactStatusEventFilter contactStatusEventFilter = new ContactStatusEventFilter(contact1);
-        ContactStatusEvent contactStatusEvent1 = new ContactOnlineEvent(contact1);
-        ContactStatusEvent contactStatusEvent2 = new ContactOnlineEvent(contact2);
+        ContactEventFilter contactStatusEventFilter = new ContactEventFilter(contact1);
+        ContactEvent contactStatusEvent1 = new ContactOnlineEvent(contact1);
+        ContactEvent contactStatusEvent2 = new ContactOnlineEvent(contact2);
 
         assertTrue(contactStatusEventFilter.accept(contactStatusEvent1));
         assertFalse(contactStatusEventFilter.accept(contactStatusEvent2));

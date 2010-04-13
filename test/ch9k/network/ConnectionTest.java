@@ -3,7 +3,7 @@ package ch9k.network;
 import ch9k.eventpool.Event;
 import ch9k.eventpool.EventListener;
 import ch9k.eventpool.EventPool;
-import ch9k.eventpool.TypeEventFilter;
+import ch9k.eventpool.EventFilter;
 import java.io.IOException;
 import java.net.InetAddress;
 import org.junit.Test;
@@ -29,7 +29,7 @@ public class ConnectionTest {
     public void setUp() throws IOException, InterruptedException {
         pool = new EventPool();
         testListener = new TestListener();
-        pool.addListener(testListener, new TypeEventFilter(TestNetworkEvent.class));
+        pool.addListener(testListener, new EventFilter(TestNetworkEvent.class));
 
         echoServer = new DirectResponseServer();
         echoServer.start();

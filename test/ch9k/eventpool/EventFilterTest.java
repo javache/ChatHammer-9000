@@ -4,16 +4,15 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
- *
  * @author Pieter De Baets
  */
-public class TypeEventFilterTest {
+public class EventFilterTest {
     /**
-     * Test of getMatchedEventIds method, of class TypeEventFilter.
+     * Test of getMatchedEventIds method, of class EventFilter.
      */
     @Test
     public void testAccept() {
-        TypeEventFilter instance = new TypeEventFilter(EventA.class);
+        EventFilter instance = new EventFilter(EventA.class);
         assertTrue(instance.accept(new EventA()));
         assertFalse(instance.accept(new EventB()));
         assertTrue(instance.accept(new EventAChild()));

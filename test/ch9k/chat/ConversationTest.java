@@ -8,7 +8,7 @@ import ch9k.core.Account;
 import ch9k.core.ChatApplication;
 import ch9k.eventpool.EventPool;
 import ch9k.eventpool.TestListener;
-import ch9k.eventpool.TypeEventFilter;
+import ch9k.eventpool.EventFilter;
 import ch9k.network.Connection;
 import java.io.IOException;
 import java.net.InetAddress;
@@ -128,7 +128,7 @@ public class ConversationTest {
     @Test
     public void testClose() throws InterruptedException {
         TestListener testListener = new TestListener();
-        EventPool.getAppPool().addListener(testListener, new TypeEventFilter(CloseConversationEvent.class));
+        EventPool.getAppPool().addListener(testListener, new EventFilter(CloseConversationEvent.class));
         conversation.close();
         Thread.sleep(100);
 

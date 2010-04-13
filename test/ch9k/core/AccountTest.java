@@ -33,6 +33,4 @@ public class AccountTest {
 
         assertEquals(acc,acc2);
     }
-    
-    
 }

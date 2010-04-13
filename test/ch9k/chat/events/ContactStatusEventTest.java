@@ -8,7 +8,7 @@ import static org.junit.Assert.*;
  *
  * @author Jens Panneel
  */
-public class ContactStatusChangeEventTest {
+public class ContactStatusEventTest {
 
     /**
      * Test of getNewStatus method, of class ContactStatusChangeEvent.
@@ -17,7 +17,7 @@ public class ContactStatusChangeEventTest {
     public void testGetNewStatus() {
         Contact contact = new Contact("JPanneel", null, true);
         String status = "Ben naar de WC";
-        ContactStatusChangeEvent contactStatusChangeEvent = new ContactStatusChangeEvent(contact, status);
+        ContactStatusEvent contactStatusChangeEvent = new ContactStatusEvent(contact, status);
         assertEquals(status, contactStatusChangeEvent.getNewStatus());
     }
 

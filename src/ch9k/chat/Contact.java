@@ -2,8 +2,8 @@ package ch9k.chat;
 
 import ch9k.chat.events.ContactOfflineEvent;
 import ch9k.chat.events.ContactOnlineEvent;
-import ch9k.chat.events.ContactStatusChangeEvent;
-import ch9k.chat.events.ContactStatusEventFilter;
+import ch9k.chat.events.ContactStatusEvent;
+import ch9k.chat.events.ContactEventFilter;
 import ch9k.eventpool.Event;
 import ch9k.eventpool.EventListener;
 import ch9k.eventpool.EventPool;
@@ -38,7 +38,7 @@ public class Contact implements Comparable<Contact>, EventListener, Persistable 
         this.blocked = blocked;
         this.online = false;
         this.status = "";
-        EventPool.getAppPool().addListener(this, new ContactStatusEventFilter(this));
+        EventPool.getAppPool().addListener(this, new ContactEventFilter(this));
     }
 
     /**
@@ -48,7 +48,7 @@ public class Contact implements Comparable<Contact>, EventListener, Persistable 
      */
     public Contact(PersistentDataObject data) {
         load(data);
-        EventPool.getAppPool().addListener(this, new ContactStatusEventFilter(this));
+        EventPool.getAppPool().addListener(this, new ContactEventFilter(this));
     }
 
     /**
@@ -179,9 +179,9 @@ public class Contact implements Comparable<Contact>, EventListener, Persistable 
             this.setOnline(false);
         }
 
-        if(event instanceof ContactStatusChangeEvent) {
-            ContactStatusChangeEvent contactStatusChangeEvent = (ContactStatusChangeEvent)event;
-            this.setStatus(contactStatusChangeEvent.getNewStatus());
+        if(event instanceof ContactStatusEvent) {
+            ContactStatusEvent contactEvent = (ContactStatusEvent) event;
+            this.setStatus(contactEvent.getNewStatus());
         }
 
     }

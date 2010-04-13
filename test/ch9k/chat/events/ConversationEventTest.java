@@ -9,7 +9,7 @@ import ch9k.core.Account;
 import ch9k.core.ChatApplication;
 import ch9k.eventpool.EventPool;
 import ch9k.eventpool.TestListener;
-import ch9k.eventpool.TypeEventFilter;
+import ch9k.eventpool.EventFilter;
 import ch9k.network.Connection;
 import java.io.IOException;
 import java.net.InetAddress;
@@ -95,7 +95,7 @@ public class ConversationEventTest {
 
         // create a listener on the remote pool
         TestListener remoteListener = new TestListener();
-        remotePool.addListener(remoteListener, new TypeEventFilter(ConversationEvent.class));
+        remotePool.addListener(remoteListener, new EventFilter(ConversationEvent.class));
 
         // raise the event on the local pool, should get sent to remotePool too
         localPool.raiseEvent(localEvent);

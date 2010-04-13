@@ -24,7 +24,7 @@ public class EventPoolTest {
         Event event = new MyEvent();
         TestListener listener = new TestListener();
         
-        pool.addListener(listener, new TypeEventFilter(MyEvent.class));
+        pool.addListener(listener, new EventFilter(MyEvent.class));
         pool.raiseEvent(event);
         Thread.sleep(50); // wait for the event to be propagated
 
@@ -43,8 +43,8 @@ public class EventPoolTest {
         TestListener listener1 = new TestListener();
         TestListener listener2 = new TestListener();
         // and let them listen for MyEvent
-        pool.addListener(listener1, new TypeEventFilter(MyEvent.class));
-        pool.addListener(listener2, new TypeEventFilter(MyEvent.class));
+        pool.addListener(listener1, new EventFilter(MyEvent.class));
+        pool.addListener(listener2, new EventFilter(MyEvent.class));
 
         // raise an event
         Event event = new MyEvent();

@@ -11,6 +11,6 @@ import org.junit.runners.Suite;
         ch9k.eventpool.EventTest.class,
         ch9k.eventpool.EventPoolTest.class,
         ch9k.eventpool.NetworkEventTest.class,
-        ch9k.eventpool.TypeEventFilterTest.class
+        ch9k.eventpool.EventFilterTest.class
 })
 public class EventpoolSuite {}

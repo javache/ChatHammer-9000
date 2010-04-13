@@ -4,7 +4,7 @@ import ch9k.eventpool.Event;
 import ch9k.eventpool.EventListener;
 import ch9k.eventpool.EventPool;
 import ch9k.eventpool.TestListener;
-import ch9k.eventpool.TypeEventFilter;
+import ch9k.eventpool.EventFilter;
 import ch9k.network.events.NetworkConnectionLostEvent;
 import java.io.IOException;
 import java.net.ConnectException;
@@ -35,8 +35,8 @@ public class ConnectionManagerTest {
         EventPool pool = new EventPool();
         testListener = new TestListener();
         onlineListener = new OnlineListener();
-        pool.addListener(testListener, new TypeEventFilter(TestNetworkEvent.class));
-        pool.addListener(onlineListener, new TypeEventFilter(NetworkConnectionLostEvent.class));
+        pool.addListener(testListener, new EventFilter(TestNetworkEvent.class));
+        pool.addListener(onlineListener, new EventFilter(NetworkConnectionLostEvent.class));
         connectionManager = new ConnectionManager(pool);
     }
 

@@ -4,9 +4,9 @@ import ch9k.chat.events.CloseConversationEvent;
 import ch9k.chat.events.ConversationEvent;
 import ch9k.chat.events.NewConversationEvent;
 import ch9k.eventpool.Event;
+import ch9k.eventpool.EventFilter;
 import ch9k.eventpool.EventListener;
 import ch9k.eventpool.EventPool;
-import ch9k.eventpool.TypeEventFilter;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,7 +19,7 @@ public class ConversationManager implements EventListener{
 
     public ConversationManager() {
         conversations = new HashMap<Contact, Conversation>();
-        EventPool.getAppPool().addListener(this, new TypeEventFilter(ConversationEvent.class));
+        EventPool.getAppPool().addListener(this, new EventFilter(ConversationEvent.class));
     }
 
     /**

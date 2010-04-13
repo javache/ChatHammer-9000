@@ -8,25 +8,24 @@ import ch9k.eventpool.EventFilter;
  * This will filter the events only needed for a given contact
  * @author Jens Panneel
  */
-public class ContactStatusEventFilter implements EventFilter{
+public class ContactEventFilter extends EventFilter{
     private Contact contact;
 
     /**
      * Construct a new ContactStatusEventFilter
      * @param contact
      */
-    public ContactStatusEventFilter(Contact contact) {
+    public ContactEventFilter(Contact contact) {
+        super(ContactEvent.class);
         this.contact = contact;
     }
 
     @Override
     public boolean accept(Event event) {
-        if(!(event instanceof ContactStatusEvent)) {
-            return false;
-        } else {
-            ContactStatusEvent contactStatusEvent = (ContactStatusEvent) event;
-            return contactStatusEvent.getContact().equals(contact);
+        if(super.accept(event)) {
+            ContactEvent contactEvent = (ContactEvent) event;
+            return contact.equals(contactEvent.getContact());
         }
+        return false;
     }
-
 }

@@ -11,8 +11,8 @@ import org.junit.runners.Suite;
     ch9k.chat.events.ConversationEventFilterTest.class
     ,ch9k.chat.events.ConversationEventTest.class
     ,ch9k.chat.events.NewChatMessageEventTest.class
-    ,ch9k.chat.events.ContactStatusEventFilterTest.class
-    ,ch9k.chat.events.ContactStatusChangeEventTest.class
+    ,ch9k.chat.events.ContactEventFilterTest.class
+    ,ch9k.chat.events.ContactStatusEventTest.class
     ,ch9k.chat.events.NewConversationSubjectEventTest.class
     ,ch9k.chat.ChatMessageTest.class
     ,ch9k.chat.ConversationSubjectTest.class

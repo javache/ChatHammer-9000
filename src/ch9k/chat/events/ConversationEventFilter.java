@@ -8,7 +8,7 @@ import ch9k.eventpool.EventFilter;
  * An EventFilter that is only interested in the type of the events
  * @author Pieter De Baets
  */
-public class ConversationEventFilter implements EventFilter {
+public class ConversationEventFilter extends EventFilter {
     private Conversation conversation;
 
     /**
@@ -16,15 +16,16 @@ public class ConversationEventFilter implements EventFilter {
      * @param conversation
      */
     public ConversationEventFilter(Conversation conversation) {
+        super(ConversationEvent.class);
         this.conversation = conversation;
     }
 
     @Override
     public boolean accept(Event event) {
-        if(!(event instanceof ConversationEvent)) {
-            return false;
-        } else {
-            return conversation.equals(((ConversationEvent)event).getConversation());
+        if(super.accept(event)) {
+            ConversationEvent conversationEvent = (ConversationEvent) event;
+            return conversation.equals(conversationEvent.getConversation());
         }
+        return false;
     }
 }

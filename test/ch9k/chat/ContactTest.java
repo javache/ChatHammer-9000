@@ -2,15 +2,15 @@ package ch9k.chat;
 
 import ch9k.chat.events.ContactOfflineEvent;
 import ch9k.chat.events.ContactOnlineEvent;
-import ch9k.chat.events.ContactStatusChangeEvent;
 import ch9k.chat.events.ContactStatusEvent;
-import ch9k.chat.events.ContactStatusEventFilter;
+import ch9k.chat.events.ContactEvent;
+import ch9k.chat.events.ContactEventFilter;
 import ch9k.configuration.PersistentDataObject;
 import ch9k.core.Account;
 import ch9k.core.ChatApplication;
 import ch9k.eventpool.EventPool;
 import ch9k.eventpool.TestListener;
-import ch9k.eventpool.TypeEventFilter;
+import ch9k.eventpool.EventFilter;
 import ch9k.network.Connection;
 import java.io.IOException;
 import java.net.InetAddress;
@@ -89,7 +89,7 @@ public class ContactTest {
         assertFalse(contact.isBlocked());
 
         TestListener testListener = new TestListener();
-        EventPool.getAppPool().addListener(testListener, new TypeEventFilter(ContactStatusEvent.class));
+        EventPool.getAppPool().addListener(testListener, new EventFilter(ContactEvent.class));
 
         contact.setBlocked(true);
         Thread.sleep(50);
@@ -166,11 +166,11 @@ public class ContactTest {
     public void testHandleEvent() throws UnknownHostException, InterruptedException {
         EventPool eventPool = EventPool.getAppPool();
 
-        ContactStatusEvent contactOnlineEvent = new ContactOnlineEvent(contact);
-        ContactStatusEvent contactOfflineEvent = new ContactOfflineEvent(contact);
+        ContactEvent contactOnlineEvent = new ContactOnlineEvent(contact);
+        ContactEvent contactOfflineEvent = new ContactOfflineEvent(contact);
 
         String newStatus = "on toilet";
-        ContactStatusEvent contactStatusChangeEvent = new ContactStatusChangeEvent(contact, newStatus);
+        ContactEvent contactStatusChangeEvent = new ContactStatusEvent(contact, newStatus);
 
         assertFalse(contact.isOnline());
         assertEquals("", contact.getStatus());
@@ -219,14 +219,14 @@ public class ContactTest {
         // locally this is not a contact, so not a listener
         localPool.removeListener(localContact);
         // the local contact is a real contact on remote side, so it should listen
-        remotePool.addListener(localContact, new ContactStatusEventFilter(localContact));
+        remotePool.addListener(localContact, new ContactEventFilter(localContact));
 
         // create the events localContact changes status and notifies remotecontact
-        ContactStatusEvent contactOnlineEvent = new ContactOnlineEvent(remoteContact);
-        ContactStatusEvent contactOfflineEvent = new ContactOfflineEvent(remoteContact);
+        ContactEvent contactOnlineEvent = new ContactOnlineEvent(remoteContact);
+        ContactEvent contactOfflineEvent = new ContactOfflineEvent(remoteContact);
 
         String newStatus = "on toilet";
-        ContactStatusEvent contactStatusChangeEvent = new ContactStatusChangeEvent(remoteContact, newStatus);
+        ContactEvent contactStatusChangeEvent = new ContactStatusEvent(remoteContact, newStatus);
 
         assertFalse(localContact.isOnline());
         assertFalse(localContact.isBlocked());
