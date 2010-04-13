@@ -114,7 +114,7 @@ public class Account implements Persistable{
              StringBuffer result = new StringBuffer(digest.length*3);
              for(int i=0;i<digest.length;i++)
              {
-                 result.append(" "+Integer.toHexString(digest[i]));
+                 result.append(" "+Integer.toHexString(digest[i]&0xFF));
              }
              return new String(result);
         } catch(java.security.NoSuchAlgorithmException e) {
