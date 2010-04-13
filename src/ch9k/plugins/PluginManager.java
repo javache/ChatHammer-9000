@@ -120,7 +120,11 @@ public class PluginManager {
         }
     }
 
-    public static void main(String[] args) {
-        PluginManager p = new PluginManager();
+    /**
+     * Access the plugin installer.
+     * @return The plugin installer.
+     */
+    public PluginInstaller getPluginInstaller() {
+        return installer;
     }
 }

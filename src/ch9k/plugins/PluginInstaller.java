@@ -83,6 +83,7 @@ public class PluginInstaller extends URLClassLoader {
             manifest = jar.getManifest();
         } catch (IOException exception) {
             // TODO: Show relevant warning.
+            LOGGER.warning(exception.toString());
         }
 
         /* Retreat, retreat! */
@@ -100,7 +101,7 @@ public class PluginInstaller extends URLClassLoader {
         }
 
         /* Find the plugin name .*/
-        String pluginName = attributes.getValue("Plugin-Name");
+        String pluginName = attributes.getValue("Plugin-Class");
 
         /* No plugin in this jar. */
         if(pluginName == null) return;
