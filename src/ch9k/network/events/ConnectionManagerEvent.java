@@ -9,18 +9,9 @@ import ch9k.network.ConnectionManager;
  * @author Pieter De Baets
  */
 public abstract class ConnectionManagerEvent extends Event {
-    private ConnectionManager source;
-
-    /**
-     * 
-     * @param source
-     */
-    public ConnectionManagerEvent(ConnectionManager source) {
-        this.source = source;
-    }
-
+    
     @Override
-    public ConnectionManager getSource() {
-        return source;
+    public Object getSource() {
+        return null;
     }
 }

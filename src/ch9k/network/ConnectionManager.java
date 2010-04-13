@@ -101,10 +101,10 @@ public class ConnectionManager {
         if (checkHeartbeat()) {
             connectionMap.remove(target);
             // send an event signalling that target is offline
-            pool.raiseEvent(new CouldNotConnectEvent(this, target));
+            pool.raiseEvent(new CouldNotConnectEvent(target));
         } else {
             // sends an event because we appear to be without network connection
-            pool.raiseEvent(new NetworkConnectionLostEvent(this));
+            pool.raiseEvent(new NetworkConnectionLostEvent());
         }
     }
 
@@ -152,6 +152,7 @@ public class ConnectionManager {
                 server = new ServerSocket(Connection.DEFAULT_PORT);
             } catch (IOException e) {
                 /* TODO: handle this */
+                pool.raiseEvent(new NetworkConnectionLostEvent());
             } 
             try {
                 // run forever
