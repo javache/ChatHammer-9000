@@ -15,15 +15,9 @@ public abstract class AbstractPlugin implements Plugin {
     private Conversation conversation;
 
     /**
-     * Logger logger logger
-     * Mushroom Mushroom
-     */
-    private static final Logger logger = Logger.getLogger(AbstractPlugin.class);
-
-    /**
      * Ask if a given ConversationEvent is relevant to the conversation this
      * Plugin is coupled with.
-     * @param ConversationEvent The ConversationEvent.
+     * @param event The ConversationEvent.
      * @return If the event is relevant to this Plugin.
      */
     public boolean isRelevant(ConversationEvent event) {
@@ -40,17 +34,12 @@ public abstract class AbstractPlugin implements Plugin {
     }
 
     @Override
-    public void bind(Conversation conversation) {
+    public void enable(Conversation conversation) {
         this.conversation = conversation;
     }
 
     @Override
-    public void unbind(Conversation conversation) {
-        if (this.conversation == conversation) {
-            this.conversation = null;
-        } else {
-            logger.warn("Trying to unbind a plugin from a conversation it" +
-                    "wasn't bound to.");
-        }
+    public void disable() {
+        conversation = null;
     }
 }

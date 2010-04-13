@@ -15,8 +15,8 @@ public class CouldNotConnectEvent extends ConnectionManagerEvent {
      * @param source
      * @param ip
      */
-    public CouldNotConnectEvent(ConnectionManager source, InetAddress ip) {
-        super(source);
+    public CouldNotConnectEvent(InetAddress ip) {
+        super();
         this.ip = ip;
     }
     

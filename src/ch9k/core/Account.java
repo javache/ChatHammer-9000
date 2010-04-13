@@ -33,7 +33,7 @@ public class Account implements Persistable{
     /**
      * the hash of the password
      */
-    private byte[] passwordHash;
+    private String passwordHash;
     
     
     /**
@@ -59,7 +59,7 @@ public class Account implements Persistable{
      * will return the password hash
      * NOTE: trying to print this is just stupid
      */
-    public byte[] getPasswordHash() {
+    public String getPasswordHash() {
         return passwordHash;
     }
     
@@ -94,6 +94,13 @@ public class Account implements Persistable{
     }
 
     /**
+     * authenticate with the given password
+     */
+    public boolean authenticate(String pass) {
+        return hash(pass).equals(passwordHash);
+    }
+
+    /**
      * Set a new personal status
      * @param status The new status
      */
@@ -101,9 +108,15 @@ public class Account implements Persistable{
         this.status = status;
     }
 
-    private byte[] hash(String password) {
+    private String hash(String password) {
         try {
-            return MessageDigest.getInstance("sha1").digest(password.getBytes());
+             byte[] digest = MessageDigest.getInstance("sha1").digest(password.getBytes());
+             StringBuffer result = new StringBuffer(digest.length*3);
+             for(int i=0;i<digest.length;i++)
+             {
+                 result.append(" "+Integer.toHexString(digest[i]&0xFF));
+             }
+             return new String(result);
         } catch(java.security.NoSuchAlgorithmException e) {
             // throw new VeerleFackException
             return null;
@@ -119,27 +132,18 @@ public class Account implements Persistable{
         if (!this.username.equals(other.getUsername())) {
             return false;
         }
-        if (Arrays.equals(this.passwordHash,other.getPasswordHash())) {
+        if (this.passwordHash.equals(other.getPasswordHash())) {
             return false;
         }
         return true;
     }
 
     @Override
-    public int hashCode() {
-        int hash = 7;
-        hash = 67 * hash + (this.username != null ? this.username.hashCode() : 0);
-        hash = 67 * hash + Arrays.hashCode(this.passwordHash);
-        return hash;
-    }
-
-
-    @Override
     public PersistentDataObject persist() {
         Element pdo = new Element("account");
         pdo.addContent(new Element("username").addContent(username));
         pdo.addContent(new Element("status").addContent(status));
-        pdo.addContent(new Element("password").addContent(passwordHash.toString()));
+        pdo.addContent(new Element("password").addContent(passwordHash));
         pdo.addContent(contactList.persist().getElement());
 
         return new PersistentDataObject(pdo);
@@ -150,7 +154,7 @@ public class Account implements Persistable{
         Element el = object.getElement();
         username = el.getChildText("username");
         status = el.getChildText("status");
-        passwordHash = el.getChildText("status").getBytes();
+        passwordHash = el.getChildText("password");
         contactList= new ContactList(new PersistentDataObject(el.getChild("contactlist")));
         
     }

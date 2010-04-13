@@ -11,11 +11,10 @@ public interface Plugin {
      * Start this plugin by binding it to a conversation.
      * @param conversation Conversation to enable this plugin for.
      */
-    void bind(Conversation conversation);
+    void enable(Conversation conversation);
 
     /**
      * Stop this plugin by unbinding it from it's conversation.
-     * @param conversation Conversation to disable this plugin for.
      */
-    void unbind(Conversation conversation);
+    void disable();
 }

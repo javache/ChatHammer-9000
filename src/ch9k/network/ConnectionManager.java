@@ -101,10 +101,10 @@ public class ConnectionManager {
         if (checkHeartbeat()) {
             connectionMap.remove(target);
             // send an event signalling that target is offline
-            pool.raiseEvent(new CouldNotConnectEvent(this, target));
+            pool.raiseEvent(new CouldNotConnectEvent(target));
         } else {
             // sends an event because we appear to be without network connection
-            pool.raiseEvent(new NetworkConnectionLostEvent(this));
+            pool.raiseEvent(new NetworkConnectionLostEvent());
         }
     }
 
@@ -142,9 +142,19 @@ public class ConnectionManager {
      */
     private class Listener implements Runnable {
         public void run() {
+            /**
+             * try to create a ServerSocket
+             * we do this in a different try catch
+             * because if this one fails
+             * our app will be unusable
+             */
             try {
                 server = new ServerSocket(Connection.DEFAULT_PORT);
-
+            } catch (IOException e) {
+                /* TODO: handle this */
+                pool.raiseEvent(new NetworkConnectionLostEvent());
+            } 
+            try {
                 // run forever
                 logger.info("Started accepting connections!");
                 while (!Thread.interrupted()) {
@@ -157,7 +167,7 @@ public class ConnectionManager {
             } catch (IOException ex) {
                 // if this fails it would appear as if nothing ever happened
                 logger.warn(ex.toString());
-            }
+            } 
         }
     }
 }

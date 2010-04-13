@@ -1,13 +1,13 @@
 package ch9k.plugins;
 
-import java.util.Map;
+import ch9k.chat.Conversation;
+import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Set;
 import java.util.HashSet;
 import java.util.List;
-import java.util.ArrayList;
-import java.net.URL;
-import ch9k.chat.Conversation;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * A singleton to manage plugins.
@@ -53,7 +53,7 @@ public class PluginManager {
 
     /**
      * Add an available plugin to the list.
-     * @param String Class name of the plugin to add.
+     * @param name Class name of the plugin to add.
      */
     public void addAvailablePlugin(String name) {
         availablePlugins.add(name);
@@ -88,7 +88,7 @@ public class PluginManager {
         }
 
         /* Couple it with the conversation. */
-        plugin.bind(conversation);
+        plugin.enable(conversation);
 
         /* Register plugin. */
         if(conversationPlugins == null) {
@@ -113,14 +113,18 @@ public class PluginManager {
             names.remove(name);
             for(Plugin plugin: instances) {
                 if(plugin.getClass().getName().equals(name)) {
-                    plugin.unbind(conversation);
+                    plugin.disable();
                     instances.remove(plugin);
                 }
             }
         }
     }
 
-    public static void main(String[] args) {
-        PluginManager p = new PluginManager();
+    /**
+     * Access the plugin installer.
+     * @return The plugin installer.
+     */
+    public PluginInstaller getPluginInstaller() {
+        return installer;
     }
 }
