@@ -9,8 +9,6 @@ import ch9k.eventpool.EventFilter;
 import ch9k.eventpool.EventListener;
 import ch9k.eventpool.EventPool;
 import java.awt.Image;
-import java.net.MalformedURLException;
-import java.net.URL;
 import javax.swing.ImageIcon;
 
 /**
@@ -46,16 +44,11 @@ public abstract class ImageProvider extends AbstractPlugin
         
         /* Load the actual images. */
         for (String url: urls) {
-            try {
-                /* Create an image, and send it using an event. */
-                ImageIcon tmp = new ImageIcon(new URL(url));
-                Image image = tmp.getImage();
-                NewImageEvent event =
-                        new NewImageEvent(getConversation(), image);
-                EventPool.getAppPool().raiseEvent(event);
-            } catch (MalformedURLException exception) {
-                // TODO: Send warning event.
-            }
+            /* Create an image, and send it using an event. */
+            ProvidedImage image = new ProvidedImage(url);
+            NewProvidedImageEvent event =
+                    new NewProvidedImageEvent(getConversation(), image);
+            EventPool.getAppPool().raiseEvent(event);
         }
     }
 

@@ -2,23 +2,23 @@ package ch9k.plugins;
 
 import ch9k.chat.Conversation;
 import ch9k.chat.events.ConversationEvent;
-import java.awt.Image;
 
 /**
  * Event thrown when an ImageProvider finds a new relevant image.
  */
-public class NewImageEvent extends ConversationEvent {
+public class NewProvidedImageEvent extends ConversationEvent {
     /**
      * The actual image.
      */
-    private Image image;
+    private ProvidedImage image;
 
     /**
      * Constructor.
      * @param conversation Conversation to which the image belongs.
      * @param image The actual image.
      */
-    public NewImageEvent(Conversation conversation, Image image) {
+    public NewProvidedImageEvent(
+            Conversation conversation, ProvidedImage image) {
         super(conversation);
         this.image = image;
     }
@@ -27,7 +27,7 @@ public class NewImageEvent extends ConversationEvent {
      * Obtain the actual image.
      * @return The image.
      */
-    public Image getImage() {
+    public ProvidedImage getProvidedImage() {
         return image;
     }
 }
