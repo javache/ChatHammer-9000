@@ -19,6 +19,7 @@ public abstract class ImageProvider extends AbstractPlugin
      * Constructor.
      */
     public ImageProvider() {
+        // TODO: Register as listener
     }
 
     /**
