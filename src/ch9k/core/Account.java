@@ -129,13 +129,7 @@ public class Account implements Persistable{
             return false;
         }
         Account other = (Account) obj;
-        if (!this.username.equals(other.getUsername())) {
-            return false;
-        }
-        if (this.passwordHash.equals(other.getPasswordHash())) {
-            return false;
-        }
-        return true;
+        return this.username.equals(other.getUsername()) && this.passwordHash.equals(other.getPasswordHash());
     }
 
     @Override
