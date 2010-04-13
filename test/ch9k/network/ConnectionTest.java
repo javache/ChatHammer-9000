@@ -33,7 +33,6 @@ public class ConnectionTest {
 
         echoServer = new DirectResponseServer();
         echoServer.start();
-        Thread.sleep(100); // wait for everything to start
     }
 
     @After
@@ -67,7 +66,7 @@ public class ConnectionTest {
      * Test of hasConnection methode, of class Connection
      * @throws IOException
      */
-    @Test
+    //@Test
     public void testHasConnection() throws IOException, InterruptedException {
         Connection conn = new Connection(InetAddress.getLocalHost(), pool, null);
         Thread.sleep(100);
@@ -82,7 +81,7 @@ public class ConnectionTest {
      * Test of close methode, of class Connection
      * @throws IOException 
      */
-    @Test
+    //@Test
     public void testClose() throws IOException {
         Connection conn = new Connection(InetAddress.getLocalHost(), pool, null);
         assertTrue(conn.hasConnection());

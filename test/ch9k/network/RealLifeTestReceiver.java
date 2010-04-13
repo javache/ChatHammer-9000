@@ -1,16 +1,14 @@
 package ch9k.network;
 
-
-import ch9k.eventpool.*;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-
+import ch9k.eventpool.Event;
+import ch9k.eventpool.EventFilter;
+import ch9k.eventpool.EventListener;
+import ch9k.eventpool.EventPool;
 
 public class RealLifeTestReceiver {
-    
-    private static class blahListener implements EventListener {
+    private static class EchoListener implements EventListener {
         public void handleEvent(Event ev) {
-            TestNetworkEvent event = (TestNetworkEvent)ev;
+            TestNetworkEvent event = (TestNetworkEvent) ev;
             if (event.isExternal()) {
                 EventPool.getAppPool().raiseEvent(new TestNetworkEvent(event.getSource()));
             }
@@ -19,10 +17,6 @@ public class RealLifeTestReceiver {
     
     public static void main(String[] args) {
         EventPool pool = EventPool.getAppPool();
-        pool.addListener(new blahListener(),new TypeEventFilter(TestNetworkEvent.class));
-        while(true) {
-            
-        }
+        pool.addListener(new EchoListener(), new EventFilter(TestNetworkEvent.class));
     }
-    
 }

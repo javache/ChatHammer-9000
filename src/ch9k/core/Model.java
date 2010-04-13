@@ -8,7 +8,7 @@
  */
 package ch9k.core;
 
-import javax.swing.SwingUtilities;
+import java.awt.EventQueue;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.EventListenerList;
@@ -48,10 +48,10 @@ public class Model {
      * door te geven. De nieuwe gebeurtenis heeft dit model als bron.
      */
     protected void fireStateChanged() {
-        if (Thread.currentThread().getName().equals("AWT-EventQueue-0")) {
+        if(EventQueue.isDispatchThread()) {
             stateChange();
         } else {
-            SwingUtilities.invokeLater(new Runnable() {
+            EventQueue.invokeLater(new Runnable() {
                 public void run() {
                     stateChange();
                 }

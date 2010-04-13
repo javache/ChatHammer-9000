@@ -25,7 +25,6 @@ public class GoogleImageProviderPlugin extends ImageProvider {
     private static final Logger logger =
             Logger.getLogger(GoogleImageProviderPlugin.class);
 
-
     /**
      * The google API needs a referer.
      */
@@ -37,12 +36,6 @@ public class GoogleImageProviderPlugin extends ImageProvider {
     private final String API_KEY =
             "ABQIAAAAs8RaJYu0ZebpBO6jB93ADhTsxjHa7uN5E720o7nIY50" +
             "-3t3KCxQI3dDybveQylpIWU1JS9e16BZIiQ";
-
-    /**
-     * Constructor.
-     */
-    GoogleImageProviderPlugin() {
-    }
 
     @Override
     public String[] getImageUrls(String text, int maxResults) {

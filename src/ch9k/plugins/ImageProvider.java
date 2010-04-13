@@ -8,7 +8,6 @@ import ch9k.eventpool.Event;
 import ch9k.eventpool.EventFilter;
 import ch9k.eventpool.EventListener;
 import ch9k.eventpool.EventPool;
-import ch9k.eventpool.TypeEventFilter;
 import java.awt.Image;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -23,8 +22,7 @@ public abstract class ImageProvider extends AbstractPlugin
     @Override
     public void enable(Conversation conversation) {
         super.enable(conversation);
-        EventFilter filter =
-                new TypeEventFilter(NewConversationSubjectEvent.class);
+        EventFilter filter = new EventFilter(NewConversationSubjectEvent.class);
         EventPool.getAppPool().addListener(this, filter);
     }
 
