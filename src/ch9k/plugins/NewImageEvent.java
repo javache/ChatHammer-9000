@@ -4,6 +4,9 @@ import ch9k.chat.Conversation;
 import ch9k.chat.events.ConversationEvent;
 import java.awt.Image;
 
+/**
+ * Event thrown when an ImageProvider finds a new relevant image.
+ */
 public class NewImageEvent extends ConversationEvent {
     /**
      * The actual image.
