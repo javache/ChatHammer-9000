@@ -72,11 +72,6 @@ public class Connection extends Model {
       * True if the connection is still connecting, do not disturb
       */
      private boolean connecting = true;
-     
-     /**
-      * This will be true if the connection is writing events
-      */
-     private boolean active;
 
     /**
      * Constructor
@@ -124,8 +119,6 @@ public class Connection extends Model {
 
     private void init() throws IOException {
         socket.setKeepAlive(true);
-
-        active = false;
         
         out = new ObjectOutputStream(socket.getOutputStream());
         in = new ObjectInputStream(socket.getInputStream());
@@ -163,15 +156,6 @@ public class Connection extends Model {
         }
     }
 
-    /**
-     * is the connection active?
-     * if you had to look here to see what this method does,
-     * you're pretty stupid. Don't you think so?
-     */
-     public boolean isActive() {
-         return active;
-     }     
-     
     /**
      * sends a PingEvent to the target
      * @return false if pinging the target gives an exception
@@ -267,13 +251,9 @@ public class Connection extends Model {
                 while(!socket.isClosed()) {
                     try {
                         NetworkEvent ev = eventQueue.take();
-                        active = true;
-                        fireStateChanged();
                         logger.info(String.format("Sending event %s to %s",
                                 ev.getClass().getName(), ev.getTarget()));
                         sendObject(ev);
-                        active = false;
-                        fireStateChanged();
                     } catch (IOException ex) {
                         logger.warn(ex.toString());
                     }
