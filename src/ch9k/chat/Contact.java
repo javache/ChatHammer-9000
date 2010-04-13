@@ -191,6 +191,9 @@ public class Contact extends Model implements Comparable<Contact>, EventListener
             ContactOfflineEvent contactOfflineEvent = (ContactOfflineEvent) event;
             if(contactOfflineEvent.isExternal()) {
                 this.setOnline(false);
+                if(!blocked){
+                    EventPool.getAppPool().raiseEvent(new ContactOnlineEvent(this));
+                }
             }
         }
 
