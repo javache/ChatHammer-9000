@@ -110,7 +110,13 @@ public class Account implements Persistable{
 
     private String hash(String password) {
         try {
-            return new String(MessageDigest.getInstance("sha1").digest(password.getBytes()));
+             byte[] digest = MessageDigest.getInstance("sha1").digest(password.getBytes());
+             StringBuffer result = new StringBuffer(digest.length*3);
+             for(int i=0;i<digest.length;i++)
+             {
+                 result.append(" "+Integer.toHexString(digest[i]));
+             }
+             return new String(result);
         } catch(java.security.NoSuchAlgorithmException e) {
             // throw new VeerleFackException
             return null;
