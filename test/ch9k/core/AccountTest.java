@@ -11,12 +11,12 @@ public class AccountTest {
         Account acc = new Account("Toon","lalala");
         assertNotNull(acc.getPasswordHash());
         Account acc2 = new Account("Toon2","lalala");
-        assertArrayEquals(acc.getPasswordHash(),acc2.getPasswordHash());
+        assertEquals(acc.getPasswordHash(),acc2.getPasswordHash());
         acc.setPassword("not lalala");
         
         boolean shouldRaise = false;
         try {
-            assertArrayEquals(acc.getPasswordHash(),acc2.getPasswordHash());
+            assertEquals(acc.getPasswordHash(),acc2.getPasswordHash());
         } catch(AssertionError e) {
             shouldRaise = true;
         }
