@@ -9,10 +9,10 @@ import ch9k.chat.Conversation;
  */
 public class DummyPlugin implements Plugin {
     @Override
-    public void bind(Conversation conversation) {
+    public void enable(Conversation conversation) {
     }
 
     @Override
-    public void unbind(Conversation conversation) {
+    public void disable() {
     }
 }
