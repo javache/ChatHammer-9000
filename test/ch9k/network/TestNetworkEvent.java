@@ -12,7 +12,7 @@ public class TestNetworkEvent extends NetworkEvent {
     public TestNetworkEvent(InetAddress inetAddress) {
         super(inetAddress);
     }
-
+    
     public TestNetworkEvent(String hostName) throws UnknownHostException {
         super(InetAddress.getByName(hostName));
     }
