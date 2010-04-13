@@ -1,11 +1,9 @@
 package ch9k.chat;
 
-import ch9k.chat.events.ContactBlockedEvent;
 import ch9k.chat.events.ContactOfflineEvent;
 import ch9k.chat.events.ContactOnlineEvent;
 import ch9k.chat.events.ContactStatusChangeEvent;
 import ch9k.chat.events.ContactStatusEventFilter;
-import ch9k.chat.events.ContactUnblockedEvent;
 import ch9k.eventpool.Event;
 import ch9k.eventpool.EventListener;
 import ch9k.eventpool.EventPool;
