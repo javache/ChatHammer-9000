@@ -40,17 +40,12 @@ public abstract class AbstractPlugin implements Plugin {
     }
 
     @Override
-    public void bind(Conversation conversation) {
+    public void enable(Conversation conversation) {
         this.conversation = conversation;
     }
 
     @Override
-    public void unbind(Conversation conversation) {
-        if (this.conversation == conversation) {
-            this.conversation = null;
-        } else {
-            logger.warn("Trying to unbind a plugin from a conversation it" +
-                    "wasn't bound to.");
-        }
+    public void disable() {
+        conversation = null;
     }
 }
