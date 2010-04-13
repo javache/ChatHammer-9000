@@ -163,4 +163,5 @@ public class Storage {
         return new File(getStorageDirectory(),
                 username.toLowerCase()).exists();
     }
+
 }

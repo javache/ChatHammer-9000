@@ -1,6 +1,6 @@
 package ch9k.core;
 
-import ch9k.configuration.Storage;
+import ch9k.configuration.Configuration;
 
 /**
  * The login model (not the gui)
@@ -11,14 +11,19 @@ public class Login {
     /**
      * this method has to be called when a user wants to login
      */
-    public void loadAccount(String username, String password) {
-        
+    public Configuration loadAccount(String username, String password) {
+        Configuration config = new Configuration(username);
+        config.loadExisting();
+        return config.getAccount().authenticate(password)? config : null;
     }
     
     /**
      * creates a new account
      */
-    public void newAccount(String username,String password) {
+    public Configuration newAccount(String username,String password) {
+        Configuration config = new Configuration(username);
+        config.createNew(username, password);
+        return config;
         
     }
     
