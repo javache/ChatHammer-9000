@@ -136,7 +136,6 @@ public class Contact extends Model implements Comparable<Contact>, EventListener
         } else {
             EventPool.getAppPool().raiseEvent(new ContactOnlineEvent(this));
         }
-        
     }
 
     @Override
@@ -182,18 +181,25 @@ public class Contact extends Model implements Comparable<Contact>, EventListener
     @Override
     public void handleEvent(Event event) {
         if(event instanceof ContactOnlineEvent) {
-            this.setOnline(true);
+            ContactOnlineEvent contactOnlineEvent = (ContactOnlineEvent) event;
+            if(contactOnlineEvent.isExternal()) {
+                this.setOnline(true);
+            }
         }
 
         if(event instanceof ContactOfflineEvent) {
-            this.setOnline(false);
+            ContactOfflineEvent contactOfflineEvent = (ContactOfflineEvent) event;
+            if(contactOfflineEvent.isExternal()) {
+                this.setOnline(false);
+            }
         }
 
         if(event instanceof ContactStatusEvent) {
-            ContactStatusEvent contactEvent = (ContactStatusEvent) event;
-            this.setStatus(contactEvent.getNewStatus());
+            ContactStatusEvent contactStatusEvent = (ContactStatusEvent) event;
+            if(contactStatusEvent.isExternal()) {
+                this.setStatus(contactStatusEvent.getNewStatus());
+            }
         }
-
     }
     
     @Override

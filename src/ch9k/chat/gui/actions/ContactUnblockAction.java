@@ -20,5 +20,4 @@ public class ContactUnblockAction extends AbstractAction {
     public void actionPerformed(ActionEvent actionEvent) {
         contact.setBlocked(false);
     }
-
 }

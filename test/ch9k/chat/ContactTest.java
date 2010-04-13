@@ -169,18 +169,19 @@ public class ContactTest {
         ContactEvent contactOnlineEvent = new ContactOnlineEvent(contact);
         ContactEvent contactOfflineEvent = new ContactOfflineEvent(contact);
 
+        String oldStatus = contact.getStatus();
         String newStatus = "on toilet";
         ContactEvent contactStatusChangeEvent = new ContactStatusEvent(contact, newStatus);
 
         assertFalse(contact.isOnline());
-        assertEquals("", contact.getStatus());
+        assertEquals(oldStatus, contact.getStatus());
 
         eventPool.raiseEvent(contactOnlineEvent);
         eventPool.raiseEvent(contactStatusChangeEvent);
         Thread.sleep(100);
 
-        assertTrue(contact.isOnline());
-        assertEquals(newStatus, contact.getStatus());
+        assertFalse(contact.isOnline());
+        assertEquals(oldStatus, contact.getStatus());
 
         eventPool.raiseEvent(contactOfflineEvent);
         Thread.sleep(100);
