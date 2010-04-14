@@ -3,6 +3,7 @@ package ch9k.chat;
 import ch9k.chat.events.CloseConversationEvent;
 import ch9k.chat.events.ConversationEventFilter;
 import ch9k.chat.events.NewChatMessageEvent;
+import ch9k.core.Model;
 import ch9k.eventpool.Event;
 import ch9k.eventpool.EventListener;
 import ch9k.eventpool.EventPool;
@@ -15,7 +16,7 @@ import java.util.TreeSet;
  * Represents a conversation between two users.
  * @author Jens Panneel
  */
-public class Conversation implements EventListener {
+public class Conversation extends Model implements EventListener {
     private Contact contact;
     private boolean initiatedByMe;
     private Date startTime = new Date();
@@ -80,7 +81,7 @@ public class Conversation implements EventListener {
      */
     public void addMessage(ChatMessage chatMessage) {
         conversation.add(chatMessage);
-        // @todo: send event
+        fireStateChanged();
     }
 
     /**
