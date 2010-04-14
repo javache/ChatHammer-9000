@@ -100,7 +100,7 @@ public class ConversationEventTest {
 
         // raise the event on the local pool, should get sent to remotePool too
         localPool.raiseEvent(localEvent);
-        Thread.sleep(50);
+        Thread.sleep(100);
 
         // let's check the results!
         ConversationEvent remoteEvent = (ConversationEvent)remoteListener.lastReceivedEvent;
