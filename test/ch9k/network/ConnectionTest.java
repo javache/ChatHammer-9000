@@ -1,14 +1,14 @@
 package ch9k.network;
 
 import ch9k.eventpool.Event;
+import ch9k.eventpool.EventFilter;
 import ch9k.eventpool.EventListener;
 import ch9k.eventpool.EventPool;
-import ch9k.eventpool.EventFilter;
 import java.io.IOException;
 import java.net.InetAddress;
-import org.junit.Test;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class ConnectionTest {

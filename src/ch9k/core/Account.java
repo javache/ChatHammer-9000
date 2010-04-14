@@ -5,7 +5,6 @@ import java.security.MessageDigest;
 
 import ch9k.chat.ContactList;
 import ch9k.configuration.Persistable;
-import java.util.Arrays;
 import org.jdom.Element;
 
 /**

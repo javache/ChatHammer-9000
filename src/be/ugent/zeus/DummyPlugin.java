@@ -1,7 +1,7 @@
 package be.ugent.zeus;
 
-import ch9k.plugins.Plugin;
 import ch9k.chat.Conversation;
+import ch9k.plugins.Plugin;
 
 /**
  * A dummy plugin that does nothing at all.

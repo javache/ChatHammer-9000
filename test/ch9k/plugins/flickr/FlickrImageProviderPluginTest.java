@@ -2,7 +2,6 @@ package ch9k.plugins.flickr;
 
 import ch9k.plugins.ImageProviderTester;
 import java.net.MalformedURLException;
-import java.net.URL;
 import org.junit.Test;
 import static org.junit.Assert.*;
 

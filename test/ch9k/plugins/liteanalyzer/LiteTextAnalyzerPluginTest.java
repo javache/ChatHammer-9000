@@ -1,8 +1,6 @@
 package ch9k.plugins.liteanalyzer;
 
 import ch9k.plugins.TextAnalyzer;
-import java.net.MalformedURLException;
-import java.net.URL;
 import org.junit.Test;
 import static org.junit.Assert.*;
 

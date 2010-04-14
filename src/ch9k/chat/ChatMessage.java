@@ -1,7 +1,6 @@
 package ch9k.chat;
 
 import java.io.Serializable;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Formatter;
 

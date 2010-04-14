@@ -1,8 +1,8 @@
 package ch9k.plugins.carousel;
 
-import javax.swing.JPanel;
-import java.awt.BorderLayout;
 import ch9k.chat.Conversation;
+import java.awt.BorderLayout;
+import javax.swing.JPanel;
 
 /**
  * The main Carousel panel.

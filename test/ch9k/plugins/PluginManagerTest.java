@@ -1,9 +1,9 @@
 package ch9k.plugins;
 
-import java.net.URL;
+import ch9k.configuration.Storage;
 import java.io.File;
 import java.net.MalformedURLException;
-import ch9k.configuration.Storage;
+import java.net.URL;
 import org.junit.Test;
 import static org.junit.Assert.*;
 

@@ -1,14 +1,13 @@
 package ch9k.plugins.carousel;
 
-import javax.swing.JPanel;
-import java.awt.GridLayout;
-import ch9k.eventpool.Event;
 import ch9k.chat.Conversation;
+import ch9k.eventpool.Event;
 import ch9k.eventpool.EventFilter;
 import ch9k.eventpool.EventListener;
 import ch9k.eventpool.EventPool;
-import ch9k.plugins.AbstractPlugin;
 import ch9k.plugins.NewProvidedImageEvent;
+import java.awt.GridLayout;
+import javax.swing.JPanel;
 
 /**
  * Panel in which the user can select an image.

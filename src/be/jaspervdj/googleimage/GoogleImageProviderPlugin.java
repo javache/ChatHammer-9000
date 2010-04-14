@@ -11,8 +11,8 @@ import java.net.URLConnection;
 import java.net.URLEncoder;
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
-import org.json.JSONObject;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * Class that gives us the ability to look up images on Flickr.

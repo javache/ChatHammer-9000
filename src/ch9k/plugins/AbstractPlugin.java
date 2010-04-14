@@ -2,7 +2,6 @@ package ch9k.plugins;
 
 import ch9k.chat.Conversation;
 import ch9k.chat.events.ConversationEvent;
-import org.apache.log4j.Logger;
 
 /**
  * Class implementing Plugin, with several utility functions added.

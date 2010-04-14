@@ -1,8 +1,8 @@
 package ch9k.network;
 
+import ch9k.eventpool.NetworkEvent;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import ch9k.eventpool.NetworkEvent;
 
 public class TestNetworkEvent extends NetworkEvent {
     public TestNetworkEvent() throws UnknownHostException {

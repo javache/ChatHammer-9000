@@ -1,7 +1,7 @@
 package ch9k.eventpool;
 
-import java.net.InetAddress;
 import java.io.Serializable;
+import java.net.InetAddress;
 
 
 /**
