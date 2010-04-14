@@ -1,15 +1,12 @@
 package ch9k.plugins.carousel;
 
+import ch9k.plugins.ProvidedImage;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Image;
-import javax.swing.event.ChangeListener;
-import javax.swing.event.ChangeEvent;
-import javax.swing.JPanel;
-import ch9k.plugins.ProvidedImage;
-import java.awt.event.MouseListener;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import javax.swing.JPanel;
 
 /**
  * View showing a single image. This class implements MouseListener for

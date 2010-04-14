@@ -1,6 +1,5 @@
 package ch9k.plugins.carousel;
 
-import java.awt.Color;
 import ch9k.chat.Conversation;
 import java.awt.BorderLayout;
 import javax.swing.JPanel;

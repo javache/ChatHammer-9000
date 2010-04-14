@@ -1,12 +1,12 @@
 package ch9k.plugins.carousel;
 
-import ch9k.plugins.flickr.FlickrImageProviderPlugin;
-import ch9k.chat.Conversation;
 import ch9k.chat.Contact;
-import java.net.InetAddress;
+import ch9k.chat.Conversation;
 import ch9k.plugins.AbstractPlugin;
-import javax.swing.JFrame;
+import ch9k.plugins.flickr.FlickrImageProviderPlugin;
 import java.awt.Container;
+import java.net.InetAddress;
+import javax.swing.JFrame;
 
 /**
  * Plugin for a standard image carousel.

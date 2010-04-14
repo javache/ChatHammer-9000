@@ -1,12 +1,8 @@
 package ch9k.plugins.carousel;
 
-import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Image;
-import javax.swing.event.ChangeListener;
 import javax.swing.event.ChangeEvent;
-import javax.swing.JPanel;
+import javax.swing.event.ChangeListener;
 
 /**
  * View showing a single image.
