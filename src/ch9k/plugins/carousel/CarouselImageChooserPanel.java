@@ -50,7 +50,6 @@ public class CarouselImageChooserPanel extends JPanel implements EventListener {
         for(int i = 0; i < imageLabels.length; i++ ) {
             imageLabels[i] = new JLabel("Image " + i);
             imageLabels[i].setPreferredSize(labelSize);
-            System.out.println("Added image.");
             add(imageLabels[i]);
         }
 
