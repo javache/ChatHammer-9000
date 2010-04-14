@@ -26,6 +26,7 @@ public class CarouselPanel extends JPanel {
         this.conversation = conversation;
 
         imageChooserPanel = new CarouselImageChooserPanel(conversation);
+        add(imageChooserPanel, BorderLayout.SOUTH);
     }
 
     /**

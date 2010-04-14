@@ -57,6 +57,7 @@ public class Contact extends Model implements Comparable<Contact>, EventListener
      * @return ip
      */
     public InetAddress getIp() {
+        System.out.println(ip);
         return ip;
     }
 

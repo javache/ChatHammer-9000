@@ -35,7 +35,7 @@ public class FlickrImageProviderPlugin extends ImageProvider {
     /**
      * Constructor.
      */
-    FlickrImageProviderPlugin() {
+    public FlickrImageProviderPlugin() {
         flickr = new Flickr(API_KEY);
     }
 

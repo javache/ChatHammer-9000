@@ -31,7 +31,7 @@ public abstract class ImageProvider extends AbstractPlugin
      * Send new images, searching for text.
      * @param text Text to search for on the image provider.
      */
-    private void sendNewImageEvent(String text) {
+    public void sendNewImageEvent(String text) {
         /* Get the URL's from which the images should be loaded. */
         String[] urls = getImageUrls(text);
 

@@ -47,6 +47,7 @@ public class Conversation extends AbstractListModel implements EventListener {
      * @return contact
      */
     public Contact getContact() {
+        System.out.println(contact);
         return contact;
     }
 

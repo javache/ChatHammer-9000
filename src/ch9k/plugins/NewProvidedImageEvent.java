@@ -20,6 +20,9 @@ public class NewProvidedImageEvent extends ConversationEvent {
     public NewProvidedImageEvent(
             Conversation conversation, ProvidedImage image) {
         super(conversation);
+        System.out.println(conversation);
+        System.out.println(conversation.getContact());
+        System.out.println(conversation.getContact().getIp());
         this.image = image;
     }
 
