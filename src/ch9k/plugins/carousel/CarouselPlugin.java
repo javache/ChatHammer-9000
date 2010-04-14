@@ -2,6 +2,7 @@ package ch9k.plugins.carousel;
 
 import ch9k.chat.Contact;
 import ch9k.chat.Conversation;
+import ch9k.chat.events.ConversationEventFilter;
 import ch9k.chat.events.RequestPluginContainerEvent;
 import ch9k.chat.events.RequestedPluginContainerEvent;
 import ch9k.eventpool.Event;
@@ -34,8 +35,8 @@ public class CarouselPlugin extends AbstractPlugin implements EventListener {
 
         /* First, register this plugin as listener so it can receive a container
          * later. */
-        EventFilter filter =
-                new EventFilter(RequestedPluginContainerEvent.class);
+        EventFilter filter = new ConversationEventFilter(
+                RequestedPluginContainerEvent.class, conversation);
         EventPool.getAppPool().addListener(this, filter);
 
         /* Asyncrhonously request a panel for this plugin. */
@@ -52,9 +53,7 @@ public class CarouselPlugin extends AbstractPlugin implements EventListener {
 
     @Override
     public void handleEvent(Event e) {
-        /* Return if the event is not relevant. */
         RequestedPluginContainerEvent event = (RequestedPluginContainerEvent) e;
-        if(!isRelevant(event)) return;
 
         /* Okay, we have a panel now, start using it. */
         Container container = event.getPluginContainer();

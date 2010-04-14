@@ -2,6 +2,7 @@ package ch9k.plugins;
 
 import ch9k.chat.Conversation;
 import ch9k.chat.ConversationSubject;
+import ch9k.chat.events.ConversationEventFilter;
 import ch9k.chat.events.NewChatMessageEvent;
 import ch9k.chat.events.NewConversationSubjectEvent;
 import ch9k.eventpool.Event;
@@ -18,7 +19,8 @@ public abstract class TextAnalyzer extends AbstractPlugin
     @Override
     public void enablePlugin(Conversation conversation) {
         super.enablePlugin(conversation);
-        EventFilter filter = new EventFilter(NewChatMessageEvent.class);
+        EventFilter filter = new ConversationEventFilter(
+                NewChatMessageEvent.class, conversation);
         EventPool.getAppPool().addListener(this, filter);
     }
 
@@ -30,9 +32,7 @@ public abstract class TextAnalyzer extends AbstractPlugin
 
     @Override
     public void handleEvent(Event e) {
-        /* Return if the event is not relevant. */
         NewChatMessageEvent event = (NewChatMessageEvent) e;
-        if(!isRelevant(event)) return;
 
         /* Create a new subject. */
         String[] messages =

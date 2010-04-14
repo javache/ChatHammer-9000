@@ -2,6 +2,7 @@ package ch9k.plugins;
 
 import ch9k.chat.Conversation;
 import ch9k.chat.ConversationSubject;
+import ch9k.chat.events.ConversationEventFilter;
 import ch9k.chat.events.NewConversationSubjectEvent;
 import ch9k.eventpool.Event;
 import ch9k.eventpool.EventFilter;
@@ -17,7 +18,8 @@ public abstract class ImageProvider extends AbstractPlugin
     @Override
     public void enablePlugin(Conversation conversation) {
         super.enablePlugin(conversation);
-        EventFilter filter = new EventFilter(NewConversationSubjectEvent.class);
+        EventFilter filter = new ConversationEventFilter(
+                NewConversationSubjectEvent.class, conversation);
         EventPool.getAppPool().addListener(this, filter);
     }
 
@@ -38,7 +40,9 @@ public abstract class ImageProvider extends AbstractPlugin
         /* When the concrete implementation fails, it will return null as urls.
          * However, a relevant warning will be shown by the concrete
          * implementation, so we can just return here. */
-        if (urls == null) return;
+        if (urls == null) {
+            return;
+        }
         
         /* Load the actual images. */
         for (String url: urls) {
@@ -52,19 +56,22 @@ public abstract class ImageProvider extends AbstractPlugin
 
     @Override
     public void handleEvent(Event e) {
-        /* Return if the event is not relevant. */
         NewConversationSubjectEvent event = (NewConversationSubjectEvent) e;
-        if(!isRelevant(event)) return;
 
         /* Construct a new text to search for by appending subjects. */
         ConversationSubject subject = event.getConversationSubject();
         String[] subjects = subject.getSubjects();
-        String text = "";
-        if(subjects.length > 0) text = subjects[0];
-        for(int i = 1; i < subjects.length; i++) text += " " + subjects[i];
+
+        StringBuilder text = new StringBuilder();
+        if(subjects.length > 0) {
+            text.append(subjects[0]);
+        }
+        for(int i = 1; i < subjects.length; i++) {
+            text.append(" ").append(subjects[i]);
+        }
 
         /* Send the new image event. */
-        sendNewImageEvent(text);
+        sendNewImageEvent(text.toString());
     }
 
     /**

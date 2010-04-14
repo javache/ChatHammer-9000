@@ -79,7 +79,7 @@ public class PluginManager {
         }
 
         /* Find the class of the new plugin. */
-        Class pluginClass = null;
+        Class<?> pluginClass = null;
         try {
             pluginClass = installer.getPluginClass(name);
         } catch (ClassNotFoundException exception) {

@@ -22,7 +22,6 @@ public class ProvidedImage {
     /**
      * Create a new image.
      * @param url URL for the image.
-     * @param image The actual image.
      */
     public ProvidedImage(String url) {
         try {
@@ -53,7 +52,16 @@ public class ProvidedImage {
 
     @Override
     public boolean equals(Object object) {
-        if(!(object instanceof ProvidedImage) || object == null) return false;
+        if(!(object instanceof ProvidedImage) || object == null) {
+            return false;
+        }
         return url.equals(((ProvidedImage) object).getURL());
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 59 * hash + (this.url != null ? this.url.hashCode() : 0);
+        return hash;
     }
 }

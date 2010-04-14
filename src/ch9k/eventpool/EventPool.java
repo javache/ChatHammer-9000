@@ -72,6 +72,7 @@ public class EventPool {
                 }
             }
         }, "EventPool-processor");
+        eventProcessor.setDaemon(true);
         eventProcessor.start();
     }
 
@@ -115,8 +116,7 @@ public class EventPool {
     }
 
     /**
-     * Send an event through the network
-     * (will also be broadcast in the local pool?)
+     * Send an event through the network and the local pool
      * @param networkEvent
      */
     public void raiseEvent(NetworkEvent networkEvent) {

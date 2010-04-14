@@ -23,7 +23,7 @@ import javax.swing.JPopupMenu;
  *
  * @author Jens Panneel
  */
-public class ContactListView extends JPanel{
+public class ContactListView extends JPanel {
     private JList list;
 
     /**

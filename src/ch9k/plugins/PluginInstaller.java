@@ -40,6 +40,7 @@ public class PluginInstaller extends URLClassLoader {
 
     /**
      * Constructor.
+     * @param pluginManager
      */
     public PluginInstaller(PluginManager pluginManager) {
         /* The superclass is an URLClassLoader with no predefined paths. */
@@ -49,8 +50,9 @@ public class PluginInstaller extends URLClassLoader {
         this.pluginManager = pluginManager;
 
         /* Create the install directory if it doesn't exist yet. */
-        if(!INSTALL_DIRECTORY.isDirectory())
+        if(!INSTALL_DIRECTORY.isDirectory()) {
             INSTALL_DIRECTORY.mkdirs();
+        }
 
         /* Create a file filter to search for jar's. */
         FileFilter jarFilter = new FileFilter() {
@@ -87,7 +89,9 @@ public class PluginInstaller extends URLClassLoader {
         }
 
         /* Retreat, retreat! */
-        if(manifest == null) return;
+        if(manifest == null) {
+            return;
+        }
 
         /* Obtain the jar manifest and it's attributes. */
         Attributes attributes = manifest.getMainAttributes();
@@ -104,7 +108,9 @@ public class PluginInstaller extends URLClassLoader {
         String pluginName = attributes.getValue("Plugin-Class");
 
         /* No plugin in this jar. */
-        if(pluginName == null) return;
+        if(pluginName == null) {
+            return;
+        }
 
         /* Register the plugin class. */
         logger.info("Plugin found: " + pluginName);
@@ -115,8 +121,9 @@ public class PluginInstaller extends URLClassLoader {
      * Load a plugin class.
      * @param name Name of the class to load.
      * @return The plugin class.
+     * @throws ClassNotFoundException
      */
-    public Class getPluginClass(String name) throws ClassNotFoundException {
+    public Class<?> getPluginClass(String name) throws ClassNotFoundException {
         return findClass(name);
     }
 
@@ -143,6 +150,7 @@ public class PluginInstaller extends URLClassLoader {
      * after the read.
      * @param in Stream to get the plugin from.
      * @param fileName File name of the plugin.
+     * @throws IOException
      */
     public void installPlugin(InputStream in, String fileName)
             throws IOException {
@@ -155,7 +163,9 @@ public class PluginInstaller extends URLClassLoader {
         int length;
 
         /* Copy the stream. */
-        while((length = in.read(buffer)) > 0) out.write(buffer, 0, length);
+        while((length = in.read(buffer)) > 0) {
+            out.write(buffer, 0, length);
+        }
 
         /* Close the streams. */
         in.close();
