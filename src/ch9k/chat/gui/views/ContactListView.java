@@ -4,6 +4,7 @@ import ch9k.chat.Contact;
 import ch9k.chat.ContactList;
 import ch9k.chat.gui.actions.ContactBlockAction;
 import ch9k.chat.gui.actions.ContactUnblockAction;
+import ch9k.chat.gui.actions.StartConversationAction;
 import ch9k.core.Account;
 import ch9k.core.ChatApplication;
 import java.awt.Dimension;
@@ -65,12 +66,12 @@ public class ContactListView extends JPanel{
             }
         });
         
-        Thread.sleep(2000);
+        Thread.sleep(500);
         Contact contact3 = new Contact("Javache", InetAddress.getByName("4chan.org"), false);
         contactList.addContact(contact3);
-        Thread.sleep(1000);
+        Thread.sleep(500);
         contact1.setOnline(true);
-        Thread.sleep(1000);
+        Thread.sleep(500);
         contact2.setBlocked(true);
     }
 
@@ -104,6 +105,9 @@ public class ContactListView extends JPanel{
                 add(new ContactUnblockAction(contact));
             } else {
                 add(new ContactBlockAction(contact));
+            }
+            if(contact.isOnline()) {
+                add(new StartConversationAction(contact));
             }
         }
     }
