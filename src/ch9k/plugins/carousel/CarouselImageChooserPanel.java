@@ -9,11 +9,13 @@ import ch9k.eventpool.EventPool;
 import ch9k.plugins.NewProvidedImageEvent;
 import java.awt.GridLayout;
 import java.awt.Image;
+import java.awt.Color;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JPanel;
 import javax.swing.JButton;
 import javax.swing.ImageIcon;
+import java.awt.event.MouseEvent;
 
 /**
  * Panel in which the user can select an image.
@@ -30,14 +32,9 @@ public class CarouselImageChooserPanel extends JPanel implements EventListener {
     private CarouselImageModel model;
 
     /**
-     * The image buttons.
+     * The image items.
      */
-    private JButton[] imageButtons;
-
-    /**
-     * The relevant actionlisteners.
-     */
-    private ActionListener[] imageButtonActionListeners;
+    private CarouselImageChooserItem[] images;
 
     /**
      * Columns in the grid.
@@ -60,15 +57,14 @@ public class CarouselImageChooserPanel extends JPanel implements EventListener {
         this.conversation = conversation;
         this.model = model;
 
+        setBackground(Color.BLACK);
+
         Dimension labelSize = new Dimension(100, 100);
-        imageButtons = new JButton[COLUMNS * 6];
-        imageButtonActionListeners = new ActionListener[imageButtons.length];
-        for(int i = 0; i < imageButtons.length; i++ ) {
-            imageButtons[i] = new JButton();
-            imageButtons[i].setPreferredSize(labelSize);
-            imageButtons[i].setHorizontalAlignment(JButton.CENTER);
-            imageButtons[i].setBorder(null);
-            add(imageButtons[i]);
+        images = new CarouselImageChooserItem[COLUMNS * 6];
+        for(int i = 0; i < images.length; i++ ) {
+            images[i] = new CarouselImageChooserItem();
+            images[i].setPreferredSize(labelSize);
+            add(images[i]);
         }
 
         nextImageIndex = 0;
@@ -92,43 +88,22 @@ public class CarouselImageChooserPanel extends JPanel implements EventListener {
         final NewProvidedImageEvent event = (NewProvidedImageEvent) e;
         if(conversation != event.getConversation()) return;
 
-        /* Obtain the actual image and the size of the label. */
-        Image image = event.getProvidedImage().getImage();
-        Dimension dimension = imageButtons[nextImageIndex].getSize();
-
-        /* Find out the ascpet ratio of the image. */
-        double imageAspect =
-                (double) image.getWidth(null) / image.getHeight(null);
-
-        /* Scale by width. */
-        double width = dimension.getWidth();
-        double height = (double) width / imageAspect;
-
-        /* We're wrong, scale by height. */
-        if(height < dimension.getHeight()) {
-            height = dimension.getHeight();
-            width = imageAspect * (double) height;
-        }
-
-        /* Scale the image and set the icon. */
-        Image scaled = image.getScaledInstance((int) width,
-                (int) height, Image.SCALE_SMOOTH);
-        imageButtons[nextImageIndex].setIcon(new ImageIcon(scaled));
-
-        /* Set a new actionlistener. and remove the old one. */
-        ActionListener listener = new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                model.setProvidedImage(event.getProvidedImage());
-            }
-        };
-        if(imageButtonActionListeners[nextImageIndex] != null) {
-            imageButtons[nextImageIndex].removeActionListener(
-                    imageButtonActionListeners[nextImageIndex]);
-        }
-        imageButtonActionListeners[nextImageIndex] = listener;
-        imageButtons[nextImageIndex].addActionListener(listener);
+        /* Set the new image. */
+        images[nextImageIndex].setProvidedImage(event.getProvidedImage());
 
         /* Increment the image index. */
-        nextImageIndex = (nextImageIndex + 1) % imageButtons.length;
+        nextImageIndex = (nextImageIndex + 1) % images.length;
+    }
+
+    private class CarouselImageChooserItem extends ImagePanel {
+        public CarouselImageChooserItem() {
+            super(false);
+            addMouseListener(this);
+        }
+
+        @Override
+        public void mouseClicked(MouseEvent event) {
+            model.setProvidedImage(getProvidedImage());
+        }
     }
 }
