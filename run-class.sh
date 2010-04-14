@@ -5,4 +5,4 @@ if [[ $# != 1 ]]; then
 	exit 1
 fi
 
-ant -Drun.class=$1 -Djavac.includes= run-single
+ant -Drun.class=$1 -Djavac.includes= run-test-with-main
