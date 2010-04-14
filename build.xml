@@ -44,7 +44,7 @@
         </copylibs>
     </target>
     <!-- build JARs for all plugins -->
-    <target depends="init,jar" name="plugins">
+    <target depends="init,jar" name="plugins" description="Build plugin JARs.">
         <macrodef name="build-plugin">
             <attribute name="package"/>
             <attribute name="destination"/>
@@ -59,5 +59,9 @@
         </macrodef>
         <build-plugin package="be/jaspervdj/googleimage" destination="googleimage"/>
         <build-plugin package="be/ugent/zeus" destination="dummyplugin"/>
+    </target>
+	<!-- remove doc-dirs when cleaning -->
+	<target name="-post-clean">
+        <delete dir="${dist.javadoc.dir}"/>
     </target>
 </project>
