@@ -54,7 +54,7 @@ public class ChatApplication {
 
         // show login dialog
         Login loginController = new Login();
-        // configuration = loginController.run();
+        configuration = loginController.run();
     }
 
     public Account getAccount() {

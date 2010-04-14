@@ -90,7 +90,7 @@ public class ConnectionManager {
      * Start listening for incoming connections
      */
     public void readyForIncomingConnections() {
-        Thread listenThread = new Thread(new Listener());
+        Thread listenThread = new Thread(new Listener(), "Connection-accepter");
         listenThread.setDaemon(true);
         listenThread.start();
     }

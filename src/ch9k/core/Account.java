@@ -93,10 +93,12 @@ public class Account implements Persistable{
     }
 
     /**
-     * authenticate with the given password
+     * Try authenticate a user with a given password
+     * @param password 
+     * @return result
      */
-    public boolean authenticate(String pass) {
-        return hash(pass).equals(passwordHash);
+    public boolean authenticate(String password) {
+        return passwordHash.equals(hash(password));
     }
 
     /**
@@ -113,7 +115,7 @@ public class Account implements Persistable{
              StringBuffer result = new StringBuffer(digest.length*2);
              for(int i=0;i<digest.length;i++)
              {
-                 result.append(Integer.toHexString(digest[i]&0xFF));
+                 result.append(Integer.toHexString(digest[i] & 0xFF));
              }
              return new String(result);
         } catch(java.security.NoSuchAlgorithmException e) {
@@ -128,7 +130,8 @@ public class Account implements Persistable{
             return false;
         }
         Account other = (Account) obj;
-        return this.username.equals(other.getUsername()) && this.passwordHash.equals(other.getPasswordHash());
+        return this.username.equals(other.getUsername())
+                && this.passwordHash.equals(other.getPasswordHash());
     }
 
     @Override
@@ -156,7 +159,6 @@ public class Account implements Persistable{
         username = el.getChildText("username");
         status = el.getChildText("status");
         passwordHash = el.getChildText("password");
-        contactList= new ContactList(new PersistentDataObject(el.getChild("contactlist")));
-        
+        contactList = new ContactList(new PersistentDataObject(el.getChild("contactlist")));
     }
 }

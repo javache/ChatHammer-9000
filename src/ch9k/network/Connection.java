@@ -130,7 +130,7 @@ public class Connection {
         out = new ObjectOutputStream(socket.getOutputStream());
         in = new ObjectInputStream(socket.getInputStream());
 
-        String threadName = "connection-" + socket.getInetAddress().getHostAddress();
+        String threadName = "Connection-" + socket.getInetAddress().getHostAddress();
 
         listenerThread = new Thread(new ConnectionListener(), threadName + "-reader");
         listenerThread.setDaemon(true);

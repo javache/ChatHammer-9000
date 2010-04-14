@@ -1,115 +1,125 @@
 package ch9k.core.gui;
 
 import ch9k.core.Login;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.LayoutStyle;
+import javax.swing.SwingConstants;
+import javax.swing.WindowConstants;
 
 /**
- *
- * @author Bruno
+ * Shows options for login
+ * @author Bruno Corijn
  */
 public class LoginView extends JPanel {
-
     private JButton newUserButton;
     private JButton loginButton;
     private JLabel usernameLabel;
     private JLabel passwordLabel;
+    private JLabel titleLabel;
     private JPasswordField passwordField;
     private JTextField usernameField;
     private Login loginController;
 
     /** Creates new form LoginView */
-    public LoginView(Login loginController) {
+    public LoginView(final Login loginController) {
         this.loginController = loginController;
 
+        // init fields and layout
+        initFields();
+        initLayout();
+
+        // create a frame
+        JFrame window = new JFrame("ChatHammer 9000");
+        window.setContentPane(this);
+        window.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        window.pack();
+        window.setResizable(false);
+        window.setVisible(true);
+    }
+
+    private void initFields() {
+        titleLabel = new JLabel("ChatHammer 9000");
+        titleLabel.setFont(titleLabel.getFont().deriveFont(16f));
+        titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
+
+        usernameLabel = new JLabel("Username");
         usernameField = new JTextField();
+
+        passwordLabel = new JLabel("Password");
         passwordField = new JPasswordField();
-        
-        usernameLabel = new JLabel();
-        usernameLabel.setText("Username");
-        
-        passwordLabel = new JLabel();
-        passwordLabel.setText("Password");
-        
-        loginButton = new JButton();
-        loginButton.setText("Log in");
+
+        loginButton = new JButton("Log in");
         loginButton.addActionListener(new ActionListener() {
-            @Override
             public void actionPerformed(ActionEvent evt) {
-                loginAction(evt);
+                loginController.loadConfiguration(
+                        new String(usernameField.getText()),
+                        new String(passwordField.getPassword()));
             }
         });
-        
+
         newUserButton = new JButton();
         newUserButton.setText("New user");
         newUserButton.addActionListener(new ActionListener() {
-            @Override
             public void actionPerformed(ActionEvent evt) {
-                newUserAction(evt);
+                loginController.createConfiguration(
+                        new String(usernameField.getText()));
             }
         });
-
-        initLayout();
     }
-
    
     private void initLayout() {
         GroupLayout layout = new GroupLayout(this);
         this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.TRAILING, false)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(newUserButton)
-                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(loginButton))
-                    .addGroup(GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+        layout.setHorizontalGroup(layout.createSequentialGroup()
+            .addContainerGap()
+            .addGroup(layout.createParallelGroup()
+                .addComponent(titleLabel, GroupLayout.DEFAULT_SIZE,
+                    GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createSequentialGroup()
+                    .addGroup(layout.createParallelGroup()
                         .addComponent(usernameLabel)
-                        .addGap(18, 18, 18)
-                        .addComponent(usernameField, GroupLayout.PREFERRED_SIZE, 176, GroupLayout.PREFERRED_SIZE))
-                    .addGroup(GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                        .addComponent( passwordLabel)
-                        .addGap(18, 18, 18)
-                        .addComponent(passwordField)))
-                .addContainerGap(41, Short.MAX_VALUE))
+                        .addComponent(passwordLabel)
+                    )
+                    .addGap(20)
+                    .addGroup(layout.createParallelGroup()
+                        .addComponent(usernameField, GroupLayout.PREFERRED_SIZE,
+                            80, Short.MAX_VALUE)
+                        .addComponent(passwordField, GroupLayout.PREFERRED_SIZE,
+                            80, Short.MAX_VALUE)
+                        .addComponent(loginButton)
+                    )
+                )
+            )
+            .addContainerGap()
         );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(32, 32, 32)
-                .addGroup(layout.createParallelGroup(Alignment.BASELINE)
-                    .addComponent(usernameLabel)
-                    .addComponent(usernameField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(Alignment.BASELINE)
-                    .addComponent( passwordLabel)
-                    .addComponent(passwordField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                .addGap(30, 30, 30)
-                .addGroup(layout.createParallelGroup(Alignment.BASELINE)
-                    .addComponent(loginButton)
-                    .addComponent(newUserButton))
-                .addContainerGap(39, Short.MAX_VALUE))
+        layout.setVerticalGroup(layout.createSequentialGroup()
+            .addContainerGap()
+            .addComponent(titleLabel)
+            .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+            .addGroup(layout.createParallelGroup(Alignment.BASELINE)
+                .addComponent(usernameLabel)
+                .addComponent(usernameField, GroupLayout.PREFERRED_SIZE,
+                    GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+            )
+            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+            .addGroup(layout.createParallelGroup(Alignment.BASELINE)
+                .addComponent(passwordLabel)
+                .addComponent(passwordField, GroupLayout.PREFERRED_SIZE,
+                    GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+            )
+            .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+            .addComponent(loginButton)
+            .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
     }
-
-    private void newUserAction(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
-    }
-
-    private void loginAction(java.awt.event.ActionEvent evt) {
-        String password = new String(passwordField.getPassword());
-        loginController.loadAccount(usernameField.getText(), password);
-    }
-
-
 }
