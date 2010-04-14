@@ -5,7 +5,4 @@ if [[ $# != 1 ]]; then
 	exit 1
 fi
 
-CLASSPATH=$(find lib -name '*.jar' | awk -vORS=':' "{print}")
-CLASSPATH="$CLASSPATH""build/classes:build/test/classes"
-
-java -cp "$CLASSPATH" $1
+ant -Drun.class=$1 -Djavac.includes= run-single
