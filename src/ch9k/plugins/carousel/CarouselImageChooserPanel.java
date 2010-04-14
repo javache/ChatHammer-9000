@@ -9,8 +9,10 @@ import ch9k.eventpool.EventPool;
 import ch9k.plugins.NewProvidedImageEvent;
 import java.awt.GridLayout;
 import java.awt.Image;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 import javax.swing.JPanel;
-import javax.swing.JLabel;
+import javax.swing.JButton;
 import javax.swing.ImageIcon;
 
 /**
@@ -23,9 +25,19 @@ public class CarouselImageChooserPanel extends JPanel implements EventListener {
     private Conversation conversation;
 
     /**
-     * The image labels.
+     * The selection model.
      */
-    private JLabel[] imageLabels;
+    private CarouselImageModel model;
+
+    /**
+     * The image buttons.
+     */
+    private JButton[] imageButtons;
+
+    /**
+     * The relevant actionlisteners.
+     */
+    private ActionListener[] imageButtonActionListeners;
 
     /**
      * Columns in the grid.
@@ -40,17 +52,23 @@ public class CarouselImageChooserPanel extends JPanel implements EventListener {
     /**
      * Constructor.
      * @param conversation The conversation.
+     * @param model The selection model of the plugin.
      */
-    public CarouselImageChooserPanel(Conversation conversation) {
+    public CarouselImageChooserPanel(Conversation conversation,
+            CarouselImageModel model) {
         super(new GridLayout(0, COLUMNS));
         this.conversation = conversation;
+        this.model = model;
 
         Dimension labelSize = new Dimension(100, 100);
-        imageLabels = new JLabel[COLUMNS * 6];
-        for(int i = 0; i < imageLabels.length; i++ ) {
-            imageLabels[i] = new JLabel("Image " + i);
-            imageLabels[i].setPreferredSize(labelSize);
-            add(imageLabels[i]);
+        imageButtons = new JButton[COLUMNS * 6];
+        imageButtonActionListeners = new ActionListener[imageButtons.length];
+        for(int i = 0; i < imageButtons.length; i++ ) {
+            imageButtons[i] = new JButton();
+            imageButtons[i].setPreferredSize(labelSize);
+            imageButtons[i].setHorizontalAlignment(JButton.CENTER);
+            imageButtons[i].setBorder(null);
+            add(imageButtons[i]);
         }
 
         nextImageIndex = 0;
@@ -71,12 +89,12 @@ public class CarouselImageChooserPanel extends JPanel implements EventListener {
         // TODO: invokeLater
 
         /* Return if the event is not relevant. */
-        NewProvidedImageEvent event = (NewProvidedImageEvent) e;
+        final NewProvidedImageEvent event = (NewProvidedImageEvent) e;
         if(conversation != event.getConversation()) return;
 
         /* Obtain the actual image and the size of the label. */
         Image image = event.getProvidedImage().getImage();
-        Dimension dimension = imageLabels[nextImageIndex].getSize();
+        Dimension dimension = imageButtons[nextImageIndex].getSize();
 
         /* Find out the ascpet ratio of the image. */
         double imageAspect =
@@ -92,10 +110,25 @@ public class CarouselImageChooserPanel extends JPanel implements EventListener {
             width = imageAspect * (double) height;
         }
 
+        /* Scale the image and set the icon. */
         Image scaled = image.getScaledInstance((int) width,
                 (int) height, Image.SCALE_SMOOTH);
+        imageButtons[nextImageIndex].setIcon(new ImageIcon(scaled));
 
-        imageLabels[nextImageIndex].setIcon(new ImageIcon(scaled));
-        nextImageIndex = (nextImageIndex + 1) % imageLabels.length;
+        /* Set a new actionlistener. and remove the old one. */
+        ActionListener listener = new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                model.setProvidedImage(event.getProvidedImage());
+            }
+        };
+        if(imageButtonActionListeners[nextImageIndex] != null) {
+            imageButtons[nextImageIndex].removeActionListener(
+                    imageButtonActionListeners[nextImageIndex]);
+        }
+        imageButtonActionListeners[nextImageIndex] = listener;
+        imageButtons[nextImageIndex].addActionListener(listener);
+
+        /* Increment the image index. */
+        nextImageIndex = (nextImageIndex + 1) % imageButtons.length;
     }
 }

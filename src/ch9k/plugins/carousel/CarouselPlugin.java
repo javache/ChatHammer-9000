@@ -17,6 +17,11 @@ public class CarouselPlugin extends AbstractPlugin {
      */
     private CarouselPanel panel;
 
+    /**
+     * Selection model for this plugin.
+     */
+    public CarouselImageModel model;
+
     @Override
     public void enablePlugin(Conversation conversation) {
         super.enablePlugin(conversation);
@@ -31,7 +36,8 @@ public class CarouselPlugin extends AbstractPlugin {
     }
 
     public void onReceivePanel(Container container) {
-        panel = new CarouselPanel(getConversation());
+        model = new CarouselImageModel();
+        panel = new CarouselPanel(getConversation(), model);
         container.add(panel);
     }
 

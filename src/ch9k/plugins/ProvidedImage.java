@@ -50,4 +50,10 @@ public class ProvidedImage {
     public Image getImage() {
         return image;
     }
+
+    @Override
+    public boolean equals(Object object) {
+        if(!(object instanceof ProvidedImage) || object == null) return false;
+        return url.equals(((ProvidedImage) object).getURL());
+    }
 }
