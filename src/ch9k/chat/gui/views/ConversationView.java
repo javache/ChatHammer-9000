@@ -10,8 +10,8 @@ import ch9k.chat.events.ContactOfflineEvent;
 import ch9k.chat.events.ConversationEventFilter;
 import ch9k.chat.events.NewChatMessageEvent;
 import ch9k.chat.events.NewConversationEvent;
-import ch9k.chat.events.RequestPluginPanelEvent;
-import ch9k.chat.events.RequestedPluginPanelEvent;
+import ch9k.chat.events.RequestPluginContainerEvent;
+import ch9k.chat.events.RequestedPluginContainerEvent;
 import ch9k.core.Account;
 import ch9k.core.ChatApplication;
 import ch9k.eventpool.Event;
@@ -66,11 +66,12 @@ public class ConversationView extends JFrame implements EventListener, ChangeLis
 
     @Override
     public void handleEvent(Event event) {
-        if(event instanceof RequestPluginPanelEvent) {
+        if(event instanceof RequestPluginContainerEvent) {
             // should this event be broadcasted trough network?
             // could make this a plugineven..?
-            EventPool.getAppPool().raiseEvent(
-                    new RequestedPluginPanelEvent(conversation, pluginPanel));
+            Event answer = new RequestedPluginContainerEvent(
+                    conversation, pluginPanel);
+            EventPool.getAppPool().raiseEvent(answer);
         }
 
         /*

@@ -6,10 +6,10 @@ import ch9k.chat.Conversation;
  *
  * @author Jens Panneel
  */
-public class RequestPluginPanelEvent extends ConversationEvent {
+public class RequestPluginContainerEvent extends ConversationEvent {
 
     // should this event be broadcasted on network?
-    public RequestPluginPanelEvent(Conversation conversation) {
+    public RequestPluginContainerEvent(Conversation conversation) {
         super(conversation);
     }
     

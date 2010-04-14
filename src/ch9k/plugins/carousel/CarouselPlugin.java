@@ -2,8 +2,8 @@ package ch9k.plugins.carousel;
 
 import ch9k.chat.Contact;
 import ch9k.chat.Conversation;
-import ch9k.chat.events.RequestPluginPanelEvent;
-import ch9k.chat.events.RequestedPluginPanelEvent;
+import ch9k.chat.events.RequestPluginContainerEvent;
+import ch9k.chat.events.RequestedPluginContainerEvent;
 import ch9k.eventpool.EventPool;
 import ch9k.eventpool.Event;
 import ch9k.eventpool.EventListener;
@@ -33,12 +33,14 @@ public class CarouselPlugin extends AbstractPlugin implements EventListener {
     public void enablePlugin(Conversation conversation) {
         super.enablePlugin(conversation);
 
-        /* First, register this plugin as listener so it can receive a panel. */
-        EventFilter filter = new EventFilter(RequestedPluginPanelEvent.class);
+        /* First, register this plugin as listener so it can receive a container
+         * later. */
+        EventFilter filter =
+                new EventFilter(RequestedPluginContainerEvent.class);
         EventPool.getAppPool().addListener(this, filter);
 
         /* Asyncrhonously request a panel for this plugin. */
-        Event event = new RequestPluginPanelEvent(conversation);
+        Event event = new RequestPluginContainerEvent(conversation);
         EventPool.getAppPool().raiseEvent(event);
     }
 
@@ -52,11 +54,11 @@ public class CarouselPlugin extends AbstractPlugin implements EventListener {
     @Override
     public void handleEvent(Event e) {
         /* Return if the event is not relevant. */
-        RequestedPluginPanelEvent event = (RequestedPluginPanelEvent) e;
+        RequestedPluginContainerEvent event = (RequestedPluginContainerEvent) e;
         if(!isRelevant(event)) return;
 
         /* Okay, we have a panel now, start using it. */
-        JPanel container = event.getPluginPanel();
+        Container container = event.getPluginContainer();
         model = new CarouselImageModel();
         panel = new CarouselPanel(getConversation(), model);
         container.add(panel);
@@ -68,7 +70,12 @@ public class CarouselPlugin extends AbstractPlugin implements EventListener {
         Conversation conversation = new Conversation(contact, true);
         CarouselPlugin plugin = new CarouselPlugin();
         plugin.enablePlugin(conversation);
+
         //plugin.onReceivePanel(frame.getContentPane());
+        Event event = new RequestedPluginContainerEvent(conversation,
+                frame.getContentPane());
+        EventPool.getAppPool().raiseEvent(event);
+
         frame.pack();
         frame.setTitle("Carousel test.");
         frame.setVisible(true);
