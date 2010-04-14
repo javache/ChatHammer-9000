@@ -19,17 +19,34 @@ public class ImagePanel extends JPanel implements MouseListener {
     private boolean fitImage;
 
     /**
+     * If we should highlight the image when the mouse hovers over it.
+     */
+    private boolean highlight;
+
+    /**
      * The actual image.
      */
     private ProvidedImage providedImage;
 
     /**
+     * If the mouse is hovering over the component.
+     */
+    private boolean hover = false;
+
+    /**
+     * Color for the overlay.
+     */
+    private static final Color highlightColor = new Color(255, 255, 255, 75);
+
+    /**
      * Constructor.
      * @param fitImage If we should fit the image into the view.
+     * @param highlight If we should highlight the component on mouse hover.
      */
-    public ImagePanel(boolean fitImage) {
+    public ImagePanel(boolean fitImage, boolean highlight) {
         super();
         this.fitImage = fitImage;
+        this.highlight = highlight;
         this.providedImage = null;
     }
 
@@ -83,6 +100,14 @@ public class ImagePanel extends JPanel implements MouseListener {
         graphics.drawImage(image, (int) (width * 0.5 - imageWidth * 0.5),
                 (int) (height * 0.5 - imageHeight * 0.5), (int) imageWidth,
                 (int) imageHeight, Color.BLACK, null);
+
+        /* If we have a highlight, draw a white overlay. */
+        if(highlight && hover) {
+            graphics.setColor(highlightColor);
+            graphics.fillRect((int) (width * 0.5 - imageWidth * 0.5),
+                (int) (height * 0.5 - imageHeight * 0.5), (int) imageWidth,
+                (int) imageHeight);
+        }
     }
 
     @Override
@@ -91,10 +116,14 @@ public class ImagePanel extends JPanel implements MouseListener {
 
     @Override
     public void mouseEntered(MouseEvent event) {
+        hover = true;
+        repaint();
     }
 
     @Override
     public void mouseExited(MouseEvent event) {
+        hover = false;
+        repaint();
     }
 
     @Override

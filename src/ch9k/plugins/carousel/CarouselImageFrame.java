@@ -14,7 +14,7 @@ public class CarouselImageFrame extends JFrame {
         super();
 
         /* Set the content pane. */
-        ImagePanel imagePanel = new ImagePanel(true);
+        ImagePanel imagePanel = new ImagePanel(true, false);
         imagePanel.setProvidedImage(image);
         setContentPane(imagePanel);
 

@@ -92,7 +92,7 @@ public class CarouselImageChooserPanel extends JPanel implements EventListener {
 
     private class CarouselImageChooserItem extends ImagePanel {
         public CarouselImageChooserItem() {
-            super(false);
+            super(false, true);
             addMouseListener(this);
         }
 

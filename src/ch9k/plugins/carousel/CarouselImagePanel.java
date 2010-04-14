@@ -19,7 +19,7 @@ public class CarouselImagePanel extends ImagePanel implements ChangeListener {
      * @param model The selection model of the plugin.
      */
     public CarouselImagePanel(CarouselImageModel model) {
-        super(true);
+        super(true, true);
         setPreferredSize(new Dimension(400, 200));
         this.model = model;
         model.addChangeListener(this);

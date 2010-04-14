@@ -4,16 +4,15 @@ import ch9k.chat.Contact;
 import ch9k.chat.Conversation;
 import ch9k.chat.events.RequestPluginContainerEvent;
 import ch9k.chat.events.RequestedPluginContainerEvent;
-import ch9k.eventpool.EventPool;
 import ch9k.eventpool.Event;
-import ch9k.eventpool.EventListener;
 import ch9k.eventpool.EventFilter;
+import ch9k.eventpool.EventListener;
+import ch9k.eventpool.EventPool;
 import ch9k.plugins.AbstractPlugin;
 import ch9k.plugins.flickr.FlickrImageProviderPlugin;
 import java.awt.Container;
 import java.net.InetAddress;
 import javax.swing.JFrame;
-import javax.swing.JPanel;
 
 /**
  * Plugin for a standard image carousel.
