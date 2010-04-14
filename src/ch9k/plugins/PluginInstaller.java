@@ -24,7 +24,8 @@ public class PluginInstaller extends URLClassLoader {
      * Logger logger logger
      * Mushroom Mushroom
      */
-    private static final Logger logger = Logger.getLogger(PluginInstaller.class);
+    private static final Logger logger =
+            Logger.getLogger(PluginInstaller.class);
 
     /**
      * Hardcoded for now. Needs to be in Configuration somewhere.

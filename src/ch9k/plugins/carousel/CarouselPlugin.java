@@ -2,16 +2,23 @@ package ch9k.plugins.carousel;
 
 import ch9k.chat.Contact;
 import ch9k.chat.Conversation;
+import ch9k.chat.events.RequestPluginPanelEvent;
+import ch9k.chat.events.RequestedPluginPanelEvent;
+import ch9k.eventpool.EventPool;
+import ch9k.eventpool.Event;
+import ch9k.eventpool.EventListener;
+import ch9k.eventpool.EventFilter;
 import ch9k.plugins.AbstractPlugin;
 import ch9k.plugins.flickr.FlickrImageProviderPlugin;
 import java.awt.Container;
 import java.net.InetAddress;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 
 /**
  * Plugin for a standard image carousel.
  */
-public class CarouselPlugin extends AbstractPlugin {
+public class CarouselPlugin extends AbstractPlugin implements EventListener {
     /**
      * The main view for this plugin.
      */
@@ -26,16 +33,30 @@ public class CarouselPlugin extends AbstractPlugin {
     public void enablePlugin(Conversation conversation) {
         super.enablePlugin(conversation);
 
-        // TODO: Request panel from conversation, add CarouselPanel there.
+        /* First, register this plugin as listener so it can receive a panel. */
+        EventFilter filter = new EventFilter(RequestedPluginPanelEvent.class);
+        EventPool.getAppPool().addListener(this, filter);
+
+        /* Asyncrhonously request a panel for this plugin. */
+        Event event = new RequestPluginPanelEvent(conversation);
+        EventPool.getAppPool().raiseEvent(event);
     }
 
     @Override
     public void disablePlugin() {
         super.disablePlugin();
+        EventPool.getAppPool().removeListener(this);
         panel.disablePlugin();
     }
 
-    public void onReceivePanel(Container container) {
+    @Override
+    public void handleEvent(Event e) {
+        /* Return if the event is not relevant. */
+        RequestedPluginPanelEvent event = (RequestedPluginPanelEvent) e;
+        if(!isRelevant(event)) return;
+
+        /* Okay, we have a panel now, start using it. */
+        JPanel container = event.getPluginPanel();
         model = new CarouselImageModel();
         panel = new CarouselPanel(getConversation(), model);
         container.add(panel);
@@ -47,7 +68,7 @@ public class CarouselPlugin extends AbstractPlugin {
         Conversation conversation = new Conversation(contact, true);
         CarouselPlugin plugin = new CarouselPlugin();
         plugin.enablePlugin(conversation);
-        plugin.onReceivePanel(frame.getContentPane());
+        //plugin.onReceivePanel(frame.getContentPane());
         frame.pack();
         frame.setTitle("Carousel test.");
         frame.setVisible(true);

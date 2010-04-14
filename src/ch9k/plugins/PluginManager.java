@@ -3,15 +3,22 @@ package ch9k.plugins;
 import ch9k.chat.Conversation;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.apache.log4j.Logger;
 
 /**
  * A singleton to manage plugins.
  * @author Jasper Van der Jeugt
  */
 public class PluginManager {
+    /**
+     * Logger.
+     */
+    private static final Logger logger = Logger.getLogger(PluginManager.class);
+
     /**
      * We keep, for every conversation, a list of activated plugins by name.
      */
@@ -37,6 +44,8 @@ public class PluginManager {
      * Constructor.
      */
     public PluginManager() {
+        enabledPlugins = new HashMap<Conversation, Set<String>>();
+        plugins = new HashMap<Conversation, List<Plugin>>();
         availablePlugins = new ArrayList<String>();
         installer = new PluginInstaller(this);
     }
@@ -69,14 +78,25 @@ public class PluginManager {
             return;
         }
 
-        /* Find the class of the new plugin and initialize it. */
-        Plugin plugin;
+        /* Find the class of the new plugin. */
+        Class pluginClass = null;
         try {
-            Class pluginClass = installer.getPluginClass(name);
-            plugin = (Plugin) pluginClass.newInstance();
+            pluginClass = installer.getPluginClass(name);
         } catch (ClassNotFoundException exception) {
-            // TODO: Show relevant warning.
-            return;
+            /* Try all stuff in the classpath now. */
+            try {
+                pluginClass = Class.forName(name);
+            } catch (ClassNotFoundException e) {
+                // TODO: Show relevant warning.
+                logger.warn("Class not found.");
+                return;
+            }
+        }
+
+        /* Initialize the plugin. */
+        Plugin plugin = null;
+        try {
+            plugin = (Plugin) pluginClass.newInstance();
         } catch (InstantiationException exception) {
             // TODO: Show relevant warning.
             return;

@@ -17,6 +17,7 @@ import ch9k.core.ChatApplication;
 import ch9k.eventpool.Event;
 import ch9k.eventpool.EventListener;
 import ch9k.eventpool.EventPool;
+import ch9k.plugins.PluginManager;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -111,13 +112,8 @@ public class ConversationView extends JFrame implements EventListener, ChangeLis
         final Conversation conversation2 =
                 conversationManager.startConversation(contact2, true);
 
-        EventQueue.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                new ConversationView(conversation2);
-                new ConversationView(conversation1);
-            }
-        });
+        new ConversationView(conversation2);
+        new ConversationView(conversation1);
 
         ChatMessage[] messages = new ChatMessage[] {
             new ChatMessage("JPanneel", "Hey!"),
@@ -128,8 +124,13 @@ public class ConversationView extends JFrame implements EventListener, ChangeLis
             new ChatMessage("Wendy", "Doei!")
         };
 
+        PluginManager pluginManager = new PluginManager();
+        pluginManager.enablePlugin(conversation1,
+                "ch9k.plugins.carousel.CarouselPlugin");
+
         for (int i = 0; i < 5; i++) {
             conversation1.addMessage(messages[i]);
+            Thread.sleep(1000);
         }
 
         Thread.sleep(6000);
