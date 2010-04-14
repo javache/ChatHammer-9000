@@ -69,13 +69,34 @@ public class CarouselImageChooserPanel extends JPanel implements EventListener {
 
     @Override
     public void handleEvent(Event e) {
+        // TODO: invokeLater
+
         /* Return if the event is not relevant. */
         NewProvidedImageEvent event = (NewProvidedImageEvent) e;
         if(conversation != event.getConversation()) return;
 
-        /* Obtain the actual event and set it on the label. */
+        /* Obtain the actual image and the size of the label. */
         Image image = event.getProvidedImage().getImage();
-        imageLabels[nextImageIndex].setIcon(new ImageIcon(image));
+        Dimension dimension = imageLabels[nextImageIndex].getSize();
+
+        /* Find out the ascpet ratio of the image. */
+        double imageAspect =
+                (double) image.getWidth(null) / image.getHeight(null);
+
+        /* Scale by width. */
+        double width = dimension.getWidth();
+        double height = (double) width / imageAspect;
+
+        /* We're wrong, scale by height. */
+        if(height < dimension.getHeight()) {
+            height = dimension.getHeight();
+            width = imageAspect * (double) height;
+        }
+
+        Image scaled = image.getScaledInstance((int) width,
+                (int) height, Image.SCALE_SMOOTH);
+
+        imageLabels[nextImageIndex].setIcon(new ImageIcon(scaled));
         nextImageIndex = (nextImageIndex + 1) % imageLabels.length;
     }
 }
