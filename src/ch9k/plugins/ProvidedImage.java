@@ -12,7 +12,7 @@ public class ProvidedImage {
     /**
      * URL the image was loaded from. Very suited as unique identifier.
      */
-    private String url;
+    private URL url;
 
     /**
      * The image delegate.
@@ -25,10 +25,10 @@ public class ProvidedImage {
      * @param image The actual image.
      */
     public ProvidedImage(String url) {
-        this.url = url;
         try {
             /* Create an image, and send it using an event. */
-            ImageIcon tmp = new ImageIcon(new URL(url));
+            this.url = new URL(url);
+            ImageIcon tmp = new ImageIcon(this.url);
             image = tmp.getImage();
         } catch (MalformedURLException exception) {
             // TODO: Send warning event.
@@ -39,7 +39,7 @@ public class ProvidedImage {
      * Get the URL this image was loaded from.
      * @return The URL this image was loaded from.
      */
-    public String getURL() {
+    public URL getURL() {
         return url;
     }
 
