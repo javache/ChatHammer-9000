@@ -41,7 +41,6 @@ public class CarouselImagePanel extends ImagePanel implements ChangeListener {
             CarouselImageFrame frame =
                     new CarouselImageFrame(getProvidedImage());
             frame.setVisible(true);
-            System.out.println("Hello");
         }
     }
 }
