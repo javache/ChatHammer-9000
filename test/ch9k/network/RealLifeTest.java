@@ -1,13 +1,14 @@
 package ch9k.network;
 
 import ch9k.eventpool.EventPool;
+import ch9k.eventpool.EventListener;
+import ch9k.eventpool.EventFilter;
+import ch9k.eventpool.Event;
 import java.net.InetAddress;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class RealLifeTest {
-<<<<<<< HEAD
-=======
     
     private class TestListener implements EventListener {
         
