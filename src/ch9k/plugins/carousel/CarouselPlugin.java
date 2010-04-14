@@ -11,32 +11,23 @@ import ch9k.plugins.NewProvidedImageEvent;
 /**
  * Plugin for a standard image carousel.
  */
-public class CarouselPlugin extends AbstractPlugin implements EventListener {
+public class CarouselPlugin extends AbstractPlugin {
     /**
      * The main view for this plugin.
      */
     private CarouselPanel panel;
 
     @Override
-    public void enable(Conversation conversation) {
-        super.enable(conversation);
-        EventFilter filter = new EventFilter(NewProvidedImageEvent.class);
-        EventPool.getAppPool().addListener(this, filter);
+    public void enablePlugin(Conversation conversation) {
+        super.enablePlugin(conversation);
 
         // TODO: Request panel from conversation, add CarouselPanel there.
+        panel = new CarouselPanel(conversation);
     }
 
     @Override
-    public void disable() {
-        EventPool.getAppPool().removeListener(this);
-    }
-
-    @Override
-    public void handleEvent(Event e) {
-        /* Return if the event is not relevant. */
-        NewProvidedImageEvent event = (NewProvidedImageEvent) e;
-        if(!isRelevant(event)) return;
-
-        // TODO: Pass event to GUI.
+    public void disablePlugin() {
+        super.disablePlugin();
+        panel.disablePlugin();
     }
 }

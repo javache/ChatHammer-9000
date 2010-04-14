@@ -16,14 +16,15 @@ import ch9k.eventpool.EventPool;
 public abstract class TextAnalyzer extends AbstractPlugin
         implements EventListener {
     @Override
-    public void enable(Conversation conversation) {
-        super.enable(conversation);
+    public void enablePlugin(Conversation conversation) {
+        super.enablePlugin(conversation);
         EventFilter filter = new EventFilter(NewChatMessageEvent.class);
         EventPool.getAppPool().addListener(this, filter);
     }
 
     @Override
-    public void disable() {
+    public void disablePlugin() {
+        super.disablePlugin();
         EventPool.getAppPool().removeListener(this);
     }
 

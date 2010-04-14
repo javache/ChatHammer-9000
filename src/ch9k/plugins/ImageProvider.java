@@ -18,14 +18,15 @@ import javax.swing.ImageIcon;
 public abstract class ImageProvider extends AbstractPlugin
         implements EventListener {
     @Override
-    public void enable(Conversation conversation) {
-        super.enable(conversation);
+    public void enablePlugin(Conversation conversation) {
+        super.enablePlugin(conversation);
         EventFilter filter = new EventFilter(NewConversationSubjectEvent.class);
         EventPool.getAppPool().addListener(this, filter);
     }
 
     @Override
-    public void disable() {
+    public void disablePlugin() {
+        super.disablePlugin();
         EventPool.getAppPool().removeListener(this);
     }
 

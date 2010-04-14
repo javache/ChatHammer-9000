@@ -34,12 +34,12 @@ public abstract class AbstractPlugin implements Plugin {
     }
 
     @Override
-    public void enable(Conversation conversation) {
+    public void enablePlugin(Conversation conversation) {
         this.conversation = conversation;
     }
 
     @Override
-    public void disable() {
+    public void disablePlugin() {
         conversation = null;
     }
 }
