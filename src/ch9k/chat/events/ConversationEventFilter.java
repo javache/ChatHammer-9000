@@ -20,6 +20,18 @@ public class ConversationEventFilter extends EventFilter {
         this.conversation = conversation;
     }
 
+    /**
+     * Construct a new ConversationEventFilter that filters subclasses
+     * @param type
+     * @param conversation
+     */
+    public ConversationEventFilter(Class<? extends ConversationEvent> type, Conversation conversation) {
+        super(type);
+        this.conversation = conversation;
+    }
+
+
+
     @Override
     public boolean accept(Event event) {
         if(super.accept(event)) {
