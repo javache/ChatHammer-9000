@@ -9,8 +9,7 @@ import ch9k.plugins.PluginManager;
  * @author Bruno
  */
 public class Configuration {
-
-     /**
+    /**
      * account object for current user
      */
     private Account account;
@@ -19,33 +18,18 @@ public class Configuration {
      * PluginManager currently in use
      */
     private PluginManager pluginManager;
+
     /**
      * Storage, used to store stuff
      */
     private Storage storage;
 
+    private String username;
+
     public Configuration(String username) {
         //Create new storage object for this user
         storage = new Storage(username);
-
-        //Create a new pluginManager, should initiate himself
-        pluginManager = new PluginManager();
-    }
-
-    public void loadExisting(){
-        //Load the account object, this might fail tho'
-        PersistentDataObject pdo = storage.fetch("account");
-        if(pdo != null){
-            account = new Account(pdo);
-        } else {
-            account = null;
-        }
-        storage.store("account", account);
-    }
-
-    public void createNew(String username, String password){
-        account = new Account(username, password);
-        storage.store("account", account);
+        this.username = username;
     }
 
     /**
@@ -53,7 +37,17 @@ public class Configuration {
      * @return account object for current user.
      */
     public Account getAccount() {
-            return account;
+        if (account == null) {
+            //Load the account object, or create a new one
+            PersistentDataObject pdo = storage.fetch("account");
+            if (pdo != null) {
+                account = new Account(pdo);
+            } else {
+                account = new Account(username);
+            }
+            storage.store("account", account);
+        }
+        return account;
     }
 
     /**
@@ -61,6 +55,10 @@ public class Configuration {
      * @return PluginManager currently in use.
      */
     public PluginManager getPluginManager() {
+        //Create a new pluginManager, should initiate himself
+        if (pluginManager == null) {
+            pluginManager = new PluginManager();
+        }
         return pluginManager;
     }
 }

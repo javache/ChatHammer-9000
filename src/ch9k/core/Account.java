@@ -37,11 +37,11 @@ public class Account implements Persistable{
     
     /**
      * creates a new account in the system.
-     * this class only stores a hash of the password
+     * DOESN'T INITIALISE PASSWORD
      */
-    public Account(String username,String password) {
+    public Account(String username) {
         this.username = username;
-        setPassword(password);
+        this.passwordHash = "";
         contactList = new ContactList();
     }
 
@@ -98,7 +98,10 @@ public class Account implements Persistable{
      * @return result
      */
     public boolean authenticate(String password) {
-        return passwordHash.equals(hash(password));
+        if(!passwordHash.isEmpty())
+            return passwordHash.equals(hash(password));
+        else
+            return false;
     }
 
     /**

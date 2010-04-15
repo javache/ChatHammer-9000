@@ -27,7 +27,6 @@ public class ChatApplication {
      */
     private static final Logger logger = Logger.getLogger(ChatApplication.class);
 
-    private Account account;
     private Configuration configuration;
     private ConversationManager conversationManager;
 
@@ -37,7 +36,6 @@ public class ChatApplication {
     }
 
     private ChatApplication() {
-        account = new Account("Tetten", "tetten");
         conversationManager = new ConversationManager();
     }
 
@@ -58,7 +56,7 @@ public class ChatApplication {
     }
 
     public Account getAccount() {
-        return account;
+        return configuration.getAccount();
     }
 
     public ConversationManager getConversationManager() {
