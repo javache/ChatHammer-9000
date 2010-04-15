@@ -29,7 +29,7 @@ public class ApplicationWindow extends JFrame {
         setMinimumSize(new Dimension(300, 200));
         setSize(getPreferredSize());
         setLocationByPlatform(true);
-        
+
         initSettings();
     }
 

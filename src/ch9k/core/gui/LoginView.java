@@ -7,6 +7,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JButton;
@@ -40,22 +42,23 @@ public class LoginView extends JPanel {
     public LoginView(Login controller, ApplicationWindow window) {
         loginController = controller;
 
-        // init fields and layout
-        initFields();
-        initLayout();
-
-        // show window
+        // setup window
         window.setContentPane(this);
         window.addWindowListener(new WindowAdapter() {
             public void windowClosed(WindowEvent e) {
                 loginController.setCancelled(true);
             }
         });
+
+        // init fields and layout
+        initFields();
+        initLayout();
+
         window.setVisible(true);
     }
 
     private void initFields() {
-        titleLabel = new JLabel("ChatHammer 9000");
+        titleLabel = new JLabel("<html><b>ChatHammer</b> 9000");
         titleLabel.setFont(titleLabel.getFont().deriveFont(18f));
         titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
@@ -64,13 +67,16 @@ public class LoginView extends JPanel {
 
         passwordLabel = new JLabel("Password");
         passwordField = new JPasswordField();
-
-        loginButton = new JButton("Log in");
-        loginButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
+        
+        Action loginAction = new AbstractAction("Log in") {
+            public void actionPerformed(ActionEvent e) {
                 validateLogin();
             }
-        });
+        };
+        loginButton = new JButton(loginAction);
+        usernameField.addActionListener(loginAction);
+        passwordField.addActionListener(loginAction);
+        getRootPane().setDefaultButton(loginButton);
 
         newUserButton = new JButton();
         newUserButton.setText("New user?");
@@ -107,8 +113,8 @@ public class LoginView extends JPanel {
                     )
                     .addGap(20)
                     .addGroup(layout.createParallelGroup()
-                        .addComponent(usernameField, 120, 120, 120)
-                        .addComponent(passwordField, 120, 120, 120)
+                        .addComponent(usernameField, 140, 140, 140)
+                        .addComponent(passwordField, 140, 140, 140)
                         .addComponent(loginButton, Alignment.TRAILING)
                     )
                 )
@@ -137,7 +143,7 @@ public class LoginView extends JPanel {
                 .addComponent(newUserButton)
                 .addComponent(loginButton)
             )
-            .addContainerGap(100, 150)
+            .addContainerGap(50, 150)
         );
     }
 
