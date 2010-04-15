@@ -2,8 +2,6 @@ package ch9k.core;
 
 import ch9k.chat.ConversationManager;
 import ch9k.configuration.Configuration;
-import javax.swing.UIManager;
-import org.apache.log4j.Logger;
 
 /**
  * The main application, OMG!
@@ -21,11 +19,6 @@ public class ChatApplication {
     private static class SingletonHolder {
          private static final ChatApplication INSTANCE = new ChatApplication();
     }
-    
-    /**
-     * Logger.
-     */
-    private static final Logger logger = Logger.getLogger(ChatApplication.class);
 
     private Configuration configuration;
     private ConversationManager conversationManager;
@@ -40,19 +33,14 @@ public class ChatApplication {
     }
 
     private void start() {
-        // use a native look and feel
-		try {
-			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-		} catch (Exception ex) {
-            logger.info("Unable to load native look & feel");
-        }
-
-        // set the menu bar on top of the screen on mac
-		System.setProperty ("apple.laf.useScreenMenuBar", "true");
+        ApplicationWindow appWindow = new ApplicationWindow();
 
         // show login dialog
         Login loginController = new Login();
-        configuration = loginController.run();
+        configuration = loginController.run(appWindow);
+        if(configuration == null) {
+            System.exit(0);
+        }
     }
 
     /**

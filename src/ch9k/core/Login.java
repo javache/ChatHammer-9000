@@ -11,25 +11,36 @@ import java.awt.EventQueue;
  * @author Pieter De Baets
  */
 public class Login {
-    Configuration configuration;
+    private Configuration configuration;
+    private boolean cancelled = false;
 
     /**
      * Show the login-window, will block until a valid configuration is acquired
+     * @param window The root application window
      * @return configuration
      */
-    public synchronized Configuration run() {
+    public synchronized Configuration run(final ApplicationWindow window) {
         EventQueue.invokeLater(new Runnable() {
             public void run() {
-                LoginView view = new LoginView(Login.this);
+                LoginView view = new LoginView(Login.this, window);
             }
         });
 
-        while(configuration == null) {
+        while(configuration == null && !cancelled) {
             try {
                 wait();
             } catch (InterruptedException ex) {}
         }
         return configuration;
+    }
+
+    /**
+     * Mark the login-process as cancelled
+     * @param cancelled
+     */
+    public synchronized void setCancelled(boolean cancelled) {
+        this.cancelled = cancelled;
+        notifyAll();
     }
     
     /**

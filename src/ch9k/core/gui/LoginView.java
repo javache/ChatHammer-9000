@@ -1,19 +1,21 @@
 package ch9k.core.gui;
 
+import ch9k.core.ApplicationWindow;
 import ch9k.core.Login;
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.LayoutStyle;
 import javax.swing.SwingConstants;
-import javax.swing.WindowConstants;
 
 /**
  * Shows options for login
@@ -25,33 +27,36 @@ public class LoginView extends JPanel {
     private JLabel usernameLabel;
     private JLabel passwordLabel;
     private JLabel titleLabel;
+    private JLabel errorMessage;
     private JPasswordField passwordField;
     private JTextField usernameField;
     private Login loginController;
 
     /** 
      * Creates new LoginView form
-     * @param loginController
+     * @param controller
+     * @param window 
      */
-    public LoginView(final Login loginController) {
-        this.loginController = loginController;
+    public LoginView(Login controller, ApplicationWindow window) {
+        loginController = controller;
 
         // init fields and layout
         initFields();
         initLayout();
 
-        // create a frame
-        JFrame window = new JFrame("ChatHammer 9000");
+        // show window
         window.setContentPane(this);
-        window.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        window.pack();
-        window.setResizable(false);
+        window.addWindowListener(new WindowAdapter() {
+            public void windowClosed(WindowEvent e) {
+                loginController.setCancelled(true);
+            }
+        });
         window.setVisible(true);
     }
 
     private void initFields() {
         titleLabel = new JLabel("ChatHammer 9000");
-        titleLabel.setFont(titleLabel.getFont().deriveFont(16f));
+        titleLabel.setFont(titleLabel.getFont().deriveFont(18f));
         titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
         usernameLabel = new JLabel("Username");
@@ -63,51 +68,58 @@ public class LoginView extends JPanel {
         loginButton = new JButton("Log in");
         loginButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
-                loginController.login(
-                        new String(usernameField.getText()),
-                        new String(passwordField.getPassword()));
+                validateLogin();
             }
         });
 
         newUserButton = new JButton();
-        newUserButton.setText("New user");
+        newUserButton.setText("New user?");
         newUserButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
-                loginController.register(
-                        new String(usernameField.getText()),
-                        new String(passwordField.getPassword()));
+                // TODO: handle
             }
         });
+
+        errorMessage = new JLabel();
+        errorMessage.setHorizontalAlignment(SwingConstants.CENTER);
+        errorMessage.setForeground(Color.RED);
+        errorMessage.setVisible(false);
     }
    
     private void initLayout() {
         GroupLayout layout = new GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(layout.createSequentialGroup()
-            .addContainerGap()
-            .addGroup(layout.createParallelGroup()
-                .addComponent(titleLabel, GroupLayout.DEFAULT_SIZE,
-                    GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createParallelGroup(Alignment.CENTER)
+                .addComponent(titleLabel)
+                .addComponent(errorMessage)
                 .addGroup(layout.createSequentialGroup()
                     .addGroup(layout.createParallelGroup()
-                        .addComponent(usernameLabel)
-                        .addComponent(passwordLabel)
+                        .addGroup(layout.createSequentialGroup()
+                            .addGap(10)
+                            .addGroup(layout.createParallelGroup()
+                                .addComponent(usernameLabel)
+                                .addComponent(passwordLabel)
+                            )
+                        )
+                        .addComponent(newUserButton)
                     )
                     .addGap(20)
                     .addGroup(layout.createParallelGroup()
-                        .addComponent(usernameField, GroupLayout.PREFERRED_SIZE,
-                            80, Short.MAX_VALUE)
-                        .addComponent(passwordField, GroupLayout.PREFERRED_SIZE,
-                            80, Short.MAX_VALUE)
-                        .addComponent(loginButton)
+                        .addComponent(usernameField, 120, 120, 120)
+                        .addComponent(passwordField, 120, 120, 120)
+                        .addComponent(loginButton, Alignment.TRAILING)
                     )
                 )
             )
-            .addContainerGap()
+            .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(layout.createSequentialGroup()
-            .addContainerGap()
+            .addContainerGap(50, 100)
             .addComponent(titleLabel)
+            .addGap(15)
+            .addComponent(errorMessage)
             .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
             .addGroup(layout.createParallelGroup(Alignment.BASELINE)
                 .addComponent(usernameLabel)
@@ -121,8 +133,32 @@ public class LoginView extends JPanel {
                     GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
             )
             .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-            .addComponent(loginButton)
-            .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createParallelGroup(Alignment.BASELINE)
+                .addComponent(newUserButton)
+                .addComponent(loginButton)
+            )
+            .addContainerGap(100, 150)
         );
+    }
+
+    private void validateLogin() {
+        String username = usernameField.getText();
+        String password = new String(passwordField.getPassword());
+
+        if(username.isEmpty() || password.isEmpty()) {
+            errorMessage.setText("<html><center>" +
+                "Please fill in all fields.");
+            errorMessage.setVisible(true);
+            return;
+        } else {
+            boolean success = loginController.login(username, password);
+            if(!success) {
+                errorMessage.setText("<html><center>" +
+                    "The provided credentials are invalid.<br />Please try again.");
+                errorMessage.setVisible(true);
+            } else {
+                errorMessage.setVisible(false);
+            }
+        }
     }
 }
