@@ -8,18 +8,20 @@ package ch9k.chat.events;
 import ch9k.chat.Contact;
 import ch9k.chat.Conversation;
 import ch9k.chat.ConversationSubject;
+import ch9k.core.ChatApplication;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
- *
- * @author jpanneel
+ * @author Jens Panneel
  */
 public class NewConversationSubjectEventTest {
-
-    public NewConversationSubjectEventTest() {
+    @Before
+    public void setUp() {
+        ChatApplication.getInstance().performTestLogin();
     }
 
     /**

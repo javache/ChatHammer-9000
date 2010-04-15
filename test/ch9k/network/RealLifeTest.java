@@ -9,10 +9,8 @@ import java.net.UnknownHostException;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class RealLifeTest {
-    
+public class RealLifeTest {    
     private class TestListener implements EventListener {
-        
         public boolean received = false;
         
         public synchronized void handleEvent(Event ev) {

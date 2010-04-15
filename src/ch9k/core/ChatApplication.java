@@ -55,11 +55,33 @@ public class ChatApplication {
         configuration = loginController.run();
     }
 
+    /**
+     * Get the currently logged in account, may return null if authentication
+     * is not performed yet
+     * @return account
+     */
     public Account getAccount() {
-        return configuration.getAccount();
+        if(configuration != null) {
+            return configuration.getAccount();
+        } else {
+            return null;
+        }
     }
 
+    /**
+     * Get the conversation manager
+     * @return conversationManager
+     */
     public ConversationManager getConversationManager() {
         return conversationManager;
+    }
+
+    /**
+     * Perform a fake login
+     * (to be used for testing purposes only!)
+     */
+    public void performTestLogin() {
+        configuration = new Configuration("CH9K");
+        configuration.setAccount(new Account("CH9K", "password"));
     }
 }

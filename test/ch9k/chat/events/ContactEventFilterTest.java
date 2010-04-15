@@ -1,7 +1,9 @@
 package ch9k.chat.events;
 
 import ch9k.chat.Contact;
+import ch9k.core.ChatApplication;
 import java.net.UnknownHostException;
+import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -10,8 +12,9 @@ import static org.junit.Assert.*;
  * @author Jens Panneel
  */
 public class ContactEventFilterTest {
-
-    public ContactEventFilterTest() {
+    @Before
+    public void setUp() {
+        ChatApplication.getInstance().performTestLogin();
     }
 
     /**

@@ -30,6 +30,7 @@ public class ContactTest {
 
     @Before
     public void setUp() throws UnknownHostException {
+        ChatApplication.getInstance().performTestLogin();
         username = "JPanneel";
         ip = InetAddress.getByName("google.be");
         contact = new Contact(username, ip, false);

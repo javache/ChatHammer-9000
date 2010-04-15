@@ -21,6 +21,7 @@ public class ConversationManagerTest {
 
     @Before
     public void setUp() {
+        ChatApplication.getInstance().performTestLogin();
         localConversationManager = new ConversationManager();
     }
 

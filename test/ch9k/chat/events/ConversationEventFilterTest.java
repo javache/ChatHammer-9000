@@ -3,17 +3,23 @@ package ch9k.chat.events;
 import ch9k.chat.ChatMessage;
 import ch9k.chat.Contact;
 import ch9k.chat.Conversation;
+import ch9k.core.ChatApplication;
 import ch9k.eventpool.Event;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
- *
  * @author Jens Panneel
  */
 public class ConversationEventFilterTest {
+    @Before
+    public void setUp() {
+        ChatApplication.getInstance().performTestLogin();
+    }
+
     /**
      * Test of accept method, of class ConversationEventFilter.
      */

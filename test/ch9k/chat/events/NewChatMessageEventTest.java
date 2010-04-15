@@ -3,16 +3,22 @@ package ch9k.chat.events;
 import ch9k.chat.ChatMessage;
 import ch9k.chat.Contact;
 import ch9k.chat.Conversation;
+import ch9k.core.ChatApplication;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
- *
  * @author Jens Panneel
  */
 public class NewChatMessageEventTest {
+    @Before
+    public void setUp() {
+        ChatApplication.getInstance().performTestLogin();
+    }
+    
     /**
      * Test of getChatMessage method, of class NewChatMessageEvent.
      */
@@ -28,5 +34,4 @@ public class NewChatMessageEventTest {
         assertEquals(chatMessage1, newChatMessageEvent1.getChatMessage());
         assertNotSame(chatMessage1, newChatMessageEvent2.getChatMessage());
     }
-
 }

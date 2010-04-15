@@ -26,11 +26,9 @@ public class ConversationTest {
     private Contact contact;
     private Conversation conversation;
 
-    public ConversationTest() {
-    }
-
     @Before
     public void setUp() throws UnknownHostException {
+        ChatApplication.getInstance().performTestLogin();
         contact = new Contact("JPanneel", InetAddress.getByName("google.be"), false);
         conversation = new Conversation(contact, true);
     }

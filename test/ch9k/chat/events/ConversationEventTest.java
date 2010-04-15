@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -23,6 +24,10 @@ import static org.junit.Assert.*;
  * @author Jens Panneel
  */
 public class ConversationEventTest {
+    @Before
+    public void setUp() {
+        ChatApplication.getInstance().performTestLogin();
+    }
 
     @After
     public void tearDown() {
