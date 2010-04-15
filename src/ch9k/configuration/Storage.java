@@ -20,7 +20,6 @@ public class Storage {
      * Hashmap containing the objects that we want to store
      */
     private HashMap<String, Persistable> storage;
-
     private HashMap<String, PersistentDataObject> xmlMap;
 
     /**
@@ -36,12 +35,14 @@ public class Storage {
      * @throws IOException Specified user doesn't exist
      */
     public Storage(String username){
-        storage = new HashMap<String, Persistable> ();
-        xmlMap = new HashMap<String, PersistentDataObject> ();
+        storage = new HashMap<String, Persistable>();
+        xmlMap = new HashMap<String, PersistentDataObject>();
         this.username = username;
 
-        //Check if the users exists, if not, don't even try to parse
-        if(!fileTest(username)) return;
+        // Check if the users exists, if not, don't even try to parse
+        if(!fileTest(username)) {
+            return;
+        }
 
         //Parse the XML file
         SAXBuilder parser = new SAXBuilder();
@@ -65,12 +66,12 @@ public class Storage {
      * Saves all the Persistables in their current state to the user's HD
      */
     public void save() {
-        //Initiate the XML
+        // Initiate the XML
         Element xml = new Element("Root");
         xml.addContent("ChatHammer 9000 storage file, created on " + new Date());
 
-        //Iterate through the persistables, and add them to the XML tree.
-        for (Entry<String, Persistable> entry : storage.entrySet()) {
+        // Iterate through the persistables, and add them to the XML tree.
+        for (Entry<String,Persistable> entry : storage.entrySet()) {
             Element child = entry.getValue().persist().getElement();
             //To be sure, check if the element has the right ID
             if (!child.getName().equals(entry.getKey())) {
@@ -79,16 +80,18 @@ public class Storage {
             child.setAttribute("class", entry.getValue().getClass().toString());
             xml.addContent(child);
         }
-        //Now store it somewhere on the HD
+        
+        // Now store it somewhere on the HD
         try {
-            //Open the right file
-            File file =
-                    new File(getStorageDirectory(), username.toLowerCase());
-            //Open the outpustream and write the XML
+            // Open the right file
+            File file = new File(getStorageDirectory(), username.toLowerCase());
+
+            // Open the outpustream and write the XML
             FileOutputStream outputstream = new FileOutputStream(file);
             XMLOutputter outputter = new XMLOutputter();
             outputter.output(xml, outputstream);
-            //Close
+
+            // Close
             outputstream.close();
         } catch (IOException ex) {
             //something went wrong, todo

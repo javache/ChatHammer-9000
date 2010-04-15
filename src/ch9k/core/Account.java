@@ -13,7 +13,6 @@ import org.jdom.Element;
  * @author Bruno
  */
 public class Account implements Persistable{
-
     /**
      * The users contactlist
      */
@@ -33,15 +32,15 @@ public class Account implements Persistable{
      * the hash of the password
      */
     private String passwordHash;
-    
-    
+
     /**
-     * creates a new account in the system.
-     * DOESN'T INITIALISE PASSWORD
+     * Create a new account with a password
+     * @param username 
+     * @param password
      */
-    public Account(String username) {
+    public Account(String username, String password) {
         this.username = username;
-        this.passwordHash = "";
+        this.passwordHash = hash(password);
         contactList = new ContactList();
     }
 
@@ -98,10 +97,7 @@ public class Account implements Persistable{
      * @return result
      */
     public boolean authenticate(String password) {
-        if(!passwordHash.isEmpty())
-            return passwordHash.equals(hash(password));
-        else
-            return false;
+        return passwordHash != null && passwordHash.equals(hash(password));
     }
 
     /**

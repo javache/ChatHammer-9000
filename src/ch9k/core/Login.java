@@ -36,22 +36,30 @@ public class Login {
      * Try loading a configuration by authenticating an existing user
      * @param username
      * @param password
+     * @return succes
      */
-    public synchronized void loadConfiguration(String username, String password) {
+    public synchronized boolean login(String username, String password) {
         Configuration configuration = new Configuration(username);
+        Account account = configuration.getAccount();
 
-        if(configuration.getAccount().authenticate(password)) {
+        if(account != null && account.authenticate(password)) {
             this.configuration = configuration;
             notifyAll();
+            return true;
+        } else {
+            return false;
         }
     }
     
     /**
      * Create a configuration for a new user
      * @param username
+     * @param password
      */
-    public synchronized void createConfiguration(String username) {
+    public synchronized void register(String username, String password) {
         configuration = new Configuration(username);
+        configuration.setAccount(new Account(username, password));
+
         notifyAll();
     }
 } 

@@ -5,12 +5,11 @@ import ch9k.plugins.PluginManager;
 
 /**
  * Stores local settings & properties of the application.
- *
  * @author Bruno
  */
 public class Configuration {
-    /**
-     * account object for current user
+     /**
+     * Account-instance for current user
      */
     private Account account;
 
@@ -27,11 +26,11 @@ public class Configuration {
     private String username;
 
     public Configuration(String username) {
-        //Create new storage object for this user
+        // Create new storage object for this user
         storage = new Storage(username);
         this.username = username;
     }
-
+    
     /**
      * Getter for account
      * @return account object for current user.
@@ -42,12 +41,20 @@ public class Configuration {
             PersistentDataObject pdo = storage.fetch("account");
             if (pdo != null) {
                 account = new Account(pdo);
-            } else {
-                account = new Account(username);
+                storage.store("account", account);
             }
-            storage.store("account", account);
         }
+        
         return account;
+    }
+
+    /**
+     * Setter for account
+     * @param account
+     */
+    public void setAccount(Account account) {
+        this.account = account;
+        storage.store("account", account);
     }
 
     /**

@@ -1,7 +1,6 @@
 package ch9k.core.gui;
 
 import ch9k.core.Login;
-import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.GroupLayout;
@@ -30,7 +29,10 @@ public class LoginView extends JPanel {
     private JTextField usernameField;
     private Login loginController;
 
-    /** Creates new form LoginView */
+    /** 
+     * Creates new LoginView form
+     * @param loginController
+     */
     public LoginView(final Login loginController) {
         this.loginController = loginController;
 
@@ -61,7 +63,7 @@ public class LoginView extends JPanel {
         loginButton = new JButton("Log in");
         loginButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
-                loginController.loadConfiguration(
+                loginController.login(
                         new String(usernameField.getText()),
                         new String(passwordField.getPassword()));
             }
@@ -71,8 +73,9 @@ public class LoginView extends JPanel {
         newUserButton.setText("New user");
         newUserButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
-                loginController.createConfiguration(
-                        new String(usernameField.getText()));
+                loginController.register(
+                        new String(usernameField.getText()),
+                        new String(passwordField.getPassword()));
             }
         });
     }
