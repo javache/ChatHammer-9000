@@ -9,6 +9,7 @@ import java.io.ObjectInputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.InetAddress;
+import org.apache.log4j.Logger;
 
 import ch9k.network.events.UserDisconnectedEvent;
 
@@ -22,6 +23,8 @@ public class SocketHandler implements ErrorHandler, EventProcessor {
     private EventPool pool;
     
     private Connection connection;
+    
+    private static final Logger logger = Logger.getLogger(SocketHandler.class);
     
     public SocketHandler(Socket socket, BlockingQueue<NetworkEvent> queue, EventPool pool,Connection conn) throws IOException {
         this.socket = socket;
@@ -43,20 +46,25 @@ public class SocketHandler implements ErrorHandler, EventProcessor {
     
     public void receivedEOF() {
         connection.socketHandlerClosed(this);
-        close();
+        try {
+            close();
+        } catch (IOException e) {
+            
+        }
     }   
     
     public void writingFailed() {
-        close();
-    } 
-    
-    public void close() {
         try {
-            socket.shutdownOutput();
-            socket.close();
-        } catch(IOException e) {
+            close();
+        } catch (IOException e) {
             
         }
+    } 
+    
+    public void close() throws IOException {
+        logger.info("Closing connection to " + socket.getInetAddress());
+        socket.shutdownOutput();
+        socket.close();
     }
     
     public void process(NetworkEvent event) {

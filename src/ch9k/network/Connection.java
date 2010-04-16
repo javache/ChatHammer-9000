@@ -43,28 +43,13 @@ public class Connection {
     private static final Logger logger = Logger.getLogger(Connection.class);
 
     /**
-     * The socket used to write to the other side
-     */
-    private Socket socket;
-
-    /**
      * A concurrent queue of events to be sent
      */
     private LinkedBlockingQueue<NetworkEvent> eventQueue =
             new LinkedBlockingQueue<NetworkEvent>();
 
-    /**
-     * Streams used to transfer Objects
-     */
-    private ObjectOutputStream out;
-    private ObjectInputStream in;
 
-    /**
-     * Threads that listen and write to the socket
-     */
-    private Thread listenerThread;
-    private Thread writerThread;
-
+    private SocketHandler handler;
     /**
      * The EventPool to send events to
      */
@@ -83,7 +68,7 @@ public class Connection {
      * @param manager 
      */
     public Connection(final InetAddress ip, EventPool pool, final ConnectionManager manager) {
-        this.socket = new Socket();
+        final Socket socket = new Socket();
         this.pool = pool;
 
         new Thread(new Runnable() {
@@ -93,7 +78,7 @@ public class Connection {
                     socket.connect(new InetSocketAddress(ip, DEFAULT_PORT),
                             SOCKET_CONNECT_TIMEOUT);
 
-                    init();
+                    init(socket);
                 } catch (IOException ex) {
                     logger.warn(ex.toString());
 
@@ -114,32 +99,20 @@ public class Connection {
      * @throws IOException
      */
     public Connection(Socket socket, EventPool pool) throws IOException {
-        this.socket = socket;
         this.pool = pool;
 
-        init();
+        init(socket);
     }
 
     /**
      * Finish the initialization of the Connection
      * @throws IOException
      */
-    private void init() throws IOException {
+    private void init(Socket socket) throws IOException {
         socket.setKeepAlive(true);
 
-        out = new ObjectOutputStream(socket.getOutputStream());
-        in = new ObjectInputStream(socket.getInputStream());
-
-        String threadName = "Connection-" + socket.getInetAddress().getHostAddress();
-
-        listenerThread = new Thread(new ConnectionListener(), threadName + "-reader");
-        listenerThread.setDaemon(true);
-        listenerThread.start();
-
-        writerThread = new Thread(new ConnectionWriter(), threadName + "-writer");
-        writerThread.setDaemon(true);
-        writerThread.start();
-
+        handler = new SocketHandler(socket,eventQueue,pool,this);
+        
         notifyInitComplete();
     }
 
@@ -152,16 +125,15 @@ public class Connection {
     }
 
     public void socketHandlerClosed(SocketHandler handler) {
-        
+        logger.warn("Connection closed");
     }
     
     /**
      * Close the socket
      */
     public void close() {
-        logger.info("Closing connection to " + socket.getInetAddress());
         try {
-            socket.close();
+            handler.close();
         } catch (IOException ex) {
             logger.warn(ex.toString());
         }
@@ -179,13 +151,6 @@ public class Connection {
             } catch (InterruptedException ex) {}
         }
         
-        try {
-            sendObject(new PingEvent(socket.getInetAddress()));
-        } catch (IOException ex) {
-            logger.info(ex.toString());
-            return false;
-        }
-        
         return true;
     }
 
@@ -197,92 +162,4 @@ public class Connection {
         eventQueue.add(event);
     }
 
-    /**
-     * Send an object over the socket
-     * @param object Object to be sent
-     * @throws IOException
-     */
-    private synchronized void sendObject(Object object) throws IOException {
-        if (out != null) {
-            out.writeObject(object);
-            out.flush();
-        } else {
-            throw new SocketException("No connection was made.");
-        }
-    }
-
-    /**
-     * Close the connection, something happened
-     */
-    private void remoteClosed() {
-        pool.raiseEvent(new UserDisconnectedEvent(socket.getInetAddress()));
-
-        // close the output (not the input, since it might still contain messages)
-        try {
-            socket.shutdownOutput();
-        } catch (IOException ex) {
-            logger.warn(ex.toString());
-        }
-    }
-
-    /**
-     * Start listening for incoming events and send them to the EventPool
-     */
-    private class ConnectionListener implements Runnable {
-        public void run() {
-            try {
-                while (!socket.isClosed()) {
-                    readEvent();
-                }
-            } catch (EOFException ex) {
-                logger.info(ex.toString());
-            } catch (IOException ex) {
-                logger.warn(ex.toString());
-            }
-            
-            // this happens when the socket on the remote end closes
-            remoteClosed();
-        }
-
-        private void readEvent() throws IOException {
-            try {
-                NetworkEvent ev = (NetworkEvent) in.readObject();
-                ev.setSource(socket.getInetAddress());
-                logger.info(String.format("Received event %s from %s",
-                        ev.getClass().getName(), ev.getSource()));
-
-                // downcast so we don't send it again
-                pool.raiseEvent((Event) ev);
-            } catch (ClassNotFoundException ex) {
-                logger.error(ex.toString());
-            }
-        }
-    }
-
-    /**
-     * Send events from the queue
-     */
-    private class ConnectionWriter implements Runnable {
-        public void run() {
-            try {
-                while (!socket.isClosed()) {
-                    try {
-                        NetworkEvent event = eventQueue.take();
-                        writeEvent(event);
-                    } catch (IOException ex) {
-                        logger.warn(ex.toString());
-                    }
-                }
-            } catch (InterruptedException ex) {
-                // we should just stop then
-                logger.info(ex.toString());
-            }
-        }
-
-        private void writeEvent(NetworkEvent event) throws IOException {
-            logger.info(String.format("Sending event %s to %s",
-                    event.getClass().getName(), event.getTarget()));
-            sendObject(event);
-        }
-    }
 }
