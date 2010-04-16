@@ -8,8 +8,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.BlockingQueue;
 import org.apache.log4j.Logger;
 
-public class EventWriter implements Runnable,Closeable{
-    
+public class EventWriter implements Runnable, Closeable{
     /**
      * The ObjectOutputStream to write to;
      */
@@ -36,7 +35,8 @@ public class EventWriter implements Runnable,Closeable{
      */
     private boolean shouldContinue = true;
     
-    public EventWriter(ObjectOutputStream stream,ErrorHandler handler,BlockingQueue<NetworkEvent> queue) {
+    public EventWriter(ObjectOutputStream stream, ErrorHandler handler,
+            BlockingQueue<NetworkEvent> queue) {
         this.out = stream;
         this.errorHandler = handler;
         this.queue = queue;
@@ -51,7 +51,7 @@ public class EventWriter implements Runnable,Closeable{
     }
     
     /**
-     * send an event directly (bypassing the queue)
+     * Send an event directly (bypassing the queue)
      * useful for testing if the outputstream is still alive
      */
     public synchronized void sendEvent(NetworkEvent event) throws IOException {
@@ -62,7 +62,7 @@ public class EventWriter implements Runnable,Closeable{
     }
     
     /**
-     * run until close is called, or we encounter an error
+     * Run until close is called, or we encounter an error
      * take events from the queue and send'em
      */
     public void run() {
@@ -83,5 +83,4 @@ public class EventWriter implements Runnable,Closeable{
             errorHandler.writingFailed();
         }
     }
-    
 }

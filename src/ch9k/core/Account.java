@@ -1,10 +1,18 @@
 package ch9k.core;
 
-import ch9k.configuration.PersistentDataObject;
-import java.security.MessageDigest;
-
 import ch9k.chat.ContactList;
 import ch9k.configuration.Persistable;
+import ch9k.configuration.PersistentDataObject;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.InetAddress;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.security.MessageDigest;
+import java.util.ArrayList;
+import java.util.List;
 import org.jdom.Element;
 
 /**
@@ -121,6 +129,46 @@ public class Account implements Persistable{
             // throw new VeerleFackException
             return null;
         }
+    }
+
+    private static final URL IP_LOOKUP_API;
+    static {
+        URL lookupUrl = null;
+        try {
+            lookupUrl = new URL("http://zeus.ugent.be/~javache/getIp.php");
+        } catch (MalformedURLException ex) {}
+        IP_LOOKUP_API = lookupUrl;
+    }
+
+    private static InetAddress[] inetAddresses;
+
+    /**
+     * Get the IP-adresses the account is reachable at
+     * @return ips
+     */
+    public static InetAddress[] getInetAddresses() {
+        if(inetAddresses == null) {
+            List<InetAddress> ipList = new ArrayList<InetAddress>();
+
+            try {
+                // add localhost
+                ipList.add(InetAddress.getLocalHost());
+
+                // perform a small lookup to get the public IP
+                URLConnection connection = IP_LOOKUP_API.openConnection();
+                connection.setReadTimeout(2000);
+                InputStreamReader input = new InputStreamReader(connection.getInputStream());
+                BufferedReader reader = new BufferedReader(input);
+                ipList.add(InetAddress.getByName(reader.readLine()));
+                reader.close();
+            } catch (IOException ex) {
+                System.err.println(ex);
+            }
+
+            inetAddresses = ipList.toArray(new InetAddress[0]);
+        }
+
+        return inetAddresses;
     }
 
     @Override

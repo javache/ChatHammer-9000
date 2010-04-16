@@ -1,16 +1,15 @@
 package ch9k.core;
 
 import ch9k.configuration.Configuration;
-import ch9k.core.gui.LoginView;
+import ch9k.core.gui.LoginPanel;
 import java.awt.EventQueue;
 
 /**
- * The login model (not the gui)
- * handles the loading of the account (and verifying it)
+ * The login model handles the loading of the account (and verifying it)
  * @author Bruno Corijn
  * @author Pieter De Baets
  */
-public class Login {
+public class LoginController {
     private Configuration configuration;
     private boolean cancelled = false;
 
@@ -22,7 +21,7 @@ public class Login {
     public synchronized Configuration run(final ApplicationWindow window) {
         EventQueue.invokeLater(new Runnable() {
             public void run() {
-                LoginView view = new LoginView(Login.this, window);
+                LoginPanel view = new LoginPanel(LoginController.this, window);
             }
         });
 

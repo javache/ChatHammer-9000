@@ -9,33 +9,33 @@ import ch9k.eventpool.NetworkEvent;
 import ch9k.eventpool.Event;
 
 public class EventReader implements Runnable {
-    
     /**
      * Events will be read from this stream
      */
     private final ObjectInputStream in;
     
     /**
-     * no poolparty without a pool!
+     * No poolparty without a pool!
      */
     private final EventPool pool;
     
     /**
-     * he's here to help, in case something bad happens
+     * He's here to help, in case something bad happens
      */
     private final ErrorHandler errorHandler;
     
     /**
-     * processing is all he does, all day long
+     * Processing is all he does, all day long
      */
     private final EventProcessor processor;
     
     /**
-     * the usual logger.
+     * The usual logger.
      */
     private static final Logger logger = Logger.getLogger(EventReader.class);
     
-    public EventReader(ObjectInputStream stream,EventPool pool,EventProcessor processor,ErrorHandler handler) {
+    public EventReader(ObjectInputStream stream, EventPool pool,
+            EventProcessor processor, ErrorHandler handler) {
         this.in = stream;
         this.pool = pool;
         this.processor = processor;
@@ -66,5 +66,4 @@ public class EventReader implements Runnable {
             logger.warn(e.toString());
         }
     }
-    
 }

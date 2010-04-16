@@ -1,7 +1,8 @@
 package ch9k.core.gui;
 
 import ch9k.core.ApplicationWindow;
-import ch9k.core.Login;
+import ch9k.core.LoginController;
+import ch9k.core.RegistrationController;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -22,8 +23,9 @@ import javax.swing.SwingConstants;
 /**
  * Shows options for login
  * @author Bruno Corijn
+ * @author Pieter De Baets
  */
-public class LoginView extends JPanel {
+public class LoginPanel extends JPanel {
     private JButton newUserButton;
     private JButton loginButton;
     private JLabel usernameLabel;
@@ -32,32 +34,35 @@ public class LoginView extends JPanel {
     private JLabel errorMessage;
     private JPasswordField passwordField;
     private JTextField usernameField;
-    private Login loginController;
+
+    private final LoginController controller;
+    private final ApplicationWindow window;
 
     /** 
      * Creates new LoginView form
-     * @param controller
+     * @param loginController
      * @param window 
      */
-    public LoginView(Login controller, ApplicationWindow window) {
-        loginController = controller;
+    public LoginPanel(LoginController loginController, ApplicationWindow window) {
+        this.controller = loginController;
+        this.window = window;
 
         // setup window
         window.setContentPane(this);
         window.addWindowListener(new WindowAdapter() {
             public void windowClosed(WindowEvent e) {
-                loginController.setCancelled(true);
+                controller.setCancelled(true);
             }
         });
 
         // init fields and layout
-        initFields();
+        initComponents();
         initLayout();
 
         window.setVisible(true);
     }
 
-    private void initFields() {
+    private void initComponents() {
         titleLabel = new JLabel("<html><b>ChatHammer</b> 9000");
         titleLabel.setFont(titleLabel.getFont().deriveFont(18f));
         titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -74,15 +79,13 @@ public class LoginView extends JPanel {
             }
         };
         loginButton = new JButton(loginAction);
-        usernameField.addActionListener(loginAction);
-        passwordField.addActionListener(loginAction);
         getRootPane().setDefaultButton(loginButton);
 
         newUserButton = new JButton();
         newUserButton.setText("New user?");
         newUserButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
-                // TODO: handle
+                new RegistrationController(controller, window);
             }
         });
 
@@ -95,6 +98,7 @@ public class LoginView extends JPanel {
     private void initLayout() {
         GroupLayout layout = new GroupLayout(this);
         this.setLayout(layout);
+
         layout.setHorizontalGroup(layout.createSequentialGroup()
             .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(layout.createParallelGroup(Alignment.CENTER)
@@ -102,16 +106,10 @@ public class LoginView extends JPanel {
                 .addComponent(errorMessage)
                 .addGroup(layout.createSequentialGroup()
                     .addGroup(layout.createParallelGroup()
-                        .addGroup(layout.createSequentialGroup()
-                            .addGap(10)
-                            .addGroup(layout.createParallelGroup()
-                                .addComponent(usernameLabel)
-                                .addComponent(passwordLabel)
-                            )
-                        )
+                        .addComponent(usernameLabel)
+                        .addComponent(passwordLabel)
                         .addComponent(newUserButton)
                     )
-                    .addGap(20)
                     .addGroup(layout.createParallelGroup()
                         .addComponent(usernameField, 140, 140, 140)
                         .addComponent(passwordField, 140, 140, 140)
@@ -121,10 +119,11 @@ public class LoginView extends JPanel {
             )
             .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
+        
         layout.setVerticalGroup(layout.createSequentialGroup()
             .addContainerGap(50, 100)
             .addComponent(titleLabel)
-            .addGap(15)
+            .addGap(10)
             .addComponent(errorMessage)
             .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
             .addGroup(layout.createParallelGroup(Alignment.BASELINE)
@@ -140,8 +139,8 @@ public class LoginView extends JPanel {
             )
             .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
             .addGroup(layout.createParallelGroup(Alignment.BASELINE)
-                .addComponent(newUserButton)
                 .addComponent(loginButton)
+                .addComponent(newUserButton)
             )
             .addContainerGap(50, 150)
         );
@@ -152,12 +151,10 @@ public class LoginView extends JPanel {
         String password = new String(passwordField.getPassword());
 
         if(username.isEmpty() || password.isEmpty()) {
-            errorMessage.setText("<html><center>" +
-                "Please fill in all fields.");
+            errorMessage.setText("<html><center>Please fill in all fields.");
             errorMessage.setVisible(true);
-            return;
         } else {
-            boolean success = loginController.login(username, password);
+            boolean success = controller.login(username, password);
             if(!success) {
                 errorMessage.setText("<html><center>" +
                     "The provided credentials are invalid.<br />Please try again.");

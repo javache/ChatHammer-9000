@@ -2,6 +2,7 @@ package ch9k.core;
 
 import ch9k.chat.ConversationManager;
 import ch9k.configuration.Configuration;
+import javax.swing.JPanel;
 
 /**
  * The main application, OMG!
@@ -36,10 +37,13 @@ public class ChatApplication {
         ApplicationWindow appWindow = new ApplicationWindow();
 
         // show login dialog
-        Login loginController = new Login();
+        LoginController loginController = new LoginController();
         configuration = loginController.run(appWindow);
         if(configuration == null) {
+            // user closed window
             System.exit(0);
+        } else {
+            appWindow.setContentPane(new JPanel());
         }
     }
 
