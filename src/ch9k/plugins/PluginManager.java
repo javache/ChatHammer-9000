@@ -87,8 +87,8 @@ public class PluginManager {
             try {
                 pluginClass = Class.forName(name);
             } catch (ClassNotFoundException e) {
-                // TODO: Show relevant warning.
-                logger.warn("Class not found.");
+                /* Should not happen, because we registered it earlier. */
+                logger.warn("Class not found: " + name);
                 return;
             }
         }
@@ -98,10 +98,10 @@ public class PluginManager {
         try {
             plugin = (Plugin) pluginClass.newInstance();
         } catch (InstantiationException exception) {
-            // TODO: Show relevant warning.
+            logger.warn("Could not instantiate " + name + ": " + exception);
             return;
         } catch (IllegalAccessException exception) {
-            // TODO: Show relevant warning.
+            logger.warn("Could not access " + name + ": " + exception);
             return;
         }
 

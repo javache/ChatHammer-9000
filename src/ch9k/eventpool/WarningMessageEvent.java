@@ -24,7 +24,6 @@ public class WarningMessageEvent extends Event {
      */
     public WarningMessageEvent(Object source, String warningMessage) {
         this.source = source;
-        // TODO: Localize at this point.
         this.warningMessage = warningMessage;
     }
 

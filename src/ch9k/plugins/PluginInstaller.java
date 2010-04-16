@@ -1,5 +1,6 @@
 package ch9k.plugins;
 
+import ch9k.eventpool.WarningMessageEvent;
 import ch9k.configuration.Storage;
 import java.io.File;
 import java.io.FileFilter;
@@ -84,12 +85,15 @@ public class PluginInstaller extends URLClassLoader {
             JarFile jar = new JarFile(file);
             manifest = jar.getManifest();
         } catch (IOException exception) {
-            // TODO: Show relevant warning.
+            WarningMessageEvent.raiseWarningMessageEvent(this,
+                "Could not register plugin " + file + ": " + exception);
             logger.warn(exception.toString());
         }
 
         /* Retreat, retreat! */
         if(manifest == null) {
+            WarningMessageEvent.raiseWarningMessageEvent(this,
+                "No jar manifest found in " + file);
             return;
         }
 
@@ -100,14 +104,15 @@ public class PluginInstaller extends URLClassLoader {
         try {
             addURL(file.toURI().toURL());
         } catch (MalformedURLException exception) {
-            // TODO: Show relevant warning.
+            /* This will never happen, since we know that file is valid now. */
             return;
         }
 
         /* Find the plugin name .*/
         String pluginName = attributes.getValue("Plugin-Class");
 
-        /* No plugin in this jar. */
+        /* No plugin in this jar. This doesn't matter, it could be a dependency
+         * containing no plugin's itself. */
         if(pluginName == null) {
             return;
         }
@@ -139,8 +144,8 @@ public class PluginInstaller extends URLClassLoader {
             File file = new File(url.getFile());
             installPlugin(connection.getInputStream(), file.getName());
         } catch (IOException exception) {
-            // TODO: Show relevant warning.
-            System.out.println(exception);
+            WarningMessageEvent.raiseWarningMessageEvent(this,
+                "Could not get plugin " + url + ": " + exception);
             return;
         }
     }

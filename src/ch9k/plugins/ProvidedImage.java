@@ -1,5 +1,6 @@
 package ch9k.plugins;
 
+import ch9k.eventpool.WarningMessageEvent;
 import java.awt.Image;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -30,7 +31,8 @@ public class ProvidedImage {
             ImageIcon tmp = new ImageIcon(this.url);
             image = tmp.getImage();
         } catch (MalformedURLException exception) {
-            // TODO: Send warning event.
+            WarningMessageEvent.raiseWarningMessageEvent(this,
+                "Could not get image " + url + ": " + exception);
         }
     }
 
