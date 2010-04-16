@@ -1,9 +1,9 @@
 *.class
 build
 coverage
+coverage.ec
 dist
 doc
 nbproject/private
 nbproject/coverage.properties
-test-single
 .DS_Store

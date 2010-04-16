@@ -34,9 +34,10 @@
         <taskdef classname="org.netbeans.modules.java.j2seproject.copylibstask.CopyLibs" classpath="${libs.CopyLibs.classpath}" name="copylibs"/>
         <copylibs compress="${jar.compress}" jarfile="${dist.jar}" manifest="${manifest.file}" runtimeclasspath="${run.classpath.without.build.classes.dir}">
             <fileset dir="${build.classes.dir}">
-                <include name="ch9k/**/*.class" />
+                <include name="ch9k/**/*" />
                 <include name="*.properties" />
             </fileset>
+            <fileset dir="${src.resources.dir}"/>
             <manifest>
                 <attribute name="Main-Class" value="${main.class}"/>
                 <attribute name="Class-Path" value="${jar.classpath}"/>
