@@ -20,7 +20,9 @@ public class RegistrationController {
         this.loginController = loginController;
 
         // create dialog
-        JDialog dialog = new JDialog(window, "Register account", ModalityType.APPLICATION_MODAL);
+        JDialog dialog = new JDialog(window,
+                I18n.get("ch9k.core", "register_account"),
+                ModalityType.APPLICATION_MODAL);
         dialog.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         dialog.setLocationRelativeTo(window);
         dialog.setResizable(false);
@@ -66,16 +68,13 @@ public class RegistrationController {
     public boolean validate(String username, String password, String repeatedPassword) {
         // do some validation
         if(username.isEmpty() || password.isEmpty() || repeatedPassword.isEmpty()) {
-            view.setError("Please fill in all fields.");
+            view.setError(I18n.get("ch9k.core", "error_fill_all_fields"));
         } else if(!password.equals(repeatedPassword)) {
-            view.setError("The password you entered does not equal"
-                    + "<br>the repeated password.");
+            view.setError(I18n.get("ch9k.core", "error_passwords_not_equal"));
         } else if(username.length() < 6) {
-            view.setError("Your username should have a minimum length"
-                    + "<br>of 6 characters");
+            view.setError(I18n.get("ch9k.core", "error_username_too_short"));
         } else if(password.length() < 6) {
-            view.setError("Your password should have a minimum length"
-                    + "<br>of 6 characters");
+            view.setError(I18n.get("ch9k.core", "error_password_too_short"));
         } else {
             // perform registration
             // todo: check if user already exists

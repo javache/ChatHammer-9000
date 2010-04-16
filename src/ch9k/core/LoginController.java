@@ -82,11 +82,11 @@ public class LoginController {
      */
     public void validateLogin(String username, String password) {
         if(username.isEmpty() || password.isEmpty()) {
-            view.setError(I18n.get("ch9k.core", "fill_all_fields"));
+            view.setError(I18n.get("ch9k.core", "error_fill_all_fields"));
         } else {
             boolean success = login(username, password);
             if(!success) {
-                view.setError(I18n.get("ch9k.core", "invalid"));
+                view.setError(I18n.get("ch9k.core", "error_invalid_credentials"));
             } else {
                 view.setError(null);
             }

@@ -77,8 +77,8 @@ public class LoginPanel extends JPanel {
         passwordLabel = new JLabel(I18n.get("ch9k.core", "password"));
         passwordField = new JPasswordField();
         
-        String logIn = I18n.get("ch9k.core", "log_in");
-        Action loginAction = new AbstractAction("login") {
+        String loginLabel = I18n.get("ch9k.core", "log_in");
+        Action loginAction = new AbstractAction(loginLabel) {
             public void actionPerformed(ActionEvent e) {
                 String username = usernameField.getText();
                 String password = new String(passwordField.getPassword());
@@ -88,8 +88,7 @@ public class LoginPanel extends JPanel {
         loginButton = new JButton(loginAction);
         getRootPane().setDefaultButton(loginButton);
 
-        newUserButton = new JButton();
-        newUserButton.setText(I18n.get("ch9k.core", "new_user"));
+        newUserButton = new JButton(I18n.get("ch9k.core", "new_user"));
         newUserButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 new RegistrationController(controller, window);

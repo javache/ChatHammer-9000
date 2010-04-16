@@ -2,14 +2,11 @@ package ch9k.core;
 
 import java.util.ResourceBundle;
 import java.util.MissingResourceException;
-import java.util.Locale;
-import java.util.Enumeration;
 import java.text.MessageFormat;
 import java.awt.event.KeyEvent;
 import java.util.Map;
 import java.util.HashMap;
 import javax.swing.UIManager;
-import javax.swing.JComponent;
 
 /**
  * A class responsible for the internationalization of string literals.
@@ -35,7 +32,6 @@ public class I18n {
     public static String get(String namespace, String key) {
         ResourceBundle bundle = bundles.get(namespace);
         if(bundle == null) {
-            System.out.println("Loading " + namespace);
             bundle = ResourceBundle.getBundle(namespace + ".MessageBundle");
             bundles.put(namespace, bundle);
         }
@@ -55,7 +51,7 @@ public class I18n {
      * @return The message in the correct Locale.
      */
     public static String get(String namespace, String key,
-            Object[] arguments) {
+            Object ... arguments) {
         return MessageFormat.format(get(namespace, key), arguments);
     }
 

@@ -1,6 +1,7 @@
 
 package ch9k.core.gui;
 
+import ch9k.core.I18n;
 import ch9k.core.RegistrationController;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
@@ -64,11 +65,10 @@ public class RegistrationPanel extends JPanel {
     }
 
     private void initComponents() {
-        titleLabel = new JLabel("Register account");
+        titleLabel = new JLabel(I18n.get("ch9k.core", "register_account"));
         titleLabel.setFont(titleLabel.getFont().deriveFont(18f));
-        preTextLabel = new JLabel("Please fill in the following fields to create your account.");
-        postTextLabel = new JLabel("<html>If you wish for other contacts to add you, "
-                + "they need to<br>know your IP-address. You are currently reachable at:");
+        preTextLabel = new JLabel(I18n.get("ch9k.core", "register_text"));
+        postTextLabel = new JLabel("<html>" + I18n.get("ch9k.core", "ip_text"));
         ipTextLabel = new JLabel(" ");
 
         errorMessage = new JLabel();
@@ -76,15 +76,15 @@ public class RegistrationPanel extends JPanel {
         errorMessage.setForeground(Color.RED);
         errorMessage.setVisible(false);
 
-        usernameLabel = new JLabel("Username");
-        passwordLabel = new JLabel("Password");
-        repeatPasswordLabel = new JLabel("Repeat password");
+        usernameLabel = new JLabel(I18n.get("ch9k.core", "username"));
+        passwordLabel = new JLabel(I18n.get("ch9k.core", "password"));
+        repeatPasswordLabel = new JLabel(I18n.get("ch9k.core", "repeat_password"));
 
         usernameField = new JTextField();
         passwordField = new JPasswordField();
         repeatPasswordField = new JPasswordField();
 
-        Action registerAction = new AbstractAction("Register") {
+        Action registerAction = new AbstractAction(I18n.get("ch9k.core", "register")) {
             public void actionPerformed(ActionEvent e) {
                 String username = usernameField.getText();
                 String password = new String(passwordField.getPassword());
@@ -100,7 +100,7 @@ public class RegistrationPanel extends JPanel {
         registerButton = new JButton(registerAction);
         dialog.getRootPane().setDefaultButton(registerButton);
 
-        cancelButton = new JButton(new AbstractAction("Cancel") {
+        cancelButton = new JButton(new AbstractAction(I18n.get("ch9k.core", "cancel")) {
             public void actionPerformed(ActionEvent e) {
                 dialog.dispose();
             }
