@@ -125,6 +125,7 @@ public class Connection {
     }
 
     public void socketHandlerClosed(SocketHandler handler) {
+        /* TODO we need to relay this back to the manager */
         logger.warn("Connection closed");
     }
     
@@ -140,17 +141,10 @@ public class Connection {
     }
 
     /**
-     * Check if the connection is still alive by sending
-     * a PingEvent to the socket
-     * @return result Result of the ping-attempt
+     * TODO make this a proper hasConnection
+     * will return true for the time being
      */
     public synchronized boolean hasConnection() {
-        while (!initialized) {
-            try {
-                wait();
-            } catch (InterruptedException ex) {}
-        }
-        
         return true;
     }
 

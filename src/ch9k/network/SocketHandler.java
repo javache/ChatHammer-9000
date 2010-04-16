@@ -16,14 +16,31 @@ import ch9k.network.events.UserDisconnectedEvent;
 
 public class SocketHandler implements ErrorHandler, EventProcessor {
     
+    /**
+     * reader and writer for the socket
+     */
     private EventWriter writer;
     private EventReader reader;
     
+    /**
+     * gotta keep a hold of this socket
+     */
     private Socket socket;
+    
+    /**
+     * the partypool!
+     */
     private EventPool pool;
     
+    /**
+     * we need to know which connection we belong to,
+     * to report errors
+     */
     private Connection connection;
     
+    /**
+     * i'm getting tired of these loggers
+     */
     private static final Logger logger = Logger.getLogger(SocketHandler.class);
     
     public SocketHandler(Socket socket, BlockingQueue<NetworkEvent> queue, EventPool pool,Connection conn) throws IOException {
@@ -44,7 +61,11 @@ public class SocketHandler implements ErrorHandler, EventProcessor {
         new Thread(writer,threadName + "-writer").start();
     }
     
+    /**
+     * the user disconnected
+     */
     public void receivedEOF() {
+        /* TODO throw appropriate event */
         connection.socketHandlerClosed(this);
         try {
             close();
@@ -53,7 +74,11 @@ public class SocketHandler implements ErrorHandler, EventProcessor {
         }
     }   
     
+    /**
+     * an error during writing? better close ourselves
+     */
     public void writingFailed() {
+        connection.socketHandlerClosed(this);
         try {
             close();
         } catch (IOException e) {
@@ -61,12 +86,19 @@ public class SocketHandler implements ErrorHandler, EventProcessor {
         }
     } 
     
+    /**
+     * this will close the socket
+     * and kill the reader and writer
+     */
     public void close() throws IOException {
         logger.info("Closing connection to " + socket.getInetAddress());
         socket.shutdownOutput();
         socket.close();
     }
     
+    /**
+     * do some processing on the event before it is send to the EventPool
+     */
     public void process(NetworkEvent event) {
         event.setSource(socket.getInetAddress());
     }
