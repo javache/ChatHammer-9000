@@ -12,6 +12,7 @@ import java.awt.EventQueue;
 public class LoginController {
     private Configuration configuration;
     private boolean cancelled = false;
+    private LoginPanel view;
 
     /**
      * Show the login-window, will block until a valid configuration is acquired
@@ -21,7 +22,8 @@ public class LoginController {
     public synchronized Configuration run(final ApplicationWindow window) {
         EventQueue.invokeLater(new Runnable() {
             public void run() {
-                LoginPanel view = new LoginPanel(LoginController.this, window);
+                view = new LoginPanel(LoginController.this, window);
+                window.setVisible(true);
             }
         });
 
@@ -71,5 +73,24 @@ public class LoginController {
         configuration.setAccount(new Account(username, password));
 
         notifyAll();
+    }
+
+    /**
+     * Validate a given set of inputs
+     * @param username 
+     * @param password
+     */
+    public void validateLogin(String username, String password) {
+        if(username.isEmpty() || password.isEmpty()) {
+            view.setError("Please fill in all fields.");
+        } else {
+            boolean success = login(username, password);
+            if(!success) {
+                view.setError("The provided credentials are invalid."
+                        + "<br>Please try again.");
+            } else {
+                view.setError(null);
+            }
+        }
     }
 } 

@@ -58,8 +58,11 @@ public class LoginPanel extends JPanel {
         // init fields and layout
         initComponents();
         initLayout();
+    }
 
-        window.setVisible(true);
+    public void setError(String message) {
+        errorMessage.setText("<html><center>" + message);
+        errorMessage.setVisible(message != null);
     }
 
     private void initComponents() {
@@ -75,7 +78,9 @@ public class LoginPanel extends JPanel {
         
         Action loginAction = new AbstractAction("Log in") {
             public void actionPerformed(ActionEvent e) {
-                validateLogin();
+                String username = usernameField.getText();
+                String password = new String(passwordField.getPassword());
+                controller.validateLogin(username, username);
             }
         };
         loginButton = new JButton(loginAction);
@@ -123,7 +128,7 @@ public class LoginPanel extends JPanel {
         layout.setVerticalGroup(layout.createSequentialGroup()
             .addContainerGap(50, 100)
             .addComponent(titleLabel)
-            .addGap(10)
+            .addGap(18)
             .addComponent(errorMessage)
             .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
             .addGroup(layout.createParallelGroup(Alignment.BASELINE)
@@ -137,31 +142,12 @@ public class LoginPanel extends JPanel {
                 .addComponent(passwordField, GroupLayout.PREFERRED_SIZE,
                     GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
             )
-            .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+            .addGap(18)
             .addGroup(layout.createParallelGroup(Alignment.BASELINE)
                 .addComponent(loginButton)
                 .addComponent(newUserButton)
             )
             .addContainerGap(50, 150)
         );
-    }
-
-    private void validateLogin() {
-        String username = usernameField.getText();
-        String password = new String(passwordField.getPassword());
-
-        if(username.isEmpty() || password.isEmpty()) {
-            errorMessage.setText("<html><center>Please fill in all fields.");
-            errorMessage.setVisible(true);
-        } else {
-            boolean success = controller.login(username, password);
-            if(!success) {
-                errorMessage.setText("<html><center>" +
-                    "The provided credentials are invalid.<br />Please try again.");
-                errorMessage.setVisible(true);
-            } else {
-                errorMessage.setVisible(false);
-            }
-        }
     }
 }

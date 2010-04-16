@@ -22,13 +22,11 @@ public class RegistrationController {
         // create dialog
         JDialog dialog = new JDialog(window, "Register account", ModalityType.APPLICATION_MODAL);
         dialog.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        dialog.setSize(new Dimension(310, 320));
         dialog.setLocationRelativeTo(window);
         dialog.setResizable(false);
 
         // create view
         view = new RegistrationPanel(this, dialog);
-        dialog.setContentPane(view);
         
         // fetch the ip to show in a different thread
         new Thread(new Runnable() {
@@ -52,9 +50,19 @@ public class RegistrationController {
         }).start();
 
         // show the dialog (will block, since this is a modal window)
+        dialog.pack();
+        Dimension dimension = dialog.getSize();
+        dialog.setSize(dimension.width, dimension.height + 50);
         dialog.setVisible(true);
     }
 
+    /**
+     * Validate a given set of inputs
+     * @param username
+     * @param password
+     * @param repeatedPassword
+     * @return success
+     */
     public boolean validate(String username, String password, String repeatedPassword) {
         // do some validation
         if(username.isEmpty() || password.isEmpty() || repeatedPassword.isEmpty()) {
@@ -64,12 +72,13 @@ public class RegistrationController {
                     + "<br>the repeated password.");
         } else if(username.length() < 6) {
             view.setError("Your username should have a minimum length"
-                    + "<br> of 6 characters");
+                    + "<br>of 6 characters");
         } else if(password.length() < 6) {
             view.setError("Your password should have a minimum length"
                     + "<br>of 6 characters");
         } else {
             // perform registration
+            // todo: check if user already exists
             view.setError(null);
             loginController.register(username, password);
             return true;

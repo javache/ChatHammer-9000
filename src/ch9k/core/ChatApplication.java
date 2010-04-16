@@ -1,6 +1,7 @@
 package ch9k.core;
 
 import ch9k.chat.ConversationManager;
+import ch9k.chat.gui.views.ContactListView;
 import ch9k.configuration.Configuration;
 import javax.swing.JPanel;
 
@@ -44,6 +45,7 @@ public class ChatApplication {
             System.exit(0);
         } else {
             appWindow.setContentPane(new JPanel());
+            appWindow.repaint();
         }
     }
 

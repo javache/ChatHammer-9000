@@ -45,6 +45,9 @@ public class RegistrationPanel extends JPanel {
     public RegistrationPanel(RegistrationController controller, JDialog dialog) {
         this.controller = controller;
         this.dialog = dialog;
+
+        // set the contentpane
+        dialog.setContentPane(this);
         
         // init fields and layout
         initComponents();
@@ -65,7 +68,7 @@ public class RegistrationPanel extends JPanel {
         titleLabel.setFont(titleLabel.getFont().deriveFont(18f));
         preTextLabel = new JLabel("Please fill in the following fields to create your account.");
         postTextLabel = new JLabel("<html>If you wish for other contacts to add you, "
-                + "they need to know your IP-address. You are currently reachable at:");
+                + "they need to<br>know your IP-address. You are currently reachable at:");
         ipTextLabel = new JLabel(" ");
 
         errorMessage = new JLabel();
@@ -89,7 +92,9 @@ public class RegistrationPanel extends JPanel {
                         new String(repeatPasswordField.getPassword());
                 boolean result = controller.validate(username,
                         password, repeatedPassword);
-                if(result) dialog.dispose();
+                if(result) {
+                    dialog.dispose();
+                }
             }
         };
         registerButton = new JButton(registerAction);
