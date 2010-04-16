@@ -71,7 +71,7 @@ public class ConnectionManagerTest {
      * @throws IOException
      * @throws InterruptedException
      */
-    @Test
+    // @Test
     public void testDisconnect() throws IOException, InterruptedException {
         connectionManager.readyForIncomingConnections();
         Thread.sleep(100);
