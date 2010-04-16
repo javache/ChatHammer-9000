@@ -50,9 +50,9 @@ public class EventReader implements Runnable {
             while(true) {
                 try {
                     NetworkEvent event = (NetworkEvent)in.readObject();
+                    processor.process(event);
                     logger.info(String.format("Received event %s from %s",
                             event.getClass().getName(), event.getSource()));
-                    processor.process(event);
                     pool.raiseEvent((Event)event);
                 } catch (ClassNotFoundException e) {
                     logger.warn(e.toString());
