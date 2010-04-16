@@ -4,6 +4,7 @@ import ch9k.plugins.ProvidedImage;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.Insets;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import javax.swing.JPanel;
@@ -48,6 +49,7 @@ public class ImagePanel extends JPanel implements MouseListener {
         this.fitImage = fitImage;
         this.highlight = highlight;
         this.providedImage = null;
+        setBackground(Color.BLACK);
     }
 
     /**
@@ -70,12 +72,9 @@ public class ImagePanel extends JPanel implements MouseListener {
     @Override
     public void paintComponent(Graphics graphics) {
         super.paintComponent(graphics);
-        int width = getWidth();
-        int height = getHeight();
-
-        /* Paint background black. */
-        graphics.setColor(Color.BLACK);
-        graphics.fillRect(0, 0, width, height);
+        Insets insets = getInsets();
+        int width = getWidth() - insets.left - insets.right;
+        int height = getHeight() - insets.top - insets.bottom;
 
         /* If we have no image, we've now done enough. */
         if(providedImage == null || providedImage.getImage() == null) return;
@@ -97,16 +96,18 @@ public class ImagePanel extends JPanel implements MouseListener {
         }
 
         /* Actually draw the image. */
-        graphics.drawImage(image, (int) (width * 0.5 - imageWidth * 0.5),
-                (int) (height * 0.5 - imageHeight * 0.5), (int) imageWidth,
-                (int) imageHeight, Color.BLACK, null);
+        graphics.drawImage(image,
+                insets.left + (int) (width * 0.5 - imageWidth * 0.5),
+                insets.top + (int) (height * 0.5 - imageHeight * 0.5),
+                (int) imageWidth, (int) imageHeight, Color.BLACK, null);
 
         /* If we have a highlight, draw a white overlay. */
         if(highlight && hover) {
             graphics.setColor(highlightColor);
-            graphics.fillRect((int) (width * 0.5 - imageWidth * 0.5),
-                (int) (height * 0.5 - imageHeight * 0.5), (int) imageWidth,
-                (int) imageHeight);
+            graphics.fillRect(
+                insets.left + (int) (width * 0.5 - imageWidth * 0.5),
+                insets.top + (int) (height * 0.5 - imageHeight * 0.5),
+                (int) imageWidth, (int) imageHeight);
         }
     }
 
