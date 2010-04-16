@@ -10,13 +10,23 @@ import java.io.IOException;
 import java.net.Socket;
 import java.net.InetAddress;
 
+import ch9k.network.events.UserDisconnectedEvent;
+
 
 public class SocketHandler implements ErrorHandler, EventProcessor {
     
     private EventWriter writer;
     private EventReader reader;
     
-    public SocketHandler(Socket socket, BlockingQueue<NetworkEvent> queue, EventPool pool) throws IOException {
+    private Socket socket;
+    private EventPool pool;
+    
+    private Connection connection;
+    
+    public SocketHandler(Socket socket, BlockingQueue<NetworkEvent> queue, EventPool pool,Connection conn) throws IOException {
+        this.socket = socket;
+        this.pool = pool;
+        this.connection = conn;
         
         String threadName = "Connection-" + socket.getInetAddress().getHostAddress();
         
@@ -32,14 +42,24 @@ public class SocketHandler implements ErrorHandler, EventProcessor {
     }
     
     public void receivedEOF() {
-        
+        connection.socketHandlerClosed(this);
+        close();
     }   
     
     public void writingFailed() {
-        
+        close();
     } 
     
+    public void close() {
+        try {
+            socket.shutdownOutput();
+            socket.close();
+        } catch(IOException e) {
+            
+        }
+    }
+    
     public void process(NetworkEvent event) {
-        
+        event.setSource(socket.getInetAddress());
     }
 }

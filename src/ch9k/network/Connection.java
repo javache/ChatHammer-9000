@@ -151,6 +151,10 @@ public class Connection {
         notifyAll();
     }
 
+    public void socketHandlerClosed(SocketHandler handler) {
+        
+    }
+    
     /**
      * Close the socket
      */
