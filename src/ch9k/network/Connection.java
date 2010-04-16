@@ -13,6 +13,7 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketException;
+import java.util.ArrayList;
 import java.util.concurrent.LinkedBlockingQueue;
 import org.apache.log4j.Logger;
 
@@ -48,8 +49,10 @@ public class Connection {
     private LinkedBlockingQueue<NetworkEvent> eventQueue =
             new LinkedBlockingQueue<NetworkEvent>();
 
-
-    private SocketHandler handler;
+    /**
+     * keep track of all the sockethandlers we have
+     */
+    private ArrayList<SocketHandler> handlerList = new ArrayList<SocketHandler>();
     /**
      * The EventPool to send events to
      */
@@ -111,7 +114,7 @@ public class Connection {
     private void init(Socket socket) throws IOException {
         socket.setKeepAlive(true);
 
-        handler = new SocketHandler(socket,eventQueue,pool,this);
+        handlerList.add(new SocketHandler(socket,eventQueue,pool,this));
         
         notifyInitComplete();
     }
@@ -126,6 +129,7 @@ public class Connection {
 
     public void socketHandlerClosed(SocketHandler handler) {
         /* TODO we need to relay this back to the manager */
+        handlerList.remove(handler);
         logger.warn("Connection closed");
     }
     
@@ -134,7 +138,10 @@ public class Connection {
      */
     public void close() {
         try {
-            handler.close();
+            for (SocketHandler handler : handlerList) {
+                handler.close();                
+            }
+            handlerList.clear();
         } catch (IOException ex) {
             logger.warn(ex.toString());
         }
