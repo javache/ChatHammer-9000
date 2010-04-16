@@ -150,6 +150,7 @@ public class ConnectionManager {
                 try {
                     Socket socket = new Socket();
                     socket.connect(new InetSocketAddress("google.com",80),1000);
+                    socket.close();
                     if(!online) {
                         /* signal back online */
                     }
