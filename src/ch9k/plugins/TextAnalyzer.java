@@ -9,6 +9,10 @@ import ch9k.eventpool.Event;
 import ch9k.eventpool.EventFilter;
 import ch9k.eventpool.EventListener;
 import ch9k.eventpool.EventPool;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Abstract TextAnalyzer class.
@@ -16,6 +20,11 @@ import ch9k.eventpool.EventPool;
  */
 public abstract class TextAnalyzer extends AbstractPlugin
         implements EventListener {
+    /**
+     * Filter to take out punctuation marks.
+     */
+    private static Pattern punctuation = Pattern.compile("[.,!?&\"]");
+
     @Override
     public void enablePlugin(Conversation conversation) {
         super.enablePlugin(conversation);
@@ -59,4 +68,34 @@ public abstract class TextAnalyzer extends AbstractPlugin
      * @return Strings representing conversation subjects.
      */
     public abstract String[] getSubjects(String[] messages);
+
+    /**
+     * Build a frequency map of words in the conversation.
+     * @param messages Messages to analyze.
+     * @return A frequency map from words to their frequencies.
+     */
+    public Map<String, Integer> getFrequencyMap(String[] messages) {
+        Map<String, Integer> frequencyMap = new TreeMap<String, Integer>();
+
+        /* Loop through all messages. */
+        for(String message: messages) {
+            /* Remove all punctuation and split on space characters. */
+            Matcher matcher = punctuation.matcher(message);
+            String[] words = matcher.replaceAll("").split("\\s+");
+
+            /* Now loop through all words in the message. */
+            for(String word: words) {
+                /* Trim and lowercase the string, then store it's frequency. */
+                String key = word.trim().toLowerCase();
+                Integer frequency = frequencyMap.get(key);
+                if(frequency == null) {
+                    frequencyMap.put(key, 1);
+                } else {
+                    frequencyMap.put(key, frequency.intValue() + 1);
+                }
+            }
+        }
+
+        return frequencyMap;
+    }
 }

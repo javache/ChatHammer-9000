@@ -14,7 +14,7 @@ public class FlickrImageProviderPluginTest {
      */
     @Test
     public void testGetImageUrls() throws MalformedURLException {
-        ImageProviderTester test = new ImageProviderTester();
-        test.testGetImageUrls(new FlickrImageProviderPlugin());
+        ImageProviderTester tester = new ImageProviderTester();
+        tester.testGetImageUrls(new FlickrImageProviderPlugin());
     }
 }
