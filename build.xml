@@ -75,7 +75,10 @@
     <!-- create mac package -->
     <target depends="init,jar" name="package" description="Build a Mac .app package">
         <taskdef name="jarbundler" classname="net.sourceforge.jarbundler.JarBundler" />
-        <jarbundler dir="${dist.jar.dir}" name="ChatHammer 9000" mainclass="${main.class}" version="${git.revision}">
+        <delete dir="${dist.jar.dir}/ChatHammer 9000.app"/>
+        <jarbundler dir="${dist.jar.dir}" mainclass="${main.class}" 
+            name="ChatHammer 9000" bundleid="be.ch9k" signature="CH9K"
+            version="${git.revision}" jvmversion="1.6+">
             <jarfileset dir="${dist.jar.dir}" includes="**/*.jar" />
         </jarbundler>
     </target>

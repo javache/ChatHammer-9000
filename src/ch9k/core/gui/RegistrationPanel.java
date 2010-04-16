@@ -1,4 +1,3 @@
-
 package ch9k.core.gui;
 
 import ch9k.core.I18n;
