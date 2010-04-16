@@ -112,7 +112,7 @@ public class RegistrationPanel extends JPanel {
         this.setLayout(layout);
 
         layout.setHorizontalGroup(layout.createSequentialGroup()
-            .addContainerGap()
+            .addContainerGap(15, 15)
             .addGroup(layout.createParallelGroup()
                 .addComponent(titleLabel)
                 .addComponent(preTextLabel)
@@ -141,17 +141,17 @@ public class RegistrationPanel extends JPanel {
                     .addComponent(ipTextLabel)
                 )
                 .addGroup(layout.createSequentialGroup()
-                    .addComponent(registerButton)
-                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 0, Short.MAX_VALUE)
                     .addComponent(cancelButton)
+                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 0, Short.MAX_VALUE)
+                    .addComponent(registerButton)
                 )
              )
-            .addContainerGap()
+            .addContainerGap(15, 15)
         );
 
         layout.setVerticalGroup(layout.createParallelGroup()
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
+                .addContainerGap(20, 20)
                 .addComponent(titleLabel)
                 .addGap(10, 10, Short.MAX_VALUE)
                 .addComponent(preTextLabel)
@@ -162,12 +162,12 @@ public class RegistrationPanel extends JPanel {
                     .addComponent(usernameLabel)
                     .addComponent(usernameField)
                 )
-                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                     .addComponent(passwordLabel)
                     .addComponent(passwordField)
                 )
-                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                     .addComponent(repeatPasswordLabel)
                     .addComponent(repeatPasswordField)
@@ -181,7 +181,8 @@ public class RegistrationPanel extends JPanel {
                     .addComponent(registerButton)
                     .addComponent(cancelButton)
                 )
-                .addContainerGap())
+                .addContainerGap(15, 15)
+            )
         );
     }
 }
