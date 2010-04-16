@@ -1,6 +1,7 @@
 package ch9k.core.gui;
 
 import ch9k.core.ApplicationWindow;
+import ch9k.core.I18n;
 import ch9k.core.LoginController;
 import ch9k.core.RegistrationController;
 import java.awt.Color;
@@ -70,13 +71,14 @@ public class LoginPanel extends JPanel {
         titleLabel.setFont(titleLabel.getFont().deriveFont(18f));
         titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
-        usernameLabel = new JLabel("Username");
+        usernameLabel = new JLabel(I18n.get("ch9k.core", "username"));
         usernameField = new JTextField();
 
-        passwordLabel = new JLabel("Password");
+        passwordLabel = new JLabel(I18n.get("ch9k.core", "password"));
         passwordField = new JPasswordField();
         
-        Action loginAction = new AbstractAction("Log in") {
+        String logIn = I18n.get("ch9k.core", "log_in");
+        Action loginAction = new AbstractAction("login") {
             public void actionPerformed(ActionEvent e) {
                 String username = usernameField.getText();
                 String password = new String(passwordField.getPassword());
@@ -87,7 +89,7 @@ public class LoginPanel extends JPanel {
         getRootPane().setDefaultButton(loginButton);
 
         newUserButton = new JButton();
-        newUserButton.setText("New user?");
+        newUserButton.setText(I18n.get("ch9k.core", "new_user"));
         newUserButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 new RegistrationController(controller, window);
