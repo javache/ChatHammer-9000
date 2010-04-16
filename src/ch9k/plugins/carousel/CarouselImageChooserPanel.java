@@ -52,7 +52,7 @@ public class CarouselImageChooserPanel extends JPanel implements EventListener {
         this.conversation = conversation;
         this.model = model;
 
-        setBackground(Color.BLACK);
+        setBackground(new Color(50, 50, 50));
 
         Dimension labelSize = new Dimension(100, 100);
         images = new CarouselImageChooserItem[COLUMNS * 6];

@@ -40,16 +40,32 @@ public class ImagePanel extends JPanel implements MouseListener {
     private static final Color highlightColor = new Color(255, 255, 255, 75);
 
     /**
+     * Optional background.
+     */
+    private Image background;
+
+    /**
      * Constructor.
      * @param fitImage If we should fit the image into the view.
      * @param highlight If we should highlight the component on mouse hover.
      */
     public ImagePanel(boolean fitImage, boolean highlight) {
+        this(fitImage, highlight, null);
+    }
+
+    /**
+     * Constructor.
+     * @param fitImage If we should fit the image into the view.
+     * @param highlight If we should highlight the component on mouse hover.
+     * @param background Optional background.
+     */
+    public ImagePanel(boolean fitImage, boolean highlight, Image background) {
         super();
         this.fitImage = fitImage;
         this.highlight = highlight;
+        this.background = background;
         this.providedImage = null;
-        setBackground(Color.BLACK);
+        setBackground(new Color(50, 50, 50));
     }
 
     /**
@@ -75,6 +91,14 @@ public class ImagePanel extends JPanel implements MouseListener {
         Insets insets = getInsets();
         int width = getWidth() - insets.left - insets.right;
         int height = getHeight() - insets.top - insets.bottom;
+
+        /* Draw the background, if available. */
+        if(background != null) {
+            double x = width * 0.5 - background.getWidth(null) * 0.5;
+            double y = height * 0.5 - background.getHeight(null) * 0.5;
+            graphics.drawImage(background, insets.left + (int) x,
+                    insets.top + (int) y, null);
+        }
 
         /* If we have no image, we've now done enough. */
         if(providedImage == null || providedImage.getImage() == null) return;

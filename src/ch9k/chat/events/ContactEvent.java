@@ -25,7 +25,12 @@ public abstract class ContactEvent extends NetworkEvent {
         this.contact = contact;
         receiver = contact.getUsername();
         Account account = ChatApplication.getInstance().getAccount();
-        sender = account.getUsername();
+
+        /* This null check is here to prevent an exception in a test -- in the
+         * real world, account will never be null. */
+        if(account != null) {
+            sender = account.getUsername();
+        }
     }
 
     /**

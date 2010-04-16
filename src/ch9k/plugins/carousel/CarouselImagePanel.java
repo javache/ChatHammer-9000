@@ -1,9 +1,12 @@
 package ch9k.plugins.carousel;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.MouseEvent;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.ImageIcon;
+import javax.swing.BorderFactory;
 
 /**
  * View showing a single image.
@@ -14,16 +17,22 @@ public class CarouselImagePanel extends ImagePanel implements ChangeListener {
      */
     private CarouselImageModel model;
 
+    private static final ImageIcon background = new ImageIcon(
+            CarouselImagePanel.class.getResource(
+                    "/ch9k/plugins/carousel/background.png"));
+
     /**
      * Constructor.
      * @param model The selection model of the plugin.
      */
     public CarouselImagePanel(CarouselImageModel model) {
-        super(true, true);
+        super(true, true, background.getImage());
         setPreferredSize(new Dimension(400, 200));
         this.model = model;
         model.addChangeListener(this);
         addMouseListener(this);
+        setBorder(BorderFactory.createEmptyBorder(20, 10, 20, 10));
+        setBackground(new Color(50, 50, 50));
     }
 
     @Override
