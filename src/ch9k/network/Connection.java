@@ -57,6 +57,11 @@ public class Connection {
      * The EventPool to send events to
      */
     private EventPool pool;
+    
+    /**
+     * which ip are we talking to?
+     */
+    private InetAddress target;
 
     /**
      * True if the connection is still connecting, do not disturb
@@ -73,7 +78,8 @@ public class Connection {
     public Connection(final InetAddress ip, EventPool pool, final ConnectionManager manager) {
         final Socket socket = new Socket();
         this.pool = pool;
-
+        this.target = ip;
+        
         new Thread(new Runnable() {
             public void run() {
                 try {
@@ -103,7 +109,8 @@ public class Connection {
      */
     public Connection(Socket socket, EventPool pool) throws IOException {
         this.pool = pool;
-
+        this.target = socket.getInetAddress();
+        
         init(socket);
     }
 
@@ -131,6 +138,10 @@ public class Connection {
         /* TODO we need to relay this back to the manager */
         handlerList.remove(handler);
         logger.warn("Connection closed");
+        /* no connections left -> userdisconnected */
+        if (handlerList.size() == 0) {
+            pool.raiseEvent(new UserDisconnectedEvent(target));
+        }
     }
     
     /**
