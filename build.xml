@@ -13,6 +13,11 @@
     name="CH9K" default="default" basedir=".">
     <description>Builds, tests, and runs the project CH9K.</description>
     <import file="nbproject/build-impl.xml"/>
+    <target depends="" name="-pre-init">
+        <exec executable="git" outputproperty="git.revision">
+            <arg value="describe" />
+        </exec>
+    </target>
     <!-- copy the log4j.properties file to the classpath -->
     <target depends="init" name="-post-compile">
         <copy todir="${build.classes.dir}" file="log4j.properties" />
@@ -20,9 +25,11 @@
     <!-- copy of the the -do-jar-with-libraries from build-impl.xml -->
     <target depends="init,compile,-pre-pre-jar,-pre-jar" if="manifest.available+main.class+mkdist.available" name="-do-jar-with-libraries">
         <property location="${build.classes.dir}" name="build.classes.dir.resolved"/>
+        <property location="${src.resources.dir}" name="src.resources.dir.resolved"/>
         <pathconvert property="run.classpath.without.build.classes.dir">
             <path path="${run.classpath}"/>
             <map from="${build.classes.dir.resolved}" to=""/>
+            <map from="${src.resources.dir.resolved}" to=""/>
         </pathconvert>
         <pathconvert pathsep=" " property="jar.classpath">
             <path path="${run.classpath.without.build.classes.dir}"/>
@@ -61,8 +68,15 @@
         <build-plugin package="be/jaspervdj/googleimage" destination="googleimage"/>
         <build-plugin package="be/ugent/zeus" destination="dummyplugin"/>
     </target>
-	<!-- remove doc-dirs when cleaning -->
-	<target name="-post-clean">
+    <!-- remove doc-dirs when cleaning -->
+    <target name="-post-clean">
         <delete dir="${dist.javadoc.dir}"/>
+    </target>
+    <!-- create mac package -->
+    <target depends="init,jar" name="package" description="Build a Mac .app package">
+        <taskdef name="jarbundler" classname="net.sourceforge.jarbundler.JarBundler" />
+        <jarbundler dir="${dist.jar.dir}" name="ChatHammer 9000" mainclass="${main.class}" version="${git.revision}">
+            <jarfileset dir="${dist.jar.dir}" includes="**/*.jar" />
+        </jarbundler>
     </target>
 </project>
