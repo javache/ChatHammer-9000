@@ -6,6 +6,7 @@ import ch9k.network.events.CouldNotConnectEvent;
 import ch9k.network.events.NetworkConnectionLostEvent;
 import java.io.IOException;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Iterator;
@@ -138,6 +139,33 @@ public class ConnectionManager {
         }
 
         return online;
+    }
+    
+    private class PingAliveThread implements Runnable {
+        
+        private boolean online = true;
+        
+        public void run() {
+            while(true) {
+                try {
+                    Socket socket = new Socket();
+                    socket.connect(new InetSocketAddress("google.com",80),1000);
+                    if(!online) {
+                        /* signal back online */
+                    }
+                    online = true;
+                    Thread.sleep(120000);
+                } catch(Exception e) {
+                    if(online) {
+                        /* signal offline */
+                    }
+                    online = false;
+                }
+                
+            }
+
+        }
+        
     }
     
     /**
