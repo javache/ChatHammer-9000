@@ -2,6 +2,14 @@ package ch9k.core;
 
 import ch9k.chat.ConversationManager;
 import ch9k.configuration.Configuration;
+import com.vwp.sound.mod.modplay.Player;
+import com.vwp.sound.mod.modplay.loader.InvalidFormatException;
+import com.vwp.sound.mod.modplay.player.PlayerException;
+import com.vwp.sound.mod.sound.output.JavaSoundOutput;
+import com.vwp.sound.mod.sound.output.SoundDataFormat;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JPanel;
 
 /**
@@ -45,6 +53,31 @@ public class ChatApplication {
         } else {
             appWindow.setContentPane(new JPanel());
             appWindow.repaint();
+
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        // play the themesong
+                        Player player = new Player();
+                        player.init(new JavaSoundOutput(new SoundDataFormat(16, 44100, 2), 500), true);
+                        player.load(ChatApplication.class.getResourceAsStream("themesong.mod"), "themesong.mod");
+
+                        boolean playing = true;
+                        while(playing) {
+                            playing = player.play();
+                        }
+
+                        player.close();
+                    } catch (InvalidFormatException ex) {
+                        Logger.getLogger(ChatApplication.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (IOException ex) {
+                        Logger.getLogger(ChatApplication.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (PlayerException ex) {
+                        Logger.getLogger(ChatApplication.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            }).start();
         }
     }
 

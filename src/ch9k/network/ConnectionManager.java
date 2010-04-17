@@ -181,6 +181,7 @@ public class ConnectionManager {
                 server = new ServerSocket(Connection.DEFAULT_PORT);
             } catch (IOException e) {
                 /* TODO: handle this */
+                logger.warn(e.toString());
                 pool.raiseEvent(new NetworkConnectionLostEvent());
             }
             try {
