@@ -6,10 +6,13 @@ import ch9k.eventpool.EventFilter;
 import ch9k.eventpool.EventListener;
 import ch9k.eventpool.EventPool;
 import ch9k.plugins.NewProvidedImageEvent;
+import ch9k.plugins.ProvidedImage;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.MouseEvent;
+import java.util.HashSet;
+import java.util.Set;
 import javax.swing.JPanel;
 
 /**
@@ -42,6 +45,12 @@ public class CarouselImageChooserPanel extends JPanel implements EventListener {
     private int nextImageIndex;
 
     /**
+     * We keep a set of images currently in the carousel, so we don't
+     * accidentaly have two equal images.
+     */
+    private Set<ProvidedImage> imageSet;
+
+    /**
      * Constructor.
      * @param conversation The conversation.
      * @param model The selection model of the plugin.
@@ -64,6 +73,8 @@ public class CarouselImageChooserPanel extends JPanel implements EventListener {
 
         nextImageIndex = 0;
 
+        imageSet = new HashSet<ProvidedImage>();
+
         EventFilter filter = new EventFilter(NewProvidedImageEvent.class);
         EventPool.getAppPool().addListener(this, filter);
     }
@@ -77,14 +88,21 @@ public class CarouselImageChooserPanel extends JPanel implements EventListener {
 
     @Override
     public void handleEvent(Event e) {
-        // TODO: invokeLater
-
         /* Return if the event is not relevant. */
         final NewProvidedImageEvent event = (NewProvidedImageEvent) e;
         if(conversation != event.getConversation()) return;
 
+        /* Return if we have the image already. */
+        ProvidedImage image = event.getProvidedImage();
+        if(imageSet.contains(image)) return;
+
+        /* We need to remove the old image from the set. */
+        ProvidedImage old = images[nextImageIndex].getProvidedImage();
+        if(old != null) imageSet.remove(old);
+
         /* Set the new image. */
-        images[nextImageIndex].setProvidedImage(event.getProvidedImage());
+        images[nextImageIndex].setProvidedImage(image);
+        imageSet.add(image);
 
         /* Increment the image index. */
         nextImageIndex = (nextImageIndex + 1) % images.length;
