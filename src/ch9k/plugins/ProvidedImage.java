@@ -2,6 +2,7 @@ package ch9k.plugins;
 
 import ch9k.eventpool.WarningMessageEvent;
 import java.awt.Image;
+import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import javax.swing.ImageIcon;
@@ -50,6 +51,15 @@ public class ProvidedImage {
      */
     public Image getImage() {
         return image;
+    }
+
+    /**
+     * Get a pretty name.
+     * @return A pretty name for the image to show in a GUI.
+     */
+    public String getPrettyName() {
+        if(url == null) return null;
+        return new File(url.getFile()).getName();
     }
 
     @Override
