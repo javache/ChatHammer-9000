@@ -174,7 +174,7 @@ public class Connection {
     }
 
     public void socketHandlerClosed(SocketHandler handler) {
-        /* TODO we need to relay this back to the manager */
+        
         try {
             if(dataSocketHandler == handler) {
                 eventSocketHandler.close();
@@ -184,6 +184,8 @@ public class Connection {
         } catch (IOException e) {
             logger.warn(e.toString());
         }
+        
+        connectionManager.handleNetworkError(target);
         
         logger.warn("Connection closed");
         /* no connections left -> userdisconnected */
