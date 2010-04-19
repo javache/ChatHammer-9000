@@ -80,6 +80,8 @@ public class Connection {
      * True if the connection is still connecting, do not disturb
      */
     private boolean initialized = false;
+    
+    private ConnectionManager connectionManager;
 
     /**
      * Setup a new connection, will asynchronously create a connection to the
@@ -92,6 +94,7 @@ public class Connection {
         final Socket socket = new Socket();
         this.pool = pool;
         this.target = ip;
+        this.connectionManager = connectionManager;
         
         new Thread(new Runnable() {
             public void run() {
@@ -120,9 +123,10 @@ public class Connection {
      * @param pool The EventPool this connection will use
      * @throws IOException
      */
-    public Connection(Socket socket, EventPool pool) throws IOException {
+    public Connection(Socket socket, EventPool pool,ConnectionManager connectionManager) throws IOException {
         this.pool = pool;
         this.target = socket.getInetAddress();
+        this.connectionManager = connectionManager;
         
         init(socket);
     }

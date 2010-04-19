@@ -194,7 +194,7 @@ public class ConnectionManager {
                         conn.addDataSocket(client);
                         logger.info("received a datasocket from " + client.getInetAddress());
                     } else {
-                        Connection connection = new Connection(client, pool);
+                        Connection connection = new Connection(client, pool,ConnectionManager.this);
                         // TODO worry about synchronisation later
                         connectionMap.put(client.getInetAddress(), connection);
                         logger.info("Accepted a new connection! " + client.getInetAddress());
