@@ -34,7 +34,7 @@ public class Connection {
     /**
      * Amount of time to wait for a socket on connect
      */
-    private static final int SOCKET_CONNECT_TIMEOUT = 500;
+    private static final int SOCKET_CONNECT_TIMEOUT = 1000;
 
     /**
      * I'm a lumberjack, and I'm okay.
@@ -171,6 +171,16 @@ public class Connection {
 
     public void socketHandlerClosed(SocketHandler handler) {
         /* TODO we need to relay this back to the manager */
+        try {
+            if(dataSocketHandler == handler) {
+                eventSocketHandler.close();
+            } else {
+                dataSocketHandler.close();
+            }
+        } catch (IOException e) {
+            logger.warn(e.toString());
+        }
+        
         logger.warn("Connection closed");
         /* no connections left -> userdisconnected */
         pool.raiseEvent(new UserDisconnectedEvent(target));
