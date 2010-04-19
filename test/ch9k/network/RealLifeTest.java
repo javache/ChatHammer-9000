@@ -30,7 +30,7 @@ public class RealLifeTest {
         pool.raiseEvent(new TestNetworkEvent(InetAddress.getByName("zeus.ugent.be")));
         
         synchronized(this) {
-            wait(600);            
+            wait(1000);            
         }
         assertTrue(listener.received);
     }

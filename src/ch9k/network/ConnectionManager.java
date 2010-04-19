@@ -189,10 +189,18 @@ public class ConnectionManager {
                 logger.info("Started accepting connections!");
                 while (!Thread.interrupted()) {
                     Socket client = server.accept();
-                    Connection connection = new Connection(client, pool);
-                    // TODO worry about synchronisation later
-                    connectionMap.put(client.getInetAddress(), connection);
-                    logger.info("Accepted a new connection! " + client.getInetAddress());
+                    Connection conn = connectionMap.get(client.getInetAddress());
+                    if (conn != null) {
+                        conn.addDataSocket(client);
+                        logger.info("received a datasocket from " + client.getInetAddress());
+                    } else {
+                        Connection connection = new Connection(client, pool);
+                        // TODO worry about synchronisation later
+                        connectionMap.put(client.getInetAddress(), connection);
+                        logger.info("Accepted a new connection! " + client.getInetAddress());
+                    }
+                    
+                    
                 }
             } catch (IOException ex) {
                 // if this fails it would appear as if nothing ever happened

@@ -3,6 +3,7 @@ package ch9k.network;
 import ch9k.eventpool.Event;
 import ch9k.eventpool.EventPool;
 import ch9k.eventpool.NetworkEvent;
+import ch9k.eventpool.DataEvent;
 import ch9k.network.events.PingEvent;
 import ch9k.network.events.UserDisconnectedEvent;
 import java.io.EOFException;
@@ -44,15 +45,27 @@ public class Connection {
     private static final Logger logger = Logger.getLogger(Connection.class);
 
     /**
-     * A concurrent queue of events to be sent
+     * A concurrent queue of NetworkEvents to be sent
      */
     private LinkedBlockingQueue<NetworkEvent> eventQueue =
             new LinkedBlockingQueue<NetworkEvent>();
 
     /**
-     * keep track of all the sockethandlers we have
+     * SocketHandler for the basic NetworkEvents;
      */
-    private ArrayList<SocketHandler> handlerList = new ArrayList<SocketHandler>();
+    private SocketHandler eventSocketHandler;
+    
+    /**
+     * A concurrent queue of DataEvents to be sent
+     */
+    private LinkedBlockingQueue<NetworkEvent> dataQueue =
+            new LinkedBlockingQueue<NetworkEvent>();
+    
+    /**
+     * SocketHandler for DataEvents
+     */
+    private SocketHandler dataSocketHandler;
+    
     /**
      * The EventPool to send events to
      */
@@ -94,7 +107,7 @@ public class Connection {
                     if (manager != null) {
                         manager.handleNetworkError(ip);
                     }
-
+                    
                     notifyInitComplete();
                 }
             }
@@ -121,11 +134,33 @@ public class Connection {
     private void init(Socket socket) throws IOException {
         socket.setKeepAlive(true);
 
-        handlerList.add(new SocketHandler(socket,eventQueue,pool,this));
+        eventSocketHandler = new SocketHandler(socket,eventQueue,pool,this);
         
         notifyInitComplete();
     }
-
+    
+    public void addDataSocket(Socket socket) throws IOException {
+        socket.setKeepAlive(true);
+        dataSocketHandler = new SocketHandler(socket,dataQueue,pool,this);
+    }
+    
+    private void initDataSocket() {
+        final Socket socket = new Socket();
+        new Thread(new Runnable() {
+            public void run() {
+                try {
+                    logger.info("Opening connection to " + target);
+                    socket.connect(new InetSocketAddress(target, DEFAULT_PORT),
+                            SOCKET_CONNECT_TIMEOUT);
+                    socket.setKeepAlive(true);
+                    dataSocketHandler = new SocketHandler(socket,dataQueue,pool,Connection.this);                    
+                } catch (IOException ex) {
+                    logger.warn(ex.toString());
+                }
+            }
+        }).start();
+    }
+    
     /**
      * Mark connection as not connecting anymore
      */
@@ -136,12 +171,9 @@ public class Connection {
 
     public void socketHandlerClosed(SocketHandler handler) {
         /* TODO we need to relay this back to the manager */
-        handlerList.remove(handler);
         logger.warn("Connection closed");
         /* no connections left -> userdisconnected */
-        if (handlerList.size() == 0) {
-            pool.raiseEvent(new UserDisconnectedEvent(target));
-        }
+        pool.raiseEvent(new UserDisconnectedEvent(target));
     }
     
     /**
@@ -149,12 +181,11 @@ public class Connection {
      */
     public void close() {
         try {
-            for (SocketHandler handler : handlerList) {
-                handler.close();                
-            }
-            handlerList.clear();
+            eventSocketHandler.close();
         } catch (IOException ex) {
             logger.warn(ex.toString());
+        } catch (NullPointerException e) {
+            
         }
     }
 
@@ -171,7 +202,13 @@ public class Connection {
      * @param event Event to be sent
      */
     public void sendEvent(NetworkEvent event) {
-        eventQueue.add(event);
+        if(event instanceof DataEvent) {
+            if(dataSocketHandler == null) initDataSocket();
+            dataQueue.add(event);
+        } else {
+            eventQueue.add(event);
+        }
+        
     }
 
 }
