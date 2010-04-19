@@ -9,10 +9,16 @@ import ch9k.eventpool.Event;
 import ch9k.eventpool.EventFilter;
 import ch9k.eventpool.EventListener;
 import ch9k.eventpool.EventPool;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.apache.log4j.Logger;
 
 /**
  * Abstract TextAnalyzer class.
@@ -21,9 +27,48 @@ import java.util.regex.Pattern;
 public abstract class TextAnalyzer extends AbstractPlugin
         implements EventListener {
     /**
+     * I accidentaly your logger
+     */
+    private static final Logger logger = Logger.getLogger(TextAnalyzer.class);
+
+    /**
      * Filter to take out punctuation marks.
      */
     private static Pattern punctuation = Pattern.compile("[.,!?&\"]");
+
+    /**
+     * Set of words to be ignored.
+     */
+    private static Set<String> noiseWords;
+
+    /* Statically parse the list of words to be ignored. */
+    static {
+        noiseWords = new HashSet<String>();
+        String fileName = "/ch9k/plugins/NoiseWords.txt";
+
+        try {
+            /* Open up the reader. */
+            BufferedReader reader = new BufferedReader(new InputStreamReader(
+                    TextAnalyzer.class.getResourceAsStream(fileName)));
+
+            /* Parse every line and add it to the list. */
+            String line = reader.readLine();
+            while(line != null) {
+                String word = normalizeWord(line);
+                /* Skip empty lines and comments. */
+                if(word.length() > 0 && word.charAt(0) != '#') {
+                    noiseWords.add(word);
+                }
+                line = reader.readLine();
+            }
+
+            /* Do not forget to close our stuff. */
+            reader.close();
+        /* Something *bad* happened, warn the user. */
+        } catch (IOException exception) {
+            logger.warn("Could not read NoiseWords list: " + exception);
+        }
+    }
 
     @Override
     public void enablePlugin(Conversation conversation) {
@@ -86,16 +131,39 @@ public abstract class TextAnalyzer extends AbstractPlugin
             /* Now loop through all words in the message. */
             for(String word: words) {
                 /* Trim and lowercase the string, then store it's frequency. */
-                String key = word.trim().toLowerCase();
-                Integer frequency = frequencyMap.get(key);
-                if(frequency == null) {
-                    frequencyMap.put(key, 1);
-                } else {
-                    frequencyMap.put(key, frequency.intValue() + 1);
+                String key = normalizeWord(word);
+                if(!isNoiseWord(key)) {
+                    Integer frequency = frequencyMap.get(key);
+                    if(frequency == null) {
+                        frequencyMap.put(key, 1);
+                    } else {
+                        frequencyMap.put(key, frequency.intValue() + 1);
+                    }
                 }
             }
         }
 
         return frequencyMap;
+    }
+
+    /**
+     * Normalize a word. This includes trimming and putting the word in
+     * lowercase.
+     * @param word Word to normalize.
+     * @return Normalized version of the word.
+     */
+    public static String normalizeWord(String word) {
+        return word.trim().toLowerCase();
+    }
+
+    /**
+     * Check if a given word is a predefined noise word.
+     * @param word String to check.
+     * @return If the given word is noise.
+     */
+    public boolean isNoiseWord(String word) {
+        /* We consider all < 1 character words as noise. */
+        String normalized = normalizeWord(word);
+        return normalized.length() <= 1 || noiseWords.contains(normalized);
     }
 }

@@ -15,10 +15,15 @@ public class LiteTextAnalyzerPluginTest {
     @Test
     public void testGetSubject() {
         TextAnalyzer analyzer = new LiteTextAnalyzerPlugin();
-        String[] messages = {"Mushroom Mushroom Mushroom", "Badger Badger"};
+        String[] messages = {
+            "Mushroom Mushroom Mushroom",
+            "Badger Badger",
+            "The a The a The a The a"
+        };
         String[] subjects = analyzer.getSubjects(messages);
         assertEquals("mushroom", subjects[0]);
         assertEquals("badger", subjects[1]);
+        assertEquals(2, subjects.length);
     }
 
     /**
