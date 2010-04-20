@@ -3,14 +3,6 @@ package ch9k.core;
 import ch9k.core.gui.ApplicationWindow;
 import ch9k.chat.ConversationManager;
 import ch9k.configuration.Configuration;
-import com.vwp.sound.mod.modplay.Player;
-import com.vwp.sound.mod.modplay.loader.InvalidFormatException;
-import com.vwp.sound.mod.modplay.player.PlayerException;
-import com.vwp.sound.mod.sound.output.JavaSoundOutput;
-import com.vwp.sound.mod.sound.output.SoundDataFormat;
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * The main application, OMG!
@@ -19,7 +11,6 @@ import java.util.logging.Logger;
  * @author Pieter De baets
  */
 public class ChatApplication {
-
     public static ChatApplication getInstance() {
         return SingletonHolder.INSTANCE;
     }
@@ -29,6 +20,7 @@ public class ChatApplication {
          private static final ChatApplication INSTANCE = new ChatApplication();
     }
 
+    private ApplicationWindow appWindow;
     private Configuration configuration;
     private ConversationManager conversationManager;
 
@@ -39,19 +31,18 @@ public class ChatApplication {
 
     private ChatApplication() {
         conversationManager = new ConversationManager();
+        appWindow = new ApplicationWindow();
     }
 
     private void start(String[] args) {
-        ApplicationWindow appWindow = new ApplicationWindow();
-
         // perform auto login?
-        if(args.length == 2) {
+        if(args!= null && args.length == 2) {
             configuration = new Configuration(args[0]);
             // todo: perform real auth
             configuration.setAccount(new Account(args[0], args[1]));
         }
 
-        while(configuration == null) {
+        if(configuration == null) {
             // show login dialog
             LoginController loginController = new LoginController();
             configuration = loginController.run(appWindow);
@@ -62,31 +53,14 @@ public class ChatApplication {
         }
 
         appWindow.initApplicationView();
-        appWindow.setStatus("Booting...");
-        appWindow.setVisible(true);
+        appWindow.setStatus(I18n.get("ch9k.core", "booting"));
+    }
 
+    public void logout() {
         new Thread(new Runnable() {
-            @Override
             public void run() {
-                try {
-                    // play the themesong
-                    Player player = new Player();
-                    player.init(new JavaSoundOutput(new SoundDataFormat(16, 44100, 2), 500), true);
-                    player.load(ChatApplication.class.getResourceAsStream("themesong.mod"), "themesong.mod");
-
-                    boolean playing = true;
-                    while(playing) {
-                        playing = player.play();
-                    }
-
-                    player.close();
-                } catch (InvalidFormatException ex) {
-                    Logger.getLogger(ChatApplication.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (IOException ex) {
-                    Logger.getLogger(ChatApplication.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (PlayerException ex) {
-                    Logger.getLogger(ChatApplication.class.getName()).log(Level.SEVERE, null, ex);
-                }
+                configuration = null;
+                start(null);
             }
         }).start();
     }

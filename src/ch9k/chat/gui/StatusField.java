@@ -1,6 +1,7 @@
 package ch9k.chat.gui;
 
-import java.awt.Color;
+import ch9k.core.I18n;
+import java.awt.SystemColor;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import javax.swing.JTextField;
@@ -10,26 +11,34 @@ import javax.swing.JTextField;
  * @author Pieter De Baets
  */
 public class StatusField extends JTextField implements FocusListener {
-    public StatusField() {
-        super("Set status");
-        setForeground(Color.GRAY);
+    private static final String DEFAULT_TEXT = I18n.get("ch9k.chat", "set_status");
 
+    private boolean textChanged;
+    
+    public StatusField() {
+        super(DEFAULT_TEXT);
+        setForeground(SystemColor.textInactiveText);
+
+        // add listener so we can clear text on focus
         addFocusListener(this);
     }
 
     @Override
     public void focusGained(FocusEvent e) {
-        if(getText().equals("Set status")) {
+        if(!textChanged && getText().equals(DEFAULT_TEXT)) {
             setText("");
-            setForeground(Color.BLACK);
+            setForeground(SystemColor.textText);
         }
     }
 
     @Override
     public void focusLost(FocusEvent e) {
         if(getText().isEmpty()) {
-            setText("Set status");
-            setForeground(Color.GRAY);
+            setText(DEFAULT_TEXT);
+            setForeground(SystemColor.textInactiveText);
+            textChanged = false;
+        } else {
+            textChanged = true;
         }
     }
 }

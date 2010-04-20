@@ -25,6 +25,7 @@ public class LoginController {
             public void run() {
                 view = new LoginPanel(LoginController.this, window);
                 window.setVisible(true);
+                window.repaint();
             }
         });
 

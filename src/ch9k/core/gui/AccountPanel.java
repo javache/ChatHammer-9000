@@ -32,7 +32,7 @@ public class AccountPanel extends JPanel {
 
         accountLabel = new JLabel(account.getUsername());
         accountLabel.setFont(accountLabel.getFont().deriveFont(15f));
-        accountLabel.setIcon(new StatusIcon());
+        accountLabel.setIcon(new StatusIcon(20, true));
         accountLabel.setBorder(BorderFactory.createEmptyBorder(5, 3, 5, 0));
 
         statusField = new StatusField();
@@ -40,7 +40,7 @@ public class AccountPanel extends JPanel {
         String logoffButtonTexts = I18n.get("ch9k.core", "log_off");
         logoffButton = new JButton(new AbstractAction(logoffButtonTexts) {
             public void actionPerformed(ActionEvent e) {
-                System.exit(0);
+                ChatApplication.getInstance().logout();
             }
         });
     }

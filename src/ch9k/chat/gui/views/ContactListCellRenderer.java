@@ -28,7 +28,7 @@ public class ContactListCellRenderer extends JPanel implements ListCellRenderer 
         setOpaque(true);
 
         contactLabel = new JLabel();
-        contactLabel.setIcon(new StatusIcon());
+        contactLabel.setIcon(new StatusIcon(20, false));
         contactLabel.setFont(contactLabel.getFont().deriveFont(15f));
         contactLabel.setBorder(BorderFactory.createEmptyBorder(5, 3, 5, 0));
         blockButton = new JToggleButton();

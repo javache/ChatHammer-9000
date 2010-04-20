@@ -58,7 +58,7 @@ public class ApplicationWindow extends JFrame {
         }
 
         // set the menu bar on top of the screen on mac
-        System.setProperty ("apple.laf.useScreenMenuBar", "true");
+        System.setProperty("apple.laf.useScreenMenuBar", "true");
     }
 
     /**
@@ -96,6 +96,7 @@ public class ApplicationWindow extends JFrame {
         panel.add(statusBar, BorderLayout.SOUTH);
         
         setContentPane(panel);
+        setVisible(true);
         repaint();
     }
 
