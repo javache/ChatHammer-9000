@@ -1,5 +1,6 @@
 package ch9k.core;
 
+import ch9k.core.gui.ApplicationWindow;
 import ch9k.core.gui.RegistrationPanel;
 import java.awt.Dialog.ModalityType;
 import java.awt.Dimension;

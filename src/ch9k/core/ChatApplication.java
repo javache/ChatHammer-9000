@@ -1,5 +1,6 @@
 package ch9k.core;
 
+import ch9k.core.gui.ApplicationWindow;
 import ch9k.chat.ConversationManager;
 import ch9k.configuration.Configuration;
 import com.vwp.sound.mod.modplay.Player;
@@ -10,7 +11,6 @@ import com.vwp.sound.mod.sound.output.SoundDataFormat;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JPanel;
 
 /**
  * The main application, OMG!
@@ -34,51 +34,61 @@ public class ChatApplication {
 
     public static void main(String[] args) {
         ChatApplication app = ChatApplication.getInstance();
-        app.start();
+        app.start(args);
     }
 
     private ChatApplication() {
         conversationManager = new ConversationManager();
     }
 
-    private void start() {
+    private void start(String[] args) {
         ApplicationWindow appWindow = new ApplicationWindow();
 
-        // show login dialog
-        LoginController loginController = new LoginController();
-        configuration = loginController.run(appWindow);
-        if(configuration == null) {
-            // user closed window
-            System.exit(0);
-        } else {
-            appWindow.setContentPane(new JPanel());
-            appWindow.repaint();
-
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        // play the themesong
-                        Player player = new Player();
-                        player.init(new JavaSoundOutput(new SoundDataFormat(16, 44100, 2), 500), true);
-                        player.load(ChatApplication.class.getResourceAsStream("themesong.mod"), "themesong.mod");
-
-                        boolean playing = true;
-                        while(playing) {
-                            playing = player.play();
-                        }
-
-                        player.close();
-                    } catch (InvalidFormatException ex) {
-                        Logger.getLogger(ChatApplication.class.getName()).log(Level.SEVERE, null, ex);
-                    } catch (IOException ex) {
-                        Logger.getLogger(ChatApplication.class.getName()).log(Level.SEVERE, null, ex);
-                    } catch (PlayerException ex) {
-                        Logger.getLogger(ChatApplication.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                }
-            }).start();
+        // perform auto login?
+        if(args.length == 2) {
+            configuration = new Configuration(args[0]);
+            // todo: perform real auth
+            configuration.setAccount(new Account(args[0], args[1]));
         }
+
+        while(configuration == null) {
+            // show login dialog
+            LoginController loginController = new LoginController();
+            configuration = loginController.run(appWindow);
+            if(configuration == null) {
+                // user closed window
+                System.exit(0);
+            }
+        }
+
+        appWindow.initApplicationView();
+        appWindow.setStatus("Booting...");
+        appWindow.setVisible(true);
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    // play the themesong
+                    Player player = new Player();
+                    player.init(new JavaSoundOutput(new SoundDataFormat(16, 44100, 2), 500), true);
+                    player.load(ChatApplication.class.getResourceAsStream("themesong.mod"), "themesong.mod");
+
+                    boolean playing = true;
+                    while(playing) {
+                        playing = player.play();
+                    }
+
+                    player.close();
+                } catch (InvalidFormatException ex) {
+                    Logger.getLogger(ChatApplication.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (IOException ex) {
+                    Logger.getLogger(ChatApplication.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (PlayerException ex) {
+                    Logger.getLogger(ChatApplication.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }).start();
     }
 
     /**

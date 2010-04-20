@@ -1,6 +1,5 @@
 package ch9k.core.gui;
 
-import ch9k.core.ApplicationWindow;
 import ch9k.core.I18n;
 import ch9k.core.LoginController;
 import ch9k.core.RegistrationController;
@@ -103,7 +102,7 @@ public class LoginPanel extends JPanel {
    
     private void initLayout() {
         GroupLayout layout = new GroupLayout(this);
-        this.setLayout(layout);
+        setLayout(layout);
 
         layout.setHorizontalGroup(layout.createSequentialGroup()
             .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
