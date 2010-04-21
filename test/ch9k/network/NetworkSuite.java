@@ -9,6 +9,7 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
         ch9k.network.ConnectionTest.class,
-        ch9k.network.ConnectionManagerTest.class
+        ch9k.network.ConnectionManagerTest.class,
+        ch9k.network.EventWriterTest.class
 })
 public class NetworkSuite {}
