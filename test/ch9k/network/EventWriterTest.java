@@ -36,7 +36,7 @@ public class EventWriterTest {
     @Test
     public void testSendEvent() throws Exception {
         /* just a temp file, will be deleted */
-        File file = new File("temp");
+        File file = File.createTempFile("temp","toon");
         file.createNewFile();
         
         /* hook up our input and outputstreams */
