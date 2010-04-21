@@ -5,7 +5,6 @@ import static org.junit.Assert.*;
 
 /**
  * Class to help testing of different TextAnalyzer's.
- * @author Jasper Van der Jeugt
  */
 public class TextAnalyzerTester {
     /**

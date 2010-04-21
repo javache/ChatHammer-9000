@@ -3,9 +3,6 @@ package ch9k.eventpool;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
-/**
- * @author Pieter De Baets
- */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
     ch9k.eventpool.EventTest.class,

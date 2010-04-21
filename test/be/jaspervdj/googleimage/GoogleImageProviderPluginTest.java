@@ -5,9 +5,6 @@ import java.net.MalformedURLException;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-/**
- * @author Jasper Van der Jeugt
- */
 public class GoogleImageProviderPluginTest {    
     /**
      * Test of getImageUrls method, of class GoogleImageProviderPlugin.

@@ -4,9 +4,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import static org.junit.Assert.*;
 
-/**
- * @author Jasper Van der Jeugt
- */
 public class ImageProviderTester {
     /**
      * Test of getImageUrls method, of any ImageProvider.

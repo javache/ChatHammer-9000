@@ -7,9 +7,6 @@ import java.net.URL;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-/**
- * @author Jasper Van der Jeugt
- */
 public class PluginManagerTest {    
     /**
      * Test plugin installation.

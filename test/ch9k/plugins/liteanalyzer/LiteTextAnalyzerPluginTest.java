@@ -5,9 +5,6 @@ import ch9k.plugins.TextAnalyzerTester;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-/**
- * @author Jasper Van der Jeugt
- */
 public class LiteTextAnalyzerPluginTest {    
     /**
      * Test of getSubject method, of class LiteTextAnalyzerPlugin.

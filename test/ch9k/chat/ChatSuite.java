@@ -3,9 +3,6 @@ package ch9k.chat;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
-/**
- * @author Jens Panneel
- */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
     ch9k.chat.events.ConversationEventFilterTest.class

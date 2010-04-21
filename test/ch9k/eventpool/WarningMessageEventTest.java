@@ -5,7 +5,6 @@ import static org.junit.Assert.*;
 
 /**
  * Test of the WarningMessageEventTest class.
- * @author Jasper Van der Jeugt
  */
 public class WarningMessageEventTest {
     /**

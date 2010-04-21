@@ -4,9 +4,6 @@ import java.util.Date;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-/**
- * @author Pieter De Baets
- */
 public class EventTest {
     /**
      * Test of isHandledsetHandled method, of class Event.

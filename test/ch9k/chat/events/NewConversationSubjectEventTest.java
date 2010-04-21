@@ -15,9 +15,6 @@ import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-/**
- * @author Jens Panneel
- */
 public class NewConversationSubjectEventTest {
     @Before
     public void setUp() {

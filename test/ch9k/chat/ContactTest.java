@@ -20,9 +20,6 @@ import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-/**
- * @author Jens Panneel
- */
 public class ContactTest {
     private Contact contact;
     private InetAddress ip;

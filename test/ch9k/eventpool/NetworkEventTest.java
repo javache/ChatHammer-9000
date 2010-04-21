@@ -6,9 +6,6 @@ import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-/**
- * @author Pieter De Baets
- */
 public class NetworkEventTest {
     private InetAddress testIp;
 
