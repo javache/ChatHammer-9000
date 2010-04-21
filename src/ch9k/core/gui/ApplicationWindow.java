@@ -3,13 +3,12 @@ package ch9k.core.gui;
 import ch9k.chat.Contact;
 import ch9k.chat.ContactList;
 import ch9k.chat.gui.views.ContactListCellRenderer;
-import ch9k.chat.gui.views.ContactListView;
+import ch9k.chat.gui.views.ContactListPopupListener;
 import ch9k.core.ChatApplication;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.logging.Level;
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -89,6 +88,7 @@ public class ApplicationWindow extends JFrame {
         
         contactList = new JList(contacts);
         contactList.setCellRenderer(new ContactListCellRenderer());
+        contactList.addMouseListener(new ContactListPopupListener(contactList));
         panel.add(contactList, BorderLayout.CENTER);
 
         statusBar = new JLabel();
