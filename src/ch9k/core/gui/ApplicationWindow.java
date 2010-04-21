@@ -1,10 +1,19 @@
 package ch9k.core.gui;
 
+import ch9k.chat.Contact;
+import ch9k.chat.ContactList;
+import ch9k.chat.gui.views.ContactListCellRenderer;
+import ch9k.chat.gui.views.ContactListView;
+import ch9k.core.ChatApplication;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.logging.Level;
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
@@ -23,6 +32,7 @@ public class ApplicationWindow extends JFrame {
 
     private JPanel panel;
     private JLabel statusBar;
+    private JList contactList;
     private AccountPanel account;
 
     /**
@@ -61,6 +71,25 @@ public class ApplicationWindow extends JFrame {
 
         account = new AccountPanel();
         panel.add(account, BorderLayout.NORTH);
+
+        //for testing purpose
+        ContactList contacts = ChatApplication.getInstance()
+                .getAccount().getContactList();
+
+        try {
+            Contact contact1 = new Contact("JPanneel",
+                    InetAddress.getByName("google.be"), false);
+            contacts.addContact(contact1);
+            Contact contact2 = new Contact("Javache",
+                    InetAddress.getByName("google.be"), false);
+            contacts.addContact(contact2);
+        } catch (UnknownHostException ex) {
+            // just for testing
+        }
+        
+        contactList = new JList(contacts);
+        contactList.setCellRenderer(new ContactListCellRenderer());
+        panel.add(contactList, BorderLayout.CENTER);
 
         statusBar = new JLabel();
         statusBar.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
