@@ -1,19 +1,13 @@
 package ch9k.core.gui;
 
-import ch9k.chat.Contact;
-import ch9k.chat.ContactList;
-import ch9k.chat.gui.views.ContactListCellRenderer;
-import ch9k.chat.gui.views.ContactListPopupListener;
-import ch9k.core.ChatApplication;
+import ch9k.chat.gui.ContactListView;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 import org.apache.log4j.Logger;
@@ -31,7 +25,7 @@ public class ApplicationWindow extends JFrame {
 
     private JPanel panel;
     private JLabel statusBar;
-    private JList contactList;
+    private ContactListView contactList;
     private AccountPanel account;
 
     /**
@@ -71,25 +65,14 @@ public class ApplicationWindow extends JFrame {
         account = new AccountPanel();
         panel.add(account, BorderLayout.NORTH);
 
-        //for testing purpose
-        ContactList contacts = ChatApplication.getInstance()
-                .getAccount().getContactList();
+        contactList = new ContactListView();
+        contactList.setBackground(getBackground());
 
-        try {
-            Contact contact1 = new Contact("JPanneel",
-                    InetAddress.getByName("google.be"), false);
-            contacts.addContact(contact1);
-            Contact contact2 = new Contact("Javache",
-                    InetAddress.getByName("google.be"), false);
-            contacts.addContact(contact2);
-        } catch (UnknownHostException ex) {
-            // just for testing
-        }
-        
-        contactList = new JList(contacts);
-        contactList.setCellRenderer(new ContactListCellRenderer());
-        contactList.addMouseListener(new ContactListPopupListener(contactList));
-        panel.add(contactList, BorderLayout.CENTER);
+        JScrollPane scrollPane = new JScrollPane(contactList);
+        scrollPane.getViewport().setOpaque(false);
+        scrollPane.setBorder(null);
+        scrollPane.setBackground(getBackground());
+        panel.add(scrollPane, BorderLayout.CENTER);
 
         statusBar = new JLabel();
         statusBar.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));

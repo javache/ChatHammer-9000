@@ -8,7 +8,7 @@ import javax.swing.JPanel;
  *
  * @author jpanneel
  */
-class ConversationPanel extends JPanel{
+public class ConversationPanel extends JPanel{
     private Conversation conversation;
 
     private ConversationContactLabel contactLabel;

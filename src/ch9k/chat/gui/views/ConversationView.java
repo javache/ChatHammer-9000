@@ -90,6 +90,8 @@ public class ConversationView extends JFrame implements EventListener, ChangeLis
     }
 
     public static void main(String[] args) throws UnknownHostException, InterruptedException {
+        ChatApplication.getInstance().performTestLogin();
+
         Account account = ChatApplication.getInstance().getAccount();
         ContactList contactList = account.getContactList();
 

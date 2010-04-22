@@ -2,6 +2,7 @@ package ch9k.chat.gui.actions;
 
 import ch9k.chat.Contact;
 import ch9k.chat.events.NewConversationEvent;
+import ch9k.core.I18n;
 import ch9k.eventpool.EventPool;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
@@ -14,8 +15,10 @@ public class StartConversationAction extends AbstractAction {
     private Contact contact;
 
     public StartConversationAction(Contact contact) {
-        super("send chatmessage");
+        super(I18n.get("ch9k.chat", "chat"));
         this.contact = contact;
+        
+        setEnabled(contact.isOnline());
     }
 
     @Override

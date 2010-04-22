@@ -1,8 +1,12 @@
 package ch9k.core;
 
+import ch9k.chat.Contact;
+import ch9k.chat.ContactList;
 import ch9k.core.gui.ApplicationWindow;
 import ch9k.chat.ConversationManager;
 import ch9k.configuration.Configuration;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 /**
  * The main application, OMG!
@@ -37,9 +41,14 @@ public class ChatApplication {
     private void start(String[] args) {
         // perform auto login?
         if(args!= null && args.length == 2) {
-            configuration = new Configuration(args[0]);
-            // todo: perform real auth
-            configuration.setAccount(new Account(args[0], args[1]));
+            Configuration configuration = new Configuration(args[0]);
+            Account account = configuration.getAccount();
+            if(account != null && account.authenticate(args[1])) {
+                this.configuration = configuration;
+                performTestLogin();
+            } else {
+                System.err.println("Failed to login with provided credentials");
+            }
         }
 
         if(configuration == null) {
@@ -91,7 +100,24 @@ public class ChatApplication {
      * (to be used for testing purposes only!)
      */
     public void performTestLogin() {
-        configuration = new Configuration("CH9K");
-        configuration.setAccount(new Account("CH9K", "password"));
+        if(configuration == null || configuration.getAccount() == null) {
+            configuration = new Configuration("CH9K");
+            configuration.setAccount(new Account("CH9K", "password"));
+        }
+
+        ContactList contacts = configuration.getAccount().getContactList();
+
+        try {
+            contacts.addContact(new Contact("jaspervdj",
+                    InetAddress.getByName("jaspervdj.be"), false));
+            contacts.addContact(new Contact("Javache",
+                    InetAddress.getByName("javache.be"), false));
+            contacts.addContact(new Contact("nudded",
+                    InetAddress.getByName("ugent.be"), false));
+            contacts.addContact(new Contact("jpanneel",
+                    InetAddress.getByName("google.be"), false));
+            contacts.addContact(new Contact("robust2",
+                    InetAddress.getByName("google.com"), false));
+        } catch (UnknownHostException ex) {}
     }
 }

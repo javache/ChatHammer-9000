@@ -32,7 +32,6 @@ public class Storage {
      * Throws an exception if the user does not exist.
      * 
      * @param username Username we want to open
-     * @throws IOException Specified user doesn't exist
      */
     public Storage(String username){
         storage = new HashMap<String, Persistable>();
@@ -40,17 +39,17 @@ public class Storage {
         this.username = username;
 
         // Check if the users exists, if not, don't even try to parse
-        if(!fileTest(username)) {
+        File file = new File(getStorageDirectory(), username.toLowerCase() + ".xml");
+        if(!file.exists()) {
             return;
         }
 
         //Parse the XML file
         SAXBuilder parser = new SAXBuilder();
-        File file = new File(getStorageDirectory(), username.toLowerCase());
         try {
             Element root = parser.build(file).getRootElement();
             for (Object obj : root.getChildren()) {
-                //Transform element into PersistentDataObject and put it in the XMLmap
+                // Transform element into PersistentDataObject and put it in the XMLmap
                 PersistentDataObject child = new PersistentDataObject((Element) obj);
                 xmlMap.put(child.getName(), child);
             }
@@ -67,8 +66,8 @@ public class Storage {
      */
     public void save() {
         // Initiate the XML
-        Element xml = new Element("Root");
-        xml.addContent("ChatHammer 9000 storage file, created on " + new Date());
+        Element root = new Element("configuration");
+        root.setAttribute("last-updated", new Date().toString());
 
         // Iterate through the persistables, and add them to the XML tree.
         for (Entry<String,Persistable> entry : storage.entrySet()) {
@@ -78,23 +77,21 @@ public class Storage {
                 child.setName(entry.getKey());
             }
             child.setAttribute("class", entry.getValue().getClass().toString());
-            xml.addContent(child);
+            root.addContent(child);
         }
         
-        // Now store it somewhere on the HD
         try {
             // Open the right file
-            File file = new File(getStorageDirectory(), username.toLowerCase());
+            File file = new File(getStorageDirectory(), username.toLowerCase() + ".xml");
 
             // Open the outpustream and write the XML
             FileOutputStream outputstream = new FileOutputStream(file);
             XMLOutputter outputter = new XMLOutputter();
-            outputter.output(xml, outputstream);
+            outputter.output(root, outputstream);
 
-            // Close
             outputstream.close();
         } catch (IOException ex) {
-            //something went wrong, todo
+            //something went wrong, TODO
         }
     }
 
@@ -155,15 +152,4 @@ public class Storage {
         
         return workingDirectory;
     }
-
-    /**
-     * Checks if we have config files for this use
-     * @param username Username for whom we want to check files
-     * @return Exists boolean
-     */
-    public boolean fileTest(String username){
-        return new File(getStorageDirectory(),
-                username.toLowerCase()).exists();
-    }
-
 }
