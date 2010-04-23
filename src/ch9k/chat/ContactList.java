@@ -4,6 +4,7 @@ import ch9k.configuration.Persistable;
 import ch9k.configuration.PersistentDataObject;
 import ch9k.eventpool.EventListener;
 import ch9k.eventpool.Event;
+import ch9k.eventpool.EventFilter;
 import ch9k.eventpool.EventPool;
 import ch9k.chat.events.ContactOnlineEvent;
 import ch9k.chat.events.ContactOfflineEvent;
@@ -32,6 +33,7 @@ public class ContactList extends AbstractListModel implements Persistable, Chang
      */
     public ContactList() {
         contacts = new ArrayList<Contact>();
+        init();
     }
     
     /**
@@ -42,8 +44,14 @@ public class ContactList extends AbstractListModel implements Persistable, Chang
     public ContactList(PersistentDataObject data) {
         contacts = new ArrayList<Contact>();
         load(data);
+        init();
     }
 
+    private void init() {
+        pingContacts();
+        EventPool.getAppPool().addListener(new ContactOnlineListener(),new EventFilter(ContactOnlineEvent.class));
+        EventPool.getAppPool().addListener(new ContactOfflineListener(),new EventFilter(ContactOfflineEvent.class));
+    }
 
     /**
      * Get a list of all the contacts from the current user
