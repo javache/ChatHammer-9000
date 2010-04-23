@@ -2,6 +2,11 @@ package ch9k.chat;
 
 import ch9k.configuration.Persistable;
 import ch9k.configuration.PersistentDataObject;
+import ch9k.eventpool.EventListener;
+import ch9k.eventpool.Event;
+import ch9k.eventpool.EventPool;
+import ch9k.chat.events.ContactOnlineEvent;
+import ch9k.chat.events.ContactOfflineEvent;
 import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -47,7 +52,27 @@ public class ContactList extends AbstractListModel implements Persistable, Chang
     public List<Contact> getContacts() {
         return contacts;
     }
-
+    
+    private void pingContacts() {
+        for (int i = 0; i < contacts.size(); i++ ) {
+            EventPool.getAppPool().raiseEvent(new ContactOnlineEvent(contacts.get(i)));
+        }
+    }
+    
+    private class ContactOnlineListener implements EventListener {
+        public void handleEvent(Event ev) {
+            ContactOnlineEvent event = (ContactOnlineEvent)ev;
+            event.getContact().setOnline(true);
+        }
+    }
+    
+    private class ContactOfflineListener implements EventListener {
+        public void handleEvent(Event ev) {
+            ContactOfflineEvent event = (ContactOfflineEvent)ev;
+            event.getContact().setOnline(false);
+        }
+    }
+    
     /**
      * Add a contact to the ContactList.
      * @param contact
