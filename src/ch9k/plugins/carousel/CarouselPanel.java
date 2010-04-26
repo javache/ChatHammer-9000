@@ -2,17 +2,13 @@ package ch9k.plugins.carousel;
 
 import ch9k.chat.Conversation;
 import java.awt.GridLayout;
+import java.awt.BorderLayout;
 import javax.swing.JPanel;
 
 /**
  * The main Carousel panel.
  */
 public class CarouselPanel extends JPanel {
-    /**
-     * The conversation.
-     */
-    private Conversation conversation;
-
     /**
      * The selection model.
      */
@@ -29,20 +25,30 @@ public class CarouselPanel extends JPanel {
     private CarouselImageChooserPanel imageChooserPanel;
 
     /**
+     * The recommendation panel.
+     */
+    private CarouselRecommendationPanel recommendationPanel;
+
+    /**
      * Constructor.
-     * @param conversation The conversation of this plugin.
      * @param model The selection model of the plugin.
      */
-    public CarouselPanel(Conversation conversation, CarouselImageModel model) {
-        super(new GridLayout(2, 0));
-        this.conversation = conversation;
+    public CarouselPanel(CarouselImageModel model) {
+        super(new BorderLayout());
         this.model = model;
+        
+        JPanel grid = new JPanel(new GridLayout(2, 0));
 
         imagePanel = new CarouselImagePanel(model);
-        add(imagePanel);
+        grid.add(imagePanel);
 
-        imageChooserPanel = new CarouselImageChooserPanel(conversation, model);
-        add(imageChooserPanel);
+        imageChooserPanel = new CarouselImageChooserPanel(model);
+        grid.add(imageChooserPanel);
+
+        recommendationPanel = new CarouselRecommendationPanel(model);
+
+        add(recommendationPanel, BorderLayout.NORTH);
+        add(grid, BorderLayout.CENTER);
     }
 
     /**

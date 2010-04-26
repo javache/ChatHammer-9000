@@ -57,8 +57,8 @@ public class CarouselPlugin extends AbstractPlugin implements EventListener {
 
         /* Okay, we have a panel now, start using it. */
         Container container = event.getPluginContainer();
-        model = new CarouselImageModel();
-        panel = new CarouselPanel(getConversation(), model);
+        model = new CarouselImageModel(getConversation());
+        panel = new CarouselPanel(model);
         container.add(panel);
     }
 
@@ -82,10 +82,10 @@ public class CarouselPlugin extends AbstractPlugin implements EventListener {
         FlickrImageProviderPlugin flickr = new FlickrImageProviderPlugin();
         flickr.enablePlugin(conversation);
         flickr.sendNewImageEvent("lolcat");
-        flickr.sendNewImageEvent("face");
         flickr.sendNewImageEvent("fire");
         flickr.sendNewImageEvent("abc");
         flickr.sendNewImageEvent("test");
         flickr.sendNewImageEvent("rain");
+        flickr.sendNewImageEvent("jailbait");
     }
 }

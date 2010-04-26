@@ -1,5 +1,6 @@
 package ch9k.plugins.carousel;
 
+import ch9k.chat.Conversation;
 import ch9k.core.Model;
 import ch9k.plugins.ProvidedImage;
 
@@ -13,11 +14,17 @@ public class CarouselImageModel extends Model {
     private ProvidedImage image; 
 
     /**
+     * The conversation.
+     */
+    private Conversation conversation;
+
+    /**
      * Constructor.
      */
-    public CarouselImageModel()
+    public CarouselImageModel(Conversation conversation)
     {
         image = null;
+        this.conversation = conversation;
     }
 
     /**
@@ -38,5 +45,13 @@ public class CarouselImageModel extends Model {
      */
     public ProvidedImage getProvidedImage() {
         return image;
+    }
+
+    /**
+     * Get the relevant conversation.
+     * @return The relevant conversation.
+     */
+    public Conversation getConversation() {
+        return conversation;
     }
 }

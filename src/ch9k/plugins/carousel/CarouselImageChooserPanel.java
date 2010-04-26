@@ -1,6 +1,7 @@
 package ch9k.plugins.carousel;
 
 import ch9k.chat.Conversation;
+import ch9k.chat.events.ConversationEventFilter;
 import ch9k.eventpool.Event;
 import ch9k.eventpool.EventFilter;
 import ch9k.eventpool.EventListener;
@@ -19,11 +20,6 @@ import javax.swing.JPanel;
  * Panel in which the user can select an image.
  */
 public class CarouselImageChooserPanel extends JPanel implements EventListener {
-    /**
-     * The conversation.
-     */
-    private Conversation conversation;
-
     /**
      * The selection model.
      */
@@ -52,13 +48,10 @@ public class CarouselImageChooserPanel extends JPanel implements EventListener {
 
     /**
      * Constructor.
-     * @param conversation The conversation.
      * @param model The selection model of the plugin.
      */
-    public CarouselImageChooserPanel(Conversation conversation,
-            CarouselImageModel model) {
+    public CarouselImageChooserPanel(CarouselImageModel model) {
         super(new GridLayout(0, COLUMNS));
-        this.conversation = conversation;
         this.model = model;
 
         setBackground(new Color(50, 50, 50));
@@ -75,7 +68,8 @@ public class CarouselImageChooserPanel extends JPanel implements EventListener {
 
         imageSet = new HashSet<ProvidedImage>();
 
-        EventFilter filter = new EventFilter(NewProvidedImageEvent.class);
+        EventFilter filter = new ConversationEventFilter(
+                NewProvidedImageEvent.class, model.getConversation());
         EventPool.getAppPool().addListener(this, filter);
     }
 
@@ -88,9 +82,7 @@ public class CarouselImageChooserPanel extends JPanel implements EventListener {
 
     @Override
     public void handleEvent(Event e) {
-        /* Return if the event is not relevant. */
         final NewProvidedImageEvent event = (NewProvidedImageEvent) e;
-        if(conversation != event.getConversation()) return;
 
         /* Return if we have the image already. */
         ProvidedImage image = event.getProvidedImage();
