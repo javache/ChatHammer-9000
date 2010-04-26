@@ -191,7 +191,9 @@ public class Connection {
     public void close() {
         try {
             eventSocketHandler.close();
-            if(dataSocketHandler != null) dataSocketHandler.close();
+            if(dataSocketHandler != null) {
+                dataSocketHandler.close();
+            }
         } catch (IOException ex) {
             logger.warn(ex.toString());
         }

@@ -99,8 +99,8 @@ public class ConnectionManager {
      * @param target The InetAddress which failed
      */
     public void handleNetworkError(InetAddress target) {
+        connectionMap.remove(target);
         if (checkHeartbeat()) {
-            connectionMap.remove(target);
             // send an event signalling that target is offline
             pool.raiseEvent(new CouldNotConnectEvent(target));
         } else {
