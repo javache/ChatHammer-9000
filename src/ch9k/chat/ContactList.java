@@ -12,6 +12,9 @@ import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.HashMap;
+import java.util.TreeSet;
+import java.util.SortedSet;
 import javax.swing.AbstractListModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -22,17 +25,25 @@ import org.jdom.Element;
  * @author Jens Panneel
  */
 public class ContactList extends AbstractListModel implements Persistable, ChangeListener {
+    
     /**
      * Collection of contacts, a set because you dont want to save
      * the same contact two times.
      */
-    private List<Contact> contacts;
+    private SortedSet<Contact> contacts;
+    
+    /**
+     * A hashmap because this will make lookup much easier
+     * BEWARE: this hash will only contain online contacts
+     */
+    private HashMap<InetAddress,Contact> onlineHash;
 
     /**
      * Constructor
      */
     public ContactList() {
-        contacts = new ArrayList<Contact>();
+        contacts = new TreeSet<Contact>();
+        onlineHash = new HashMap<InetAddress,Contact>();
         init();
     }
     
@@ -42,43 +53,51 @@ public class ContactList extends AbstractListModel implements Persistable, Chang
      * @param data Previously stored state of this object
      */
     public ContactList(PersistentDataObject data) {
-        contacts = new ArrayList<Contact>();
+        contacts = new TreeSet<Contact>();
+        onlineHash = new HashMap<InetAddress,Contact>();
         load(data);
         init();
     }
 
     private void init() {
-        pingContacts();
-
         EventPool.getAppPool().addListener(new ContactOnlineListener(),
                 new EventFilter(ContactOnlineEvent.class));
         EventPool.getAppPool().addListener(new ContactOfflineListener(),
                 new EventFilter(ContactOfflineEvent.class));
+        pingContacts();
     }
 
     /**
      * Get a list of all the contacts from the current user
      * @return contacts
      */
-    public List<Contact> getContacts() {
+    public SortedSet<Contact> getContacts() {
         return contacts;
     }
     
     private void pingContacts() {
         for (int i = 0; i < contacts.size(); i++ ) {
-            pingContact(contacts.get(i));
+            pingContact(getContactAtIndex(i));
         }
     }
     
     private class ContactOnlineListener implements EventListener {
         public void handleEvent(Event ev) {
             ContactOnlineEvent event = (ContactOnlineEvent)ev;
-            if(event.isExternal()) {
+            Contact contact = event.getContact();
+            if(event.isExternal() && contact != null) {
+                
                 /* when the contact wasn't online, we respond by saying we are online*/
+<<<<<<< HEAD
                 if (!event.getContact().isOnline()) {
                     EventPool.getAppPool().raiseEvent(new ContactOnlineEvent(event.getContact()));
+=======
+                if (! contact.isOnline()) {
+                    EventPool.getAppPool().raiseEvent(new ContactOnlineEvent(contact));
+>>>>>>> contactlist-fix
                 }
-                event.getContact().setOnline(true);
+                contact.setOnline(true);
+                onlineHash.put(event.getSource(),contact);
             }
         }
     }
@@ -87,6 +106,7 @@ public class ContactList extends AbstractListModel implements Persistable, Chang
         public void handleEvent(Event ev) {
             ContactOfflineEvent event = (ContactOfflineEvent)ev;
             event.getContact().setOnline(false);
+            onlineHash.remove(event.getSource());
         }
     }
     
@@ -99,17 +119,10 @@ public class ContactList extends AbstractListModel implements Persistable, Chang
      * @param contact
      * @return added
      */
-    public boolean addContact(Contact contact) {
-        // maybe isert it in a cool order
-        if(contacts.contains(contact)){
-            return false;
-        } else {
-            contact.addChangeListener(this);
-            contacts.add(contact);
-            int i = contacts.size() - 1;
-            fireIntervalAdded(this, i, i);
-            return true;
-        }
+    public void addContact(Contact contact) {
+        contact.addChangeListener(this);
+        contacts.add(contact);
+        updateList();
     }
 
     /**
@@ -117,23 +130,34 @@ public class ContactList extends AbstractListModel implements Persistable, Chang
      * @param contact
      * @return removed
      */
-    public boolean removeContact(Contact contact) {
-        int i = contacts.indexOf(contact);
-        if(i < 0) {
-            return false;
-        } else {
-            contacts.remove(i);
-            fireIntervalRemoved(this, i, i);
-            return true;
-        }
+    public void removeContact(Contact contact) {
+        contacts.remove(contact);
+        updateList();
     }
-
+    
+    /**
+     * convenience, since we often need to access at certain indices
+     */
+    private Contact getContactAtIndex(int j) {
+        if( j >= contacts.size()) {
+            return null;
+        }
+        Iterator<Contact> it = contacts.iterator();
+        Contact contact = it.next();
+        int i = 0;
+        while(it.hasNext() && i < j) {
+            contact = it.next();
+            i++;
+        }
+        return contact;
+    }
+    
     /**
      * Debug method: remove all contacts
      */
     public void clear() {
         contacts.clear();
-        fireIntervalRemoved(this, 0, 0);
+        updateList();
     }
 
     /**
@@ -143,16 +167,17 @@ public class ContactList extends AbstractListModel implements Persistable, Chang
      * @return contact
      */
     public Contact getContact(InetAddress ip, String username) {
-        Iterator<Contact> it = contacts.iterator();
-        Contact contact;
-        while(it.hasNext()){
-            contact = it.next();
-            if(contact.getIp().equals(ip) && contact.getUsername().equals(username)){
-                return contact;
-            }
+        Contact contact = onlineHash.get(ip);
+        if(contact.getIp().equals(ip) && contact.getUsername().equals(username)){
+            return contact;
         }
         return null;
     }
+    
+    private void updateList() {
+        fireContentsChanged(this, 0, contacts.size());
+    }
+
 
     @Override
     public PersistentDataObject persist() {
@@ -179,15 +204,14 @@ public class ContactList extends AbstractListModel implements Persistable, Chang
 
     @Override
     public Object getElementAt(int n) {
-        return contacts.get(n);
+        return getContactAtIndex(n);
     }
 
     @Override
     public void stateChanged(ChangeEvent changeEvent) {
         if(changeEvent.getSource() instanceof Contact) {
             Contact contact = (Contact)changeEvent.getSource();
-            int index = contacts.indexOf(contact);
-            fireContentsChanged(this, index, index);
+            updateList();
         }
     }
 }
