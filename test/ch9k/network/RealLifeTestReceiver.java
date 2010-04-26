@@ -15,8 +15,9 @@ public class RealLifeTestReceiver {
         }
     }
     
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         EventPool pool = EventPool.getAppPool();
         pool.addListener(new EchoListener(), new EventFilter(TestNetworkEvent.class));
+        while(true) Thread.sleep(1000);	
     }
 }
