@@ -73,6 +73,10 @@ public class ContactList extends AbstractListModel implements Persistable, Chang
     private class ContactOnlineListener implements EventListener {
         public void handleEvent(Event ev) {
             ContactOnlineEvent event = (ContactOnlineEvent)ev;
+            /* when the contact wasn't online, we respond by saying we are online*/
+            if (! event.getContact().isOnline()) {
+                EventPool.getAppPool().raiseEvent(new ContactOnlineEvent(event.getContact()));
+            }
             event.getContact().setOnline(true);
         }
     }
