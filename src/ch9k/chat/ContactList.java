@@ -66,18 +66,20 @@ public class ContactList extends AbstractListModel implements Persistable, Chang
     
     private void pingContacts() {
         for (int i = 0; i < contacts.size(); i++ ) {
-            EventPool.getAppPool().raiseEvent(new ContactOnlineEvent(contacts.get(i)));
+            pingContact(contacts.get(i));
         }
     }
     
     private class ContactOnlineListener implements EventListener {
         public void handleEvent(Event ev) {
             ContactOnlineEvent event = (ContactOnlineEvent)ev;
-            /* when the contact wasn't online, we respond by saying we are online*/
-            if (! event.getContact().isOnline()) {
-                EventPool.getAppPool().raiseEvent(new ContactOnlineEvent(event.getContact()));
+            if(event.isExternal()) {
+                /* when the contact wasn't online, we respond by saying we are online*/
+                if (! event.getContact().isOnline()) {
+                    EventPool.getAppPool().raiseEvent(new ContactOnlineEvent(event.getContact()));
+                }
+                event.getContact().setOnline(true);
             }
-            event.getContact().setOnline(true);
         }
     }
     
@@ -86,6 +88,10 @@ public class ContactList extends AbstractListModel implements Persistable, Chang
             ContactOfflineEvent event = (ContactOfflineEvent)ev;
             event.getContact().setOnline(false);
         }
+    }
+    
+    private void pingContact(Contact contact) {
+        EventPool.getAppPool().raiseEvent(new ContactOnlineEvent(contact));
     }
     
     /**
@@ -100,6 +106,7 @@ public class ContactList extends AbstractListModel implements Persistable, Chang
         } else {
             contact.addChangeListener(this);
             contacts.add(contact);
+            pingContact(contact);
             int i = contacts.size() - 1;
             fireIntervalAdded(this, i, i);
             return true;
