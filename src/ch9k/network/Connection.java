@@ -73,7 +73,10 @@ public class Connection {
      * True if the connection is still connecting, do not disturb
      */
     private boolean initialized = false;
-    
+
+    /**
+     * Connectionmanager
+     */
     private ConnectionManager connectionManager;
 
     /**
@@ -84,10 +87,11 @@ public class Connection {
      * @param manager 
      */
     public Connection(final InetAddress ip, EventPool pool, final ConnectionManager manager) {
-        final Socket socket = new Socket();
-        this.pool = pool;
         this.target = ip;
-        this.connectionManager = connectionManager;
+        this.pool = pool;
+        this.connectionManager = manager;
+
+        final Socket socket = new Socket();
         
         new Thread(new Runnable() {
             public void run() {
@@ -99,6 +103,8 @@ public class Connection {
                     init(socket);
                 } catch (IOException ex) {
                     logger.warn(ex.toString());
+
+                    // @TODO show notice in statusbar
 
                     if (manager != null) {
                         manager.handleNetworkError(ip);

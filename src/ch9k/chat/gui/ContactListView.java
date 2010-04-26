@@ -5,7 +5,6 @@ import ch9k.chat.ContactList;
 import ch9k.chat.gui.views.ContactListMouseListener;
 import ch9k.core.ChatApplication;
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -51,7 +50,7 @@ public class ContactListView extends JPanel {
 
             icon = new StatusIcon(14, true);
             setIcon(icon);
-            setFont(getFont().deriveFont(13f));
+            setFont(getFont().deriveFont(14f));
             setBorder(BorderFactory.createEmptyBorder(5, 9, 5, 0));
         }
 

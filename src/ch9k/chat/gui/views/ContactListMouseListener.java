@@ -21,7 +21,7 @@ public class ContactListMouseListener extends MouseAdapter {
     }
 
     @Override
-    public void mouseReleased(MouseEvent e) {
+    public void mousePressed(MouseEvent e) {
         if(e.isPopupTrigger()) {
             list.setSelectedIndex(list.locationToIndex(e.getPoint()));
             Contact contact = (Contact)list.getSelectedValue();

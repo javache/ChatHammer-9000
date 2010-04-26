@@ -17,7 +17,15 @@ public class RealLifeTestReceiver {
     
     public static void main(String[] args) throws InterruptedException {
         EventPool pool = EventPool.getAppPool();
+
+        // just return all network events
         pool.addListener(new EchoListener(), new EventFilter(TestNetworkEvent.class));
-        while(true) Thread.sleep(1000);	
+
+        // answer all online events with "yes, i'm online too"
+        // @TODO
+
+        while(true) {
+            Thread.sleep(1000);
+        }
     }
 }

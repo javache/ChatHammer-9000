@@ -1,14 +1,10 @@
 package ch9k.chat;
 
-import ch9k.chat.events.ContactEventFilter;
 import ch9k.chat.events.ContactOfflineEvent;
 import ch9k.chat.events.ContactOnlineEvent;
-import ch9k.chat.events.ContactStatusEvent;
 import ch9k.configuration.Persistable;
 import ch9k.configuration.PersistentDataObject;
 import ch9k.core.Model;
-import ch9k.eventpool.Event;
-import ch9k.eventpool.EventListener;
 import ch9k.eventpool.EventPool;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -20,7 +16,7 @@ import org.jdom.Element;
  * This holds the contacts ip, username, status, and knows whether a contact is online or offline and blocked or not.
  * @author Jens Panneel
  */
-public class Contact extends Model implements Comparable<Contact>, EventListener, Persistable {
+public class Contact extends Model implements Comparable<Contact>, Persistable {
     private InetAddress ip;
     private String username;
     private String status;
@@ -39,7 +35,6 @@ public class Contact extends Model implements Comparable<Contact>, EventListener
         this.blocked = blocked;
         this.online = false;
         this.status = "";
-        EventPool.getAppPool().addListener(this, new ContactEventFilter(this));
     }
 
     /**
@@ -49,7 +44,6 @@ public class Contact extends Model implements Comparable<Contact>, EventListener
      */
     public Contact(PersistentDataObject data) {
         load(data);
-        EventPool.getAppPool().addListener(this, new ContactEventFilter(this));
     }
 
     /**
@@ -109,6 +103,8 @@ public class Contact extends Model implements Comparable<Contact>, EventListener
      */
     public void setOnline(boolean online) {
         if(this.online != online) {
+            Logger.getLogger(getClass()).info("Contact " + username + " is now "
+                    + (online ? "online" : "offline") + " from " + ip.toString());
             this.online = online;
             fireStateChanged();
         }
@@ -175,34 +171,6 @@ public class Contact extends Model implements Comparable<Contact>, EventListener
         } else {
             // if same name, ip cannot be the same, so this will never return 0!
             return this.getIp().toString().compareTo(contact.getIp().toString());
-        }
-    }
-    
-    @Override
-    public void handleEvent(Event event) {
-        if(event instanceof ContactOnlineEvent) {
-            ContactOnlineEvent contactOnlineEvent = (ContactOnlineEvent) event;
-            if(contactOnlineEvent.isExternal()) {
-                if(!blocked && !online){
-                    //handshake
-                    EventPool.getAppPool().raiseEvent(new ContactOnlineEvent(this));
-                }
-                this.setOnline(true);
-            }
-        }
-
-        if(event instanceof ContactOfflineEvent) {
-            ContactOfflineEvent contactOfflineEvent = (ContactOfflineEvent) event;
-            if(contactOfflineEvent.isExternal()) {
-                this.setOnline(false);
-            }
-        }
-
-        if(event instanceof ContactStatusEvent) {
-            ContactStatusEvent contactStatusEvent = (ContactStatusEvent) event;
-            if(contactStatusEvent.isExternal()) {
-                this.setStatus(contactStatusEvent.getNewStatus());
-            }
         }
     }
     

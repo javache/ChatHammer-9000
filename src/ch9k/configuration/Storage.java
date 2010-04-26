@@ -76,7 +76,7 @@ public class Storage {
             if (!child.getName().equals(entry.getKey())) {
                 child.setName(entry.getKey());
             }
-            child.setAttribute("class", entry.getValue().getClass().toString());
+            child.setAttribute("class", entry.getValue().getClass().getName());
             root.addContent(child);
         }
         

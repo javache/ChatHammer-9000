@@ -68,4 +68,11 @@ public class Configuration {
         }
         return pluginManager;
     }
+
+    /**
+     * Save the configuration data
+     */
+    public void save() {
+        storage.save();
+    }
 }

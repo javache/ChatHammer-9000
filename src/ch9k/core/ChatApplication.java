@@ -4,9 +4,17 @@ import ch9k.chat.Contact;
 import ch9k.chat.ContactList;
 import ch9k.core.gui.ApplicationWindow;
 import ch9k.chat.ConversationManager;
+import ch9k.chat.events.ContactOnlineEvent;
 import ch9k.configuration.Configuration;
+import ch9k.eventpool.Event;
+import ch9k.eventpool.EventPool;
+import ch9k.eventpool.NetworkEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * The main application, OMG!
@@ -36,6 +44,12 @@ public class ChatApplication {
     private ChatApplication() {
         conversationManager = new ConversationManager();
         appWindow = new ApplicationWindow();
+
+        appWindow.addWindowListener(new WindowAdapter() {
+            public void windowClosed(WindowEvent e) {
+                logout();
+            }
+        });
     }
 
     private void start(String[] args) {
@@ -60,6 +74,7 @@ public class ChatApplication {
                 System.exit(0);
             }
         }
+        configuration.save();
 
         appWindow.initApplicationView();
         appWindow.setStatus(I18n.get("ch9k.core", "booting"));
@@ -68,7 +83,11 @@ public class ChatApplication {
     public void logout() {
         new Thread(new Runnable() {
             public void run() {
+                configuration.save();
                 configuration = null;
+
+                // TODO: clear more stuff
+
                 start(null);
             }
         }).start();
@@ -105,21 +124,28 @@ public class ChatApplication {
             configuration.setAccount(new Account("CH9K", "password"));
         }
 
-        ContactList contacts = configuration.getAccount().getContactList();
+        final ContactList contacts = configuration.getAccount().getContactList();
 
         try {
             contacts.addContact(new Contact("Zeus WPI",
-                    InetAddress.getByName("zeus.ugent.be"), false));
-            contacts.addContact(new Contact("jaspervdj",
-                    InetAddress.getByName("jaspervdj.be"), false));
-            contacts.addContact(new Contact("Javache",
-                    InetAddress.getByName("javache.be"), false));
-            contacts.addContact(new Contact("nudded",
-                    InetAddress.getByName("ugent.be"), false));
-            contacts.addContact(new Contact("jpanneel",
-                    InetAddress.getByName("google.be"), false));
-            contacts.addContact(new Contact("robust2",
-                    InetAddress.getByName("google.com"), false));
+                    InetAddress.getByName("cartman"), false));
+            contacts.addContact(new Contact("CH9K",
+                    InetAddress.getByName("10.1.1.70"), false));
+
+            new Thread(new Runnable() {
+                public void run() {
+                    try {
+                        Thread.sleep(5000);
+                    } catch (InterruptedException ex) {}
+
+                    NetworkEvent event = null;
+                    try {
+                        event = new ContactOnlineEvent(contacts.getContact(InetAddress.getByName("cartman"), "Zeus WPI"));
+                        event.setSource(InetAddress.getByName("cartman"));
+                    } catch (UnknownHostException ex) {}
+                    EventPool.getAppPool().raiseEvent((Event) event);
+                }
+            }).start();
         } catch (UnknownHostException ex) {}
     }
 }

@@ -54,7 +54,8 @@ public class ConnectionManager {
      * @param networkEvent 
      */
     public void sendEvent(final NetworkEvent networkEvent) {
-        logger.info("Sending event " + networkEvent.getClass().getName());
+        logger.info("Sending event " + networkEvent.getClass().getName() +
+                " to " + networkEvent.getTarget());
 
         Connection connection = connectionMap.get(networkEvent.getTarget());
         if(connection == null) {

@@ -33,6 +33,7 @@ public class ApplicationWindow extends JFrame {
      */
     public ApplicationWindow() {
         super("ChatHammer 9000");
+        // @TODO: check how this works out on mac (where windows can be 'hidden'
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 
         setPreferredSize(new Dimension(300, 520));

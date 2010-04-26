@@ -75,7 +75,7 @@ public class ContactList extends AbstractListModel implements Persistable, Chang
             ContactOnlineEvent event = (ContactOnlineEvent)ev;
             if(event.isExternal()) {
                 /* when the contact wasn't online, we respond by saying we are online*/
-                if (! event.getContact().isOnline()) {
+                if (!event.getContact().isOnline()) {
                     EventPool.getAppPool().raiseEvent(new ContactOnlineEvent(event.getContact()));
                 }
                 event.getContact().setOnline(true);
@@ -106,7 +106,6 @@ public class ContactList extends AbstractListModel implements Persistable, Chang
         } else {
             contact.addChangeListener(this);
             contacts.add(contact);
-            pingContact(contact);
             int i = contacts.size() - 1;
             fireIntervalAdded(this, i, i);
             return true;
