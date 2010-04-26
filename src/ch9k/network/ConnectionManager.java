@@ -80,7 +80,6 @@ public class ConnectionManager {
         }
 
         // close all listening connections
-        int connectionCount = connectionMap.size();
         for (Connection connection : connectionMap.values()) {
             connection.close();
         }
@@ -112,9 +111,7 @@ public class ConnectionManager {
     }
 
     /**
-     * Check if we are online
-     * first it will try to open a Connection to any of it's online contacts
-     * if there are no other online
+     * Check if we are online, how?
      * it will try to open a connection to google.com
      */
     private boolean checkHeartbeat() {
