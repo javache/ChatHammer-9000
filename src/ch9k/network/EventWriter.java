@@ -1,11 +1,11 @@
 package ch9k.network;
 
-import java.io.ObjectOutputStream;
+import ch9k.eventpool.NetworkEvent;
 import java.io.Closeable;
 import java.io.IOException;
-import ch9k.eventpool.NetworkEvent;
-import java.util.concurrent.TimeUnit;
+import java.io.ObjectOutputStream;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.TimeUnit;
 import org.apache.log4j.Logger;
 
 public class EventWriter implements Runnable, Closeable{

@@ -1,8 +1,8 @@
 package ch9k.network;
 
+import ch9k.eventpool.DataEvent;
 import ch9k.eventpool.EventPool;
 import ch9k.eventpool.NetworkEvent;
-import ch9k.eventpool.DataEvent;
 import ch9k.network.events.UserDisconnectedEvent;
 import java.io.IOException;
 import java.net.InetAddress;

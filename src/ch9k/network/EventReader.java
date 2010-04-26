@@ -1,12 +1,12 @@
 package ch9k.network;
 
-import java.io.ObjectInputStream;
-import java.io.IOException;
-import java.io.EOFException;
-import org.apache.log4j.Logger;
+import ch9k.eventpool.Event;
 import ch9k.eventpool.EventPool;
 import ch9k.eventpool.NetworkEvent;
-import ch9k.eventpool.Event;
+import java.io.EOFException;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import org.apache.log4j.Logger;
 
 public class EventReader implements Runnable {
     /**
