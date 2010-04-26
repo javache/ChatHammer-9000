@@ -1,7 +1,7 @@
 package ch9k.plugins;
 
-import ch9k.eventpool.WarningMessageEvent;
 import ch9k.configuration.Storage;
+import ch9k.eventpool.WarningMessageEvent;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileOutputStream;

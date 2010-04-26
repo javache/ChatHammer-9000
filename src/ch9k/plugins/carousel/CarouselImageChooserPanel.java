@@ -1,6 +1,5 @@
 package ch9k.plugins.carousel;
 
-import ch9k.chat.Conversation;
 import ch9k.chat.events.ConversationEventFilter;
 import ch9k.eventpool.Event;
 import ch9k.eventpool.EventFilter;

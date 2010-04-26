@@ -3,10 +3,10 @@ package ch9k.plugins.carousel;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.MouseEvent;
+import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import javax.swing.ImageIcon;
-import javax.swing.BorderFactory;
 
 /**
  * View showing a single image.

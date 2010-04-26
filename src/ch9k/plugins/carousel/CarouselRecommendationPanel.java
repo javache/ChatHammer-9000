@@ -1,25 +1,23 @@
 package ch9k.plugins.carousel;
 
-import javax.swing.event.ChangeListener;
-import javax.swing.event.ChangeEvent;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import ch9k.plugins.ProvidedImage;
-import ch9k.plugins.RecommendedImageEvent;
+import ch9k.chat.events.ConversationEventFilter;
+import ch9k.core.I18n;
 import ch9k.eventpool.Event;
 import ch9k.eventpool.EventFilter;
 import ch9k.eventpool.EventListener;
 import ch9k.eventpool.EventPool;
-import javax.swing.JPanel;
-import javax.swing.JLabel;
+import ch9k.plugins.ProvidedImage;
+import ch9k.plugins.RecommendedImageEvent;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.GroupLayout;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
-import java.util.Queue;
-import java.util.LinkedList;
-import ch9k.chat.events.ConversationEventFilter;
-import ch9k.core.I18n;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 /**
  * Class to manage recommendations for the image carousel.
@@ -34,7 +32,7 @@ public class CarouselRecommendationPanel
     /**
      * Queue for recommended images.
      */
-    private Queue<ProvidedImage> recommendations;
+    private CarouselRecommendationQueue queue;
 
     /**
      * Button to recommend the current image.
@@ -57,7 +55,7 @@ public class CarouselRecommendationPanel
      */
     public CarouselRecommendationPanel(CarouselImageModel model) {
         this.model = model;
-        recommendations = new LinkedList<ProvidedImage>();
+        queue = new CarouselRecommendationQueue();
 
         GroupLayout layout = new GroupLayout(this);
         layout.setAutoCreateGaps(true);
@@ -109,8 +107,9 @@ public class CarouselRecommendationPanel
                 RecommendedImageEvent.class, model.getConversation());
         EventPool.getAppPool().addListener(this, filter);
         model.addChangeListener(this);
+        queue.addChangeListener(this);
 
-        updateLabel();
+        update();
     }
 
     /**
@@ -128,15 +127,7 @@ public class CarouselRecommendationPanel
         // if(!event.isExternal()) return;
 
         /* Add the image to the queue. */
-        recommendations.offer(event.getProvidedImage());
-
-        /* Enable the "view image" button. */
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                viewButton.setEnabled(true);
-                updateLabel();
-            }
-        });
+        queue.push(event.getProvidedImage());
     }
 
     /**
@@ -160,44 +151,52 @@ public class CarouselRecommendationPanel
      * View the recommended image.
      */
     private void view() {
-        ProvidedImage image = recommendations.poll();
+        ProvidedImage image = queue.pop();
         if(image == null) return;
 
         model.setProvidedImage(image);
-
-        if(recommendations.isEmpty()) {
-            viewButton.setEnabled(false);
-        }
-
-        updateLabel();
     }
 
     /**
      * Update the text label.
      */
-    private void updateLabel() {
-        int size = recommendations.size();
+    private void update() {
+        int size = queue.size();
 
         if(size == 0) {
             label.setText(
                 I18n.get("ch9k.plugins.carousel", "no_recommendations"));
+            viewButton.setEnabled(false);
         } else if(size == 1) {
             label.setText(
                 I18n.get("ch9k.plugins.carousel", "one_recommendation"));
+            viewButton.setEnabled(true);
         } else {
             label.setText(
                 I18n.get("ch9k.plugins.carousel", "n_recommendations", size));
+            viewButton.setEnabled(true);
         }
     }
 
     @Override
     public void stateChanged(ChangeEvent event) {
-        // TODO: Be imageobserver
-        /* Update the image. */
-        if(model.getProvidedImage() != null) {
+        /* Model threw an event. This means we selected another image, so we can
+         * recommend again. */
+        if(event.getSource() == model) {
+            if(model.getProvidedImage() != null) {
+                SwingUtilities.invokeLater(new Runnable() {
+                    public void run() {
+                        recommendButton.setEnabled(true);
+                    }
+                });
+            }
+        }
+
+        /* Queue threw an event. We can view it or disable the button. */
+        if(event.getSource() == queue) {
             SwingUtilities.invokeLater(new Runnable() {
                 public void run() {
-                    recommendButton.setEnabled(true);
+                    update();
                 }
             });
         }

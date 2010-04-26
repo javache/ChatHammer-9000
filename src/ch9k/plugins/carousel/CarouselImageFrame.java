@@ -2,7 +2,6 @@ package ch9k.plugins.carousel;
 
 import ch9k.plugins.ProvidedImage;
 import java.awt.Dimension;
-import java.io.File;
 import javax.swing.JFrame;
 
 public class CarouselImageFrame extends JFrame {
