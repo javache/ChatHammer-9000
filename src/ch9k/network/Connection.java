@@ -183,6 +183,8 @@ public class Connection {
             }
         } catch (IOException e) {
             logger.warn(e.toString());
+        } catch (NullPointerException e) {
+            logger.info(e.toString());
         }
         
         connectionManager.handleNetworkError(target);

@@ -118,27 +118,13 @@ public class ConnectionManager {
      * it will try to open a connection to google.com
      */
     private boolean checkHeartbeat() {
-        boolean online = false;
-        
-        // we have only one connection to test with, so that's not really
-        // reliable, let's try ping google
-        if (connectionMap.values().size() <= 1) {
-            online = true;
-            try {
-                new Socket("www.google.com", 80);
-            } catch (IOException ex) {
-                logger.warn(ex.toString());
-                online = false;
-            }
-        } else {
-            Iterator<Connection> it = connectionMap.values().iterator();
-            while (it.hasNext() && !online) {
-                Connection conn = it.next();
-                online = conn.hasConnection();
-            }
+        try {
+            new Socket("www.google.com", 80);
+        } catch (IOException ex) {
+            logger.warn(ex.toString());
+            return false;
         }
-
-        return online;
+        return true;
     }
     
     private class PingAliveThread implements Runnable {

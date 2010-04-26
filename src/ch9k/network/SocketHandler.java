@@ -61,22 +61,23 @@ public class SocketHandler implements ErrorHandler, EventProcessor {
      */
     public void receivedEOF() {
         /* TODO throw appropriate event */
-        connection.socketHandlerClosed(this);
         try {
             close();
         } catch (IOException e) {
         }
+        connection.socketHandlerClosed(this);
     }
 
     /**
      * an error during writing? better close ourselves
      */
     public void writingFailed() {
-        connection.socketHandlerClosed(this);
         try {
             close();
         } catch (IOException e) {
         }
+        
+        connection.socketHandlerClosed(this);
     }
 
     /**
