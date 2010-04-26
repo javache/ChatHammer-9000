@@ -57,7 +57,7 @@ public class ProvidedImage {
      * Get a pretty name.
      * @return A pretty name for the image to show in a GUI.
      */
-    public String getPrettyName() {
+    public String getFileName() {
         if(url == null) return null;
         return new File(url.getFile()).getName();
     }

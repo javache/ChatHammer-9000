@@ -18,7 +18,7 @@ public class CarouselImageFrame extends JFrame {
         setContentPane(imagePanel);
 
         /* Set the title. */
-        setTitle(image.getPrettyName());
+        setTitle(image.getFileName());
 
         /* Try to get the window size right. */
         setPreferredSize(new Dimension(image.getImage().getWidth(null),
