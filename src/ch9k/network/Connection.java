@@ -202,8 +202,6 @@ public class Connection {
             eventSocketHandler.close();
         } catch (IOException ex) {
             logger.warn(ex.toString());
-        } catch (NullPointerException e) {
-            
         }
     }
 
