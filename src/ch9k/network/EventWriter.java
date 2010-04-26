@@ -43,7 +43,7 @@ public class EventWriter implements Runnable, Closeable{
     }
     
     /**
-     * close the ObjectOutputStream
+     * Close the ObjectOutputStream
      */
     public void close() throws IOException {
         shouldContinue = false;

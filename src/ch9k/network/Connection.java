@@ -1,20 +1,13 @@
 package ch9k.network;
 
-import ch9k.eventpool.Event;
 import ch9k.eventpool.EventPool;
 import ch9k.eventpool.NetworkEvent;
 import ch9k.eventpool.DataEvent;
-import ch9k.network.events.PingEvent;
 import ch9k.network.events.UserDisconnectedEvent;
-import java.io.EOFException;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.net.SocketException;
-import java.util.ArrayList;
 import java.util.concurrent.LinkedBlockingQueue;
 import org.apache.log4j.Logger;
 
@@ -121,9 +114,10 @@ public class Connection {
      * Construct a Connection out of an already connected socket.
      * @param socket The socket that connected
      * @param pool The EventPool this connection will use
+     * @param connectionManager 
      * @throws IOException
      */
-    public Connection(Socket socket, EventPool pool,ConnectionManager connectionManager) throws IOException {
+    public Connection(Socket socket, EventPool pool, ConnectionManager connectionManager) throws IOException {
         this.pool = pool;
         this.target = socket.getInetAddress();
         this.connectionManager = connectionManager;
@@ -174,23 +168,20 @@ public class Connection {
     }
 
     public void socketHandlerClosed(SocketHandler handler) {
-        
         try {
-            if(dataSocketHandler == handler) {
+            if(handler == dataSocketHandler) {
                 eventSocketHandler.close();
             } else {
-                dataSocketHandler.close();
+                if(dataSocketHandler != null) {
+                    dataSocketHandler.close();
+                }
             }
         } catch (IOException e) {
             logger.warn(e.toString());
-        } catch (NullPointerException e) {
-            logger.info(e.toString());
         }
         
         connectionManager.handleNetworkError(target);
-        
-        logger.warn("Connection closed");
-        /* no connections left -> userdisconnected */
+        logger.warn("Connection closed to " + target.toString());
         pool.raiseEvent(new UserDisconnectedEvent(target));
     }
     

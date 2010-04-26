@@ -1,14 +1,8 @@
 package ch9k.network;
 
-import ch9k.eventpool.Event;
-import ch9k.eventpool.EventFilter;
-import ch9k.eventpool.EventListener;
-import ch9k.eventpool.EventPool;
 import ch9k.eventpool.NetworkEvent;
 import ch9k.network.events.PingEvent;
-import java.io.IOException;
 import java.io.File;
-import java.io.OutputStream;
 import java.io.FileOutputStream;
 import java.io.FileInputStream;
 import java.io.ObjectOutputStream;
@@ -16,8 +10,6 @@ import java.io.ObjectInputStream;
 import java.net.InetAddress;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
