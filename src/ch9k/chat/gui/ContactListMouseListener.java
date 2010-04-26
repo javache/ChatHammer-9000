@@ -1,4 +1,4 @@
-package ch9k.chat.gui.views;
+package ch9k.chat.gui;
 
 import ch9k.chat.Contact;
 import ch9k.chat.gui.actions.ContactBlockAction;

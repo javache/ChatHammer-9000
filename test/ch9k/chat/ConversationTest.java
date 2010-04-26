@@ -42,7 +42,7 @@ public class ConversationTest {
      */
     @Test
     public void testInitatedByMe() {
-        assertTrue(conversation.initatedByMe());
+        assertTrue(conversation.isInitiatedByMe());
     }
 
     /**

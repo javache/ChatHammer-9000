@@ -1,20 +1,24 @@
 package ch9k.core;
 
+import ch9k.chat.ChatMessage;
 import ch9k.chat.Contact;
 import ch9k.chat.ContactList;
+import ch9k.chat.Conversation;
 import ch9k.core.gui.ApplicationWindow;
 import ch9k.chat.ConversationManager;
 import ch9k.chat.events.ContactOnlineEvent;
+import ch9k.chat.events.ConversationEvent;
+import ch9k.chat.events.NewChatMessageEvent;
+import ch9k.chat.events.NewConversationEvent;
 import ch9k.configuration.Configuration;
 import ch9k.eventpool.Event;
 import ch9k.eventpool.EventPool;
 import ch9k.eventpool.NetworkEvent;
+import ch9k.plugins.PluginManager;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * The main application, OMG!
@@ -125,27 +129,42 @@ public class ChatApplication {
         }
 
         final ContactList contacts = configuration.getAccount().getContactList();
+        final ConversationManager conversationManager = ChatApplication.getInstance().getConversationManager();
+        
+        new Thread(new Runnable() {
+            public void run() {
+                try {
+                    Thread.sleep(2000);
 
-        try {
-            contacts.addContact(new Contact("Zeus WPI",
-                    InetAddress.getByName("cartman"), false));
-            contacts.addContact(new Contact("CH9K",
-                    InetAddress.getByName("10.1.1.70"), false));
-
-            new Thread(new Runnable() {
-                public void run() {
+                    InetAddress ip = null;
                     try {
-                        Thread.sleep(5000);
-                    } catch (InterruptedException ex) {}
+                        ip = InetAddress.getByName("zeus.ugent.be");
+                    } catch(UnknownHostException ex) {}
 
-                    NetworkEvent event = null;
-                    try {
-                        event = new ContactOnlineEvent(contacts.getContact(InetAddress.getByName("cartman"), "Zeus WPI"));
-                        event.setSource(InetAddress.getByName("cartman"));
-                    } catch (UnknownHostException ex) {}
-                    EventPool.getAppPool().raiseEvent((Event) event);
-                }
-            }).start();
-        } catch (UnknownHostException ex) {}
+                    Contact contact = contacts.getContact(ip, "Zeus WPI");
+                    NetworkEvent event = new ContactOnlineEvent(contact);
+                    event.setSource(ip);
+                    EventPool.getAppPool().raiseEvent((Event)event);
+
+                    Thread.sleep(1000);
+                    ConversationEvent conversationEvent = new NewConversationEvent(contact);
+                    EventPool.getAppPool().raiseEvent(conversationEvent);
+
+                    Thread.sleep(1000);
+                    Conversation conversation = conversationManager.getConversation(contact);
+
+                    ChatMessage[] messages = new ChatMessage[] {
+                        new ChatMessage("ZeusWPI", "eerste bericht"),
+                        new ChatMessage("Javache", "tweede bericht")
+                    };
+
+                    for (int i = 0; i < messages.length; i++) {
+                        conversationEvent = new NewChatMessageEvent(conversation, messages[i]);
+                        EventPool.getAppPool().raiseEvent(conversationEvent);
+                        Thread.sleep(1000);
+                    }
+                } catch (InterruptedException ex) {}
+            }
+        }).start();
     }
 }

@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- *
+ * Manages the active conversations
  * @author Jens Panneel
  */
 public class ConversationManager implements EventListener{
@@ -19,7 +19,8 @@ public class ConversationManager implements EventListener{
 
     public ConversationManager() {
         conversations = new HashMap<Contact, Conversation>();
-        EventPool.getAppPool().addListener(this, new EventFilter(ConversationEvent.class));
+        EventPool.getAppPool().addListener(this,
+                new EventFilter(ConversationEvent.class));
     }
 
     /**
@@ -61,11 +62,14 @@ public class ConversationManager implements EventListener{
 
     @Override
     public void handleEvent(Event event) {
+        // a conversation has been started
         if(event instanceof NewConversationEvent) {
             NewConversationEvent newConversationEvent = (NewConversationEvent)event;
-            this.startConversation(newConversationEvent.getContact(), !newConversationEvent.isExternal());
+            startConversation(newConversationEvent.getContact(),
+                    !newConversationEvent.isExternal());
         }
 
+        // a conversation has been closed
         if(event instanceof CloseConversationEvent) {
             CloseConversationEvent closeConversationEvent = (CloseConversationEvent)event;
             if(!closeConversationEvent.isExternal()){

@@ -3,9 +3,11 @@ package ch9k.chat;
 import ch9k.chat.events.CloseConversationEvent;
 import ch9k.chat.events.ConversationEventFilter;
 import ch9k.chat.events.NewChatMessageEvent;
+import ch9k.chat.gui.ConversationWindow;
 import ch9k.eventpool.Event;
 import ch9k.eventpool.EventListener;
 import ch9k.eventpool.EventPool;
+import java.awt.EventQueue;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -20,7 +22,8 @@ public class Conversation extends AbstractListModel implements EventListener {
     private boolean initiatedByMe;
     private Date startTime = new Date();
     private ConversationSubject subject;
-    private List<ChatMessage> conversation = new ArrayList<ChatMessage>();
+    private List<ChatMessage> messages = new ArrayList<ChatMessage>();
+    private ConversationWindow window;
 
     /**
      * Constructor
@@ -32,13 +35,39 @@ public class Conversation extends AbstractListModel implements EventListener {
         this.initiatedByMe = initiatedByMe;
         
         EventPool.getAppPool().addListener(this, new ConversationEventFilter(this));
+
+        // create a new window
+        EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                window = new ConversationWindow(Conversation.this);
+            }
+        });
+    }
+    
+    @Override
+    public void handleEvent(Event event) {
+        if(event instanceof NewChatMessageEvent){
+            NewChatMessageEvent newChatMessageEvent = (NewChatMessageEvent) event;
+            addMessage(newChatMessageEvent.getChatMessage());
+        }
+    }
+    
+    /**
+     * Close this conversation
+     */
+    public void close() {
+        EventPool pool = EventPool.getAppPool();
+        pool.raiseEvent(new CloseConversationEvent(contact));
+        pool.removeListener(this);
+
+        window.markAsClosed(true);
     }
 
     /**
      * Check whether or not this conversation is started by the current user.
      * @return initiatedByMe
      */
-    public boolean initatedByMe() {
+    public boolean isInitiatedByMe() {
         return initiatedByMe;
     }
 
@@ -79,9 +108,9 @@ public class Conversation extends AbstractListModel implements EventListener {
      * @param chatMessage
      */
     public void addMessage(ChatMessage chatMessage) {
-        int size = conversation.size();
-        if(size == 0 || !chatMessage.equals(conversation.get(size-1))){
-            conversation.add(chatMessage);
+        int size = messages.size();
+        if(size == 0 || !chatMessage.equals(messages.get(size-1))){
+            messages.add(chatMessage);
             fireIntervalAdded(contact, size, size);
         }
     }
@@ -94,23 +123,27 @@ public class Conversation extends AbstractListModel implements EventListener {
      * @return String[]
      */
     public String[] getMessages(int n) {
-        if(n > conversation.size()) {
-            n = conversation.size();
+        if(n > messages.size()) {
+            n = messages.size();
         }
-        String[] messages = new String[n];
-        int size = conversation.size();
+        String[] result = new String[n];
+        int size = messages.size();
         for(int i = size - n; i < size; i++){
-            messages[i - size + n] = conversation.get(i).getText();
+            result[i - size + n] = messages.get(i).getText();
         }
-        return messages;
+        return result;
     }
 
-    /**
-     * Close this conversation
-     */
-    public void close() {
-        // TODO delete this as listener
-        EventPool.getAppPool().raiseEvent(new CloseConversationEvent(contact));
+
+
+    @Override
+    public int getSize() {
+        return messages.size();
+    }
+
+    @Override
+    public Object getElementAt(int index) {
+        return messages.get(index);
     }
 
     @Override
@@ -134,23 +167,4 @@ public class Conversation extends AbstractListModel implements EventListener {
         hash = 67 * hash + (this.contact != null ? this.contact.hashCode() : 0);
         return hash;
     }
-
-    @Override
-    public void handleEvent(Event event) {
-        if(event instanceof NewChatMessageEvent){
-            NewChatMessageEvent newChatMessageEvent = (NewChatMessageEvent) event;
-            conversation.add(newChatMessageEvent.getChatMessage());
-        }
-    }
-
-    @Override
-    public int getSize() {
-        return conversation.size();
-    }
-
-    @Override
-    public Object getElementAt(int index) {
-        return conversation.get(index);
-    }
-    
 }

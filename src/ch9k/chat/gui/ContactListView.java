@@ -2,7 +2,6 @@ package ch9k.chat.gui;
 
 import ch9k.chat.Contact;
 import ch9k.chat.ContactList;
-import ch9k.chat.gui.views.ContactListMouseListener;
 import ch9k.core.ChatApplication;
 import java.awt.BorderLayout;
 import java.awt.Component;
