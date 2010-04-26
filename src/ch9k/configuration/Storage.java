@@ -91,7 +91,7 @@ public class Storage {
 
             outputstream.close();
         } catch (IOException ex) {
-            //something went wrong, TODO
+            System.err.println(ex);
         }
     }
 
