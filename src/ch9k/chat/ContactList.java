@@ -88,9 +88,6 @@ public class ContactList extends AbstractListModel implements Persistable, Chang
             if(event.isExternal() && contact != null) {
                 
                 /* when the contact wasn't online, we respond by saying we are online*/
-                if (!event.getContact().isOnline()) {
-                    EventPool.getAppPool().raiseEvent(new ContactOnlineEvent(event.getContact()));
-                }
                 if (! contact.isOnline()) {
                     EventPool.getAppPool().raiseEvent(new ContactOnlineEvent(contact));
                 }
