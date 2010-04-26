@@ -1,9 +1,9 @@
 package ch9k.network;
 
-import ch9k.eventpool.EventPool;
-import ch9k.eventpool.EventListener;
-import ch9k.eventpool.EventFilter;
 import ch9k.eventpool.Event;
+import ch9k.eventpool.EventFilter;
+import ch9k.eventpool.EventListener;
+import ch9k.eventpool.EventPool;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import org.junit.Test;

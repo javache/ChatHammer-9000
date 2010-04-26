@@ -40,10 +40,10 @@ public class StatusIcon implements Icon {
         } else {
             g.setColor(Color.GRAY);
         }
-        g.fillRect(x, y+2, size-2, size-2);
+        g.fillRect(x, y+1, size-2, size-2);
 
         g.setColor(Color.BLACK);
-        g.drawRect(x, y+2, size-2, size-2);
+        g.drawRect(x, y+1, size-2, size-2);
     }
 
     @Override

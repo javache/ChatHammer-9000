@@ -1,5 +1,7 @@
 package ch9k.network;
 
+import ch9k.chat.Contact;
+import ch9k.chat.events.ContactOnlineEvent;
 import ch9k.eventpool.Event;
 import ch9k.eventpool.EventFilter;
 import ch9k.eventpool.EventListener;
@@ -21,8 +23,13 @@ public class RealLifeTestReceiver {
         // just return all network events
         pool.addListener(new EchoListener(), new EventFilter(TestNetworkEvent.class));
 
-        // answer all online events with "yes, i'm online too"
-        // @TODO
+        // TODO: answer all online events with "yes, i'm online too"
+        pool.addListener(new EventListener() {
+            public void handleEvent(Event event) {
+                ContactOnlineEvent onlineEvent = (ContactOnlineEvent) event;
+                Contact contact = onlineEvent.getContact();
+            }
+        }, new EventFilter(ContactOnlineEvent.class));
 
         while(true) {
             Thread.sleep(1000);

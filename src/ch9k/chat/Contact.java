@@ -153,14 +153,14 @@ public class Contact extends Model implements Comparable<Contact>, Persistable {
     @Override
     public int hashCode() {
         int hash = 3;
-        hash = 79 * hash + (this.ip != null ? this.ip.hashCode() : 0);
-        hash = 79 * hash + (this.username != null ? this.username.hashCode() : 0);
+        hash = 79 * hash + (ip != null ? ip.hashCode() : 0);
+        hash = 79 * hash + (username != null ? username.hashCode() : 0);
         return hash;
     }
 
     @Override
     public int compareTo(Contact contact) {
-        if(this.equals(contact)) {
+        if(equals(contact)) {
             return 0;
         }
 

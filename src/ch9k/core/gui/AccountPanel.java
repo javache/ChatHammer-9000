@@ -1,7 +1,7 @@
 package ch9k.core.gui;
 
-import ch9k.chat.gui.StatusIcon;
 import ch9k.chat.gui.StatusField;
+import ch9k.chat.gui.StatusIcon;
 import ch9k.core.Account;
 import ch9k.core.ChatApplication;
 import ch9k.core.I18n;

@@ -1,11 +1,11 @@
 package ch9k.core;
 
-import java.util.ResourceBundle;
-import java.util.MissingResourceException;
-import java.text.MessageFormat;
 import java.awt.event.KeyEvent;
-import java.util.Map;
+import java.text.MessageFormat;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
 import javax.swing.UIManager;
 
 /**

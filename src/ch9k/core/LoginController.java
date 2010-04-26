@@ -1,7 +1,7 @@
 package ch9k.core;
 
-import ch9k.core.gui.ApplicationWindow;
 import ch9k.configuration.Configuration;
+import ch9k.core.gui.ApplicationWindow;
 import ch9k.core.gui.LoginPanel;
 import java.awt.EventQueue;
 

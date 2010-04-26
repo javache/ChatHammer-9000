@@ -56,7 +56,6 @@ public class ContactListView extends JPanel {
         @Override
         public Component getListCellRendererComponent(JList list, Object object,
                 int index, boolean isSelected, boolean cellHasFocus) {
-
             Contact contact = (Contact) object;
 
             setText(contact.getUsername());
