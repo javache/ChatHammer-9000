@@ -19,6 +19,7 @@ import javax.swing.SwingUtilities;
 import java.util.Queue;
 import java.util.LinkedList;
 import ch9k.chat.events.ConversationEventFilter;
+import ch9k.core.I18n;
 
 /**
  * Class to manage recommendations for the image carousel.
@@ -61,7 +62,8 @@ public class CarouselRecommendationPanel
         GroupLayout layout = new GroupLayout(this);
         layout.setAutoCreateGaps(true);
 
-        recommendButton = new JButton("recommend");
+        recommendButton = new JButton(
+                I18n.get("ch9k.plugins.carousel", "recommend_image"));
         recommendButton.setEnabled(false);
         recommendButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent event) {
@@ -69,7 +71,8 @@ public class CarouselRecommendationPanel
             }
         });
 
-        viewButton = new JButton("view");
+        viewButton = new JButton(
+                I18n.get("ch9k.plugins.carousel", "view_recommendation"));
         viewButton.setEnabled(false);
         viewButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent event) {
@@ -77,7 +80,7 @@ public class CarouselRecommendationPanel
             }
         });
 
-        label = new JLabel("foobar");
+        label = new JLabel();
 
         /* Horizontal group. */
         layout.setHorizontalGroup(
@@ -106,6 +109,8 @@ public class CarouselRecommendationPanel
                 RecommendedImageEvent.class, model.getConversation());
         EventPool.getAppPool().addListener(this, filter);
         model.addChangeListener(this);
+
+        updateLabel();
     }
 
     /**
@@ -129,7 +134,7 @@ public class CarouselRecommendationPanel
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 viewButton.setEnabled(true);
-                label.setText(recommendations.size() + " recommended images.");
+                updateLabel();
             }
         });
     }
@@ -162,6 +167,26 @@ public class CarouselRecommendationPanel
 
         if(recommendations.isEmpty()) {
             viewButton.setEnabled(false);
+        }
+
+        updateLabel();
+    }
+
+    /**
+     * Update the text label.
+     */
+    private void updateLabel() {
+        int size = recommendations.size();
+
+        if(size == 0) {
+            label.setText(
+                I18n.get("ch9k.plugins.carousel", "no_recommendations"));
+        } else if(size == 1) {
+            label.setText(
+                I18n.get("ch9k.plugins.carousel", "one_recommendation"));
+        } else {
+            label.setText(
+                I18n.get("ch9k.plugins.carousel", "n_recommendations", size));
         }
     }
 
