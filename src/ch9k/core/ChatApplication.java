@@ -108,6 +108,8 @@ public class ChatApplication {
         ContactList contacts = configuration.getAccount().getContactList();
 
         try {
+            contacts.addContact(new Contact("Zeus WPI",
+                    InetAddress.getByName("zeus.ugent.be"), false));
             contacts.addContact(new Contact("jaspervdj",
                     InetAddress.getByName("jaspervdj.be"), false));
             contacts.addContact(new Contact("Javache",

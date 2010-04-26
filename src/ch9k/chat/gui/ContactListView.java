@@ -2,27 +2,42 @@ package ch9k.chat.gui;
 
 import ch9k.chat.Contact;
 import ch9k.chat.ContactList;
-import ch9k.chat.gui.views.ContactListPopupListener;
+import ch9k.chat.gui.views.ContactListMouseListener;
 import ch9k.core.ChatApplication;
+import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JPanel;
 import javax.swing.ListCellRenderer;
 
 /**
  * Show the list of contacts
  * @author Jens Panneel
  */
-public class ContactListView extends JList {
+public class ContactListView extends JPanel {
     private ContactList contacts;
+    private JList list;
     
     public ContactListView() {
         contacts = ChatApplication.getInstance().getAccount().getContactList();
-        setModel(contacts);
+        list = new JList(contacts);
+        list.setBackground(getBackground());
+
+        setLayout(new BorderLayout());
+        add(list, BorderLayout.NORTH);
         
-        setCellRenderer(new ContactListCellRenderer());
-        addMouseListener(new ContactListPopupListener(this));
+        list.setCellRenderer(new ContactListCellRenderer());
+        list.addMouseListener(new ContactListMouseListener(list));
+        addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+                list.clearSelection();
+            }
+        });
     }
 
     /**
@@ -37,7 +52,7 @@ public class ContactListView extends JList {
             icon = new StatusIcon(14, true);
             setIcon(icon);
             setFont(getFont().deriveFont(13f));
-            setBorder(BorderFactory.createEmptyBorder(5, 3, 5, 0));
+            setBorder(BorderFactory.createEmptyBorder(5, 9, 5, 0));
         }
 
         @Override

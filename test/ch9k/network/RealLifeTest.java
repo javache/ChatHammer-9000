@@ -13,11 +13,14 @@ public class RealLifeTest {
     private class TestListener implements EventListener {
         public boolean received = false;
         
-        public synchronized void handleEvent(Event ev) {
+        public void handleEvent(Event ev) {
             TestNetworkEvent event = (TestNetworkEvent)ev;
+            System.out.println("Received event!");
             if(event.isExternal()) {
                 received = true;
-                notifyAll();
+                synchronized(RealLifeTest.this) {
+                    RealLifeTest.this.notifyAll();
+                }
             }
         }
     }
@@ -30,7 +33,7 @@ public class RealLifeTest {
         pool.raiseEvent(new TestNetworkEvent(InetAddress.getByName("zeus.ugent.be")));
         
         synchronized(this) {
-            wait(1000);            
+            wait(1500);
         }
         assertTrue(listener.received);
     }

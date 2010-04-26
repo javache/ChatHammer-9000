@@ -49,8 +49,11 @@ public class ContactList extends AbstractListModel implements Persistable, Chang
 
     private void init() {
         pingContacts();
-        EventPool.getAppPool().addListener(new ContactOnlineListener(),new EventFilter(ContactOnlineEvent.class));
-        EventPool.getAppPool().addListener(new ContactOfflineListener(),new EventFilter(ContactOfflineEvent.class));
+
+        EventPool.getAppPool().addListener(new ContactOnlineListener(),
+                new EventFilter(ContactOnlineEvent.class));
+        EventPool.getAppPool().addListener(new ContactOfflineListener(),
+                new EventFilter(ContactOfflineEvent.class));
     }
 
     /**
@@ -93,7 +96,7 @@ public class ContactList extends AbstractListModel implements Persistable, Chang
         } else {
             contact.addChangeListener(this);
             contacts.add(contact);
-            int i = contacts.indexOf(contact);
+            int i = contacts.size() - 1;
             fireIntervalAdded(this, i, i);
             return true;
         }
@@ -155,7 +158,7 @@ public class ContactList extends AbstractListModel implements Persistable, Chang
         for (Object obj : object.getElement().getChildren()) {
             Element child = (Element) obj;
             Contact contact = new Contact(new PersistentDataObject(child));
-            this.addContact(contact);
+            addContact(contact);
         }
     }
 

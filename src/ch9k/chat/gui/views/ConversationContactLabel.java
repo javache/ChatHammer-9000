@@ -13,7 +13,6 @@ public class ConversationContactLabel extends JLabel implements ChangeListener{
     private Contact contact;
 
     public ConversationContactLabel(Contact contact) {
-        super();
         this.contact = contact;
         contact.addChangeListener(this);
     }
