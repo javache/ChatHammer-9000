@@ -210,7 +210,7 @@ public class Contact extends Model implements Comparable<Contact>, Persistable {
         Element contact = new Element("contact");
         contact.addContent(new Element("username").addContent(username));
         contact.addContent(new Element("ip").addContent(ip.getHostAddress()));
-        contact.addContent(new Element("status").addContent(status.persist().getElement()));
+        contact.addContent(status.persist().getElement());
         return new PersistentDataObject(contact);
     }
 

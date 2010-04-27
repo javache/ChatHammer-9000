@@ -27,16 +27,13 @@ public class ContactStatus implements Persistable {
     }
     
     public ContactStatus(PersistentDataObject dataObject) {
-        this();
-        if(dataObject != null) {
-            load(dataObject);
-        }
+        load(dataObject);
     }
 
     @Override
     public PersistentDataObject persist() {
         Element el = new Element("status");
-        el.setAttribute("type", status.name());
+        el.setAttribute("status", status.name());
         el.setText(text);
         return new PersistentDataObject(el);
     }

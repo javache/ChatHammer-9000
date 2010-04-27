@@ -117,6 +117,7 @@ public class ChatApplication {
         if(configuration == null || configuration.getAccount() == null) {
             configuration = new Configuration("CH9K");
             configuration.setAccount(new Account("CH9K", "password"));
+            configuration.save();
         }
 
         final ContactList contactList = ChatApplication.getInstance().getAccount().getContactList();
