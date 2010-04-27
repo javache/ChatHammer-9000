@@ -124,7 +124,7 @@ public class ContactList extends AbstractListModel implements Persistable, Chang
     
     private void pingContact(Contact contact) {
         if (contact.isRequested()) {
-            EventPool.getAppPool().raiseEvent(new ContactRequestEvent(contact.getIp(),contact.getUsername()));            
+            EventPool.getAppPool().raiseEvent(new ContactRequestEvent(contact.getIp(), contact.getUsername()));            
         } else {
             EventPool.getAppPool().raiseEvent(new ContactOnlineEvent(contact));            
         }
@@ -137,8 +137,11 @@ public class ContactList extends AbstractListModel implements Persistable, Chang
      * this should already have happened!
      * @param contact
      */
-    public void addContact(Contact contact) {
+    public void addContact(Contact contact, boolean sendRequest) {
         boolean success = contacts.add(contact);
+        if(sendRequest) {
+            contact.setRequested(true);
+        }
         if(success) {
             contact.addChangeListener(this);
             fireListChanged();
@@ -146,12 +149,10 @@ public class ContactList extends AbstractListModel implements Persistable, Chang
         }
     }
     
-    public void addNewContact(InetAddress ip, String username) {
-        Contact contact = new Contact(username,ip);
-        contact.setRequested(true);
-        addContact(contact);
+    public void addContact(Contact contact) {
+        addContact(contact, false);
     }
-
+    
     /**
      * Remove the given contact from the ContactList
      * @param contact

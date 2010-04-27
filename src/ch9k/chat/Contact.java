@@ -124,7 +124,7 @@ public class Contact extends Model implements Comparable<Contact>, Persistable {
         return status.isRequested();
     } 
     
-    public boolean setRequested(boolean requested) {
+    public void setRequested(boolean requested) {
         if(isRequested() != requested) {
             if(requested) {
                 status.setStatus(ContactStatus.Status.REQUESTED);

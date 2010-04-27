@@ -6,6 +6,7 @@ public class ContactStatus {
         ONLINE,
         OFFLINE,
         REQUESTED,
+        IGNORED,
         BLOCKED;
     }
     
@@ -42,7 +43,11 @@ public class ContactStatus {
     public boolean isOnline() {
         return status == Status.ONLINE;
     }
-
+    
+    public boolean isIgnored() {
+        return status == Status.IGNORED;
+    }
+    
     public Status getStatus() {
         return status;
     }
@@ -50,7 +55,5 @@ public class ContactStatus {
     public void setStatus(Status status) {
         this.status = status;
     }
-
-
     
 }
