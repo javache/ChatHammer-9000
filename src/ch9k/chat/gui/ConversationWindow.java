@@ -74,7 +74,6 @@ public class ConversationWindow extends JFrame {
         JPanel conversationPanel = new JPanel(new BorderLayout());
         conversationPanel.add(conversationView, BorderLayout.CENTER);
         conversationPanel.add(editor, BorderLayout.SOUTH);
-
         splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, true,
                 pluginPanel, conversationPanel);
         splitPane.setSize(new Dimension(800, 600));
