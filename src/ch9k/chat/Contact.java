@@ -123,7 +123,17 @@ public class Contact extends Model implements Comparable<Contact>, Persistable {
     public boolean isRequested() {
         return status.isRequested();
     } 
-
+    
+    public boolean setRequested(boolean requested) {
+        if(isRequested() != requested) {
+            if(requested) {
+                status.setStatus(ContactStatus.Status.REQUESTED);
+            } else {
+                status.setStatus(ContactStatus.Status.OFFLINE);
+            }
+        }
+    }
+    
     /**
      * Set the contact blocked or not blocked
      * @param blocked

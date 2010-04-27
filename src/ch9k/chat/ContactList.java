@@ -147,8 +147,8 @@ public class ContactList extends AbstractListModel implements Persistable, Chang
     }
     
     public void addNewContact(InetAddress ip, String username) {
-        EventPool.getAppPool().raiseEvent(new ContactRequestEvent(ip,username));
         Contact contact = new Contact(username,ip);
+        contact.setRequested(true);
         addContact(contact);
     }
 
