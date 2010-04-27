@@ -23,11 +23,13 @@ public class RealLifeTestReceiver {
         // just return all network events
         pool.addListener(new EchoListener(), new EventFilter(TestNetworkEvent.class));
 
-        // TODO: answer all online events with "yes, i'm online too"
+        // answer all online events with "yes, i'm online too"
         pool.addListener(new EventListener() {
             public void handleEvent(Event event) {
                 ContactOnlineEvent onlineEvent = (ContactOnlineEvent) event;
-                Contact contact = onlineEvent.getContact();
+                Contact remoteContact = new Contact(onlineEvent.getSender(),
+                        onlineEvent.getSource());
+                EventPool.getAppPool().raiseEvent(new ContactOnlineEvent(remoteContact));
             }
         }, new EventFilter(ContactOnlineEvent.class));
 

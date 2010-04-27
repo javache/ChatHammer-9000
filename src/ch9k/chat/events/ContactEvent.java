@@ -34,6 +34,22 @@ public abstract class ContactEvent extends NetworkEvent {
     }
 
     /**
+     * Get the username of the receiving user
+     * @return receiver
+     */
+    public String getReceiver() {
+        return receiver;
+    }
+
+    /**
+     * Get the uername of the sending user
+     * @return sender
+     */
+    public String getSender() {
+        return sender;
+    }
+
+    /**
      * Get the contact this conversation is with.
      * @return contact
      */

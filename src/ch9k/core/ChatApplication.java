@@ -1,20 +1,12 @@
 package ch9k.core;
 
-import ch9k.chat.ChatMessage;
 import ch9k.chat.Contact;
 import ch9k.chat.ContactList;
-import ch9k.chat.Conversation;
 import ch9k.chat.ConversationManager;
 import ch9k.chat.events.ContactOnlineEvent;
-import ch9k.chat.events.ConversationEvent;
-import ch9k.chat.events.NewChatMessageEvent;
-import ch9k.chat.events.NewConversationEvent;
 import ch9k.configuration.Configuration;
 import ch9k.core.gui.ApplicationWindow;
-import ch9k.eventpool.Event;
 import ch9k.eventpool.EventPool;
-import ch9k.eventpool.NetworkEvent;
-import ch9k.plugins.PluginManager;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.net.InetAddress;
@@ -123,11 +115,29 @@ public class ChatApplication {
      * (to be used for testing purposes only!)
      */
     public void performTestLogin() {
-        if(configuration != null && configuration.getAccount() != null) {
-            return;
+        if(configuration == null || configuration.getAccount() == null) {
+            configuration = new Configuration("CH9K");
+            configuration.setAccount(new Account("CH9K", "password"));
         }
 
-        configuration = new Configuration("CH9K");
-        configuration.setAccount(new Account("CH9K", "password"));
+        final ContactList contactList = ChatApplication.getInstance().getAccount().getContactList();
+
+        new Thread(new Runnable() {
+            public void run() {
+                try {
+                    Thread.sleep(5000);
+
+                    Contact contact = contactList.getContact(
+                            InetAddress.getByName("cartman"),
+                            "Zeus WPI");
+                    ContactOnlineEvent event = new ContactOnlineEvent(contact);
+                    event.setSource(InetAddress.getByName("cartman"));
+
+                    EventPool.getAppPool().raiseEvent(event);
+                }
+                catch(InterruptedException ex) {}
+                catch(UnknownHostException ex) {}
+            }
+        }).start();
     }
 }
