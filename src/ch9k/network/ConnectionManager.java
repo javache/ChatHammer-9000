@@ -9,6 +9,7 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import org.apache.log4j.Logger;
@@ -126,28 +127,26 @@ public class ConnectionManager {
     
     private class PingAliveThread implements Runnable {
         
-        private boolean online = true;
+        private boolean online = false;
         
         public void run() {
             while(true) {
                 try {
-                    Socket socket = new Socket();
-                    socket.connect(new InetSocketAddress("google.com",80),1000);
-                    socket.close();
+                    InetAddress.getByName("www.google.com");
                     if(!online) {
-                        /* signal back online */
+                        /* signal online */
                     }
-                    online = true;
                     Thread.sleep(120000);
-                } catch(Exception e) {
-                    if(online) {
+                } catch (UnknownHostException e) {
+                    if (online) {
+                        online = false;
                         /* signal offline */
                     }
-                    online = false;
+                } catch (InterruptedException e) {
+                    logger.warn(e.toString());
                 }
                 
             }
-
         }
         
     }
