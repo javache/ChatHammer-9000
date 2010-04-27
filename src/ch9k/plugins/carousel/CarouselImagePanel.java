@@ -1,19 +1,10 @@
 package ch9k.plugins.carousel;
 
-import ch9k.eventpool.WarningMessageEvent;
-import ch9k.plugins.ProvidedImage;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.event.MouseEvent;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
-import javax.swing.JFileChooser;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -26,6 +17,14 @@ public class CarouselImagePanel extends ImagePanel implements ChangeListener {
      */
     private CarouselImageModel model;
 
+    /**
+     * The popup menu.
+     */
+    private CarouselImagePanelPopupMenu popup;
+
+    /**
+     * Background.
+     */
     private static final ImageIcon background = new ImageIcon(
             CarouselImagePanel.class.getResource(
                     "/ch9k/plugins/carousel/background.png"));
@@ -42,6 +41,7 @@ public class CarouselImagePanel extends ImagePanel implements ChangeListener {
         addMouseListener(this);
         setBorder(BorderFactory.createEmptyBorder(20, 10, 20, 10));
         setBackground(new Color(50, 50, 50));
+        popup = new CarouselImagePanelPopupMenu(model);
     }
 
     @Override
@@ -62,37 +62,17 @@ public class CarouselImagePanel extends ImagePanel implements ChangeListener {
         }
     }
 
-    /**
-     * Save the currently selected image to the hard disk.
-     */
-    private void save() {
-        /* Show a dialog and let the user pick a file. */
-        ProvidedImage provided = getProvidedImage();
-        JFileChooser chooser = new JFileChooser();
-        chooser.setSelectedFile(new File(provided.getFileName()));
-        int result = chooser.showSaveDialog(this);
+    @Override
+    public void mousePressed(MouseEvent event) {
+        if(event.isPopupTrigger()) {
+            popup.show(event.getComponent(), event.getX(), event.getY());
+        }
+    }
 
-        /* Return unless we selected a file. */
-        if(result != JFileChooser.APPROVE_OPTION) return;
-
-        /* Create a new empty BufferedImage. */
-        Image image = provided.getImage();
-        BufferedImage buffer = new BufferedImage(image.getWidth(null),
-                image.getHeight(null), BufferedImage.TYPE_INT_RGB);
-        
-        /* Draw our image to this buffer. */
-        Graphics2D graphics = buffer.createGraphics();
-        graphics.drawImage(image, 0, 0, null);
-
-        /* Save result using ImageIO class. */
-        File selection = chooser.getSelectedFile();
-        String path = selection.getPath();
-        String extension = path.substring(path.lastIndexOf('.') + 1);
-        try {
-            ImageIO.write(buffer, extension, selection);
-        } catch (IOException exception) {
-            WarningMessageEvent.raiseWarningMessageEvent(this,
-                "Could not save image " + selection);
+    @Override
+    public void mouseReleased(MouseEvent event) {
+        if(event.isPopupTrigger()) {
+            popup.show(event.getComponent(), event.getX(), event.getY());
         }
     }
 }
