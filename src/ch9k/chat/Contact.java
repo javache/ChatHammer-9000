@@ -210,7 +210,7 @@ public class Contact extends Model implements Comparable<Contact>, Persistable {
         Element contact = new Element("contact");
         contact.addContent(new Element("username").addContent(username));
         contact.addContent(new Element("ip").addContent(ip.getHostAddress()));
-        /* TODO persist status */
+        contact.addContent(new Element("status").addContent(status.persist().getElement()));
         return new PersistentDataObject(contact);
     }
 
@@ -223,7 +223,6 @@ public class Contact extends Model implements Comparable<Contact>, Persistable {
         } catch (UnknownHostException ex) {
             Logger.getLogger(Contact.class).warn(ex.toString());
         }
-        /* TODO load */
+        status = new ContactStatus(new PersistentDataObject(el.getChild("status")));
     }
-
 }

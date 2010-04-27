@@ -132,8 +132,6 @@ public class ChatApplication {
                             "Zeus WPI");
                     ContactOnlineEvent event = new ContactOnlineEvent(contact);
                     event.setSource(InetAddress.getByName("cartman"));
-
-                    EventPool.getAppPool().raiseEvent(event);
                 }
                 catch(InterruptedException ex) {}
                 catch(UnknownHostException ex) {}
