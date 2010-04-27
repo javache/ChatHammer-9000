@@ -36,7 +36,7 @@ public class CarouselImagePanel extends ImagePanel implements ChangeListener {
      * @param model The selection model of the plugin.
      */
     public CarouselImagePanel(CarouselImageModel model) {
-        super(true, true, background.getImage());
+        super(true, false, background.getImage());
         setPreferredSize(new Dimension(400, 200));
         this.model = model;
         model.addChangeListener(this);
@@ -48,6 +48,7 @@ public class CarouselImagePanel extends ImagePanel implements ChangeListener {
         popup = new JPopupMenu();
         popup.add(new CarouselSaveImageAction(model));
         popup.add(new CarouselRecommendAction(model));
+        popup.add(new CarouselPreviewAction(model));
     }
 
     @Override
@@ -56,15 +57,6 @@ public class CarouselImagePanel extends ImagePanel implements ChangeListener {
         /* Update the image. */
         if(model.getProvidedImage() != null) {
             setProvidedImage(model.getProvidedImage());
-        }
-    }
-
-    @Override
-    public void mouseClicked(MouseEvent event) {
-        if(getProvidedImage() != null) {
-            CarouselImageFrame frame =
-                    new CarouselImageFrame(getProvidedImage());
-            frame.setVisible(true);
         }
     }
 
