@@ -80,8 +80,8 @@ public class Contact extends Model implements Comparable<Contact>, Persistable {
      * @param status
      */
     public void setStatus(String status) {
-        if(!this.status.equals(status)){
-            this.status = status;
+        if(!this.status.getText().equals(status)){
+            this.status.setText(status);
             fireStateChanged();
         }
     }
@@ -91,7 +91,7 @@ public class Contact extends Model implements Comparable<Contact>, Persistable {
      * @return online
      */
     public boolean isOnline() {
-        return online;
+        return status.isOnline();
     }
 
     /**
@@ -99,10 +99,15 @@ public class Contact extends Model implements Comparable<Contact>, Persistable {
      * @param online
      */
     public void setOnline(boolean online) {
-        if(this.online != online) {
+        if(isOnline() != online) {
             Logger.getLogger(getClass()).info("Contact " + username + " is now "
                     + (online ? "online" : "offline") + " from " + ip.toString());
-            this.online = online;
+            if(online) {
+                status.setStatus(ContactStatus.Status.ONLINE);
+            } else {
+                status.setStatus(ContactStatus.Status.OFFLINE);
+            }
+            
             fireStateChanged();
         }
     }
@@ -112,7 +117,7 @@ public class Contact extends Model implements Comparable<Contact>, Persistable {
      * @return ip
      */
     public boolean isBlocked() {
-        return blocked;
+        return status.isBlocked();
     }
 
     /**
@@ -120,14 +125,15 @@ public class Contact extends Model implements Comparable<Contact>, Persistable {
      * @param blocked
      */
     public void setBlocked(boolean blocked) {
-        if(this.blocked != blocked) {
-            this.blocked = blocked;
+        if(isBlocked() != blocked) {
+            if(blocked) {
+                status.setStatus(ContactStatus.Status.BLOCKED);
+                EventPool.getAppPool().raiseEvent(new ContactOfflineEvent(this));
+            } else {
+                status.setStatus(ContactStatus.Status.OFFLINE);
+                EventPool.getAppPool().raiseEvent(new ContactOnlineEvent(this));
+            }
             fireStateChanged();
-        }
-        if(blocked) {
-            EventPool.getAppPool().raiseEvent(new ContactOfflineEvent(this));
-        } else {
-            EventPool.getAppPool().raiseEvent(new ContactOnlineEvent(this));
         }
     }
 
@@ -176,9 +182,7 @@ public class Contact extends Model implements Comparable<Contact>, Persistable {
         Element contact = new Element("contact");
         contact.addContent(new Element("username").addContent(username));
         contact.addContent(new Element("ip").addContent(ip.getHostAddress()));
-        contact.addContent(new Element("online").addContent(Boolean.toString(online)));
-        contact.addContent(new Element("blocked").addContent(Boolean.toString(blocked)));
-
+        /* TODO persist status */
         return new PersistentDataObject(contact);
     }
 
@@ -191,10 +195,7 @@ public class Contact extends Model implements Comparable<Contact>, Persistable {
         } catch (UnknownHostException ex) {
             Logger.getLogger(Contact.class).warn(ex.toString());
         }
-
-        this.status = "";
-        online = Boolean.parseBoolean(el.getChildText("online"));
-        blocked = Boolean.parseBoolean(el.getChildText("blocked"));
+        /* TODO load */
     }
 
 }

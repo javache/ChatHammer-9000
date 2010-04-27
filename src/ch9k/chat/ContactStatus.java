@@ -26,9 +26,31 @@ public class ContactStatus {
     public String getText() {
         return text;
     }
-    
+
+    public void setText(String text) {
+        this.text = text;
+    }
+
+    public boolean isBlocked() {
+        return status == Status.BLOCKED;
+    }
+
+    public boolean isRequested() {
+        return status == Status.REQUESTED;
+    }
+
+    public boolean isOnline() {
+        return status == Status.ONLINE;
+    }
+
     public Status getStatus() {
         return status;
     }
+
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
+
     
 }

@@ -13,11 +13,11 @@
     name="CH9K" default="default" basedir=".">
     <description>Builds, tests, and runs the project CH9K.</description>
     <import file="nbproject/build-impl.xml"/>
-    <target depends="" name="-pre-init">
+    <!--<target depends="" name="-pre-init">
         <exec executable="git" outputproperty="git.revision">
             <arg value="describe" />
         </exec>
-    </target>
+    </target> -->
     <!-- copy the log4j.properties file to the classpath -->
     <target depends="init" name="-post-compile">
         <copy todir="${build.classes.dir}" file="log4j.properties" />
