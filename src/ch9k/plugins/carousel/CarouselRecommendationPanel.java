@@ -124,23 +124,6 @@ public class CarouselRecommendationPanel
     }
 
     /**
-     * Recommend the current image.
-     */
-    private void recommend() {
-        ProvidedImage image = model.getProvidedImage();
-        
-        if(image != null) {
-            /* Raise the recommendation. */
-            RecommendedImageEvent event = new RecommendedImageEvent(
-                    model.getConversation(), image);
-            EventPool.getAppPool().raiseEvent(event);
-
-            /* Disable the button, so we don't recommend it twice. */
-            recommendButton.setEnabled(false);
-        }
-    }
-
-    /**
      * View the recommended image.
      */
     private void view() {
@@ -173,18 +156,6 @@ public class CarouselRecommendationPanel
 
     @Override
     public void stateChanged(ChangeEvent event) {
-        /* Model threw an event. This means we selected another image, so we can
-         * recommend again. */
-        if(event.getSource() == model) {
-            if(model.getProvidedImage() != null) {
-                SwingUtilities.invokeLater(new Runnable() {
-                    public void run() {
-                        recommendButton.setEnabled(true);
-                    }
-                });
-            }
-        }
-
         /* Queue threw an event. We can view it or disable the button. */
         if(event.getSource() == queue) {
             SwingUtilities.invokeLater(new Runnable() {

@@ -19,12 +19,18 @@ public class CarouselImageModel extends Model {
     private Conversation conversation;
 
     /**
+     * If this image has been recommended.
+     */
+    private boolean recommended;
+
+    /**
      * Constructor.
      */
     public CarouselImageModel(Conversation conversation)
     {
         image = null;
         this.conversation = conversation;
+        recommended = false;
     }
 
     /**
@@ -35,6 +41,7 @@ public class CarouselImageModel extends Model {
         if(this.image == null && image != null ||
                 this.image != null && !this.image.equals(image)) {
             this.image = image;
+            recommended = false;
             fireStateChanged();
         }
     }
@@ -53,5 +60,24 @@ public class CarouselImageModel extends Model {
      */
     public Conversation getConversation() {
         return conversation;
+    }
+
+    /**
+     * Set that this image has been recommended.
+     * @param recommended If this image has been recommended.
+     */
+    public void setRecommended(boolean recommended) {
+        if(recommended != this.recommended) {
+            this.recommended = recommended;
+            fireStateChanged();
+        }
+    }
+
+    /**
+     * Check if this image has been recommended.
+     * @return If this image has been recommended.
+     */
+    public boolean isRecommended() {
+        return recommended;
     }
 }

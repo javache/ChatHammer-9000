@@ -40,7 +40,8 @@ public class CarouselRecommendAction
 
     @Override
     public void stateChanged(ChangeEvent event) {
-        setEnabled(model.getProvidedImage() != null);
+        setEnabled(model.getProvidedImage() != null &&
+                !model.isRecommended());
     }
 
     @Override
@@ -53,8 +54,8 @@ public class CarouselRecommendAction
                     model.getConversation(), image);
             EventPool.getAppPool().raiseEvent(event);
 
-            /* Disable the action, so we don't recommend it twice. */
-            setEnabled(false);
+            /* Register our recommendation. */
+            model.setRecommended(true);
         }
     }
 }
