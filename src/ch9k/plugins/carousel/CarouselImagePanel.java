@@ -5,6 +5,8 @@ import java.awt.Dimension;
 import java.awt.event.MouseEvent;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
+import javax.swing.JPopupMenu;
+import javax.swing.JMenuItem;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -20,7 +22,7 @@ public class CarouselImagePanel extends ImagePanel implements ChangeListener {
     /**
      * The popup menu.
      */
-    private CarouselImagePanelPopupMenu popup;
+    private JPopupMenu popup;
 
     /**
      * Background.
@@ -41,7 +43,11 @@ public class CarouselImagePanel extends ImagePanel implements ChangeListener {
         addMouseListener(this);
         setBorder(BorderFactory.createEmptyBorder(20, 10, 20, 10));
         setBackground(new Color(50, 50, 50));
-        popup = new CarouselImagePanelPopupMenu(model);
+
+        /* Create a popup menu. */
+        popup = new JPopupMenu();
+        popup.add(new CarouselSaveImageAction(model));
+        popup.add(new CarouselRecommendAction(model));
     }
 
     @Override

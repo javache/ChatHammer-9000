@@ -60,14 +60,7 @@ public class CarouselRecommendationPanel
         GroupLayout layout = new GroupLayout(this);
         layout.setAutoCreateGaps(true);
 
-        recommendButton = new JButton(
-                I18n.get("ch9k.plugins.carousel", "recommend_image"));
-        recommendButton.setEnabled(false);
-        recommendButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent event) {
-                recommend();
-            }
-        });
+        recommendButton = new JButton(new CarouselRecommendAction(model));
 
         viewButton = new JButton(
                 I18n.get("ch9k.plugins.carousel", "view_recommendation"));
