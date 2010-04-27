@@ -94,6 +94,10 @@ public class Contact extends Model implements Comparable<Contact>, Persistable {
         return status.isOnline();
     }
 
+    public boolean isOffline() {
+        return status.isOffline();
+    }
+
     /**
      * Set the contact online or offline
      * @param online
@@ -112,6 +116,8 @@ public class Contact extends Model implements Comparable<Contact>, Persistable {
         }
     }
 
+
+
     /**
      * Check whether or not the contact is blocked.
      * @return ip
@@ -124,13 +130,21 @@ public class Contact extends Model implements Comparable<Contact>, Persistable {
         return status.isRequested();
     } 
     
-    public void setRequested(boolean requested) {
-        if(isRequested() != requested) {
-            if(requested) {
-                status.setStatus(ContactStatus.Status.REQUESTED);
-            } else {
-                status.setStatus(ContactStatus.Status.OFFLINE);
-            }
+    public boolean isIgnored() {
+        return status.isIgnored();
+    }
+    
+    public void setRequested() {
+        if(!isRequested()) {
+            status.setStatus(ContactStatus.Status.REQUESTED);
+            fireStateChanged();
+        }
+    }
+    
+    public void setIgnored() {
+        if(!isIgnored()) {
+            status.setStatus(ContactStatus.Status.IGNORED);
+            fireStateChanged();
         }
     }
     

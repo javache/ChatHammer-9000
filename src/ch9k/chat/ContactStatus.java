@@ -44,6 +44,10 @@ public class ContactStatus {
         return status == Status.ONLINE;
     }
     
+    public boolean isOffline() {
+        return status == Status.OFFLINE;
+    }
+    
     public boolean isIgnored() {
         return status == Status.IGNORED;
     }

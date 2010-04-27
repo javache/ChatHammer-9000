@@ -82,19 +82,17 @@ public class ContactList extends AbstractListModel implements Persistable, Chang
         public void handleEvent(Event ev) {
             ContactOnlineEvent event = (ContactOnlineEvent)ev;
             Contact contact = event.getContact();
-            if(event.isExternal() && contact != null) {
-                /* when the contact wasn't online, we respond by saying we are online */
-                if (!contact.isOnline()) {
-                    EventPool.getAppPool().raiseEvent(new ContactOnlineEvent(contact));
-                }
+            /* all this has to be true, otherwise we just have to ignore */
+            if(event.isExternal() && contact != null && !contact.isIgnored() && !contact.isBlocked()) {
+                EventPool.getAppPool().raiseEvent(new ContactOnlineEvent(contact));
                 /* keep in mind here that this will set the state to online
                  * so in essence this will also handle responses 
                  * from friendrequests 
                  */
                 contact.setOnline(true);
                 onlineHash.put(event.getSource(), contact);
-                
-                fireListChanged();
+
+                fireListChanged();    
             }
         }
     }
@@ -113,11 +111,12 @@ public class ContactList extends AbstractListModel implements Persistable, Chang
             if(event.isExternal()) {
                 String text = "would you like to add " + event.getUsername() + " as your friend?";
                 int confirmation = JOptionPane.showConfirmDialog(null, text, "Friend Request", JOptionPane.YES_NO_OPTION);
-                if (confirmation == JOptionPane.YES_OPTION) {
-                    addContact(new Contact(event.getUsername(),event.getSource()));
-                } else {
-                    /* TODO ignore further friendrequests */
+                
+                Contact contact = new Contact(event.getUsername(),event.getSource());
+                if (confirmation != JOptionPane.YES_OPTION) {
+                    contact.setIgnored();
                 }    
+                addContact(contact);            
             }
         }
     }
@@ -140,7 +139,7 @@ public class ContactList extends AbstractListModel implements Persistable, Chang
     public void addContact(Contact contact, boolean sendRequest) {
         boolean success = contacts.add(contact);
         if(sendRequest) {
-            contact.setRequested(true);
+            contact.setRequested();
         }
         if(success) {
             contact.addChangeListener(this);
