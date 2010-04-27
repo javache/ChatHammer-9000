@@ -120,6 +120,10 @@ public class Contact extends Model implements Comparable<Contact>, Persistable {
         return status.isBlocked();
     }
 
+    public boolean isRequested() {
+        return status.isRequested();
+    } 
+
     /**
      * Set the contact blocked or not blocked
      * @param blocked

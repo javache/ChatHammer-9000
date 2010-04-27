@@ -17,6 +17,7 @@ import java.util.TreeSet;
 import javax.swing.AbstractListModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.JOptionPane;
 import org.jdom.Element;
 
 /**
@@ -61,7 +62,9 @@ public class ContactList extends AbstractListModel implements Persistable, Chang
                 new EventFilter(ContactOnlineEvent.class));
         EventPool.getAppPool().addListener(new ContactOfflineListener(),
                 new EventFilter(ContactOfflineEvent.class));
-
+        EventPool.getAppPool().addListener(new ContactRequestListener(),
+                new EventFilter(ContactRequestEvent.class));
+            
         for(Contact contact : contacts) {
             pingContact(contact);
         }
@@ -84,7 +87,10 @@ public class ContactList extends AbstractListModel implements Persistable, Chang
                 if (!contact.isOnline()) {
                     EventPool.getAppPool().raiseEvent(new ContactOnlineEvent(contact));
                 }
-
+                /* keep in mind here that this will set the state to online
+                 * so in essence this will also handle responses 
+                 * from friendrequests 
+                 */
                 contact.setOnline(true);
                 onlineHash.put(event.getSource(), contact);
                 
@@ -101,8 +107,28 @@ public class ContactList extends AbstractListModel implements Persistable, Chang
         }
     }
     
+    private class ContactRequestListener implements EventListener {
+        public void handleEvent(Event ev) {
+            ContactRequestEvent event = (ContactRequestEvent)ev;
+            if(event.isExternal()) {
+                String text = "would you like to add " + event.getUsername() + " as your friend?";
+                int confirmation = JOptionPane.showConfirmDialog(null, text, "Friend Request", JOptionPane.YES_NO_OPTION);
+                if (confirmation == JOptionPane.YES_OPTION) {
+                    addContact(new Contact(event.getUsername(),event.getSource()));
+                } else {
+                    /* TODO ignore further friendrequests */
+                }    
+            }
+        }
+    }
+    
     private void pingContact(Contact contact) {
-        EventPool.getAppPool().raiseEvent(new ContactOnlineEvent(contact));
+        if (contact.isRequested()) {
+            EventPool.getAppPool().raiseEvent(new ContactRequestEvent(contact.getIp(),contact.getUsername()));            
+        } else {
+            EventPool.getAppPool().raiseEvent(new ContactOnlineEvent(contact));            
+        }
+
     }
     
     /**
