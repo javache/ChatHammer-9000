@@ -83,9 +83,8 @@ public class CarouselPlugin extends AbstractPlugin implements EventListener {
         flickr.enablePlugin(conversation);
         flickr.sendNewImageEvent("lolcat");
         flickr.sendNewImageEvent("fire");
-        flickr.sendNewImageEvent("abc");
+        flickr.sendNewImageEvent("Bagger 288");
         flickr.sendNewImageEvent("test");
-        flickr.sendNewImageEvent("rain");
         flickr.sendNewImageEvent("jailbait");
     }
 }
