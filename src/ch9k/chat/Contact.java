@@ -163,7 +163,14 @@ public class Contact extends Model implements Comparable<Contact>, Persistable {
         if(equals(contact)) {
             return 0;
         }
-
+        
+        // online contact should be at the top
+        if (isOnline() && !contact.isOnline()) {
+            return -1;
+        } else if (!isOnline() && contact.isOnline()) {
+            return 1;
+        }
+        
         // order by name
         int compareUsername = username.compareToIgnoreCase(contact.getUsername());
         if (compareUsername != 0){
