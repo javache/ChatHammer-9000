@@ -125,6 +125,9 @@ public class ContactList extends AbstractListModel implements Persistable, Chang
      */
     public void removeContact(Contact contact) {
         contacts.remove(contact);
+        if(contact.isOnline()) {
+            onlineHash.remove(contact.getIp());
+        }
         fireListChanged();
     }
     
@@ -138,6 +141,8 @@ public class ContactList extends AbstractListModel implements Persistable, Chang
 
     /**
      * Get the contact that is know by this info, returns null if no such contact is found
+     * will first look in it's online hash, since lookup in there is much easier and faster
+     * if not found there, search in all the contacts
      * @param ip
      * @param username
      * @return contact
@@ -147,6 +152,13 @@ public class ContactList extends AbstractListModel implements Persistable, Chang
         if(contact != null && contact.getIp().equals(ip) && contact.getUsername().equals(username)){
             return contact;
         }
+        
+        for (Contact cont : contacts) {
+            if(cont.getIp().equals(ip) && cont.getUsername().equals(username)) {
+                return cont;
+            }
+        }
+        
         return null;
     }
     
