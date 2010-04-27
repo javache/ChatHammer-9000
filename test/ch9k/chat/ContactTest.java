@@ -197,58 +197,7 @@ public class ContactTest {
      * handshake could not be tested, because remotepool cannot broadcast trough network...
      */
 
-    @Test
-    public void testRemoteHandleEvent() throws UnknownHostException, InterruptedException, IOException {
-        // get the local app-pool and let it start
-        EventPool localPool = EventPool.getAppPool();
-        Thread.sleep(100);
-
-        // create a remote eventpool and connect it to the local one
-        EventPool remotePool = new EventPool();
-        Connection remoteConnection = new Connection(InetAddress.getLocalHost(), remotePool, null);
-        Thread.sleep(100);
-
-        // create a contact out of the local user (as seen from the other side)
-        Account localAccount = ChatApplication.getInstance().getAccount();
-        Contact localContact = new Contact(localAccount.getUsername(), InetAddress.getLocalHost(), false);
-        Contact remoteContact = new Contact("Javache", InetAddress.getLocalHost(), false);
-
-        // add both of these contacts to our list, so we can look them up later
-        ContactList contactList = localAccount.getContactList();
-        contactList.addContact(localContact);
-        contactList.addContact(remoteContact);
-
-        // remove the remotecontact from the list of local listeners, because we want to test the remote side
-        localPool.removeListener(remoteContact);
-        // locally this is not a contact, so not a listener
-        localPool.removeListener(localContact);
-        // the local contact is a real contact on remote side, so it should listen
-        remotePool.addListener(localContact, new ContactEventFilter(localContact));
-
-        // create the events localContact changes status and notifies remotecontact
-        ContactEvent contactOnlineEvent = new ContactOnlineEvent(remoteContact);
-        ContactEvent contactOfflineEvent = new ContactOfflineEvent(remoteContact);
-
-        String newStatus = "on toilet";
-        ContactEvent contactStatusChangeEvent = new ContactStatusEvent(remoteContact, newStatus);
-
-        assertFalse(localContact.isOnline());
-        assertFalse(localContact.isBlocked());
-        assertEquals("", localContact.getStatus());
-
-        localPool.raiseEvent(contactOnlineEvent);
-        Thread.sleep(100);
-        assertTrue(localContact.isOnline());
-
-        localPool.raiseEvent(contactStatusChangeEvent);
-        Thread.sleep(100);
-        assertEquals(newStatus, localContact.getStatus());
-
-        localPool.raiseEvent(contactOfflineEvent);
-        Thread.sleep(100);
-        assertFalse(localContact.isOnline());
-    }
-
+    
     @Test
     public void testPersist() throws UnknownHostException {
         Contact instance = new Contact("Javache", InetAddress.getByName("ugent.be"), false);
