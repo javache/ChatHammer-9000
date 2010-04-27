@@ -2,6 +2,7 @@ package ch9k.chat;
 
 import ch9k.chat.events.ContactOfflineEvent;
 import ch9k.chat.events.ContactOnlineEvent;
+import ch9k.chat.events.ContactRequestEvent;
 import ch9k.configuration.Persistable;
 import ch9k.configuration.PersistentDataObject;
 import ch9k.eventpool.Event;
@@ -117,6 +118,12 @@ public class ContactList extends AbstractListModel implements Persistable, Chang
             fireListChanged();
             pingContact(contact);
         }
+    }
+    
+    public void addNewContact(InetAddress ip, String username) {
+        EventPool.getAppPool().raiseEvent(new ContactRequestEvent(ip,username));
+        Contact contact = new Contact(username,ip);
+        addContact(contact);
     }
 
     /**

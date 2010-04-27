@@ -65,7 +65,7 @@ public class CarouselPlugin extends AbstractPlugin implements EventListener {
     public static void main(String[] args) throws Exception {
         JFrame frame = new JFrame();
         Contact contact = new Contact("JPanneel",
-                InetAddress.getByName("google.be"), false);
+                InetAddress.getByName("google.be"));
         Conversation conversation = new Conversation(contact, true);
         CarouselPlugin plugin = new CarouselPlugin();
         plugin.enablePlugin(conversation);

@@ -32,8 +32,8 @@ public class StorageTest {
         storage.store("account", account);
         try {
             ContactList contacts = account.getContactList();
-            contacts.addContact(new Contact("Zeus WPI", InetAddress.getByName("google.be"), false));
-            contacts.addContact(new Contact("CH9K", InetAddress.getByName("10.1.1.70"), false));
+            contacts.addContact(new Contact("Zeus WPI", InetAddress.getByName("google.be")));
+            contacts.addContact(new Contact("CH9K", InetAddress.getByName("10.1.1.70")));
         } catch (UnknownHostException ex) {
             Logger.getLogger(StorageTest.class.getName()).log(Level.SEVERE, null, ex);
         }

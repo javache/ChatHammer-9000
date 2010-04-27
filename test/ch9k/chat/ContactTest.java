@@ -30,7 +30,7 @@ public class ContactTest {
         ChatApplication.getInstance().performTestLogin();
         username = "JPanneel";
         ip = InetAddress.getByName("google.be");
-        contact = new Contact(username, ip, false);
+        contact = new Contact(username, ip);
     }
 
     @After
@@ -110,10 +110,10 @@ public class ContactTest {
      */
     @Test
     public void testEquals() throws UnknownHostException {
-        Contact instance1 = new Contact("JPanneel", InetAddress.getByName("google.be"), false);
-        Contact instance2 = new Contact("JPanneel", InetAddress.getByName("google.be"), false);
-        Contact instance3 = new Contact("JPanneel", InetAddress.getByName("ugent.be"), false);
-        Contact instance4 = new Contact("Javache", InetAddress.getByName("ugent.be"), false);
+        Contact instance1 = new Contact("JPanneel", InetAddress.getByName("google.be"));
+        Contact instance2 = new Contact("JPanneel", InetAddress.getByName("google.be"));
+        Contact instance3 = new Contact("JPanneel", InetAddress.getByName("ugent.be"));
+        Contact instance4 = new Contact("Javache", InetAddress.getByName("ugent.be"));
 
         assertTrue(instance1.equals(instance2));
         assertTrue(instance2.equals(instance1));
@@ -126,9 +126,9 @@ public class ContactTest {
      */
     @Test
     public void testHashCode() throws UnknownHostException {
-        Contact instance1 = new Contact("JPanneel", InetAddress.getByName("google.be"), false);
-        Contact instance2 = new Contact("JPanneel", InetAddress.getByName("google.be"), false);
-        Contact instance3 = new Contact("Javache", InetAddress.getByName("google.be"), false);
+        Contact instance1 = new Contact("JPanneel", InetAddress.getByName("google.be"));
+        Contact instance2 = new Contact("JPanneel", InetAddress.getByName("google.be"));
+        Contact instance3 = new Contact("Javache", InetAddress.getByName("google.be"));
         
         assertTrue(instance1.hashCode() == instance2.hashCode());
         assertFalse(instance1.hashCode() == instance3.hashCode());
@@ -139,9 +139,9 @@ public class ContactTest {
      */
     @Test
     public void testCompareTo() throws UnknownHostException {
-        Contact contact1 = new Contact("Javache", InetAddress.getByName("google.be"), false);
-        Contact contact2 = new Contact("Zeusje", InetAddress.getByName("google.be"), false);
-        Contact contact3 = new Contact("Zeusje", InetAddress.getByName("ugent.be"), false);
+        Contact contact1 = new Contact("Javache", InetAddress.getByName("google.be"));
+        Contact contact2 = new Contact("Zeusje", InetAddress.getByName("google.be"));
+        Contact contact3 = new Contact("Zeusje", InetAddress.getByName("ugent.be"));
 
         // should be consistent with equals
         assertTrue(contact.compareTo(contact) == 0);
@@ -197,10 +197,11 @@ public class ContactTest {
      * handshake could not be tested, because remotepool cannot broadcast trough network...
      */
 
-    
+
+
     @Test
     public void testPersist() throws UnknownHostException {
-        Contact instance = new Contact("Javache", InetAddress.getByName("ugent.be"), false);
+        Contact instance = new Contact("Javache", InetAddress.getByName("ugent.be"));
         PersistentDataObject pdo = instance.persist();
         Contact loaded = new Contact(pdo);
 

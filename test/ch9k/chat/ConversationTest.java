@@ -26,7 +26,7 @@ public class ConversationTest {
     @Before
     public void setUp() throws UnknownHostException {
         ChatApplication.getInstance().performTestLogin();
-        contact = new Contact("JPanneel", InetAddress.getByName("google.be"), false);
+        contact = new Contact("JPanneel", InetAddress.getByName("google.be"));
         conversation = new Conversation(contact, true);
     }
 
@@ -139,7 +139,7 @@ public class ConversationTest {
         assertTrue(conversation.equals(conversation)); // identity
 
         Conversation differentConversation = new Conversation(
-                new Contact("Javache", null, true), true);
+                new Contact("Javache", null), true);
         assertFalse(conversation.equals(differentConversation));
     }
 
@@ -152,7 +152,7 @@ public class ConversationTest {
         assertEquals(conversation.hashCode(), conversation.hashCode());
         
         Conversation differentConversation = new Conversation(
-                new Contact("Javache", InetAddress.getByName("ugent.be"), false), true);
+                new Contact("Javache", InetAddress.getByName("ugent.be")), true);
         assertNotSame(conversation.hashCode(), differentConversation.hashCode());
     }
 
@@ -180,8 +180,8 @@ public class ConversationTest {
 
         // create a contact out of the local user (as seen from the other side)
         Account localAccount = ChatApplication.getInstance().getAccount();
-        Contact localContact = new Contact(localAccount.getUsername(), InetAddress.getLocalHost(), false);
-        Contact remoteContact = new Contact("Jaspervdj", InetAddress.getLocalHost(), true);
+        Contact localContact = new Contact(localAccount.getUsername(), InetAddress.getLocalHost());
+        Contact remoteContact = new Contact("Jaspervdj", InetAddress.getLocalHost());
 
         // add both of these contacts to our list, so we can look them up later
         ContactList contactList = localAccount.getContactList();

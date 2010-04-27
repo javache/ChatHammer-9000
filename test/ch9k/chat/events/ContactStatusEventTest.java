@@ -17,7 +17,7 @@ public class ContactStatusEventTest {
      */
     @Test
     public void testGetNewStatus() {
-        Contact contact = new Contact("JPanneel", null, true);
+        Contact contact = new Contact("JPanneel", null);
         String status = "Ben naar de WC";
         ContactStatusEvent contactStatusChangeEvent = new ContactStatusEvent(contact, status);
         assertEquals(status, contactStatusChangeEvent.getNewStatus());

@@ -22,7 +22,7 @@ public class NewChatMessageEventTest {
     @Test
     public void testGetChatMessage() throws UnknownHostException {
         Conversation conversation = new Conversation(
-                new Contact("Javache", InetAddress.getByName("thinkjavache.be"), false), true);
+                new Contact("Javache", InetAddress.getByName("thinkjavache.be")), true);
         ChatMessage chatMessage1 = new ChatMessage("JPanneel", "tada!");
         ChatMessage chatMessage2 = new ChatMessage("JPanneel", "Oi Oi Oi");
         NewChatMessageEvent newChatMessageEvent1 = new NewChatMessageEvent(conversation, chatMessage1);

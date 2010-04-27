@@ -26,7 +26,7 @@ public class ConversationManagerTest {
      */
     @Test
     public void testStartConversation() {
-        Contact contact = new Contact("Javache", null, true);
+        Contact contact = new Contact("Javache", null);
         Conversation conversation = new Conversation(contact, true);
         assertEquals(conversation, localConversationManager.startConversation(contact, false));
         assertEquals(conversation, localConversationManager.getConversation(contact));
@@ -37,7 +37,7 @@ public class ConversationManagerTest {
      */
     @Test
     public void testCloseConversation() {
-        Contact contact = new Contact("Javache", null, true);
+        Contact contact = new Contact("Javache", null);
         Conversation conversation = localConversationManager.startConversation(contact, true);
         assertEquals(conversation, localConversationManager.getConversation(contact));
         localConversationManager.closeConversation(contact);
@@ -49,7 +49,7 @@ public class ConversationManagerTest {
      */
     @Test
     public void testClear() {
-        Contact contact = new Contact("Javache", null, true);
+        Contact contact = new Contact("Javache", null);
         Conversation conversation = localConversationManager.startConversation(contact, true);
         assertEquals(conversation, localConversationManager.getConversation(contact));
         localConversationManager.clear();
@@ -63,7 +63,7 @@ public class ConversationManagerTest {
      */
     @Test
     public void testGetConversation() {
-        Contact contact = new Contact("Javache", null, true);
+        Contact contact = new Contact("Javache", null);
         Conversation conversation = new Conversation(contact, true);
         assertEquals(conversation, localConversationManager.startConversation(contact, false));
         assertEquals(conversation, localConversationManager.getConversation(contact));
@@ -79,7 +79,7 @@ public class ConversationManagerTest {
         // wait for apppool to start up
         Thread.sleep(100);
 
-        Contact remoteContact = new Contact("Javache", InetAddress.getLocalHost(), true);
+        Contact remoteContact = new Contact("Javache", InetAddress.getLocalHost());
         ChatApplication.getInstance().getAccount().getContactList().addContact(remoteContact);
 
         ConversationEvent localCreateEvent = new NewConversationEvent(remoteContact);

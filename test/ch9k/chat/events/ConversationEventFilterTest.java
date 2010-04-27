@@ -22,8 +22,8 @@ public class ConversationEventFilterTest {
      */
     @Test
     public void testAccept() throws UnknownHostException {
-        Contact contact1 = new Contact("JPanneel", InetAddress.getByName("google.be"), true);
-        Contact contact2 = new Contact("Javache", InetAddress.getByName("google.be"), true);
+        Contact contact1 = new Contact("JPanneel", InetAddress.getByName("google.be"));
+        Contact contact2 = new Contact("Javache", InetAddress.getByName("google.be"));
         Conversation conversation1 = new Conversation(contact1, true);
         Conversation conversation2 = new Conversation(contact2, true);
         

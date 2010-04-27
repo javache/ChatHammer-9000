@@ -38,8 +38,8 @@ public class ConversationEventTest {
      */
     @Test
     public void testGetContact() throws UnknownHostException {
-        Contact remoteContactA = new Contact("Javache", InetAddress.getByName("ugent.be"), true);
-        Contact remoteContactB = new Contact("JPanneel", InetAddress.getByName("google.be"), true);
+        Contact remoteContactA = new Contact("Javache", InetAddress.getByName("ugent.be"));
+        Contact remoteContactB = new Contact("JPanneel", InetAddress.getByName("google.be"));
         
         // add these users to the contactlist
         ContactList list = ChatApplication.getInstance().getAccount().getContactList();
@@ -68,8 +68,8 @@ public class ConversationEventTest {
 
         // create a contact out of the local user (as seen from the other side)
         Account localAccount = ChatApplication.getInstance().getAccount();
-        Contact localContact = new Contact(localAccount.getUsername(), InetAddress.getLocalHost(), false);
-        Contact remoteContact = new Contact("Javache", InetAddress.getLocalHost(), true);
+        Contact localContact = new Contact(localAccount.getUsername(), InetAddress.getLocalHost());
+        Contact remoteContact = new Contact("Javache", InetAddress.getLocalHost());
 
         // add both of these contacts to our list, so we can look them up later
         ContactList contactList = localAccount.getContactList();
@@ -124,8 +124,8 @@ public class ConversationEventTest {
      */
     @Test
     public void testGetConversation() throws UnknownHostException {
-        Contact remoteContactA = new Contact("Javache", InetAddress.getByName("ugent.be"), true);
-        Contact remoteContactB = new Contact("JPanneel", InetAddress.getByName("google.be"), true);
+        Contact remoteContactA = new Contact("Javache", InetAddress.getByName("ugent.be"));
+        Contact remoteContactB = new Contact("JPanneel", InetAddress.getByName("google.be"));
 
         ConversationManager manager = ChatApplication.getInstance().getConversationManager();
         Conversation conversationA = manager.startConversation(remoteContactA, false);

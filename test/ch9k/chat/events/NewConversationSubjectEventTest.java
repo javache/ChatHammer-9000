@@ -26,7 +26,7 @@ public class NewConversationSubjectEventTest {
      */
     @Test
     public void testGetConversationSubject() throws UnknownHostException {
-        Contact contact = new Contact("Javache", InetAddress.getLocalHost(), false);
+        Contact contact = new Contact("Javache", InetAddress.getLocalHost());
         Conversation conversation = new Conversation(contact, true);
         String[] subjects = new String[] {"seks", "stal", "dieren" };
         ConversationSubject conversationSubject =

@@ -28,9 +28,9 @@ public class ContactListTest {
     public void testGetContacts() throws UnknownHostException {
         // look out, this is a sorted list ;)
         Contact[] contacts = new Contact[] {
-            new Contact("jaspervdj", InetAddress.getByName("4chan.org"), false),
-            new Contact("Javache", InetAddress.getByName("ugent.be"), false),
-            new Contact("JPanneel", InetAddress.getByName("google.be"), false)
+            new Contact("jaspervdj", InetAddress.getByName("4chan.org")),
+            new Contact("Javache", InetAddress.getByName("ugent.be")),
+            new Contact("JPanneel", InetAddress.getByName("google.be"))
         };
 
         for(Contact contact : contacts) {
@@ -45,7 +45,7 @@ public class ContactListTest {
      */
     @Test
     public void testAddContact() throws UnknownHostException  {
-        Contact contact = new Contact("JPanneel", InetAddress.getByName("google.be"), false);
+        Contact contact = new Contact("JPanneel", InetAddress.getByName("google.be"));
         
         contactList.addContact(contact);
         assertEquals(1, contactList.getContacts().size());
@@ -59,8 +59,8 @@ public class ContactListTest {
      */
     @Test
     public void testRemoveContact() throws UnknownHostException {
-        Contact contact1 = new Contact("JPanneel", InetAddress.getByName("google.be"), false);
-        Contact contact2 = new Contact("JPanneel", InetAddress.getByName("ugent.be"), false);
+        Contact contact1 = new Contact("JPanneel", InetAddress.getByName("google.be"));
+        Contact contact2 = new Contact("JPanneel", InetAddress.getByName("ugent.be"));
         
         assertEquals(0, contactList.getContacts().size());
         contactList.addContact(contact1);
@@ -75,8 +75,8 @@ public class ContactListTest {
      */
     @Test
     public void testGetContact() throws UnknownHostException {
-        Contact contact1 = new Contact("JPanneel", InetAddress.getByName("google.be"), false);
-        Contact contact2 = new Contact("Javache", InetAddress.getByName("ugent.be"), false);
+        Contact contact1 = new Contact("JPanneel", InetAddress.getByName("google.be"));
+        Contact contact2 = new Contact("Javache", InetAddress.getByName("ugent.be"));
 
         contactList.addContact(contact1);
         contactList.addContact(contact2);
@@ -89,8 +89,8 @@ public class ContactListTest {
 
     @Test
     public void testPersist() throws UnknownHostException{
-        Contact contact1 = new Contact("JPanneel", InetAddress.getByName("google.be"), false);
-        Contact contact2 = new Contact("Javache", InetAddress.getByName("ugent.be"), false);
+        Contact contact1 = new Contact("JPanneel", InetAddress.getByName("google.be"));
+        Contact contact2 = new Contact("Javache", InetAddress.getByName("ugent.be"));
         contactList.addContact(contact1);
         contactList.addContact(contact2);
 

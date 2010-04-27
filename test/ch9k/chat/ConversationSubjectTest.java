@@ -11,7 +11,7 @@ public class ConversationSubjectTest {
 
     @Before
     public void setUp() {
-        conversation = new Conversation(new Contact("JPanneel", null, true), true);
+        conversation = new Conversation(new Contact("JPanneel", null), true);
         subjects = new String[] { "subject-a", "subject-b" };
         conversationSubject = new ConversationSubject(conversation, subjects);
     }

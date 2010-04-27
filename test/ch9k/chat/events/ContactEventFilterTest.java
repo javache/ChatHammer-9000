@@ -18,8 +18,8 @@ public class ContactEventFilterTest {
      */
     @Test
     public void testAccept() throws UnknownHostException {
-        Contact contact1 = new Contact("JPanneel", null, true);
-        Contact contact2 = new Contact("Javache", null, true);
+        Contact contact1 = new Contact("JPanneel", null);
+        Contact contact2 = new Contact("Javache", null);
 
         ContactEventFilter contactStatusEventFilter = new ContactEventFilter(contact1);
         ContactEvent contactStatusEvent1 = new ContactOnlineEvent(contact1);

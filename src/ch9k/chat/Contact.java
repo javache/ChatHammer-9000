@@ -19,9 +19,8 @@ import org.jdom.Element;
 public class Contact extends Model implements Comparable<Contact>, Persistable {
     private InetAddress ip;
     private String username;
-    private String status;
-    private boolean online;
-    private boolean blocked;
+    private ContactStatus status;
+
 
     /**
      * Constructor.
@@ -29,12 +28,10 @@ public class Contact extends Model implements Comparable<Contact>, Persistable {
      * @param ip The ip of the new contact.
      * @param blocked Whether or not the new contact was already blocked.
      */
-    public Contact(String username, InetAddress ip, boolean blocked) {
+    public Contact(String username, InetAddress ip) {
         this.username = username;
         this.ip = ip;
-        this.blocked = blocked;
-        this.online = false;
-        this.status = "";
+        this.status = new ContactStatus();
     }
 
     /**
@@ -75,7 +72,7 @@ public class Contact extends Model implements Comparable<Contact>, Persistable {
      * @return status
      */
     public String getStatus() {
-        return status;
+        return status.getText();
     }
 
     /**
@@ -162,13 +159,6 @@ public class Contact extends Model implements Comparable<Contact>, Persistable {
     public int compareTo(Contact contact) {
         if(equals(contact)) {
             return 0;
-        }
-        
-        // online contact should be at the top
-        if (isOnline() && !contact.isOnline()) {
-            return -1;
-        } else if (!isOnline() && contact.isOnline()) {
-            return 1;
         }
         
         // order by name
