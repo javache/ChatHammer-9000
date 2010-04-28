@@ -14,9 +14,11 @@ import static org.junit.Assert.*;
 public class ConversationManagerTest {
 
     private ConversationManager localConversationManager;
+    private Contact contact;
 
     @Before
-    public void setUp() {
+    public void setUp() throws UnknownHostException {
+        contact = new Contact("Javache", InetAddress.getByName("thinkjavache.be"));
         ChatApplication.getInstance().performTestLogin();
         localConversationManager = new ConversationManager();
     }
@@ -26,7 +28,6 @@ public class ConversationManagerTest {
      */
     @Test
     public void testStartConversation() {
-        Contact contact = new Contact("Javache", null);
         Conversation conversation = new Conversation(contact, true);
         assertEquals(conversation, localConversationManager.startConversation(contact, false));
         assertEquals(conversation, localConversationManager.getConversation(contact));
@@ -37,7 +38,6 @@ public class ConversationManagerTest {
      */
     @Test
     public void testCloseConversation() {
-        Contact contact = new Contact("Javache", null);
         Conversation conversation = localConversationManager.startConversation(contact, true);
         assertEquals(conversation, localConversationManager.getConversation(contact));
         localConversationManager.closeConversation(contact);
@@ -49,7 +49,6 @@ public class ConversationManagerTest {
      */
     @Test
     public void testClear() {
-        Contact contact = new Contact("Javache", null);
         Conversation conversation = localConversationManager.startConversation(contact, true);
         assertEquals(conversation, localConversationManager.getConversation(contact));
         localConversationManager.clear();
@@ -63,7 +62,6 @@ public class ConversationManagerTest {
      */
     @Test
     public void testGetConversation() {
-        Contact contact = new Contact("Javache", null);
         Conversation conversation = new Conversation(contact, true);
         assertEquals(conversation, localConversationManager.startConversation(contact, false));
         assertEquals(conversation, localConversationManager.getConversation(contact));
@@ -86,7 +84,7 @@ public class ConversationManagerTest {
 
         localPool.raiseEvent(localCreateEvent);
         // wait while the event gets transmitted
-        Thread.sleep(800);
+        Thread.sleep(1000);
 
         Conversation startedConversation = localConversationManager.getConversation(remoteContact);
         assertNotNull(startedConversation);
