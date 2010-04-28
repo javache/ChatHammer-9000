@@ -135,7 +135,8 @@ public class ContactList extends AbstractListModel implements Persistable, Chang
     
     private void pingContact(Contact contact) {
         if (contact.isRequested()) {
-            EventPool.getAppPool().raiseEvent(new ContactRequestEvent(contact.getIp(), contact.getUsername()));            
+            EventPool.getAppPool().raiseEvent(new ContactRequestEvent(
+                    contact.getIp(), contact.getUsername()));
         } else {
             EventPool.getAppPool().raiseEvent(new ContactOnlineEvent(contact));            
         }
@@ -194,7 +195,9 @@ public class ContactList extends AbstractListModel implements Persistable, Chang
      */
     public Contact getContact(InetAddress ip, String username) {
         Contact contact = onlineHash.get(ip);
-        if(contact != null && contact.getIp().equals(ip) && contact.getUsername().equals(username)){
+        if(contact != null && 
+                contact.getIp().equals(ip) &&
+                contact.getUsername().equals(username)){
             return contact;
         }
         
