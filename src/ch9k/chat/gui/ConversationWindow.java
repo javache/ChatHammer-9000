@@ -49,8 +49,7 @@ public class ConversationWindow extends JFrame {
      * @param conversation
      */
     public ConversationWindow(final Conversation conversation) {
-        super(conversation.getContact().getUsername() + " @ " +
-                conversation.getContact().getIp().getCanonicalHostName());
+        super(conversation.getContact().getUsername() + " @ " + conversation.getContact().getIp().getCanonicalHostName());
         this.conversation = conversation;
 
         EventPool.getAppPool().addListener(new EventListener() {

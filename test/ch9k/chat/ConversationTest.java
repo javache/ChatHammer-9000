@@ -122,6 +122,9 @@ public class ConversationTest {
      */
     @Test
     public void testClose() throws InterruptedException {
+        // wait for the window to be created. (is in another thread)
+        // otherwise nullpointers
+        Thread.sleep(500);
         TestListener testListener = new TestListener();
         EventPool.getAppPool().addListener(testListener, new EventFilter(CloseConversationEvent.class));
         conversation.close();
@@ -135,11 +138,11 @@ public class ConversationTest {
      * Test of equals method, of class Conversation.
      */
     @Test
-    public void testEquals() {
+    public void testEquals() throws UnknownHostException {
         assertTrue(conversation.equals(conversation)); // identity
 
         Conversation differentConversation = new Conversation(
-                new Contact("Javache", null), true);
+                new Contact("Javache", InetAddress.getByName("thinkjavache.be")), true);
         assertFalse(conversation.equals(differentConversation));
     }
 
@@ -205,7 +208,7 @@ public class ConversationTest {
 
         // raise the event on the local pool, should get sent to remotePool too
         localPool.raiseEvent(localEvent);
-        Thread.sleep(50);
+        Thread.sleep(100);
 
         // let's check the results!
         assertEquals(1, remoteConversation.getMessages(10).length);
