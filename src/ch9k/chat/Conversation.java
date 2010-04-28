@@ -38,6 +38,7 @@ public class Conversation extends AbstractListModel implements EventListener {
 
         // create a new window
         EventQueue.invokeLater(new Runnable() {
+            @Override
             public void run() {
                 window = new ConversationWindow(Conversation.this);
             }

@@ -79,14 +79,14 @@ public class ConversationManagerTest {
         // wait for apppool to start up
         Thread.sleep(100);
 
-        Contact remoteContact = new Contact("Javache", InetAddress.getLocalHost());
+        Contact remoteContact = new Contact("JPanneel", InetAddress.getLocalHost());
         ChatApplication.getInstance().getAccount().getContactList().addContact(remoteContact);
 
         ConversationEvent localCreateEvent = new NewConversationEvent(remoteContact);
 
         localPool.raiseEvent(localCreateEvent);
         // wait while the event gets transmitted
-        Thread.sleep(200);
+        Thread.sleep(800);
 
         Conversation startedConversation = localConversationManager.getConversation(remoteContact);
         assertNotNull(startedConversation);
