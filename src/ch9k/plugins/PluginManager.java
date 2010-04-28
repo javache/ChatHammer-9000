@@ -2,7 +2,9 @@ package ch9k.plugins;
 
 import ch9k.chat.Conversation;
 import ch9k.eventpool.Event;
+import ch9k.eventpool.EventFilter;
 import ch9k.eventpool.EventPool;
+import ch9k.eventpool.EventListener;
 import ch9k.plugins.events.PluginDisabledEvent;
 import ch9k.plugins.events.PluginEnabledEvent;
 import java.util.ArrayList;
@@ -17,7 +19,7 @@ import org.apache.log4j.Logger;
  * A singleton to manage plugins.
  * @author Jasper Van der Jeugt
  */
-public class PluginManager {
+public class PluginManager implements EventListener {
     /**
      * Logger.
      */
@@ -52,6 +54,14 @@ public class PluginManager {
         plugins = new HashMap<Conversation, List<Plugin>>();
         availablePlugins = new ArrayList<String>();
         installer = new PluginInstaller(this);
+
+        /* Register as listener. We will listen to remote enable/disable plugin
+         * events, so we can synchronize with the plugin manager on the other
+         * side. */
+        EventFilter filter1 = new EventFilter(PluginEnabledEvent.class);
+        EventPool.getAppPool().addListener(this, filter1);
+        EventFilter filter2 = new EventFilter(PluginDisabledEvent.class);
+        EventPool.getAppPool().addListener(this, filter2);
     }
 
     /**
@@ -85,10 +95,24 @@ public class PluginManager {
      * @param name Name of the plugin to load.
      */
     public void enablePlugin(Conversation conversation, String name) {
+        if(enable(conversation, name)) {
+            /* Throw an event. */
+            Event event = new PluginEnabledEvent(conversation, name);
+            EventPool.getAppPool().raiseEvent(event);
+        }
+    }
+
+    /**
+     * Enable a plugin for a given conversation.
+     * @param conversation Conversation to enable the plugin for.
+     * @param name Name of the plugin to load.
+     * @return If the operation was succesful.
+     */
+    private boolean enable(Conversation conversation, String name) {
         /* Check that the plugin is not already enabled for the conversation. */
         Set<String> conversationPlugins = enabledPlugins.get(conversation);
         if(conversationPlugins != null && conversationPlugins.contains(name)) {
-            return;
+            return false;
         }
 
         /* Find the class of the new plugin. */
@@ -102,7 +126,7 @@ public class PluginManager {
             } catch (ClassNotFoundException e) {
                 /* Should not happen, because we registered it earlier. */
                 logger.warn("Class not found: " + name);
-                return;
+                return false;
             }
         }
 
@@ -112,10 +136,10 @@ public class PluginManager {
             plugin = (Plugin) pluginClass.newInstance();
         } catch (InstantiationException exception) {
             logger.warn("Could not instantiate " + name + ": " + exception);
-            return;
+            return false;
         } catch (IllegalAccessException exception) {
             logger.warn("Could not access " + name + ": " + exception);
-            return;
+            return false;
         }
 
         /* Couple it with the conversation. */
@@ -130,9 +154,7 @@ public class PluginManager {
         conversationPlugins.add(name);
         plugins.get(conversation).add(plugin); 
 
-        /* Throw an event. */
-        Event event = new PluginEnabledEvent(conversation, name);
-        EventPool.getAppPool().raiseEvent(event);
+        return true;
     }
 
     /**
@@ -141,8 +163,23 @@ public class PluginManager {
      * @param name Name of the plugin to disable.
      */
     public void disablePlugin(Conversation conversation, String name) {
+        if(disable(conversation, name)) {
+            /* Throw an event. */
+            Event event = new PluginDisabledEvent(conversation, name);
+            EventPool.getAppPool().raiseEvent(event);
+        }
+    }
+
+    /**
+     * Disable a plugin for a given conversation.
+     * @param conversation Conversation to disable the plugin for.
+     * @param name Name of the plugin to disable.
+     * @return If the action was succesful.
+     */
+    private boolean disable(Conversation conversation, String name) {
         Set<String> names = enabledPlugins.get(conversation);
         List<Plugin> instances = plugins.get(conversation);
+        boolean succes = false;
 
         if(names != null && names.contains(name)) {
             names.remove(name);
@@ -150,13 +187,12 @@ public class PluginManager {
                 if(plugin.getClass().getName().equals(name)) {
                     plugin.disablePlugin();
                     instances.remove(plugin);
+                    succes = true;
                 }
             }
         }
 
-        /* Throw an event. */
-        Event event = new PluginDisabledEvent(conversation, name);
-        EventPool.getAppPool().raiseEvent(event);
+        return succes;
     }
 
     /**
@@ -165,5 +201,26 @@ public class PluginManager {
      */
     public PluginInstaller getPluginInstaller() {
         return installer;
+    }
+
+    @Override
+    public void handleEvent(Event e) {
+        /* A plugin was enabled. */
+        if(e instanceof PluginEnabledEvent) {
+            PluginEnabledEvent event = (PluginEnabledEvent) e;
+
+            /* If the event was external, enable the plugin here as well. */
+            if(event.isExternal()) {
+                enable(event.getConversation(), event.getPlugin());
+            }
+        /* A plugin was disabled. */
+        } else if (e instanceof PluginDisabledEvent) {
+            PluginDisabledEvent event = (PluginDisabledEvent) e;
+
+            /* If the event was external, disable the plugin here as well. */
+            if(event.isExternal()) {
+                disable(event.getConversation(), event.getPlugin());
+            }
+        }
     }
 }
