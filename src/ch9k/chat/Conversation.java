@@ -107,7 +107,7 @@ public class Conversation extends AbstractListModel implements EventListener {
      * Adds a message to this Conversation.
      * @param chatMessage
      */
-    public void addMessage(ChatMessage chatMessage) {
+    private void addMessage(ChatMessage chatMessage) {
         int size = messages.size();
         if(size == 0 || !chatMessage.equals(messages.get(size-1))){
             messages.add(chatMessage);
