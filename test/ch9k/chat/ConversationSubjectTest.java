@@ -1,5 +1,7 @@
 package ch9k.chat;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -10,8 +12,8 @@ public class ConversationSubjectTest {
     private String[] subjects;
 
     @Before
-    public void setUp() {
-        conversation = new Conversation(new Contact("JPanneel", null), true);
+    public void setUp() throws UnknownHostException {
+        conversation = new Conversation(new Contact("JPanneel", InetAddress.getByName("google.be")), true);
         subjects = new String[] { "subject-a", "subject-b" };
         conversationSubject = new ConversationSubject(conversation, subjects);
     }
