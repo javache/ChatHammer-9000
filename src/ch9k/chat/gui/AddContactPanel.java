@@ -2,9 +2,14 @@
 package ch9k.chat.gui;
 
 import ch9k.chat.AddContactController;
+import ch9k.core.ChatApplication;
+import ch9k.chat.ContactList;
+import ch9k.chat.Contact;
 import ch9k.core.I18n;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.GroupLayout;
@@ -63,6 +68,8 @@ public class AddContactPanel extends JPanel {
 
         Action registerAction = new AbstractAction(I18n.get("ch9k.chat", "add_contact")) {
             public void actionPerformed(ActionEvent e) {
+                addContact();
+                dialog.dispose();
             }
         };
         addContactButton = new JButton(registerAction);
@@ -73,6 +80,21 @@ public class AddContactPanel extends JPanel {
                 dialog.dispose();
             }
         });
+    }
+
+    /**
+     * add a contact
+     * TODO error handling and field validation
+     */
+    private void addContact() {
+        ContactList contactList = ChatApplication.getInstance().getAccount().getContactList();
+        try {
+            contactList.addContact(new Contact(usernameField.getText(),
+                                               InetAddress.getByName(ipField.getText())), true);
+        } catch (UnknownHostException e) {
+            
+        }
+
     }
 
     private void initLayout() {
