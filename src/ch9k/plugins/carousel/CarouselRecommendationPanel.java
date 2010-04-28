@@ -7,7 +7,7 @@ import ch9k.eventpool.EventFilter;
 import ch9k.eventpool.EventListener;
 import ch9k.eventpool.EventPool;
 import ch9k.plugins.ProvidedImage;
-import ch9k.plugins.RecommendedImageEvent;
+import ch9k.plugins.events.RecommendedImageEvent;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.GroupLayout;

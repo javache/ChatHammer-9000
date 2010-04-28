@@ -1,21 +1,13 @@
 package ch9k.plugins.carousel;
 
 import ch9k.core.I18n;
-import ch9k.eventpool.WarningMessageEvent;
+import ch9k.eventpool.EventPool;
 import ch9k.plugins.ProvidedImage;
-import java.awt.Graphics2D;
-import java.awt.Image;
+import ch9k.plugins.events.RecommendedImageEvent;
 import java.awt.event.ActionEvent;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
-import javax.swing.JFileChooser;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import ch9k.eventpool.EventPool;
-import ch9k.plugins.RecommendedImageEvent;
 
 /**
  * Action to recommend an image.

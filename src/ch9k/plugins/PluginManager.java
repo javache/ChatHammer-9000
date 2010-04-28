@@ -67,6 +67,15 @@ public class PluginManager {
     }
 
     /**
+     * Get the list of enabled plugins for a conversation.
+     * @param conversation Conversation to get a plugin list for.
+     * @return The list of enabled plugins.
+     */
+    public Set<String> getEnabledPlugins(Conversation conversation) {
+        return enabledPlugins.get(conversation);
+    }
+
+    /**
      * Enable a plugin for a given conversation.
      * @param conversation Conversation to enable the plugin for.
      * @param name Name of the plugin to load.

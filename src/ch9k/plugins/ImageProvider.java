@@ -8,6 +8,7 @@ import ch9k.eventpool.Event;
 import ch9k.eventpool.EventFilter;
 import ch9k.eventpool.EventListener;
 import ch9k.eventpool.EventPool;
+import ch9k.plugins.events.NewProvidedImageEvent;
 
 /**
  * Class abstracting image providing.

@@ -1,12 +1,13 @@
-package ch9k.plugins;
+package ch9k.plugins.events;
 
 import ch9k.chat.Conversation;
 import ch9k.chat.events.ConversationEvent;
+import ch9k.plugins.ProvidedImage;
 
 /**
- * Event thrown when an ImageProvider finds a new relevant image.
+ * Event thrown when a user recommends an image.
  */
-public class NewProvidedImageEvent extends ConversationEvent {
+public class RecommendedImageEvent extends ConversationEvent {
     /**
      * The actual image.
      */
@@ -17,8 +18,8 @@ public class NewProvidedImageEvent extends ConversationEvent {
      * @param conversation Conversation to which the image belongs.
      * @param image The actual image.
      */
-    public NewProvidedImageEvent(
-            Conversation conversation, ProvidedImage image) {
+    public RecommendedImageEvent(Conversation conversation,
+            ProvidedImage image) {
         super(conversation);
         this.image = image;
     }
