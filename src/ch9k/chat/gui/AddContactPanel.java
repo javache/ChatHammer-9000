@@ -2,14 +2,10 @@
 package ch9k.chat.gui;
 
 import ch9k.chat.AddContactController;
-import ch9k.core.ChatApplication;
-import ch9k.chat.ContactList;
-import ch9k.chat.Contact;
 import ch9k.core.I18n;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.GroupLayout;
@@ -30,6 +26,7 @@ public class AddContactPanel extends JPanel {
     private JDialog dialog;
     
     private JLabel titleLabel;
+    private JLabel textLabel;
     private JLabel errorMessage;
     private JLabel usernameLabel;
     private JLabel ipLabel;
@@ -48,11 +45,21 @@ public class AddContactPanel extends JPanel {
 
         initComponents();
         initLayout();
+        
+        dialog.pack();
+        Dimension dimension = dialog.getSize();
+        dialog.setSize(dimension.width, dimension.height + 50);
+    }
+    
+    public void setError(String message) {
+        errorMessage.setText("<html><center>" + message);
+        errorMessage.setVisible(message != null);
     }
 
     private void initComponents() {
         titleLabel = new JLabel(I18n.get("ch9k.chat", "add_contact"));
         titleLabel.setFont(titleLabel.getFont().deriveFont(18f));
+        textLabel = new JLabel(I18n.get("ch9k.chat", "add_contact_text"));
 
         usernameLabel = new JLabel(I18n.get("ch9k.chat", "username"));
         ipLabel = new JLabel(I18n.get("ch9k.chat", "ip"));
@@ -68,8 +75,11 @@ public class AddContactPanel extends JPanel {
 
         Action registerAction = new AbstractAction(I18n.get("ch9k.chat", "add_contact")) {
             public void actionPerformed(ActionEvent e) {
-                addContact();
-                dialog.dispose();
+                String username = usernameField.getText();
+                String inetAddress = ipField.getText();
+                if(controller.addContact(username, inetAddress)) {
+                    dialog.dispose();
+                }
             }
         };
         addContactButton = new JButton(registerAction);
@@ -82,21 +92,6 @@ public class AddContactPanel extends JPanel {
         });
     }
 
-    /**
-     * add a contact
-     * TODO error handling and field validation
-     */
-    private void addContact() {
-        ContactList contactList = ChatApplication.getInstance().getAccount().getContactList();
-        try {
-            contactList.addContact(new Contact(usernameField.getText(),
-                                               InetAddress.getByName(ipField.getText())), true);
-        } catch (UnknownHostException e) {
-            
-        }
-
-    }
-
     private void initLayout() {
         GroupLayout layout = new GroupLayout(this);
         setLayout(layout);
@@ -105,16 +100,22 @@ public class AddContactPanel extends JPanel {
             .addContainerGap(15, 15)
             .addGroup(layout.createParallelGroup()
                 .addComponent(titleLabel)
-                .addComponent(errorMessage)
+                .addComponent(textLabel)
                 .addGroup(layout.createSequentialGroup()
+                    .addGap(10, 10, 10)
                     .addGroup(layout.createParallelGroup()
-                        .addComponent(usernameLabel)
-                        .addComponent(ipLabel)
-                    )
-                    .addGap(18, 18, 18)
-                    .addGroup(layout.createParallelGroup()
-                        .addComponent(usernameField, 140, 140, 140)
-                        .addComponent(ipField, 140, 140, 140)
+                        .addComponent(errorMessage)
+                        .addGroup(layout.createSequentialGroup()
+                            .addGroup(layout.createParallelGroup()
+                                .addComponent(usernameLabel)
+                                .addComponent(ipLabel)
+                            )
+                            .addGap(18, 18, 18)
+                            .addGroup(layout.createParallelGroup()
+                                .addComponent(usernameField, 140, 140, 140)
+                                .addComponent(ipField, 140, 140, 140)
+                            )
+                        )
                     )
                 )
                 .addGroup(layout.createSequentialGroup()
@@ -129,6 +130,8 @@ public class AddContactPanel extends JPanel {
         layout.setVerticalGroup(layout.createSequentialGroup()
             .addContainerGap(20, 20)
             .addComponent(titleLabel)
+            .addGap(10, 10, Short.MAX_VALUE)
+            .addComponent(textLabel)
             .addGap(10, 10, Short.MAX_VALUE)
             .addComponent(errorMessage)
             .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)

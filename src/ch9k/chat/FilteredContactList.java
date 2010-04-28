@@ -12,7 +12,6 @@ import javax.swing.event.ListDataListener;
  * @author toon
  */
 public class FilteredContactList extends AbstractListModel implements ListDataListener {
-
     /*
      * Our callback object
      */
@@ -37,13 +36,13 @@ public class FilteredContactList extends AbstractListModel implements ListDataLi
     }
 
     public void addFilter(ContactFilter filter) {
-        if(this.filterSet.add(filter)) {
+        if(filterSet.add(filter)) {
             updateMapping();
         }
     }
 
     public void removeFilter(ContactFilter filter) {
-        if(this.filterSet.remove(filter)) {
+        if(filterSet.remove(filter)) {
             updateMapping();
         }
     }
@@ -53,7 +52,7 @@ public class FilteredContactList extends AbstractListModel implements ListDataLi
         int i = 0;
         for(Contact contact : contactList.getContacts()) {
             boolean shouldDisplay = true;
-            for (ContactFilter contactFilter : filterSet) {
+            for(ContactFilter contactFilter : filterSet) {
                 /* i'm to lazy to write beautiful loops */
                 if(!shouldDisplay) {
                     break;
@@ -96,5 +95,4 @@ public class FilteredContactList extends AbstractListModel implements ListDataLi
     public void contentsChanged(ListDataEvent e) {
         updateMapping();
     }
-
 }
