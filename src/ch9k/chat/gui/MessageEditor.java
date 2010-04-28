@@ -2,6 +2,11 @@ package ch9k.chat.gui;
 
 import ch9k.chat.ChatMessage;
 import ch9k.chat.Conversation;
+import ch9k.chat.ChatMessage;
+import ch9k.chat.events.NewChatMessageEvent;
+import ch9k.core.ChatApplication;
+
+import ch9k.eventpool.EventPool;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -49,9 +54,9 @@ class MessageEditor extends JPanel {
 
     public void send(){
         if(!editor.getText().trim().isEmpty()){
-        ChatMessage message = new ChatMessage(null, editor.getText());
-        conversation.addMessage(message);
-        editor.setText("");
+            ChatMessage message = new ChatMessage(ChatApplication.getInstance().getAccount().getUsername(), editor.getText());
+            EventPool.getAppPool().raiseEvent(new NewChatMessageEvent(conversation,message));
+            editor.setText("");
         }
     }
 
