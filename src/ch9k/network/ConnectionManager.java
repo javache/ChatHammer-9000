@@ -67,10 +67,28 @@ public class ConnectionManager {
     }
 
     /**
+     * clear all connections, starting from scratch
+     */
+    public void clearConnections() {
+        for (Connection connection : connectionMap.values()) {
+            connection.close();
+        }
+        connectionMap.clear();
+    }
+
+    /**
      * Disconnect from all connections
      * send a disconnection Event to all the Connections
      */
     public void disconnect() {
+        stopServer();
+        clearConnections();
+    }
+
+    /**
+     * stop the ServerSocket
+     */
+    private void stopServer() {
         // stop accepting new connectons
         try {
             if(server != null) {
@@ -79,13 +97,9 @@ public class ConnectionManager {
         } catch (IOException ex) {
             logger.warn(ex.toString());
         }
-
-        // close all listening connections
-        for (Connection connection : connectionMap.values()) {
-            connection.close();
-        }
-        connectionMap.clear();
     }
+
+
 
     /**
      * Start listening for incoming connections
