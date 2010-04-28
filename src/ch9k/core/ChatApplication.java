@@ -119,23 +119,5 @@ public class ChatApplication {
             configuration.setAccount(new Account("CH9K", "password"));
             configuration.save();
         }
-
-        final ContactList contactList = ChatApplication.getInstance().getAccount().getContactList();
-
-        new Thread(new Runnable() {
-            public void run() {
-                try {
-                    Thread.sleep(5000);
-
-                    Contact contact = contactList.getContact(
-                            InetAddress.getByName("cartman"),
-                            "Zeus WPI");
-                    ContactOnlineEvent event = new ContactOnlineEvent(contact);
-                    event.setSource(InetAddress.getByName("cartman"));
-                }
-                catch(InterruptedException ex) {}
-                catch(UnknownHostException ex) {}
-            }
-        }).start();
     }
 }

@@ -3,7 +3,6 @@ package ch9k.chat.gui;
 import ch9k.chat.ChatMessage;
 import ch9k.chat.Conversation;
 import java.awt.Component;
-import java.util.Formatter;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JScrollPane;

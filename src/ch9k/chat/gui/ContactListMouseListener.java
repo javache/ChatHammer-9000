@@ -30,7 +30,7 @@ public class ContactListMouseListener extends MouseAdapter {
         act(e);
     }
 
-    private void act(MouseEvent e) {
+    private void act(MouseEvent e) {        
         // right click
         if(e.isPopupTrigger()) {
             list.setSelectedIndex(list.locationToIndex(e.getPoint()));

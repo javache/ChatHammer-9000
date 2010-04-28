@@ -29,9 +29,11 @@ public class RegistrationPanel extends JPanel {
     private JLabel usernameLabel;
     private JLabel passwordLabel;
     private JLabel repeatPasswordLabel;
+    
     private JTextField usernameField;
     private JPasswordField passwordField;
     private JPasswordField repeatPasswordField;
+    
     private JButton registerButton;
     private JButton cancelButton;
 

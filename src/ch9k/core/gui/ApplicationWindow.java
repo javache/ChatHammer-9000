@@ -7,7 +7,6 @@ import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 import org.apache.log4j.Logger;
@@ -68,12 +67,7 @@ public class ApplicationWindow extends JFrame {
 
         contactList = new ContactListView();
         contactList.setBackground(getBackground());
-
-        JScrollPane scrollPane = new JScrollPane(contactList);
-        scrollPane.getViewport().setOpaque(false);
-        scrollPane.setBorder(null);
-        scrollPane.setBackground(getBackground());
-        panel.add(scrollPane, BorderLayout.CENTER);
+        panel.add(contactList, BorderLayout.CENTER);
 
         statusBar = new JLabel();
         statusBar.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));

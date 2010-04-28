@@ -64,10 +64,6 @@ public class ContactList extends AbstractListModel implements Persistable, Chang
                 new EventFilter(ContactOfflineEvent.class));
         EventPool.getAppPool().addListener(new ContactRequestListener(),
                 new EventFilter(ContactRequestEvent.class));
-            
-        for(Contact contact : contacts) {
-            pingContact(contact);
-        }
     }
 
     /**
