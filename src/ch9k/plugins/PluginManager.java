@@ -1,6 +1,10 @@
 package ch9k.plugins;
 
 import ch9k.chat.Conversation;
+import ch9k.eventpool.Event;
+import ch9k.eventpool.EventPool;
+import ch9k.plugins.events.PluginDisabledEvent;
+import ch9k.plugins.events.PluginEnabledEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -125,6 +129,10 @@ public class PluginManager {
         }
         conversationPlugins.add(name);
         plugins.get(conversation).add(plugin); 
+
+        /* Throw an event. */
+        Event event = new PluginEnabledEvent(conversation, name);
+        EventPool.getAppPool().raiseEvent(event);
     }
 
     /**
@@ -145,6 +153,10 @@ public class PluginManager {
                 }
             }
         }
+
+        /* Throw an event. */
+        Event event = new PluginDisabledEvent(conversation, name);
+        EventPool.getAppPool().raiseEvent(event);
     }
 
     /**
