@@ -1,6 +1,7 @@
 package ch9k.plugins;
 
 import ch9k.chat.Conversation;
+import ch9k.core.Model;
 import ch9k.eventpool.Event;
 import ch9k.eventpool.EventFilter;
 import ch9k.eventpool.EventPool;
@@ -19,7 +20,7 @@ import org.apache.log4j.Logger;
  * A singleton to manage plugins.
  * @author Jasper Van der Jeugt
  */
-public class PluginManager implements EventListener {
+public class PluginManager extends Model implements EventListener {
     /**
      * Logger.
      */
@@ -78,6 +79,7 @@ public class PluginManager implements EventListener {
      */
     public void addAvailablePlugin(String name) {
         availablePlugins.add(name);
+        fireStateChanged();
     }
 
     /**
