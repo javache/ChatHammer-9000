@@ -77,15 +77,53 @@ public class ConversationTest {
      * Test of addMessage method, of class Conversation.
      */
     @Test
-    public void testAddMessage() {
+    public void testAddMessage() throws InterruptedException {
         assertEquals(0, conversation.getMessages(10).length);
         ChatMessage chatMessage = new ChatMessage("JPanneel", "Hey!");
         NewChatMessageEvent chatMessageEvent = new NewChatMessageEvent(conversation, chatMessage);
         EventPool.getAppPool().raiseEvent(chatMessageEvent);
+        Thread.sleep(100);
         assertEquals(1, conversation.getMessages(10).length);
     }
 
+    /**
+     * Test of getMessages method, of class Conversation.
+     */
+    @Test
+    public void testGetMessages() throws InterruptedException {
+        ChatMessage[] messages = new ChatMessage[] {
+            new ChatMessage("JPanneel", "Hey!"),
+            new ChatMessage("Wendy", "O dag lieverd"),
+            new ChatMessage("JPanneel", "Hoe gaat het met de overkant?"),
+            new ChatMessage("Wendy", "Goed, maar ik mis je wel!"),
+            new ChatMessage("JPanneel", "Ik weet het :)"),
+            new ChatMessage("Wendy", "Doei!")
+        };
 
+        assertEquals(0, conversation.getMessages(5).length);
+
+        EventPool eventPool = EventPool.getAppPool();
+
+        for (int i = 0; i < 5; i++) {
+            EventPool.getAppPool().raiseEvent(
+                    new NewChatMessageEvent(conversation, messages[i]));
+            Thread.sleep(100);
+        }
+
+        assertEquals(5, conversation.getMessages(10).length);
+        assertEquals("Hey!", conversation.getMessages(5)[0]);
+        assertEquals("Ik weet het :)", conversation.getMessages(5)[4]);
+        assertEquals(3, conversation.getMessages(3).length);
+        assertEquals("Hoe gaat het met de overkant?", conversation.getMessages(3)[0]);
+
+        EventPool.getAppPool().raiseEvent(
+                    new NewChatMessageEvent(conversation, messages[5]));
+        Thread.sleep(100);
+        assertEquals(5, conversation.getMessages(5).length);
+        assertEquals(6, conversation.getMessages(10).length);
+        assertEquals("Hoe gaat het met de overkant?", conversation.getMessages(5)[1]);
+        assertEquals("Doei!", conversation.getMessages(5)[4]);
+    }
 
     /**
      * Test of close method, of class Conversation.
