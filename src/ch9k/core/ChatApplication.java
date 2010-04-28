@@ -6,7 +6,6 @@ import ch9k.chat.ConversationManager;
 import ch9k.chat.events.ContactOnlineEvent;
 import ch9k.configuration.Configuration;
 import ch9k.core.gui.ApplicationWindow;
-import ch9k.eventpool.EventPool;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.net.InetAddress;
