@@ -88,7 +88,7 @@ public class ContactListTest {
     }
 
     @Test
-    public void testPersist() throws UnknownHostException{
+    public void testPersist() throws UnknownHostException, InterruptedException{
         Contact contact1 = new Contact("JPanneel", InetAddress.getByName("google.be"));
         Contact contact2 = new Contact("Javache", InetAddress.getByName("ugent.be"));
         contactList.addContact(contact1);

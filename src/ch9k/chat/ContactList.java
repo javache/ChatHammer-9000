@@ -79,18 +79,22 @@ public class ContactList extends AbstractListModel implements Persistable, Chang
     }
     
     private class ContactOnlineListener implements EventListener {
-        public void handleEvent(Event ev) {
-            ContactOnlineEvent event = (ContactOnlineEvent)ev;
-            Contact contact = event.getContact();
+        @Override
+        public void handleEvent(Event event) {
+            ContactOnlineEvent onlineEvent = (ContactOnlineEvent)event;
+            Contact contact = onlineEvent.getContact();
             /* all this has to be true, otherwise we just have to ignore */
-            if(event.isExternal() && contact != null && !contact.isIgnored() && !contact.isBlocked()) {
+            if(onlineEvent.isExternal() &&
+                    contact != null &&
+                    !contact.isIgnored() &&
+                    !contact.isBlocked()) {
                 EventPool.getAppPool().raiseEvent(new ContactOnlineEvent(contact));
                 /* keep in mind here that this will set the state to online
                  * so in essence this will also handle responses 
                  * from friendrequests 
                  */
                 contact.setOnline(true);
-                onlineHash.put(event.getSource(), contact);
+                onlineHash.put(onlineEvent.getSource(), contact);
 
                 fireListChanged();    
             }
@@ -98,25 +102,33 @@ public class ContactList extends AbstractListModel implements Persistable, Chang
     }
     
     private class ContactOfflineListener implements EventListener {
-        public void handleEvent(Event ev) {
-            ContactOfflineEvent event = (ContactOfflineEvent)ev;
-            event.getContact().setOnline(false);
-            onlineHash.remove(event.getSource());
+        @Override
+        public void handleEvent(Event event) {
+            ContactOfflineEvent offlineEvent = (ContactOfflineEvent)event;
+            Contact contact = offlineEvent.getContact();
+            /* all this has to be true, otherwise we just have to ignore */
+            if(offlineEvent.isExternal() && contact != null ) {
+                contact.setOnline(false);
+                onlineHash.remove(offlineEvent.getSource());
+            }
         }
     }
     
     private class ContactRequestListener implements EventListener {
+        @Override
         public void handleEvent(Event ev) {
             ContactRequestEvent event = (ContactRequestEvent)ev;
             if(event.isExternal()) {
-                String text = "would you like to add " + event.getUsername() + " as your friend?";
-                int confirmation = JOptionPane.showConfirmDialog(null, text, "Friend Request", JOptionPane.YES_NO_OPTION);
-                
+                String text = "would you like to add " + event.getUsername()
+                        + " as your friend?";
+                int confirmation = JOptionPane.showConfirmDialog(
+                        null, text, "Friend Request", JOptionPane.YES_NO_OPTION);
+
                 Contact contact = new Contact(event.getUsername(),event.getSource());
                 if (confirmation != JOptionPane.YES_OPTION) {
                     contact.setIgnored();
-                }    
-                addContact(contact);            
+                }
+                addContact(contact);
             }
         }
     }

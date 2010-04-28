@@ -1,18 +1,14 @@
 package ch9k.chat;
 
 import ch9k.chat.events.ContactEvent;
-import ch9k.chat.events.ContactEventFilter;
 import ch9k.chat.events.ContactOfflineEvent;
 import ch9k.chat.events.ContactOnlineEvent;
 import ch9k.chat.events.ContactStatusEvent;
 import ch9k.configuration.PersistentDataObject;
-import ch9k.core.Account;
 import ch9k.core.ChatApplication;
 import ch9k.eventpool.EventFilter;
 import ch9k.eventpool.EventPool;
 import ch9k.eventpool.TestListener;
-import ch9k.network.Connection;
-import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import org.junit.After;
