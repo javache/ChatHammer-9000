@@ -33,6 +33,10 @@ public class ContactStatus implements Persistable {
     @Override
     public PersistentDataObject persist() {
         Element el = new Element("status");
+
+        /* When we persist, we want the status saved as offline. */
+        if(status == Status.ONLINE) status = Status.OFFLINE;
+
         el.setAttribute("status", status.name());
         el.setText(text);
         return new PersistentDataObject(el);
