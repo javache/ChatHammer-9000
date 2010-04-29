@@ -49,10 +49,7 @@ public class Account implements Persistable{
     public Account(String username, String password) {
         this.username = username;
         this.passwordHash = hash(password);
-    }
-
-    public void setContactList(ContactList contactList) {
-        this.contactList = contactList;
+        contactList = new ContactList(this);
     }
 
     /**
