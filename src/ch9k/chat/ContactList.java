@@ -5,6 +5,7 @@ import ch9k.chat.events.ContactOnlineEvent;
 import ch9k.chat.events.ContactRequestEvent;
 import ch9k.configuration.Persistable;
 import ch9k.configuration.PersistentDataObject;
+import ch9k.core.ChatApplication;
 import ch9k.eventpool.Event;
 import ch9k.eventpool.EventFilter;
 import ch9k.eventpool.EventListener;
@@ -114,13 +115,14 @@ public class ContactList extends AbstractListModel implements Persistable, Chang
         @Override
         public void handleEvent(Event ev) {
             ContactRequestEvent event = (ContactRequestEvent)ev;
-            if(event.isExternal()) {
-                String text = "would you like to add " + event.getUsername()
+            String myUsername = ChatApplication.getInstance().getAccount().getUsername();
+            if(event.isExternal() && event.getUsername().equals(myUsername)) {
+                String text = "would you like to add " + event.getRequester()
                         + " as your friend?";
                 int confirmation = JOptionPane.showConfirmDialog(
                         null, text, "Friend Request", JOptionPane.YES_NO_OPTION);
 
-                Contact contact = new Contact(event.getUsername(),event.getSource());
+                Contact contact = new Contact(event.getRequester(),event.getSource());
                 if (confirmation != JOptionPane.YES_OPTION) {
                     contact.setIgnored();
                 }
