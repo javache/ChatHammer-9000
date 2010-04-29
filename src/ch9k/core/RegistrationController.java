@@ -72,7 +72,7 @@ public class RegistrationController {
             view.setError(I18n.get("ch9k.core", "error_fill_all_fields"));
         } else if(!password.equals(repeatedPassword)) {
             view.setError(I18n.get("ch9k.core", "error_passwords_not_equal"));
-        } else if(username.length() < 6) {
+        } else if(username.length() < 3) {
             view.setError(I18n.get("ch9k.core", "error_username_too_short"));
         } else if(password.length() < 6) {
             view.setError(I18n.get("ch9k.core", "error_password_too_short"));
