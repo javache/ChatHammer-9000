@@ -1,6 +1,5 @@
 package ch9k.chat.gui;
 
-import ch9k.chat.ChatMessage;
 import ch9k.chat.Conversation;
 import ch9k.chat.ChatMessage;
 import ch9k.chat.events.NewChatMessageEvent;
@@ -12,7 +11,6 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JButton;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
@@ -29,12 +27,11 @@ class MessageEditor extends JPanel {
         super(new BorderLayout());
         this.conversation = conversation;
         this.setPreferredSize(new Dimension(0,100));
-        
-        JPanel input = new JPanel(new BorderLayout());
-        JLabel temp = new JLabel("Buttons go here");
 
         editor = new JTextPane();
         editor.setEditable(true);
+        editor.setContentType("text/html");
+        
         JScrollPane scrollPane = new JScrollPane(editor);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 
@@ -43,12 +40,15 @@ class MessageEditor extends JPanel {
             public void actionPerformed(ActionEvent event) {
                 send();
             }
-        });  
+        });
+
+        JPanel input = new JPanel(new BorderLayout());
+        JPanel buttons = new FontPanel();
         
         input.add(scrollPane, BorderLayout.CENTER);
         input.add(sendButton,BorderLayout.EAST);
 
-        this.add(temp, BorderLayout.NORTH);
+        this.add(buttons, BorderLayout.NORTH);
         this.add(input, BorderLayout.CENTER);
     }
 
