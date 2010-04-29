@@ -1,6 +1,5 @@
 package ch9k.chat.events;
 
-import ch9k.core.ChatApplication;
 import java.net.InetAddress;
 import ch9k.eventpool.NetworkEvent;
 
@@ -10,10 +9,10 @@ public class ContactRequestEvent extends NetworkEvent {
 
     private String requester;
     
-    public ContactRequestEvent(InetAddress target, String username) {
+    public ContactRequestEvent(InetAddress target, String username, String requester) {
         super(target);
         this.username = username;
-        this.requester = ChatApplication.getInstance().getAccount().getUsername();
+        this.requester = requester;
     }
     
     public String getUsername() {

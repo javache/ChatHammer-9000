@@ -49,7 +49,10 @@ public class Account implements Persistable{
     public Account(String username, String password) {
         this.username = username;
         this.passwordHash = hash(password);
-        contactList = new ContactList();
+    }
+
+    public void setContactList(ContactList contactList) {
+        this.contactList = contactList;
     }
 
     /**
@@ -206,6 +209,6 @@ public class Account implements Persistable{
         username = el.getChildText("username");
         status = el.getChildText("status");
         passwordHash = el.getChildText("password");
-        contactList = new ContactList(new PersistentDataObject(el.getChild("contactlist")));
+        contactList = new ContactList(this, new PersistentDataObject(el.getChild("contactlist")));
     }
 }

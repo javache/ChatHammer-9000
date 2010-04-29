@@ -5,6 +5,7 @@ import ch9k.chat.events.ContactOnlineEvent;
 import ch9k.chat.events.ContactRequestEvent;
 import ch9k.configuration.Persistable;
 import ch9k.configuration.PersistentDataObject;
+import ch9k.core.Account;
 import ch9k.core.ChatApplication;
 import ch9k.eventpool.Event;
 import ch9k.eventpool.EventFilter;
@@ -38,12 +39,15 @@ public class ContactList extends AbstractListModel implements Persistable, Chang
      */
     private HashMap<InetAddress,Contact> onlineHash;
 
+    private Account account;
+
     /**
      * Construct a new ContactList
      */
-    public ContactList() {
+    public ContactList(Account account) {
         contacts = new TreeSet<Contact>();
         onlineHash = new HashMap<InetAddress,Contact>();
+        this.account = account;
         init();
     }
     
@@ -51,9 +55,10 @@ public class ContactList extends AbstractListModel implements Persistable, Chang
      * Construct a new ContactList, and immediately restores it to a previous state
      * @param data Previously stored state of this object
      */
-    public ContactList(PersistentDataObject data) {
+    public ContactList(Account account, PersistentDataObject data) {
         contacts = new TreeSet<Contact>();
         onlineHash = new HashMap<InetAddress,Contact>();
+        this.account = account;
         load(data);
         init();
     }
@@ -136,7 +141,7 @@ public class ContactList extends AbstractListModel implements Persistable, Chang
     private void pingContact(Contact contact) {
         if (contact.isRequested()) {
             EventPool.getAppPool().raiseEvent(new ContactRequestEvent(
-                    contact.getIp(), contact.getUsername()));
+                    contact.getIp(), contact.getUsername(), account.getUsername()));
         } else {
             EventPool.getAppPool().raiseEvent(new ContactOnlineEvent(contact));            
         }
