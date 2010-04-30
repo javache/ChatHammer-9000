@@ -12,6 +12,7 @@ import java.awt.Dimension;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
+import javax.swing.JMenuBar;
 
 /**
  * Shows a conversation
@@ -63,6 +64,13 @@ public class ConversationWindow extends JFrame {
         }, new ConversationEventFilter(RequestPluginContainerEvent.class, conversation));
 
         initComponents();
+
+        /* Add a menu bar, containing a menu in which different plugins can be
+         * selected. */
+        JMenuBar menuBar = new JMenuBar();
+        menuBar.add(new PluginMenu(conversation));
+        setJMenuBar(menuBar);
+
         setVisible(true);
     }
 
