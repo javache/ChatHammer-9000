@@ -56,6 +56,14 @@ public class PluginManager extends Model implements EventListener {
         availablePlugins = new ArrayList<String>();
         installer = new PluginInstaller(this);
 
+        /* Some plugins are always available, because they ship with the
+         * application. */
+        availablePlugins.add("ch9k.plugins.carousel.CarouselPlugin");
+        availablePlugins.add("ch9k.plugins.flickr.FlickrImageProviderPlugin");
+        availablePlugins.add(
+                "ch9k.plugins.liteanalyzer.LiteTextAnalyzerPlugin");
+
+
         /* Register as listener. We will listen to remote enable/disable plugin
          * events, so we can synchronize with the plugin manager on the other
          * side. */

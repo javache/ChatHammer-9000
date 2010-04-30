@@ -6,6 +6,7 @@ import ch9k.chat.ConversationManager;
 import ch9k.chat.events.ContactOnlineEvent;
 import ch9k.configuration.Configuration;
 import ch9k.core.gui.ApplicationWindow;
+import ch9k.plugins.PluginManager;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.net.InetAddress;
@@ -96,6 +97,18 @@ public class ChatApplication {
     public Account getAccount() {
         if(configuration != null) {
             return configuration.getAccount();
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Get the plugin manager.
+     * @return The PluginManager.
+     */
+    public PluginManager getPluginManager() {
+        if(configuration != null) {
+            return configuration.getPluginManager();
         } else {
             return null;
         }
