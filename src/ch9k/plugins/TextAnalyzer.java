@@ -2,9 +2,9 @@ package ch9k.plugins;
 
 import ch9k.chat.Conversation;
 import ch9k.chat.ConversationSubject;
-import ch9k.chat.events.ConversationEventFilter;
-import ch9k.chat.events.NewChatMessageEvent;
-import ch9k.chat.events.NewConversationSubjectEvent;
+import ch9k.chat.event.ConversationEventFilter;
+import ch9k.chat.event.NewChatMessageEvent;
+import ch9k.chat.event.NewConversationSubjectEvent;
 import ch9k.eventpool.Event;
 import ch9k.eventpool.EventFilter;
 import ch9k.eventpool.EventListener;

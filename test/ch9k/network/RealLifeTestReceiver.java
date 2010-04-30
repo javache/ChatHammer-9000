@@ -1,7 +1,7 @@
 package ch9k.network;
 
 import ch9k.chat.Contact;
-import ch9k.chat.events.ContactOnlineEvent;
+import ch9k.chat.event.ContactOnlineEvent;
 import ch9k.eventpool.Event;
 import ch9k.eventpool.EventFilter;
 import ch9k.eventpool.EventListener;

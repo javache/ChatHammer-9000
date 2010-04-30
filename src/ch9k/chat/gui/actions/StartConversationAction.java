@@ -1,7 +1,7 @@
 package ch9k.chat.gui.actions;
 
 import ch9k.chat.Contact;
-import ch9k.chat.events.NewConversationEvent;
+import ch9k.chat.event.NewConversationEvent;
 import ch9k.core.I18n;
 import ch9k.eventpool.EventPool;
 import java.awt.event.ActionEvent;

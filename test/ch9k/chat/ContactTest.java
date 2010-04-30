@@ -1,9 +1,9 @@
 package ch9k.chat;
 
-import ch9k.chat.events.ContactEvent;
-import ch9k.chat.events.ContactOfflineEvent;
-import ch9k.chat.events.ContactOnlineEvent;
-import ch9k.chat.events.ContactStatusEvent;
+import ch9k.chat.event.ContactEvent;
+import ch9k.chat.event.ContactOfflineEvent;
+import ch9k.chat.event.ContactOnlineEvent;
+import ch9k.chat.event.ContactStatusEvent;
 import ch9k.configuration.PersistentDataObject;
 import ch9k.core.ChatApplication;
 import ch9k.eventpool.EventFilter;

@@ -2,13 +2,13 @@ package ch9k.plugins;
 
 import ch9k.chat.Conversation;
 import ch9k.chat.ConversationSubject;
-import ch9k.chat.events.ConversationEventFilter;
-import ch9k.chat.events.NewConversationSubjectEvent;
+import ch9k.chat.event.ConversationEventFilter;
+import ch9k.chat.event.NewConversationSubjectEvent;
 import ch9k.eventpool.Event;
 import ch9k.eventpool.EventFilter;
 import ch9k.eventpool.EventListener;
 import ch9k.eventpool.EventPool;
-import ch9k.plugins.events.NewProvidedImageEvent;
+import ch9k.plugins.event.NewProvidedImageEvent;
 
 /**
  * Class abstracting image providing.

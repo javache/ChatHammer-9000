@@ -1,4 +1,4 @@
-package ch9k.chat.events;
+package ch9k.chat.event;
 
 import ch9k.chat.Contact;
 

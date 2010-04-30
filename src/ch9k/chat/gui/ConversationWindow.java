@@ -1,9 +1,9 @@
 package ch9k.chat.gui;
 
 import ch9k.chat.Conversation;
-import ch9k.chat.events.ConversationEventFilter;
-import ch9k.chat.events.RequestPluginContainerEvent;
-import ch9k.chat.events.RequestedPluginContainerEvent;
+import ch9k.chat.event.ConversationEventFilter;
+import ch9k.chat.event.RequestPluginContainerEvent;
+import ch9k.chat.event.RequestedPluginContainerEvent;
 import ch9k.eventpool.Event;
 import ch9k.eventpool.EventListener;
 import ch9k.eventpool.EventPool;

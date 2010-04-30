@@ -1,7 +1,7 @@
-package ch9k.chat.events;
+package ch9k.chat.event;
 
-import java.net.InetAddress;
 import ch9k.eventpool.NetworkEvent;
+import java.net.InetAddress;
 
 public class ContactRequestEvent extends NetworkEvent {
     

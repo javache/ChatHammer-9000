@@ -1,7 +1,7 @@
 package ch9k.network;
 
 import ch9k.eventpool.NetworkEvent;
-import ch9k.network.events.PingEvent;
+import ch9k.network.event.PingEvent;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;

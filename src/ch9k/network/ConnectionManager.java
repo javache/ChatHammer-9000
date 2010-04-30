@@ -2,11 +2,10 @@ package ch9k.network;
 
 import ch9k.eventpool.EventPool;
 import ch9k.eventpool.NetworkEvent;
-import ch9k.network.events.CouldNotConnectEvent;
-import ch9k.network.events.NetworkConnectionLostEvent;
+import ch9k.network.event.CouldNotConnectEvent;
+import ch9k.network.event.NetworkConnectionLostEvent;
 import java.io.IOException;
 import java.net.InetAddress;
-import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;

@@ -1,12 +1,12 @@
 package ch9k.plugins.carousel;
 
-import ch9k.chat.events.ConversationEventFilter;
+import ch9k.chat.event.ConversationEventFilter;
 import ch9k.eventpool.Event;
 import ch9k.eventpool.EventFilter;
 import ch9k.eventpool.EventListener;
 import ch9k.eventpool.EventPool;
 import ch9k.plugins.ProvidedImage;
-import ch9k.plugins.events.NewProvidedImageEvent;
+import ch9k.plugins.event.NewProvidedImageEvent;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;

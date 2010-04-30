@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package ch9k.chat.events;
+package ch9k.chat.event;
 
 import ch9k.chat.Contact;
 import ch9k.chat.Conversation;

@@ -1,8 +1,8 @@
 package ch9k.chat;
 
-import ch9k.chat.events.CloseConversationEvent;
-import ch9k.chat.events.ConversationEventFilter;
-import ch9k.chat.events.NewChatMessageEvent;
+import ch9k.chat.event.CloseConversationEvent;
+import ch9k.chat.event.ConversationEventFilter;
+import ch9k.chat.event.NewChatMessageEvent;
 import ch9k.chat.gui.ConversationWindow;
 import ch9k.eventpool.Event;
 import ch9k.eventpool.EventListener;

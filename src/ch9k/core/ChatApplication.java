@@ -1,16 +1,11 @@
 package ch9k.core;
 
-import ch9k.chat.Contact;
-import ch9k.chat.ContactList;
 import ch9k.chat.ConversationManager;
-import ch9k.chat.events.ContactOnlineEvent;
 import ch9k.configuration.Configuration;
 import ch9k.core.gui.ApplicationWindow;
 import ch9k.plugins.PluginManager;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 
 /**
  * The main application, OMG!

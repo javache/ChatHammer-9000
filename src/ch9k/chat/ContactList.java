@@ -1,8 +1,8 @@
 package ch9k.chat;
 
-import ch9k.chat.events.ContactOfflineEvent;
-import ch9k.chat.events.ContactOnlineEvent;
-import ch9k.chat.events.ContactRequestEvent;
+import ch9k.chat.event.ContactOfflineEvent;
+import ch9k.chat.event.ContactOnlineEvent;
+import ch9k.chat.event.ContactRequestEvent;
 import ch9k.configuration.Persistable;
 import ch9k.configuration.PersistentDataObject;
 import ch9k.core.Account;
@@ -17,9 +17,9 @@ import java.util.Iterator;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import javax.swing.AbstractListModel;
+import javax.swing.JOptionPane;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import javax.swing.JOptionPane;
 import org.jdom.Element;
 
 /**

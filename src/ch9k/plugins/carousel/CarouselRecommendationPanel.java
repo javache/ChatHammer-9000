@@ -1,13 +1,13 @@
 package ch9k.plugins.carousel;
 
-import ch9k.chat.events.ConversationEventFilter;
+import ch9k.chat.event.ConversationEventFilter;
 import ch9k.core.I18n;
 import ch9k.eventpool.Event;
 import ch9k.eventpool.EventFilter;
 import ch9k.eventpool.EventListener;
 import ch9k.eventpool.EventPool;
 import ch9k.plugins.ProvidedImage;
-import ch9k.plugins.events.RecommendedImageEvent;
+import ch9k.plugins.event.RecommendedImageEvent;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.GroupLayout;

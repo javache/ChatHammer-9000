@@ -1,8 +1,7 @@
-package ch9k.plugins.events;
+package ch9k.plugins.event;
 
 import ch9k.chat.Conversation;
-import ch9k.chat.events.ConversationEvent;
-import ch9k.plugins.Plugin;
+import ch9k.chat.event.ConversationEvent;
 
 /**
  * Event thrown when a user enables or disables a plugin.

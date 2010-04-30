@@ -5,7 +5,7 @@ import ch9k.eventpool.EventFilter;
 import ch9k.eventpool.EventListener;
 import ch9k.eventpool.EventPool;
 import ch9k.eventpool.TestListener;
-import ch9k.network.events.NetworkConnectionLostEvent;
+import ch9k.network.event.NetworkConnectionLostEvent;
 import java.io.IOException;
 import java.net.ConnectException;
 import java.net.InetAddress;

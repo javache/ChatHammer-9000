@@ -1,7 +1,7 @@
 package ch9k.chat;
 
-import ch9k.chat.events.ConversationEvent;
-import ch9k.chat.events.NewConversationEvent;
+import ch9k.chat.event.ConversationEvent;
+import ch9k.chat.event.NewConversationEvent;
 import ch9k.core.ChatApplication;
 import ch9k.eventpool.EventPool;
 import java.io.IOException;

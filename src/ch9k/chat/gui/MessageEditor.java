@@ -1,8 +1,8 @@
 package ch9k.chat.gui;
 
-import ch9k.chat.Conversation;
 import ch9k.chat.ChatMessage;
-import ch9k.chat.events.NewChatMessageEvent;
+import ch9k.chat.Conversation;
+import ch9k.chat.event.NewChatMessageEvent;
 import ch9k.core.ChatApplication;
 
 import ch9k.eventpool.EventPool;
