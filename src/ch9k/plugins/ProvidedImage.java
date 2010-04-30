@@ -3,6 +3,7 @@ package ch9k.plugins;
 import ch9k.eventpool.WarningMessageEvent;
 import java.awt.Image;
 import java.io.File;
+import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URL;
 import javax.swing.ImageIcon;
@@ -10,7 +11,7 @@ import javax.swing.ImageIcon;
 /**
  * Image class for images provided by an ImageProvider.
  */
-public class ProvidedImage {
+public class ProvidedImage implements Serializable {
     /**
      * URL the image was loaded from. Very suited as unique identifier.
      */
@@ -29,8 +30,7 @@ public class ProvidedImage {
         try {
             /* Create an image, and send it using an event. */
             this.url = new URL(url);
-            ImageIcon tmp = new ImageIcon(this.url);
-            image = tmp.getImage();
+            image = null;
         } catch (MalformedURLException exception) {
             WarningMessageEvent.raiseWarningMessageEvent(this,
                 "Could not get image " + url + ": " + exception);
@@ -50,6 +50,12 @@ public class ProvidedImage {
      * @return The actual image.
      */
     public Image getImage() {
+        /* Time to load the image. */
+        if(image == null) {
+            ImageIcon tmp = new ImageIcon(this.url);
+            image = tmp.getImage();
+        }
+
         return image;
     }
 
