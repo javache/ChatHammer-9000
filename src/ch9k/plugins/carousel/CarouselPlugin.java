@@ -11,6 +11,7 @@ import ch9k.eventpool.EventListener;
 import ch9k.eventpool.EventPool;
 import ch9k.plugins.AbstractPlugin;
 import ch9k.plugins.flickr.FlickrImageProviderPlugin;
+import java.awt.GridLayout;
 import java.awt.Container;
 import java.net.InetAddress;
 import javax.swing.JFrame;
@@ -57,9 +58,18 @@ public class CarouselPlugin extends AbstractPlugin implements EventListener {
 
         /* Okay, we have a panel now, start using it. */
         Container container = event.getPluginContainer();
+
+        /* Clear the container and set a new layout. */
+        container.removeAll();
+        container.setLayout(new GridLayout(1, 1));
+
+        /* Add our carousel to it. */
         model = new CarouselImageModel(getConversation());
         panel = new CarouselPanel(model);
         container.add(panel);
+
+        /* Redraw the container. */
+        container.validate();
     }
 
     public static void main(String[] args) throws Exception {
