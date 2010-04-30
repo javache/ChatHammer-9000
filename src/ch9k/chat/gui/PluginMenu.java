@@ -93,6 +93,10 @@ public class PluginMenu extends JMenu
                     pluginChanged(plugin);
                 }
             });
+
+            /* Only the user who initiated the conversation has the power to
+             * enable and disable plugins. */
+            item.setEnabled(conversation.isInitiatedByMe());
         }
     }
 
@@ -139,7 +143,9 @@ public class PluginMenu extends JMenu
         if(item == null) return;
 
         /* Adapt our view. */
-        item.setState(event.isPluginEnabled());
+        if(item.getState() != event.isPluginEnabled()) {
+            item.setState(event.isPluginEnabled());
+        }
     }
 
     /**
@@ -149,7 +155,7 @@ public class PluginMenu extends JMenu
     public static void main(String[] args) throws Exception {
         Conversation conversation = new Conversation(
                 new Contact("Javache", InetAddress.getByName("thinkjavache.be")),
-                true);
+                false);
         JFrame frame = new JFrame("PluginMenu test.");
         
         JMenuBar bar = new JMenuBar();
