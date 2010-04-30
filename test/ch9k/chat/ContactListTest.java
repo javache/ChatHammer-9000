@@ -13,7 +13,9 @@ public class ContactListTest {
 
     @Before
     public void setUp() {
-        contactList = new ContactList();
+        // TODO: fix!!1!!!!
+        // contactList = new ContactList();
+        contactList = null;
     }
 
     @After
@@ -95,7 +97,9 @@ public class ContactListTest {
         contactList.addContact(contact2);
 
         PersistentDataObject pdo = contactList.persist();
-        ContactList loadedList = new ContactList(pdo);
+        // TODO: fix!!!!!1!!1!!
+        // ContactList loadedList = new ContactList(pdo);
+        ContactList loadedList = null;
         
         assertTrue(contactList.getContacts().containsAll(loadedList.getContacts()));
         assertTrue(loadedList.getContacts().containsAll(contactList.getContacts()));
