@@ -6,8 +6,7 @@ import ch9k.eventpool.Event;
 import ch9k.eventpool.EventFilter;
 import ch9k.eventpool.EventPool;
 import ch9k.eventpool.EventListener;
-import ch9k.plugins.events.PluginDisabledEvent;
-import ch9k.plugins.events.PluginEnabledEvent;
+import ch9k.plugins.events.PluginChangeEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -67,10 +66,8 @@ public class PluginManager extends Model implements EventListener {
         /* Register as listener. We will listen to remote enable/disable plugin
          * events, so we can synchronize with the plugin manager on the other
          * side. */
-        EventFilter filter1 = new EventFilter(PluginEnabledEvent.class);
-        EventPool.getAppPool().addListener(this, filter1);
-        EventFilter filter2 = new EventFilter(PluginDisabledEvent.class);
-        EventPool.getAppPool().addListener(this, filter2);
+        EventFilter filter = new EventFilter(PluginChangeEvent.class);
+        EventPool.getAppPool().addListener(this, filter);
     }
 
     /**
@@ -107,7 +104,7 @@ public class PluginManager extends Model implements EventListener {
     public void enablePlugin(Conversation conversation, String name) {
         if(enable(conversation, name)) {
             /* Throw an event. */
-            Event event = new PluginEnabledEvent(conversation, name);
+            Event event = new PluginChangeEvent(conversation, name, true);
             EventPool.getAppPool().raiseEvent(event);
         }
     }
@@ -175,7 +172,7 @@ public class PluginManager extends Model implements EventListener {
     public void disablePlugin(Conversation conversation, String name) {
         if(disable(conversation, name)) {
             /* Throw an event. */
-            Event event = new PluginDisabledEvent(conversation, name);
+            Event event = new PluginChangeEvent(conversation, name, false);
             EventPool.getAppPool().raiseEvent(event);
         }
     }
@@ -215,18 +212,15 @@ public class PluginManager extends Model implements EventListener {
 
     @Override
     public void handleEvent(Event e) {
+        PluginChangeEvent event = (PluginChangeEvent) e;
         /* A plugin was enabled. */
-        if(e instanceof PluginEnabledEvent) {
-            PluginEnabledEvent event = (PluginEnabledEvent) e;
-
+        if(event.isPluginEnabled()) {
             /* If the event was external, enable the plugin here as well. */
             if(event.isExternal()) {
                 enable(event.getConversation(), event.getPlugin());
             }
         /* A plugin was disabled. */
-        } else if (e instanceof PluginDisabledEvent) {
-            PluginDisabledEvent event = (PluginDisabledEvent) e;
-
+        } else {
             /* If the event was external, disable the plugin here as well. */
             if(event.isExternal()) {
                 disable(event.getConversation(), event.getPlugin());
