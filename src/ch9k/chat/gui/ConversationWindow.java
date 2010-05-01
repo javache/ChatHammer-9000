@@ -2,6 +2,7 @@ package ch9k.chat.gui;
 
 import ch9k.chat.Conversation;
 import ch9k.chat.event.ConversationEventFilter;
+import ch9k.chat.event.LocalConversationEventFilter;
 import ch9k.chat.event.RequestPluginContainerEvent;
 import ch9k.chat.event.RequestedPluginContainerEvent;
 import ch9k.eventpool.Event;
@@ -61,7 +62,7 @@ public class ConversationWindow extends JFrame {
                 EventPool.getAppPool().raiseEvent(new RequestedPluginContainerEvent(
                     this, conversation, pluginPanel));
             }
-        }, new ConversationEventFilter(RequestPluginContainerEvent.class, conversation));
+        }, new LocalConversationEventFilter(RequestPluginContainerEvent.class, conversation));
 
         initComponents();
 

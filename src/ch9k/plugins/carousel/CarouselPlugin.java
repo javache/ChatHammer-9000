@@ -2,7 +2,7 @@ package ch9k.plugins.carousel;
 
 import ch9k.chat.Contact;
 import ch9k.chat.Conversation;
-import ch9k.chat.event.ConversationEventFilter;
+import ch9k.chat.event.LocalConversationEventFilter;
 import ch9k.chat.event.RequestPluginContainerEvent;
 import ch9k.chat.event.RequestedPluginContainerEvent;
 import ch9k.eventpool.Event;
@@ -36,7 +36,7 @@ public class CarouselPlugin extends AbstractPlugin implements EventListener {
 
         /* First, register this plugin as listener so it can receive a container
          * later. */
-        EventFilter filter = new ConversationEventFilter(
+        EventFilter filter = new LocalConversationEventFilter(
                 RequestedPluginContainerEvent.class, conversation);
         EventPool.getAppPool().addListener(this, filter);
 
