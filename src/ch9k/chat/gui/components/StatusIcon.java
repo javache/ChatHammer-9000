@@ -1,5 +1,5 @@
 
-package ch9k.chat.gui;
+package ch9k.chat.gui.components;
 
 import java.awt.Color;
 import java.awt.Component;

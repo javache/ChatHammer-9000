@@ -1,4 +1,4 @@
-package ch9k.chat.gui;
+package ch9k.chat.gui.components;
 
 import ch9k.core.I18n;
 import java.awt.SystemColor;

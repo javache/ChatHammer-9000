@@ -1,5 +1,6 @@
 package ch9k.chat.gui;
 
+import ch9k.chat.gui.components.StatusIcon;
 import ch9k.chat.AddContactController;
 import ch9k.chat.Contact;
 import ch9k.chat.ContactList;

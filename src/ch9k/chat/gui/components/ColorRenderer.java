@@ -1,4 +1,4 @@
-package ch9k.chat.gui;
+package ch9k.chat.gui.components;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -12,7 +12,7 @@ import javax.swing.border.Border;
  * Renders colors
  * @author Bruno
  */
-class ColorRenderer extends JLabel implements ListCellRenderer {
+public class ColorRenderer extends JLabel implements ListCellRenderer {
     private Border unselectedBorder;
     private Border selectedBorder;
 

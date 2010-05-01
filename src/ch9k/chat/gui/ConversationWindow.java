@@ -1,5 +1,6 @@
 package ch9k.chat.gui;
 
+import ch9k.chat.gui.components.MessageEditor;
 import ch9k.chat.Conversation;
 import ch9k.chat.event.ConversationEventFilter;
 import ch9k.chat.event.LocalConversationEventFilter;

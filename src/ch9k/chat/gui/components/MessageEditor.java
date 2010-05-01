@@ -1,4 +1,4 @@
-package ch9k.chat.gui;
+package ch9k.chat.gui.components;
 
 import ch9k.chat.ChatMessage;
 import ch9k.chat.Conversation;
@@ -15,14 +15,12 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
-import javax.swing.text.MutableAttributeSet;
-import javax.swing.text.StyledDocument;
 
 /**
  *
  * @author Pieter De Baets
  */
-class MessageEditor extends JPanel {
+public class MessageEditor extends JPanel {
     private Conversation conversation;
     private JTextPane editor;
 

@@ -2,8 +2,9 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package ch9k.chat.gui;
+package ch9k.chat.gui.components;
 
+import ch9k.chat.gui.components.ColorRenderer;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
