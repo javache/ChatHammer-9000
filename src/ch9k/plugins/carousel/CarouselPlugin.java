@@ -41,7 +41,7 @@ public class CarouselPlugin extends AbstractPlugin implements EventListener {
         EventPool.getAppPool().addListener(this, filter);
 
         /* Asyncrhonously request a panel for this plugin. */
-        Event event = new RequestPluginContainerEvent(conversation);
+        Event event = new RequestPluginContainerEvent(this, conversation);
         EventPool.getAppPool().raiseEvent(event);
     }
 
@@ -81,7 +81,7 @@ public class CarouselPlugin extends AbstractPlugin implements EventListener {
         plugin.enablePlugin(conversation);
 
         //plugin.onReceivePanel(frame.getContentPane());
-        Event event = new RequestedPluginContainerEvent(conversation,
+        Event event = new RequestedPluginContainerEvent(null, conversation,
                 frame.getContentPane());
         EventPool.getAppPool().raiseEvent(event);
 

@@ -25,7 +25,7 @@ public class ConversationEventFilter extends EventFilter {
      * @param type
      * @param conversation
      */
-    public ConversationEventFilter(Class<? extends ConversationEvent> type, Conversation conversation) {
+    public ConversationEventFilter(Class<? extends Event> type, Conversation conversation) {
         super(type);
         this.conversation = conversation;
     }

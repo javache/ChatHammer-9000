@@ -20,7 +20,7 @@ public class ProvidedImage implements Serializable {
     /**
      * The image delegate.
      */
-    private Image image;
+    private transient Image image;
 
     /**
      * Create a new image.

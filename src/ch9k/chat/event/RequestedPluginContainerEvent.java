@@ -7,13 +7,12 @@ import java.awt.Container;
  *
  * @author Jens Panneel
  */
-public class RequestedPluginContainerEvent extends ConversationEvent {
+public class RequestedPluginContainerEvent extends LocalConversationEvent {
     private Container pluginContainer;
 
-    // should this event be broadcasted on network?
-    public RequestedPluginContainerEvent(Conversation conversation,
-            Container pluginContainer) {
-        super(conversation);
+    public RequestedPluginContainerEvent(Object source,
+            Conversation conversation, Container pluginContainer) {
+        super(source, conversation);
         this.pluginContainer = pluginContainer;
     }
 

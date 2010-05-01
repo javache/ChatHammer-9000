@@ -59,7 +59,7 @@ public class ConversationWindow extends JFrame {
                 // TODO: make this a normal method call?
                 RequestPluginContainerEvent requestEvent = (RequestPluginContainerEvent)event;
                 EventPool.getAppPool().raiseEvent(new RequestedPluginContainerEvent(
-                    conversation, pluginPanel));
+                    this, conversation, pluginPanel));
             }
         }, new ConversationEventFilter(RequestPluginContainerEvent.class, conversation));
 
