@@ -122,8 +122,12 @@ public class EventPool {
                 + " listener(s)");
         for(int i = 0; i < listeners.size(); i++) {
             FilteredListener pair = listeners.get(i);
-            if(pair.filter.accept(event)) {
-                pair.listener.handleEvent(event);
+            try {
+                if(pair.filter.accept(event)) {
+                    pair.listener.handleEvent(event);
+                }
+            } catch(Exception ex) {
+                logger.error(ex.toString(), ex);
             }
         }
     }

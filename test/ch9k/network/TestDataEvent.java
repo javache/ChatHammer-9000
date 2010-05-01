@@ -9,5 +9,4 @@ public class TestDataEvent extends DataEvent {
     public TestDataEvent(InetAddress target) {
         super(target);
     }
-    
 }

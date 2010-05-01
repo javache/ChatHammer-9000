@@ -27,7 +27,7 @@ public class EventWriterTest {
     @Test
     public void testSendEvent() throws Exception {
         /* just a temp file, will be deleted */
-        File file = File.createTempFile("temp","toon");
+        File file = File.createTempFile("temp", "toon");
         file.createNewFile();
         
         /* hook up our input and outputstreams */
@@ -40,11 +40,11 @@ public class EventWriterTest {
         
         /* send an event (synchronous) and read it back */
         EventWriter writer = new EventWriter(stream,handler,queue);
-        writer.sendEvent(new PingEvent(InetAddress.getLocalHost()));
+        writer.sendEvent(new TestNetworkEvent(InetAddress.getLocalHost()));
         NetworkEvent ev = (NetworkEvent)in.readObject();
         
         /* we send a PingEvent, so this should not fail and be true */
-        assertTrue(ev instanceof PingEvent);
+        assertTrue(ev instanceof TestNetworkEvent);
         /* delete our file */
         file.delete();
     }

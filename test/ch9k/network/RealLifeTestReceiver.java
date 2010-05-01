@@ -2,6 +2,8 @@ package ch9k.network;
 
 import ch9k.chat.Contact;
 import ch9k.chat.event.ContactOnlineEvent;
+import ch9k.chat.event.ContactRequestEvent;
+import ch9k.core.ChatApplication;
 import ch9k.eventpool.Event;
 import ch9k.eventpool.EventFilter;
 import ch9k.eventpool.EventListener;
@@ -18,6 +20,7 @@ public class RealLifeTestReceiver {
     }
     
     public static void main(String[] args) throws InterruptedException {
+        ChatApplication.getInstance().performTestLogin();
         EventPool pool = EventPool.getAppPool();
 
         // just return all network events
@@ -32,6 +35,16 @@ public class RealLifeTestReceiver {
                 EventPool.getAppPool().raiseEvent(new ContactOnlineEvent(remoteContact));
             }
         }, new EventFilter(ContactOnlineEvent.class));
+
+        // accept all friendrequests
+        pool.addListener(new EventListener() {
+            public void handleEvent(Event event) {
+                ContactRequestEvent requestEvent = (ContactRequestEvent) event;
+                Contact remoteContact = new Contact(requestEvent.getRequester(),
+                        requestEvent.getSource());
+                EventPool.getAppPool().raiseEvent(new ContactOnlineEvent(remoteContact));
+            }
+        }, new EventFilter(ContactRequestEvent.class));
 
         while(true) {
             Thread.sleep(1000);
