@@ -189,13 +189,11 @@ public class ConnectionManager {
                         conn.addDataSocket(client);
                         logger.info("received a datasocket from " + client.getInetAddress());
                     } else {
-                        Connection connection = new Connection(client, pool,ConnectionManager.this);
+                        Connection connection = new Connection(client, pool, ConnectionManager.this);
                         // TODO worry about synchronisation later
                         connectionMap.put(client.getInetAddress(), connection);
                         logger.info("Accepted a new connection! " + client.getInetAddress());
-                    }
-                    
-                    
+                    }                    
                 }
             } catch (IOException ex) {
                 // if this fails it would appear as if nothing ever happened

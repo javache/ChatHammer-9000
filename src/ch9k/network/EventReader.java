@@ -57,12 +57,9 @@ public class EventReader implements Runnable {
                 } catch (ClassNotFoundException e) {
                     logger.warn(e.toString());
                 }
-            } 
-            
-        } catch(EOFException e) { 
-            errorHandler.receivedEOF();
-            logger.warn(e.toString());
+            }
         } catch (IOException e) {
+            errorHandler.receivedEOF();
             logger.warn(e.toString());
         }
     }

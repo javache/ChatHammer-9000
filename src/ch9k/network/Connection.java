@@ -174,17 +174,8 @@ public class Connection {
     }
 
     public void socketHandlerClosed(SocketHandler handler) {
-        try {
-            if(handler == dataSocketHandler) {
-                eventSocketHandler.close();
-            } else {
-                if(dataSocketHandler != null) {
-                    dataSocketHandler.close();
-                }
-            }
-        } catch (IOException e) {
-            logger.warn(e.toString());
-        }
+        // close all connections
+        close();
         
         connectionManager.handleNetworkError(target);
         logger.warn("Connection closed to " + target.toString());
