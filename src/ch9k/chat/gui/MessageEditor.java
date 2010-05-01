@@ -8,6 +8,7 @@ import ch9k.core.ChatApplication;
 import ch9k.eventpool.EventPool;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JButton;
@@ -31,6 +32,8 @@ class MessageEditor extends JPanel {
         editor = new JTextPane();
         editor.setEditable(true);
         editor.setContentType("text/html");
+        editor.putClientProperty(JTextPane.HONOR_DISPLAY_PROPERTIES, Boolean.TRUE);
+        editor.setFont(new Font("SansSerif", Font.PLAIN, 14));
         
         JScrollPane scrollPane = new JScrollPane(editor);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
@@ -43,7 +46,7 @@ class MessageEditor extends JPanel {
         });
 
         JPanel input = new JPanel(new BorderLayout());
-        JPanel buttons = new FontPanel();
+        JPanel buttons = new FontPanel(editor);
         
         input.add(scrollPane, BorderLayout.CENTER);
         input.add(sendButton,BorderLayout.EAST);

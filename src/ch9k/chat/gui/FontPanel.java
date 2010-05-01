@@ -5,21 +5,23 @@
 package ch9k.chat.gui;
 
 import java.awt.Font;
-import java.awt.GraphicsEnvironment;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.Action;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
+import javax.swing.JTextPane;
 import javax.swing.JToggleButton;
 import javax.swing.UIManager;
+import javax.swing.event.CaretEvent;
+import javax.swing.event.CaretListener;
 import javax.swing.text.StyledEditorKit;
 
 /**
  *
  * @author Bruno
  */
-public class FontPanel extends JPanel implements ActionListener {
+public class FontPanel extends JPanel implements ActionListener, CaretListener {
     private Action boldAction = new StyledEditorKit.BoldAction();
 
     private Action underlineAction = new StyledEditorKit.UnderlineAction();
@@ -34,7 +36,12 @@ public class FontPanel extends JPanel implements ActionListener {
 
     private JComboBox fontSize;
 
-    public FontPanel() {
+    private JTextPane editor;
+
+    public FontPanel(JTextPane textpane) {
+        editor = textpane;
+        editor.addCaretListener(this);
+
         JToggleButton bold = new JToggleButton(boldAction);
         bold.setText("B");
         Font newButtonFont = new Font(bold.getFont().getName(), Font.BOLD, bold.getFont().getSize());
@@ -48,13 +55,6 @@ public class FontPanel extends JPanel implements ActionListener {
         JToggleButton underline = new JToggleButton(underlineAction);
         underline.setText("<html> <u>U</u> </html>");
         underline.setFont(UIManager.getFont("Button.font"));
-
-        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-      String familyNames[] = ge.getAvailableFontFamilyNames();
-
-        for (String familyName : familyNames) {
-            System.out.println("Family names: " + familyName);
-        }
         
         add(bold);
         add(italic);
@@ -75,10 +75,22 @@ public class FontPanel extends JPanel implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == fontType) {
             int index = (((JComboBox) e.getSource()).getSelectedIndex());
+            int pos = editor.getCaretPosition();
+            editor.selectAll();
             new StyledEditorKit.FontFamilyAction("set-font-family", fontTypes[index]).actionPerformed(e);
+            editor.setCaretPosition(pos);
         } else if (e.getSource() == fontSize) {
+            int pos = editor.getCaretPosition();
+            editor.selectAll();
             int index = (((JComboBox) e.getSource()).getSelectedIndex());
             new StyledEditorKit.FontSizeAction("set-font-size", Integer.parseInt(fontSizes[index])).actionPerformed(e);
+            editor.setCaretPosition(pos);
         }
     }
+
+    @Override
+    public void caretUpdate(CaretEvent e) {
+        //TODO
+    }
 }
+
