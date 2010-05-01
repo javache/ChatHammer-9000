@@ -172,7 +172,7 @@ public class Contact extends Model implements Comparable<Contact>, Persistable {
             return false;
         }
         if (this.username != other.username &&
-                (this.username == null || !this.username.equals(other.username))) {
+                (this.username == null || !this.username.equalsIgnoreCase(other.username))) {
             return false;
         }
         return true;

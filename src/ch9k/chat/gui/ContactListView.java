@@ -4,6 +4,7 @@ import ch9k.chat.gui.components.StatusIcon;
 import ch9k.chat.AddContactController;
 import ch9k.chat.Contact;
 import ch9k.chat.ContactList;
+import ch9k.chat.FilteredContactList;
 import ch9k.core.ChatApplication;
 import ch9k.core.I18n;
 import java.awt.BorderLayout;
@@ -30,6 +31,7 @@ public class ContactListView extends JPanel {
     private ContactList contacts;
     private JList list;
     private JButton addButton;
+    private FilteredContactList contactlist;
     
     public ContactListView() {
         super(new BorderLayout());
@@ -47,7 +49,7 @@ public class ContactListView extends JPanel {
             }
         });
         
-        list = new JList(contacts);
+        list = new JList(new FilteredContactList(contacts));
         list.setBackground(getBackground());
         list.setCellRenderer(new ContactListCellRenderer());
         list.addMouseListener(new ContactListMouseListener(list));
@@ -83,7 +85,7 @@ public class ContactListView extends JPanel {
             icon = new StatusIcon(13, true);
             setIcon(icon);
             setFont(getFont().deriveFont(13f));
-            setBorder(BorderFactory.createEmptyBorder(5, 9, 5, 0));
+            setBorder(BorderFactory.createEmptyBorder(5, 12, 5, 0));
         }
 
         @Override

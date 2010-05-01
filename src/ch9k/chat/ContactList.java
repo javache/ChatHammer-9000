@@ -6,6 +6,7 @@ import ch9k.chat.event.ContactRequestEvent;
 import ch9k.configuration.Persistable;
 import ch9k.configuration.PersistentDataObject;
 import ch9k.core.Account;
+import ch9k.core.I18n;
 import ch9k.eventpool.Event;
 import ch9k.eventpool.EventFilter;
 import ch9k.eventpool.EventListener;
@@ -136,11 +137,12 @@ public class ContactList extends AbstractListModel implements Persistable, Chang
         @Override
         public void handleEvent(Event ev) {
             ContactRequestEvent event = (ContactRequestEvent)ev;
-            if(event.isExternal() && event.getUsername().equals(account.getUsername())) {
-                String text = "would you like to add " + event.getRequester()
-                        + " as your friend?";
+            if(event.isExternal() && event.getUsername().equalsIgnoreCase(account.getUsername())) {
+                // WTF is this doing here
+                // last time I checked ContactList wasn't a view.
+                String text = I18n.get("ch9k.chat", "add_friend", event.getRequester());
                 int confirmation = JOptionPane.showConfirmDialog(
-                        null, text, "Friend Request", JOptionPane.YES_NO_OPTION);
+                        null, text, I18n.get("ch9k.chat", "add_friend_title"), JOptionPane.YES_NO_OPTION);
 
                 Contact contact = new Contact(event.getRequester(),event.getSource());
                 if (confirmation != JOptionPane.YES_OPTION) {
@@ -228,12 +230,12 @@ public class ContactList extends AbstractListModel implements Persistable, Chang
         Contact contact = onlineHash.get(ip);
         if(contact != null && 
                 contact.getIp().equals(ip) &&
-                contact.getUsername().equals(username)){
+                contact.getUsername().equalsIgnoreCase(username)){
             return contact;
         }
         
         for (Contact cont : contacts) {
-            if(cont.getIp().equals(ip) && cont.getUsername().equals(username)) {
+            if(cont.getIp().equals(ip) && cont.getUsername().equalsIgnoreCase(username)) {
                 return cont;
             }
         }

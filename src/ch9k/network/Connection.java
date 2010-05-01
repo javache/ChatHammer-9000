@@ -92,7 +92,7 @@ public class Connection {
         this.connectionManager = manager;
 
         final Socket socket = new Socket();
-        
+       
         new Thread(new Runnable() {
             public void run() {
                 try {
@@ -113,7 +113,7 @@ public class Connection {
                     notifyInitComplete();
                 }
             }
-        }).start();
+        }, "Connection-" + ip.getHostAddress() + "-opener").start();
     }
 
     /**

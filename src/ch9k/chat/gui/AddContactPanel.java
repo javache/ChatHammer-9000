@@ -48,7 +48,7 @@ public class AddContactPanel extends JPanel {
         
         dialog.pack();
         Dimension dimension = dialog.getSize();
-        dialog.setSize(dimension.width, dimension.height + 50);
+        dialog.setSize(dimension.width, dimension.height + 10);
     }
     
     public void setError(String message) {
@@ -65,7 +65,9 @@ public class AddContactPanel extends JPanel {
         ipLabel = new JLabel(I18n.get("ch9k.chat", "ip"));
 
         usernameField = new JTextField();
-        // todo make formatted field
+        // we could use a JFormattedField here, or something else more fancy
+        // but this provides more freedom to the user (to put an address
+        // that can be resolved via DNS, for example)
         ipField = new JTextField();
         
         errorMessage = new JLabel();

@@ -1,11 +1,17 @@
 package ch9k.core;
 
 import ch9k.chat.ConversationManager;
+import ch9k.chat.event.ContactRequestEvent;
 import ch9k.configuration.Configuration;
 import ch9k.core.gui.ApplicationWindow;
+import ch9k.eventpool.EventPool;
 import ch9k.plugins.PluginManager;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * The main application, OMG!
@@ -70,6 +76,22 @@ public class ChatApplication {
 
         appWindow.initApplicationView();
         appWindow.setStatus(I18n.get("ch9k.core", "booting"));
+
+        new Thread(new Runnable() {
+            public void run() {
+                try {
+                    Thread.sleep(2000);
+                } catch(InterruptedException ex) {}
+
+                InetAddress localhost = null;
+                try {
+                    localhost = InetAddress.getLocalHost();
+                } catch(UnknownHostException ex) {}
+
+                // send events here for testing
+                // they will be executed 2 seconds after app started
+            }
+        }).start();
     }
 
     /**
