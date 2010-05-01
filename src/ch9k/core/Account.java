@@ -13,6 +13,7 @@ import java.net.URLConnection;
 import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.log4j.Logger;
 import org.jdom.Element;
 
 /**
@@ -20,7 +21,7 @@ import org.jdom.Element;
  * 
  * @author Bruno
  */
-public class Account implements Persistable{
+public class Account implements Persistable {
     /**
      * The users contactlist
      */
@@ -60,10 +61,19 @@ public class Account implements Persistable{
     public Account(PersistentDataObject data) {
         load(data);
     }
-    
+
+    /**
+     * Get username
+     * @return Username of the current user
+     */
+    public String getUsername() {
+        return username;
+    }
+
     /**
      * will return the password hash
      * NOTE: trying to print this is just stupid
+     * @return hash
      */
     public String getPasswordHash() {
         return passwordHash;
@@ -71,16 +81,10 @@ public class Account implements Persistable{
     
     /**
      * method to change the password
+     * @param password
      */
     public void setPassword(String password) {
         this.passwordHash = hash(password);
-    }
-    /**
-     * Getter for the users current contactlist
-     * @return Current ContactList
-     */
-    public ContactList getContactList() {
-        return contactList;
     }
 
     /**
@@ -92,11 +96,19 @@ public class Account implements Persistable{
     }
 
     /**
-     * Get username
-     * @return Username of the current user
+     * Set a new personal status
+     * @param status The new status
      */
-    public String getUsername() {
-        return username;
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    /**
+     * Getter for the users current contactlist
+     * @return Current ContactList
+     */
+    public ContactList getContactList() {
+        return contactList;
     }
 
     /**
@@ -106,14 +118,6 @@ public class Account implements Persistable{
      */
     public boolean authenticate(String password) {
         return passwordHash != null && passwordHash.equals(hash(password));
-    }
-
-    /**
-     * Set a new personal status
-     * @param status The new status
-     */
-    public void setStatus(String status) {
-        this.status = status;
     }
 
     private String hash(String password) {
@@ -149,7 +153,6 @@ public class Account implements Persistable{
     public static InetAddress[] getInetAddresses() {
         if(inetAddresses == null) {
             List<InetAddress> ipList = new ArrayList<InetAddress>();
-
             try {
                 // add localhost
                 ipList.add(InetAddress.getLocalHost());
@@ -157,12 +160,12 @@ public class Account implements Persistable{
                 // perform a small lookup to get the public IP
                 URLConnection connection = IP_LOOKUP_API.openConnection();
                 connection.setReadTimeout(2000);
-                InputStreamReader input = new InputStreamReader(connection.getInputStream());
-                BufferedReader reader = new BufferedReader(input);
+                BufferedReader reader = new BufferedReader(
+                        new InputStreamReader(connection.getInputStream()));
                 ipList.add(InetAddress.getByName(reader.readLine()));
                 reader.close();
             } catch (IOException ex) {
-                System.err.println(ex);
+                Logger.getLogger(Account.class).warn(ex.toString());
             }
 
             inetAddresses = ipList.toArray(new InetAddress[0]);

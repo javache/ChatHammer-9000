@@ -32,7 +32,6 @@ public class ContactTest {
     @After
     public void tearDown() {
         EventPool.getAppPool().clearListeners();
-        ChatApplication.getInstance().getAccount().getContactList().clear();
     }
 
     /**

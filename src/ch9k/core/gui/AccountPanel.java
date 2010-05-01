@@ -37,10 +37,10 @@ public class AccountPanel extends JPanel {
 
         statusField = new StatusField();
 
-        String logoffButtonTexts = I18n.get("ch9k.core", "log_off");
-        logoffButton = new JButton(new AbstractAction(logoffButtonTexts) {
+        String logoffButtonText = I18n.get("ch9k.core", "log_off");
+        logoffButton = new JButton(new AbstractAction(logoffButtonText) {
             public void actionPerformed(ActionEvent e) {
-                ChatApplication.getInstance().logout();
+                ChatApplication.getInstance().logoff(true);
             }
         });
     }

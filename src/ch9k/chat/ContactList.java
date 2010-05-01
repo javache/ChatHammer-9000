@@ -6,14 +6,15 @@ import ch9k.chat.event.ContactRequestEvent;
 import ch9k.configuration.Persistable;
 import ch9k.configuration.PersistentDataObject;
 import ch9k.core.Account;
-import ch9k.core.ChatApplication;
 import ch9k.eventpool.Event;
 import ch9k.eventpool.EventFilter;
 import ch9k.eventpool.EventListener;
 import ch9k.eventpool.EventPool;
 import java.net.InetAddress;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import javax.swing.AbstractListModel;
@@ -39,36 +40,49 @@ public class ContactList extends AbstractListModel implements Persistable, Chang
      */
     private HashMap<InetAddress,Contact> onlineHash;
 
+    /**
+     * Reference to the account this list belongs to
+     */
     private Account account;
 
     /**
+     * EventListeners managed by this class
+     */
+    private List<EventListener> listeners;
+
+    /**
      * Construct a new ContactList
+     * @param account
      */
     public ContactList(Account account) {
         contacts = new TreeSet<Contact>();
         onlineHash = new HashMap<InetAddress,Contact>();
+        listeners = new ArrayList<EventListener>();
         this.account = account;
         init();
     }
     
     /**
      * Construct a new ContactList, and immediately restores it to a previous state
+     * @param account
      * @param data Previously stored state of this object
      */
     public ContactList(Account account, PersistentDataObject data) {
-        contacts = new TreeSet<Contact>();
-        onlineHash = new HashMap<InetAddress,Contact>();
-        this.account = account;
+        this(account);
         load(data);
-        init();
     }
 
     private void init() {
-        EventPool.getAppPool().addListener(new ContactOnlineListener(),
+        listeners.add(new ContactOnlineListener());
+        EventPool.getAppPool().addListener(listeners.get(0),
                 new EventFilter(ContactOnlineEvent.class));
-        EventPool.getAppPool().addListener(new ContactOfflineListener(),
+
+        listeners.add(new ContactOfflineListener());
+        EventPool.getAppPool().addListener(listeners.get(1),
                 new EventFilter(ContactOfflineEvent.class));
-        EventPool.getAppPool().addListener(new ContactRequestListener(),
+
+        listeners.add(new ContactRequestListener());
+        EventPool.getAppPool().addListener(listeners.get(2),
                 new EventFilter(ContactRequestEvent.class));
     }
 
@@ -86,13 +100,12 @@ public class ContactList extends AbstractListModel implements Persistable, Chang
             ContactOnlineEvent onlineEvent = (ContactOnlineEvent)event;
             Contact contact = onlineEvent.getContact();
             /* all this has to be true, otherwise we just have to ignore */
-            if(onlineEvent.isExternal() &&
-                    contact != null &&
-                    !contact.isIgnored() &&
-                    !contact.isBlocked()) {
+            if(onlineEvent.isExternal() && contact != null &&
+                    !contact.isIgnored() && !contact.isBlocked()) {
                 if(!contact.isOnline()) {
                     EventPool.getAppPool().raiseEvent(new ContactOnlineEvent(contact));
                 }
+                
                 /* keep in mind here that this will set the state to online
                  * so in essence this will also handle responses 
                  * from friendrequests 
@@ -111,7 +124,8 @@ public class ContactList extends AbstractListModel implements Persistable, Chang
             ContactOfflineEvent offlineEvent = (ContactOfflineEvent)event;
             Contact contact = offlineEvent.getContact();
             /* all this has to be true, otherwise we just have to ignore */
-            if(offlineEvent.isExternal() && contact != null ) {
+            if(offlineEvent.isExternal() && contact != null  &&
+                    !contact.isIgnored() && !contact.isBlocked()) {
                 contact.setOnline(false);
                 onlineHash.remove(offlineEvent.getSource());
             }
@@ -122,8 +136,7 @@ public class ContactList extends AbstractListModel implements Persistable, Chang
         @Override
         public void handleEvent(Event ev) {
             ContactRequestEvent event = (ContactRequestEvent)ev;
-            String myUsername = ChatApplication.getInstance().getAccount().getUsername();
-            if(event.isExternal() && event.getUsername().equals(myUsername)) {
+            if(event.isExternal() && event.getUsername().equals(account.getUsername())) {
                 String text = "would you like to add " + event.getRequester()
                         + " as your friend?";
                 int confirmation = JOptionPane.showConfirmDialog(
@@ -133,7 +146,7 @@ public class ContactList extends AbstractListModel implements Persistable, Chang
                 if (confirmation != JOptionPane.YES_OPTION) {
                     contact.setIgnored();
                 }
-                addContact(contact);
+                addContact(contact, false);
             }
         }
     }
@@ -149,16 +162,16 @@ public class ContactList extends AbstractListModel implements Persistable, Chang
     }
     
     /**
-     * Add a contact to the ContactList.
-     * Note: no contact-request will be performed,
-     * this should already have happened!
+     * Add a contact
      * @param contact
+     * @param sendRequest send a friendrequest?
      */
     public void addContact(Contact contact, boolean sendRequest) {
         boolean success = contacts.add(contact);
         if(sendRequest) {
             contact.setRequested();
         }
+
         if(success) {
             contact.addChangeListener(this);
             fireListChanged();
@@ -166,12 +179,16 @@ public class ContactList extends AbstractListModel implements Persistable, Chang
         }
     }
     
+    /**
+     * Add a contact and send a friendrequest
+     * @param contact
+     */
     public void addContact(Contact contact) {
         addContact(contact, false);
     }
     
     /**
-     * Remove the given contact from the ContactList
+     * Remove the given contact
      * @param contact
      */
     public void removeContact(Contact contact) {
@@ -183,11 +200,20 @@ public class ContactList extends AbstractListModel implements Persistable, Chang
     }
     
     /**
-     * Debug method: remove all contacts
+     * Send all contacts that the current account is offline now
+     * and remove any listeners
      */
-    public void clear() {
-        contacts.clear();
-        fireListChanged();
+    public void broadcastOffline() {
+        EventPool pool = EventPool.getAppPool();
+        for(EventListener listener : listeners) {
+            pool.removeListener(listener);
+        }
+
+        for(Contact contact : contacts) {
+            if(contact.isOnline()) {
+                EventPool.getAppPool().raiseEvent(new ContactOfflineEvent(contact));
+            }
+        }
     }
 
     /**

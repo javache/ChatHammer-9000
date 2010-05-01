@@ -38,7 +38,9 @@ public class ChatApplication {
 
         appWindow.addWindowListener(new WindowAdapter() {
             public void windowClosed(WindowEvent e) {
-                logout();
+                if(configuration != null) {
+                    logoff(false);
+                }
             }
         });
     }
@@ -50,7 +52,6 @@ public class ChatApplication {
             Account account = configuration.getAccount();
             if(account != null && account.authenticate(args[1])) {
                 this.configuration = configuration;
-                performTestLogin();
             } else {
                 System.err.println("Failed to login with provided credentials");
             }
@@ -71,17 +72,27 @@ public class ChatApplication {
         appWindow.setStatus(I18n.get("ch9k.core", "booting"));
     }
 
-    public void logout() {
-        new Thread(new Runnable() {
-            public void run() {
-                configuration.save();
-                configuration = null;
+    /**
+     * Logoff the current account
+     * @param showLogin
+     */
+    public void logoff(boolean showLogin) {
+        getConversationManager().clear();
+        Account account = getAccount();
+        if(account != null) {
+            account.getContactList().broadcastOffline();
+        }
 
-                // TODO: clear more stuff
+        configuration.save();
+        configuration = null;
 
-                start(null);
-            }
-        }).start();
+        if(showLogin) {
+            new Thread(new Runnable() {
+                public void run() {
+                    start(null);
+                }
+            }).start();
+        }
     }
 
     /**
@@ -122,10 +133,7 @@ public class ChatApplication {
      * (to be used for testing purposes only!)
      */
     public void performTestLogin() {
-        if(configuration == null || configuration.getAccount() == null) {
-            configuration = new Configuration("CH9K");
-            configuration.setAccount(new Account("CH9K", "password"));
-            configuration.save();
-        }
+        configuration = new Configuration("CH9K");
+        configuration.setAccount(new Account("CH9K", "password"));
     }
 }

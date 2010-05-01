@@ -1,9 +1,9 @@
 package ch9k.chat;
 
 import ch9k.configuration.PersistentDataObject;
+import ch9k.core.ChatApplication;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -13,14 +13,9 @@ public class ContactListTest {
 
     @Before
     public void setUp() {
-        // TODO: fix!!1!!!!
-        // contactList = new ContactList();
-        contactList = null;
-    }
-
-    @After
-    public void tearDown() {
-        contactList.clear();
+        ChatApplication app = ChatApplication.getInstance();
+        app.performTestLogin();
+        contactList = new ContactList(app.getAccount());
     }
 
     /**
@@ -97,9 +92,7 @@ public class ContactListTest {
         contactList.addContact(contact2);
 
         PersistentDataObject pdo = contactList.persist();
-        // TODO: fix!!!!!1!!1!!
-        // ContactList loadedList = new ContactList(pdo);
-        ContactList loadedList = null;
+        ContactList loadedList = new ContactList(ChatApplication.getInstance().getAccount(), pdo);
         
         assertTrue(contactList.getContacts().containsAll(loadedList.getContacts()));
         assertTrue(loadedList.getContacts().containsAll(contactList.getContacts()));

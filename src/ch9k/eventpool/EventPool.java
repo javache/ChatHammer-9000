@@ -124,6 +124,13 @@ public class EventPool {
         eventQueue.add(networkEvent);
     }
 
+    /**
+     * Reset all connections
+     */
+    public void reset() {
+        network.clearConnections();
+    }
+
     private void broadcastEvent(Event event) {
         logger.info("Sending " + event.getClass().getName() + " to " + listeners.size()
                 + " listener(s)");

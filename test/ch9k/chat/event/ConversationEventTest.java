@@ -28,8 +28,7 @@ public class ConversationEventTest {
     @After
     public void tearDown() {
         EventPool.getAppPool().clearListeners();
-        ChatApplication.getInstance().getAccount().getContactList().clear();
-        ChatApplication.getInstance().getConversationManager().clear();
+        ChatApplication.getInstance().logoff(false);
     }
 
     /**
