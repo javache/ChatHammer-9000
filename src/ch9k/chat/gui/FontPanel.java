@@ -9,7 +9,6 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.Action;
-import javax.swing.JColorChooser;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import javax.swing.JTextPane;
@@ -58,7 +57,8 @@ public class FontPanel extends JPanel implements ActionListener, CaretListener {
 
     private String[] fontSizes = { "10", "12", "14", "16", "18", "20" };
 
-    private Color[] colors = { Color.BLACK, Color.GRAY, Color.BLUE, Color.RED, Color.GREEN, Color.ORANGE, Color.CYAN, Color.MAGENTA };
+    private Color[] colors = { Color.BLACK, Color.GRAY, Color.BLUE, Color.RED,
+                             Color.GREEN, Color.ORANGE, Color.CYAN, Color.MAGENTA };
 
     /**
      * Comboxes in which the user wil be able to select above options

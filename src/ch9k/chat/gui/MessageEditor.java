@@ -15,6 +15,8 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
+import javax.swing.text.MutableAttributeSet;
+import javax.swing.text.StyledDocument;
 
 /**
  *
@@ -59,6 +61,7 @@ class MessageEditor extends JPanel {
         if(!editor.getText().trim().isEmpty()){
             ChatMessage message = new ChatMessage(ChatApplication.getInstance().getAccount().getUsername(), editor.getText());
             EventPool.getAppPool().raiseEvent(new NewChatMessageEvent(conversation,message));
+            
             editor.setText("");
         }
     }
