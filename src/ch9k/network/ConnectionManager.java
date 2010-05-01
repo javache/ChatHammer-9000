@@ -175,7 +175,6 @@ public class ConnectionManager {
             try {
                 server = new ServerSocket(Connection.DEFAULT_PORT);
             } catch (IOException e) {
-                /* TODO: handle this */
                 logger.warn(e.toString());
                 pool.raiseEvent(new NetworkConnectionLostEvent());
             }
@@ -187,12 +186,12 @@ public class ConnectionManager {
                     Connection conn = connectionMap.get(client.getInetAddress());
                     if (conn != null) {
                         conn.addDataSocket(client);
-                        logger.info("received a datasocket from " + client.getInetAddress());
+                        logger.info("Accepted a second connection from " + client.getInetAddress());
                     } else {
                         Connection connection = new Connection(client, pool, ConnectionManager.this);
                         // TODO worry about synchronisation later
                         connectionMap.put(client.getInetAddress(), connection);
-                        logger.info("Accepted a new connection! " + client.getInetAddress());
+                        logger.info("Accepted a new connection from " + client.getInetAddress());
                     }                    
                 }
             } catch (IOException ex) {

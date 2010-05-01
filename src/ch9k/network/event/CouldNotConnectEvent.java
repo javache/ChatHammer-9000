@@ -1,19 +1,19 @@
 package ch9k.network.event;
 
+import ch9k.core.I18n;
+import ch9k.eventpool.WarningEvent;
 import java.net.InetAddress;
 
 /**
  * Event that will be broadcast when we are unable to connect to a certain ip
  */
-public class CouldNotConnectEvent extends ConnectionManagerEvent {
-    private InetAddress ip;
-
+public class CouldNotConnectEvent extends WarningEvent {
     public CouldNotConnectEvent(InetAddress ip) {
-        super();
-        this.ip = ip;
+        super(ip, I18n.get("ch9k.network", "could_not_connect", ip.getHostAddress()));
     }
-    
-    public InetAddress getInetAddress() {
-        return ip;
+
+    @Override
+    public InetAddress getSource() {
+        return (InetAddress)super.getSource();
     }
 }

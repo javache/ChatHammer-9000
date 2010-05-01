@@ -1,4 +1,4 @@
-package ch9k.network.event;
+package ch9k.network;
 
 import ch9k.eventpool.NetworkEvent;
 import java.net.InetAddress;

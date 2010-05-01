@@ -3,6 +3,7 @@ package ch9k.core.gui;
 import ch9k.chat.gui.ContactListView;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.EventQueue;
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -78,7 +79,19 @@ public class ApplicationWindow extends JFrame {
         repaint();
     }
 
-    public void setStatus(String status) {
-        statusBar.setText(status);
+    public void setStatus(final String status, boolean autoFade) {
+        EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                statusBar.setText(status);
+            }
+        });
+
+        if(autoFade) {
+            new Thread(new Runnable() {
+                public void run() {
+                    setStatus("", false);
+                }
+            }).start();
+        }
     }
 }

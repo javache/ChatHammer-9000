@@ -9,6 +9,7 @@ import java.util.Map.Entry;
 import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
+import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
 
 /**
@@ -55,8 +56,10 @@ public class Storage {
             }
         } catch (IOException ex) {
             //File did not open
+            System.err.println(ex);
         } catch (JDOMException ex) {
             //File did not parse
+            System.err.println(ex);
         }
 
     }
@@ -86,7 +89,7 @@ public class Storage {
 
             // Open the outpustream and write the XML
             FileOutputStream outputstream = new FileOutputStream(file);
-            XMLOutputter outputter = new XMLOutputter();
+            XMLOutputter outputter = new XMLOutputter(Format.getPrettyFormat());
             outputter.output(root, outputstream);
 
             outputstream.close();

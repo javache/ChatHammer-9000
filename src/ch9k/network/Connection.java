@@ -113,7 +113,7 @@ public class Connection {
                     notifyInitComplete();
                 }
             }
-        }, "Connection-" + ip.getHostAddress() + "-opener").start();
+        }, "Connection-" + ip.getHostAddress() + "-starter").start();
     }
 
     /**

@@ -1,17 +1,21 @@
 package ch9k.core;
 
+import ch9k.core.event.AccountOfflineEvent;
+import ch9k.core.event.AccountOnlineEvent;
+import ch9k.eventpool.StatusEvent;
 import ch9k.chat.ConversationManager;
-import ch9k.chat.event.ContactRequestEvent;
 import ch9k.configuration.Configuration;
 import ch9k.core.gui.ApplicationWindow;
+import ch9k.eventpool.Event;
+import ch9k.eventpool.EventFilter;
+import ch9k.eventpool.EventListener;
 import ch9k.eventpool.EventPool;
+import ch9k.eventpool.WarningEvent;
 import ch9k.plugins.PluginManager;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * The main application, OMG!
@@ -19,7 +23,7 @@ import java.util.logging.Logger;
  * @author Bruno
  * @author Pieter De baets
  */
-public class ChatApplication {
+public class ChatApplication implements EventListener {
     public static ChatApplication getInstance() {
         return SingletonHolder.INSTANCE;
     }
@@ -47,8 +51,12 @@ public class ChatApplication {
                 if(configuration != null) {
                     logoff(false);
                 }
+                EventPool.getAppPool().close();
             }
         });
+
+        EventPool.getAppPool().addListener(this,
+                new EventFilter(StatusEvent.class));
     }
 
     private void start(String[] args) {
@@ -73,9 +81,10 @@ public class ChatApplication {
             }
         }
         configuration.save();
+        EventPool.getAppPool().raiseEvent(new AccountOnlineEvent());
 
         appWindow.initApplicationView();
-        appWindow.setStatus(I18n.get("ch9k.core", "booting"));
+        appWindow.setStatus(I18n.get("ch9k.core", "booting"), false);
 
         new Thread(new Runnable() {
             public void run() {
@@ -99,11 +108,7 @@ public class ChatApplication {
      * @param showLogin
      */
     public void logoff(boolean showLogin) {
-        getConversationManager().clear();
-        Account account = getAccount();
-        if(account != null) {
-            account.getContactList().broadcastOffline();
-        }
+        EventPool.getAppPool().raiseEvent(new AccountOfflineEvent());
 
         configuration.save();
         configuration = null;
@@ -148,6 +153,17 @@ public class ChatApplication {
      */
     public ConversationManager getConversationManager() {
         return conversationManager;
+    }
+
+    @Override
+    public void handleEvent(Event event) {
+        StatusEvent statusEvent = (StatusEvent)event;
+        if(statusEvent instanceof WarningEvent) {
+            // TODO: show something
+            System.err.println(statusEvent.getMessage());
+        } else {
+            appWindow.setStatus(statusEvent.getMessage(), statusEvent.isAutoFade());
+        }
     }
 
     /**

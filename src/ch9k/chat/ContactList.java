@@ -7,6 +7,9 @@ import ch9k.configuration.Persistable;
 import ch9k.configuration.PersistentDataObject;
 import ch9k.core.Account;
 import ch9k.core.I18n;
+import ch9k.core.event.AccountEvent;
+import ch9k.core.event.AccountOfflineEvent;
+import ch9k.core.event.AccountOnlineEvent;
 import ch9k.eventpool.Event;
 import ch9k.eventpool.EventFilter;
 import ch9k.eventpool.EventListener;
@@ -28,7 +31,8 @@ import org.jdom.Element;
  * List of al the contacts of the current user.
  * @author Jens Panneel
  */
-public class ContactList extends AbstractListModel implements Persistable, ChangeListener {
+public class ContactList extends AbstractListModel 
+        implements Persistable, ChangeListener, EventListener {
     /**
      * Collection of contacts, a set because you dont want to save
      * the same contact two times.
@@ -74,19 +78,38 @@ public class ContactList extends AbstractListModel implements Persistable, Chang
     }
 
     private void init() {
+        EventPool pool = EventPool.getAppPool();
+        pool.addListener(this, new EventFilter(AccountEvent.class));
+
         listeners.add(new ContactOnlineListener());
-        EventPool.getAppPool().addListener(listeners.get(0),
+        pool.addListener(listeners.get(0),
                 new EventFilter(ContactOnlineEvent.class));
 
         listeners.add(new ContactOfflineListener());
-        EventPool.getAppPool().addListener(listeners.get(1),
+        pool.addListener(listeners.get(1),
                 new EventFilter(ContactOfflineEvent.class));
 
         listeners.add(new ContactRequestListener());
-        EventPool.getAppPool().addListener(listeners.get(2),
+        pool.addListener(listeners.get(2),
                 new EventFilter(ContactRequestEvent.class));
     }
 
+    @Override
+    public void handleEvent(Event event) {
+        if(event instanceof AccountOnlineEvent) {
+            broadcastOnline();
+        }
+        if(event instanceof AccountOfflineEvent) {
+            broadcastOffline();
+            
+            EventPool pool = EventPool.getAppPool();
+            for(EventListener listener : listeners) {
+                pool.removeListener(listener);
+            }
+            pool.removeListener(this);
+        }
+    }
+    
     /**
      * Get a list of all the contacts from the current user
      * @return contacts
@@ -160,7 +183,6 @@ public class ContactList extends AbstractListModel implements Persistable, Chang
         } else {
             EventPool.getAppPool().raiseEvent(new ContactOnlineEvent(contact));            
         }
-
     }
     
     /**
@@ -172,12 +194,12 @@ public class ContactList extends AbstractListModel implements Persistable, Chang
         boolean success = contacts.add(contact);
         if(sendRequest) {
             contact.setRequested();
+            pingContact(contact);
         }
 
         if(success) {
             contact.addChangeListener(this);
             fireListChanged();
-            pingContact(contact);
         }
     }
     
@@ -200,17 +222,20 @@ public class ContactList extends AbstractListModel implements Persistable, Chang
         }
         fireListChanged();
     }
+
+    /**
+     * Sends all contacts that the current account is now online
+     */
+    private void broadcastOnline() {
+        for(Contact contact : contacts) {
+            pingContact(contact);
+        }
+    }
     
     /**
-     * Send all contacts that the current account is offline now
-     * and remove any listeners
+     * Send all contacts that the current account is now offline
      */
-    public void broadcastOffline() {
-        EventPool pool = EventPool.getAppPool();
-        for(EventListener listener : listeners) {
-            pool.removeListener(listener);
-        }
-
+    private void broadcastOffline() {
         for(Contact contact : contacts) {
             if(contact.isOnline()) {
                 EventPool.getAppPool().raiseEvent(new ContactOfflineEvent(contact));
@@ -260,8 +285,7 @@ public class ContactList extends AbstractListModel implements Persistable, Chang
     public void load(PersistentDataObject object) {
         for (Object obj : object.getElement().getChildren()) {
             Element child = (Element) obj;
-            Contact contact = new Contact(new PersistentDataObject(child));
-            addContact(contact);
+            addContact(new Contact(new PersistentDataObject(child)), false);
         }
     }
 

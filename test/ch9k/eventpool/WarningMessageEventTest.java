@@ -12,10 +12,10 @@ public class WarningMessageEventTest {
      */
     @Test
     public void testWarningMessageEvent() {
-        WarningMessageEvent event = new WarningMessageEvent(this,
+        WarningEvent event = new WarningEvent(this,
                 "Too much awesomeness detected.");
         assertSame(this, event.getSource());
         assertEquals("Too much awesomeness detected.",
-                event.getWarningMessage());
+                event.getMessage());
     }
 }

@@ -60,19 +60,19 @@ public class EventPool {
         }
 
         // start the event-processing thread
-        eventProcessor = new Thread(new Runnable() {
+        eventProcessor = new Thread("EventPool-processor") {
             @Override
             public void run() {
-                while(true) {
+                boolean interrupted = false;
+                while(!interrupted || eventQueue.size() > 0) {
                     try {
                         broadcastEvent(eventQueue.take());
                     } catch (InterruptedException ex) {
-                        // do nothing
+                        interrupted = true;
                     }
                 }
             }
-        }, "EventPool-processor");
-        eventProcessor.setDaemon(true);
+        };
         eventProcessor.start();
     }
 
@@ -101,13 +101,6 @@ public class EventPool {
     }
 
     /**
-     * Remove all registered listeners
-     */
-    public void clearListeners() {
-        listeners.clear();
-    }
-
-    /**
      * Send an event through the system
      * @param event
      */
@@ -124,13 +117,6 @@ public class EventPool {
         eventQueue.add(networkEvent);
     }
 
-    /**
-     * Reset all connections
-     */
-    public void reset() {
-        network.clearConnections();
-    }
-
     private void broadcastEvent(Event event) {
         logger.info("Sending " + event.getClass().getName() + " to " + listeners.size()
                 + " listener(s)");
@@ -141,4 +127,27 @@ public class EventPool {
             }
         }
     }
+
+    /**
+     * Close the EventPool after processing all events
+     */
+    public void close() {
+        eventProcessor.interrupt();
+    }
+
+    /**
+     * Reset all connections
+     */
+    public void reset() {
+        network.clearConnections();
+    }
+    
+    /**
+     * Remove all registered listeners
+     * To be used only for testing purposes
+     */
+    public void clearListeners() {
+        listeners.clear();
+    }
+
 }

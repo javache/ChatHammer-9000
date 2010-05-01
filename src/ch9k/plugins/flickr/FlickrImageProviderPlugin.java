@@ -1,6 +1,6 @@
 package ch9k.plugins.flickr;
 
-import ch9k.eventpool.WarningMessageEvent;
+import ch9k.eventpool.WarningEvent;
 import ch9k.plugins.ImageProvider;
 import com.aetrion.flickr.Flickr;
 import com.aetrion.flickr.FlickrException;
@@ -54,15 +54,15 @@ public class FlickrImageProviderPlugin extends ImageProvider {
         try {
             photoList = photosInterface.search(searchParameters, maxResults, 0);
         } catch (IOException exception) {
-            WarningMessageEvent.raiseWarningMessageEvent(this,
+            WarningEvent.raise(this,
                 "Could not search Flickr: " + exception);
             return null;
         } catch (SAXException exception) {
-            WarningMessageEvent.raiseWarningMessageEvent(this,
+            WarningEvent.raise(this,
                 "Could not parse Flickr response: " + exception);
             return null;
         } catch (FlickrException exception) {
-            WarningMessageEvent.raiseWarningMessageEvent(this,
+            WarningEvent.raise(this,
                 "Flickr internal error: " + exception);
             return null;
         }

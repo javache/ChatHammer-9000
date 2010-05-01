@@ -1,6 +1,6 @@
 package ch9k.plugins;
 
-import ch9k.eventpool.WarningMessageEvent;
+import ch9k.eventpool.WarningEvent;
 import java.awt.Image;
 import java.io.File;
 import java.io.Serializable;
@@ -32,7 +32,7 @@ public class ProvidedImage implements Serializable {
             this.url = new URL(url);
             image = null;
         } catch (MalformedURLException exception) {
-            WarningMessageEvent.raiseWarningMessageEvent(this,
+            WarningEvent.raise(this,
                 "Could not get image " + url + ": " + exception);
         }
     }

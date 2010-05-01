@@ -1,7 +1,7 @@
 package ch9k.plugins.carousel;
 
 import ch9k.core.I18n;
-import ch9k.eventpool.WarningMessageEvent;
+import ch9k.eventpool.WarningEvent;
 import ch9k.plugins.ProvidedImage;
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -68,7 +68,7 @@ public class CarouselSaveImageAction
         try {
             ImageIO.write(buffer, extension, selection);
         } catch (IOException exception) {
-            WarningMessageEvent.raiseWarningMessageEvent(this,
+            WarningEvent.raise(this,
                 "Could not save image " + selection);
         }
     }

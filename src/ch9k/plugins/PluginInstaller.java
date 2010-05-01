@@ -1,7 +1,7 @@
 package ch9k.plugins;
 
 import ch9k.configuration.Storage;
-import ch9k.eventpool.WarningMessageEvent;
+import ch9k.eventpool.WarningEvent;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileOutputStream;
@@ -85,14 +85,14 @@ public class PluginInstaller extends URLClassLoader {
             JarFile jar = new JarFile(file);
             manifest = jar.getManifest();
         } catch (IOException exception) {
-            WarningMessageEvent.raiseWarningMessageEvent(this,
+            WarningEvent.raise(this,
                 "Could not register plugin " + file + ": " + exception);
             logger.warn(exception.toString());
         }
 
         /* Retreat, retreat! */
         if(manifest == null) {
-            WarningMessageEvent.raiseWarningMessageEvent(this,
+            WarningEvent.raise(this,
                 "No jar manifest found in " + file);
             return;
         }
@@ -144,7 +144,7 @@ public class PluginInstaller extends URLClassLoader {
             File file = new File(url.getFile());
             installPlugin(connection.getInputStream(), file.getName());
         } catch (IOException exception) {
-            WarningMessageEvent.raiseWarningMessageEvent(this,
+            WarningEvent.raise(this,
                 "Could not get plugin " + url + ": " + exception);
             return;
         }
