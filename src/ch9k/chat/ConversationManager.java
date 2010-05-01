@@ -65,15 +65,20 @@ public class ConversationManager implements EventListener{
         // a conversation has been started
         if(event instanceof NewConversationEvent) {
             NewConversationEvent newConversationEvent = (NewConversationEvent)event;
-            startConversation(newConversationEvent.getContact(),
+            Contact contact = newConversationEvent.getContact();
+
+            // verify that this request comes from a real contact
+            if(contact != null && contact.isOnline()) {
+                startConversation(newConversationEvent.getContact(),
                     !newConversationEvent.isExternal());
+            }
         }
 
         // a conversation has been closed
         if(event instanceof CloseConversationEvent) {
             CloseConversationEvent closeConversationEvent = (CloseConversationEvent)event;
             if(!closeConversationEvent.isExternal()){
-                this.closeConversation(closeConversationEvent.getContact());
+                closeConversation(closeConversationEvent.getContact());
             } else {
                 // TODO what todo then?
             }

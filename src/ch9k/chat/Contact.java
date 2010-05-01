@@ -26,7 +26,6 @@ public class Contact extends Model implements Comparable<Contact>, Persistable {
      * Constructor.
      * @param username The username of the new contact.
      * @param ip The ip of the new contact.
-     * @param blocked Whether or not the new contact was already blocked.
      */
     public Contact(String username, InetAddress ip) {
         this.username = username;
@@ -105,7 +104,7 @@ public class Contact extends Model implements Comparable<Contact>, Persistable {
     public void setOnline(boolean online) {
         if(isOnline() != online) {
             Logger.getLogger(getClass()).info("Contact " + username + " is now "
-                    + (online ? "online" : "offline") + " from " + ip.toString());
+                    + (online ? "online" : "offline") + " from " + ip);
             if(online) {
                 status.setStatus(ContactStatus.Status.ONLINE);
             } else {

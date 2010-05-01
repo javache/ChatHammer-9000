@@ -196,7 +196,9 @@ public class Connection {
      */
     public void close() {
         try {
-            eventSocketHandler.close();
+            if(eventSocketHandler != null) {
+                eventSocketHandler.close();
+            }
             if(dataSocketHandler != null) {
                 dataSocketHandler.close();
             }

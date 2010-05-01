@@ -24,7 +24,7 @@ public class ContactEventFilter extends EventFilter{
     public boolean accept(Event event) {
         if(super.accept(event)) {
             ContactEvent contactEvent = (ContactEvent) event;
-            return contact.equals(contactEvent.getContact());
+            return contact.equals(contactEvent.getContact()) && contact.isOnline();
         }
         return false;
     }

@@ -57,7 +57,6 @@ public class ConversationWindow extends JFrame {
         EventPool.getAppPool().addListener(new EventListener() {
             @Override
             public void handleEvent(Event event) {
-                // TODO: make this a normal method call?
                 RequestPluginContainerEvent requestEvent = (RequestPluginContainerEvent)event;
                 EventPool.getAppPool().raiseEvent(new RequestedPluginContainerEvent(
                     this, conversation, pluginPanel));

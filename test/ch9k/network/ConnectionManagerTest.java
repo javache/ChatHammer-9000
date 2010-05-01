@@ -96,7 +96,7 @@ public class ConnectionManagerTest {
     public void shouldNotThinkConnectionIsLost() throws Exception {
         connectionManager.sendEvent(new TestNetworkEvent("google.be"));
         // wait long enough so the connection can timeout
-        Thread.sleep(600);
+        Thread.sleep(1500);
         assertTrue(onlineListener.online);
     }
     

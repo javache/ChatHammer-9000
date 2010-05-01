@@ -25,6 +25,12 @@ public class ContactEventFilterTest {
         ContactEvent contactStatusEvent1 = new ContactOnlineEvent(contact1);
         ContactEvent contactStatusEvent2 = new ContactOnlineEvent(contact2);
 
+        assertFalse(contactStatusEventFilter.accept(contactStatusEvent1));
+        assertFalse(contactStatusEventFilter.accept(contactStatusEvent2));
+
+        contact1.setOnline(true);
+        contact2.setOnline(true);
+
         assertTrue(contactStatusEventFilter.accept(contactStatusEvent1));
         assertFalse(contactStatusEventFilter.accept(contactStatusEvent2));
     }

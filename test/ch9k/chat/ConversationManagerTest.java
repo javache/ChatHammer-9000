@@ -78,6 +78,7 @@ public class ConversationManagerTest {
         Thread.sleep(100);
 
         Contact remoteContact = new Contact("JPanneel", InetAddress.getLocalHost());
+        remoteContact.setOnline(true);
         ChatApplication.getInstance().getAccount().getContactList().addContact(remoteContact);
 
         ConversationEvent localCreateEvent = new NewConversationEvent(remoteContact);
