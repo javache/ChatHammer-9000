@@ -8,7 +8,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
 import org.apache.log4j.Logger;
 
-public class EventWriter implements Runnable, Closeable{
+public class EventWriter implements Runnable, Closeable {
     /**
      * The ObjectOutputStream to write to;
      */

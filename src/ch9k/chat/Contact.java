@@ -115,8 +115,6 @@ public class Contact extends Model implements Comparable<Contact>, Persistable {
         }
     }
 
-
-
     /**
      * Check whether or not the contact is blocked.
      * @return ip
@@ -152,7 +150,7 @@ public class Contact extends Model implements Comparable<Contact>, Persistable {
      * @param blocked
      */
     public void setBlocked(boolean blocked) {
-        if(isBlocked() != blocked) {
+        if(!status.isRequested() && isBlocked() != blocked) {
             if(blocked) {
                 status.setStatus(ContactStatus.Status.BLOCKED);
                 EventPool.getAppPool().raiseEvent(new ContactOfflineEvent(this));

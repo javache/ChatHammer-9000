@@ -52,8 +52,13 @@ public class SocketHandler implements ErrorHandler, EventProcessor {
         ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
         reader = new EventReader(in, pool, this, this);
 
-        new Thread(reader, threadName + "-reader").start();
-        new Thread(writer, threadName + "-writer").start();
+        Thread readerThread = new Thread(reader, threadName + "-reader");
+        readerThread.setDaemon(true);
+        readerThread.start();
+        
+        Thread writerThread = new Thread(writer, threadName + "-writer");
+        writerThread.setDaemon(true);
+        writerThread.start();
     }
 
     /**
@@ -63,8 +68,7 @@ public class SocketHandler implements ErrorHandler, EventProcessor {
         /* TODO throw appropriate event */
         try {
             close();
-        } catch (IOException e) {
-        }
+        } catch (IOException e) {}
         
         connection.socketHandlerClosed(this);
     }

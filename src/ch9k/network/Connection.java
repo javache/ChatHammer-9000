@@ -157,7 +157,7 @@ public class Connection {
                     socket.connect(new InetSocketAddress(target, DEFAULT_PORT),
                             SOCKET_CONNECT_TIMEOUT);
                     socket.setKeepAlive(true);
-                    dataSocketHandler = new SocketHandler(socket,dataQueue,pool,Connection.this);                    
+                    dataSocketHandler = new SocketHandler(socket, dataQueue, pool, Connection.this);
                 } catch (IOException ex) {
                     logger.warn(ex.toString());
                 }
@@ -201,9 +201,10 @@ public class Connection {
     /**
      * TODO make this a proper hasConnection
      * will return true for the time being
+     * @return connected
      */
     public synchronized boolean hasConnection() {
-        return true;
+        throw new RuntimeException("hasConnection not implemented");
     }
 
     /**

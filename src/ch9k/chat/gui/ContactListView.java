@@ -79,9 +79,9 @@ public class ContactListView extends JPanel {
         public ContactListCellRenderer() {
             setOpaque(true);
 
-            icon = new StatusIcon(14, true);
+            icon = new StatusIcon(13, true);
             setIcon(icon);
-            setFont(getFont().deriveFont(14f));
+            setFont(getFont().deriveFont(13f));
             setBorder(BorderFactory.createEmptyBorder(5, 9, 5, 0));
         }
 
