@@ -160,7 +160,7 @@ public class ChatApplication implements EventListener {
         StatusEvent statusEvent = (StatusEvent)event;
         if(statusEvent instanceof WarningEvent) {
             // TODO: show something
-            System.err.println(statusEvent.getMessage());
+            System.err.println("WARNING: " + statusEvent.getMessage());
         } else {
             appWindow.setStatus(statusEvent.getMessage(), statusEvent.isAutoFade());
         }

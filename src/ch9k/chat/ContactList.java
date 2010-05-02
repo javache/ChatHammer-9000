@@ -129,16 +129,16 @@ public class ContactList extends AbstractListModel
                     !contact.isIgnored() && !contact.isBlocked()) {
                 if(!contact.isOnline()) {
                     EventPool.getAppPool().raiseEvent(new ContactOnlineEvent(contact));
-                }
-                
-                /* keep in mind here that this will set the state to online
-                 * so in essence this will also handle responses 
-                 * from friendrequests 
-                 */
-                contact.setOnline(true);
-                onlineHash.put(onlineEvent.getSource(), contact);
+                    
+                    /* keep in mind here that this will set the state to online
+                     * so in essence this will also handle responses
+                     * from friendrequests
+                     */
+                    contact.setOnline(true);
+                    onlineHash.put(onlineEvent.getSource(), contact);
 
-                fireListChanged();    
+                    fireListChanged();
+                }
             }
         }
     }
@@ -241,10 +241,8 @@ public class ContactList extends AbstractListModel
      * Send all contacts that the current account is now offline
      */
     private void broadcastOffline() {
-        for(Contact contact : contacts) {
-            if(contact.isOnline()) {
-                EventPool.getAppPool().raiseEvent(new ContactOfflineEvent(contact));
-            }
+        for(Contact contact : onlineHash.values()) {
+            EventPool.getAppPool().raiseEvent(new ContactOfflineEvent(contact));
         }
     }
 

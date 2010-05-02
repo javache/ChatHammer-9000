@@ -31,33 +31,40 @@ public class AddContactController {
 
    public boolean addContact(String username, String inetAddress) {
         InetAddress ip = null;
-        boolean hasErrors = true;
+        boolean hasErrors = false;
+
+        ContactList list = ChatApplication.getInstance().
+            getAccount().getContactList();
 
         // do some validation
         if(username.isEmpty() || inetAddress.isEmpty()) {
             view.setError(I18n.get("ch9k.core", "error_fill_all_fields"));
-        } else {
-            try {
-                ip = InetAddress.getByName(inetAddress);
-                if(InetAddress.getLocalHost().equals(ip)) {
-                    view.setError(I18n.get("ch9k.chat", "error_own_ip"));
-                } else {
-                    hasErrors = false;
-                }
-            } catch(UnknownHostException ex) {
-                view.setError(I18n.get("ch9k.chat", "error_invalid_ip"));
-            }
-        }
-
-        ContactList list = ChatApplication.getInstance().
-                getAccount().getContactList();
-        if(!hasErrors && list.getContact(ip, username) != null) {
-            list.addContact(new Contact(username, ip), true);
-        } else {
             hasErrors = true;
-            view.setError(I18n.get("ch9k.chat", "error_contact_already_added"));
         }
 
-        return !hasErrors;
+        try {
+            ip = InetAddress.getByName(inetAddress);
+            if(InetAddress.getLocalHost().equals(ip)) {
+                System.err.println("Own ip fagot");
+                view.setError(I18n.get("ch9k.chat", "error_own_ip"));
+                hasErrors = true;
+            }
+        } catch(UnknownHostException ex) {
+            view.setError(I18n.get("ch9k.chat", "error_invalid_ip"));
+            hasErrors = true;
+        }
+
+
+        if(list.getContact(ip, username) != null) {
+            view.setError(I18n.get("ch9k.chat", "error_contact_already_added"));
+            hasErrors = true;
+        }
+
+        if(!hasErrors) {
+            list.addContact(new Contact(username, ip), true);
+            return true;
+        } else {
+            return false;
+        }
    }
 }
