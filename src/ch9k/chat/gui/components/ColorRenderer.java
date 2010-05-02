@@ -20,6 +20,15 @@ public class ColorRenderer extends JLabel implements ListCellRenderer {
         setOpaque(true);
     }
 
+    /**
+     * Needs to be empty, otherwise JComboBox won't show the selected color
+     * @param color
+     */
+    @Override
+    public void setBackground(Color color){
+
+    }
+
     @Override
     public Component getListCellRendererComponent(JList list, Object color,
             int index, boolean isSelected, boolean cellHasFocus) {
