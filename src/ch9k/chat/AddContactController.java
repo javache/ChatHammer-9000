@@ -49,11 +49,12 @@ public class AddContactController {
             }
         }
 
-        // TODO check if contact already exists
-
-        if(!hasErrors) {
-            ContactList list = ChatApplication.getInstance().getAccount().getContactList();
+        ContactList list = ChatApplication.getInstance().
+                getAccount().getContactList();
+        if(!hasErrors && list.getContact(ip, username) != null) {
             list.addContact(new Contact(username, ip), true);
+        } else {
+            view.setError(I18n.get("ch9k.chat", "error_contact_already_added"));
         }
 
         return !hasErrors;
