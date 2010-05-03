@@ -170,7 +170,7 @@ public class ContactList extends AbstractListModel
             UserDisconnectedEvent event = (UserDisconnectedEvent)ev;
             Contact contact = onlineHash.remove(event.getInetAddress());
             if(contact != null) {
-                contact.setOnline(false);
+                EventPool.getAppPool().raiseEvent(new ContactOfflineEvent(contact));
             }
         }
         
