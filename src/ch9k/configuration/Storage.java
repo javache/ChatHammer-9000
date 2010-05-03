@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map.Entry;
+import org.apache.log4j.Logger;
 import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
@@ -68,6 +69,8 @@ public class Storage {
      * Saves all the Persistables in their current state to the user's HD
      */
     public void save() {
+        Logger.getLogger(getClass()).info("Saving configuration file");
+
         // Initiate the XML
         Element root = new Element("configuration");
         root.setAttribute("last-updated", new Date().toString());

@@ -48,10 +48,12 @@ public class ChatApplication implements EventListener {
 
         appWindow.addWindowListener(new WindowAdapter() {
             public void windowClosed(WindowEvent e) {
-                if(configuration != null) {
-                    logoff(false);
-                }
-                EventPool.getAppPool().close();
+                exit();
+            }
+        });
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+            public void run() {
+                exit();
             }
         });
 
@@ -103,14 +105,20 @@ public class ChatApplication implements EventListener {
         }).start();
     }
 
+    public void exit() {
+        if(configuration != null) {
+            logoff(false);
+        }
+        EventPool.getAppPool().close();
+    }
+
     /**
      * Logoff the current account
      * @param showLogin
      */
     public void logoff(boolean showLogin) {
-        EventPool.getAppPool().raiseEvent(new AccountOfflineEvent());
-
         configuration.save();
+        EventPool.getAppPool().raiseEvent(new AccountOfflineEvent());
         configuration = null;
 
         if(showLogin) {

@@ -134,6 +134,7 @@ public class EventPool {
 
     /**
      * Close the EventPool after processing all events
+     * @throws PoolsClosedException
      */
     public void close() {
         eventProcessor.interrupt();
@@ -153,5 +154,4 @@ public class EventPool {
     public void clearListeners() {
         listeners.clear();
     }
-
 }
