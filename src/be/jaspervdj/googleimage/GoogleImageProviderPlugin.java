@@ -1,5 +1,6 @@
 package be.jaspervdj.googleimage;
 
+import ch9k.chat.Conversation;
 import ch9k.plugins.ImageProvider;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -36,6 +37,14 @@ public class GoogleImageProviderPlugin extends ImageProvider {
     private final String API_KEY =
             "ABQIAAAAs8RaJYu0ZebpBO6jB93ADhTsxjHa7uN5E720o7nIY50" +
             "-3t3KCxQI3dDybveQylpIWU1JS9e16BZIiQ";
+
+    /**
+     * Constructor.
+     * @param conversation The relevant conversation.
+     */
+    public GoogleImageProviderPlugin(Conversation conversation) {
+        super(conversation);
+    }
 
     @Override
     public String[] getImageUrls(String text, int maxResults) {
