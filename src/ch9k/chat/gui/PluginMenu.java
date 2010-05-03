@@ -43,7 +43,7 @@ public class PluginMenu extends JMenu
     /**
      * The plugin manager.
      */
-    public PluginManager manager;
+    private PluginManager manager;
 
     /**
      * Constructor.
@@ -54,8 +54,7 @@ public class PluginMenu extends JMenu
         this.conversation = conversation;
         itemMap = new HashMap<String, JCheckBoxMenuItem>();
 
-        // manager = ChatApplication.getInstance().getPluginManager();
-        manager = new PluginManager();
+        manager = ChatApplication.getInstance().getPluginManager();
 
         /* Add buttons for the available plugins. */
         buildMenu();
@@ -146,31 +145,5 @@ public class PluginMenu extends JMenu
         if(item.getState() != event.isPluginEnabled()) {
             item.setState(event.isPluginEnabled());
         }
-    }
-
-    /**
-     * Quick and dirty testing method.
-     * TODO: remove.
-     */
-    public static void main(String[] args) throws Exception {
-        Conversation conversation = new Conversation(
-                new Contact("Javache", InetAddress.getByName("thinkjavache.be")),
-                true);
-        JFrame frame = new JFrame("PluginMenu test.");
-        
-        JMenuBar bar = new JMenuBar();
-        PluginMenu menu = new PluginMenu(conversation);
-        bar.add(menu);
-
-        frame.setJMenuBar(bar);
-
-        frame.setSize(new Dimension(400, 300));
-        frame.pack();
-        frame.setVisible(true);
-
-        Thread.sleep(5000);
-
-        menu.manager.enablePlugin(conversation,
-                "ch9k.plugins.liteanalyzer.LiteTextAnalyzerPlugin");
     }
 }
