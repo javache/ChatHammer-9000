@@ -7,12 +7,12 @@ import java.awt.Container;
  *
  * @author Jens Panneel
  */
-public class RequestedPluginContainerEvent extends LocalConversationEvent {
+public class RequestedPluginContainerEvent extends ConversationEvent {
     private Container pluginContainer;
 
-    public RequestedPluginContainerEvent(Object source,
+    public RequestedPluginContainerEvent(
             Conversation conversation, Container pluginContainer) {
-        super(source, conversation);
+        super(conversation);
         this.pluginContainer = pluginContainer;
     }
 

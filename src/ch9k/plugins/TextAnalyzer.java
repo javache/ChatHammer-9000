@@ -96,9 +96,9 @@ public abstract class TextAnalyzer extends AbstractPlugin
                 new ConversationSubject(getConversation(), result);
 
         /* Throw the new event. */ 
-        Event subjectEvent =
+        NewConversationSubjectEvent subjectEvent =
                 new NewConversationSubjectEvent(getConversation(), subject);
-        EventPool.getAppPool().raiseEvent(subjectEvent);
+        EventPool.getAppPool().raiseNetworkEvent(subjectEvent);
     }
 
     /**
