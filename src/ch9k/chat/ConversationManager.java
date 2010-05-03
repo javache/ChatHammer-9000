@@ -9,6 +9,7 @@ import ch9k.eventpool.EventFilter;
 import ch9k.eventpool.EventListener;
 import ch9k.eventpool.EventPool;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -48,7 +49,7 @@ public class ConversationManager implements EventListener{
 
     /**
      * Close the conversation with the given contact
-     * @param contact The contact you want to stop chatting with
+     * @param conversation The conversation to close
      */
     public void closeConversation(Conversation conversation) {
         conversation.close();
@@ -56,8 +57,11 @@ public class ConversationManager implements EventListener{
     }
 
     public void clear() {
-        for(Conversation conversation : conversations.values()) {
-            closeConversation(conversation);
+        Iterator<Conversation> it = conversations.values().iterator();
+        while(it.hasNext()) {
+            Conversation conversation = it.next();
+            conversation.close();
+            it.remove();
         }
     }
 

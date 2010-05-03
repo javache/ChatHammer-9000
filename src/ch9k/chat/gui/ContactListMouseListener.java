@@ -2,6 +2,7 @@ package ch9k.chat.gui;
 
 import ch9k.chat.Contact;
 import ch9k.chat.gui.actions.ContactBlockAction;
+import ch9k.chat.gui.actions.ContactDeleteAction;
 import ch9k.chat.gui.actions.StartConversationAction;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -53,6 +54,7 @@ public class ContactListMouseListener extends MouseAdapter {
         public ContactListPopupMenu(Contact contact) {
             add(new StartConversationAction(contact));
             add(new ContactBlockAction(contact));
+            add(new ContactDeleteAction(contact));
         }
     }
 }

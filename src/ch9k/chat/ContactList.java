@@ -15,7 +15,6 @@ import ch9k.eventpool.EventFilter;
 import ch9k.eventpool.EventListener;
 import ch9k.eventpool.EventPool;
 import ch9k.network.event.UserDisconnectedEvent;
-import ch9k.network.event.UserDisconnectedEvent;
 import java.awt.EventQueue;
 import java.net.InetAddress;
 import java.util.ArrayList;
@@ -240,10 +239,11 @@ public class ContactList extends AbstractListModel
      * @param contact
      */
     public void removeContact(Contact contact) {
-        contacts.remove(contact);
         if(contact.isOnline()) {
+            EventPool.getAppPool().raiseNetworkEvent(new ContactOfflineEvent(contact));
             onlineHash.remove(contact.getIp());
         }
+        contacts.remove(contact);
         fireListChanged();
     }
 
