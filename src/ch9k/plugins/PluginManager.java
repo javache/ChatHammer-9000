@@ -104,8 +104,9 @@ public class PluginManager extends Model implements EventListener {
     public void enablePlugin(Conversation conversation, String name) {
         if(enable(conversation, name)) {
             /* Throw an event. */
-            Event event = new PluginChangeEvent(conversation, name, true);
-            EventPool.getAppPool().raiseEvent(event);
+            PluginChangeEvent event =
+                    new PluginChangeEvent(conversation, name, true);
+            EventPool.getAppPool().raiseNetworkEvent(event);
         }
     }
 
@@ -172,8 +173,9 @@ public class PluginManager extends Model implements EventListener {
     public void disablePlugin(Conversation conversation, String name) {
         if(disable(conversation, name)) {
             /* Throw an event. */
-            Event event = new PluginChangeEvent(conversation, name, false);
-            EventPool.getAppPool().raiseEvent(event);
+            PluginChangeEvent event =
+                    new PluginChangeEvent(conversation, name, false);
+            EventPool.getAppPool().raiseNetworkEvent(event);
         }
     }
 
