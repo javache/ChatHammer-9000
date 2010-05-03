@@ -50,12 +50,15 @@ public class ConversationManager implements EventListener{
      * Close the conversation with the given contact
      * @param contact The contact you want to stop chatting with
      */
-    public void closeConversation(Contact contact) {
-        conversations.remove(contact);
+    public void closeConversation(Conversation conversation) {
+        conversation.close();
+        conversations.remove(conversation.getContact());
     }
 
     public void clear() {
-        conversations.clear();
+        for(Conversation conversation : conversations.values()) {
+            closeConversation(conversation);
+        }
     }
 
     /**
@@ -85,7 +88,7 @@ public class ConversationManager implements EventListener{
         if(event instanceof CloseConversationEvent) {
             CloseConversationEvent closeConversationEvent = (CloseConversationEvent)event;
             if(!closeConversationEvent.isExternal()){
-                closeConversation(closeConversationEvent.getContact());
+                closeConversation(closeConversationEvent.getConversation());
             } else {
                 // TODO what todo then?
             }
