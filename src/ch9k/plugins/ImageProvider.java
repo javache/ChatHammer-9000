@@ -59,6 +59,11 @@ public abstract class ImageProvider extends AbstractPlugin
     public void handleEvent(Event e) {
         NewConversationSubjectEvent event = (NewConversationSubjectEvent) e;
 
+        /* Only the one who initted the conversation should send images. */
+        if(!getConversation().isInitiatedByMe()) {
+            return;
+        }
+
         /* Construct a new text to search for by appending subjects. */
         ConversationSubject subject = event.getConversationSubject();
         String[] subjects = subject.getSubjects();

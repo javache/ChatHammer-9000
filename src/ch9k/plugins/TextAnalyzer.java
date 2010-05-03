@@ -89,6 +89,11 @@ public abstract class TextAnalyzer extends AbstractPlugin
     public void handleEvent(Event e) {
         NewChatMessageEvent event = (NewChatMessageEvent) e;
 
+        /* Only the one who initted the conversation should send subjects. */
+        if(!getConversation().isInitiatedByMe()) {
+            return;
+        }
+
         /* Get the raw text from the messages. */
         ChatMessage[] chatMessages =
                 getConversation().getMessages(getMaxNumberOfMessages());
