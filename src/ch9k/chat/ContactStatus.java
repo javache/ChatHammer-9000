@@ -2,9 +2,10 @@ package ch9k.chat;
 
 import ch9k.configuration.Persistable;
 import ch9k.configuration.PersistentDataObject;
+import java.io.Serializable;
 import org.jdom.Element;
 
-public class ContactStatus implements Persistable {
+public class ContactStatus implements Persistable, Serializable {
     public enum Status {
         ONLINE,
         OFFLINE,

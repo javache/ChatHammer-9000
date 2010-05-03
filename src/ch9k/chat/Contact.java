@@ -6,6 +6,7 @@ import ch9k.configuration.Persistable;
 import ch9k.configuration.PersistentDataObject;
 import ch9k.core.Model;
 import ch9k.eventpool.EventPool;
+import java.io.Serializable;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import org.apache.log4j.Logger;
@@ -16,7 +17,8 @@ import org.jdom.Element;
  * This holds the contacts ip, username, status, and knows whether a contact is online or offline and blocked or not.
  * @author Jens Panneel
  */
-public class Contact extends Model implements Comparable<Contact>, Persistable {
+public class Contact extends Model
+        implements Comparable<Contact>, Persistable, Serializable {
     private InetAddress ip;
     private String username;
     private ContactStatus status;
