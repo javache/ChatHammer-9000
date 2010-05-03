@@ -155,8 +155,7 @@ public class ContactList extends AbstractListModel
             ContactOfflineEvent offlineEvent = (ContactOfflineEvent)event;
             Contact contact = offlineEvent.getContact();
             /* all this has to be true, otherwise we just have to ignore */
-            if(offlineEvent.isExternal() && contact != null  &&
-                    !contact.isIgnored() && !contact.isBlocked()) {
+            if(contact != null  && !contact.isIgnored() && !contact.isBlocked()) {
                 contact.setOnline(false);
                 onlineHash.remove(offlineEvent.getSource());
             }
