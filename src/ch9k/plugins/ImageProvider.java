@@ -14,19 +14,25 @@ import ch9k.plugins.event.NewProvidedImageEvent;
  * Class abstracting image providing.
  * @author Jasper Van der Jeugt
  */
-public abstract class ImageProvider extends AbstractPlugin
+public abstract class ImageProvider extends AbstractPluginInstance
         implements EventListener {
+    /**
+     * Constructor.
+     * @param conversation Conversation to provide images for.
+     */
+    public ImageProvider(Conversation conversation) {
+        super(conversation);
+    }
+     
     @Override
-    public void enablePlugin(Conversation conversation) {
-        super.enablePlugin(conversation);
+    public void enablePluginInstance() {
         EventFilter filter = new ConversationEventFilter(
-                NewConversationSubjectEvent.class, conversation);
+                NewConversationSubjectEvent.class, getConversation());
         EventPool.getAppPool().addListener(this, filter);
     }
 
     @Override
-    public void disablePlugin() {
-        super.disablePlugin();
+    public void disablePluginInstance() {
         EventPool.getAppPool().removeListener(this);
     }
 

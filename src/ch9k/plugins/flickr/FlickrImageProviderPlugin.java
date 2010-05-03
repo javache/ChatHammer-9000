@@ -1,5 +1,6 @@
 package ch9k.plugins.flickr;
 
+import ch9k.chat.Conversation;
 import ch9k.eventpool.WarningEvent;
 import ch9k.plugins.ImageProvider;
 import com.aetrion.flickr.Flickr;
@@ -35,8 +36,10 @@ public class FlickrImageProviderPlugin extends ImageProvider {
 
     /**
      * Constructor.
+     * @param conversation Conversation to provide images for.
      */
-    public FlickrImageProviderPlugin() {
+    public FlickrImageProviderPlugin(Conversation conversation) {
+        super(conversation);
         flickr = new Flickr(API_KEY);
     }
 

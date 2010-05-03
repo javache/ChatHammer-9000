@@ -116,11 +116,11 @@ public class PluginMenu extends JMenu
         JCheckBoxMenuItem item = itemMap.get(plugin);
 
         /* Enable the plugin. */
-        if(manager.isEnabled(conversation, plugin)) {
-            manager.disablePlugin(conversation, plugin);
+        if(manager.isEnabled(plugin, conversation)) {
+            manager.disablePlugin(plugin, conversation);
         /* Disable the plugin. */
         } else {
-            manager.enablePlugin(conversation, plugin);
+            manager.enablePlugin(plugin, conversation);
         }
     }
 

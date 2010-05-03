@@ -9,7 +9,7 @@ import ch9k.eventpool.Event;
 import ch9k.eventpool.EventFilter;
 import ch9k.eventpool.EventListener;
 import ch9k.eventpool.EventPool;
-import ch9k.plugins.AbstractPlugin;
+import ch9k.plugins.AbstractPluginInstance;
 import ch9k.plugins.flickr.FlickrImageProviderPlugin;
 import java.awt.GridLayout;
 import java.awt.Container;
@@ -19,7 +19,8 @@ import javax.swing.JFrame;
 /**
  * Plugin for a standard image carousel.
  */
-public class CarouselPlugin extends AbstractPlugin implements EventListener {
+public class CarouselPlugin
+        extends AbstractPluginInstance implements EventListener {
     /**
      * The container that we get from the system.
      */
@@ -35,28 +36,32 @@ public class CarouselPlugin extends AbstractPlugin implements EventListener {
      */
     public CarouselImageModel model;
 
-    @Override
-    public void enablePlugin(Conversation conversation) {
-        super.enablePlugin(conversation);
-
+    /**
+     * Constructor.
+     * @param conversation Conversation to display carousel for.
+     */
+    public CarouselPlugin(Conversation conversation) {
+        super(conversation);
         /* We will asynchronously receive a container later. */
         this.container = null;
+    }
 
+    @Override
+    public void enablePluginInstance() {
         /* First, register this plugin as listener so it can receive a container
          * later. */
         EventFilter filter = new ConversationEventFilter(
-                RequestedPluginContainerEvent.class, conversation);
+                RequestedPluginContainerEvent.class, getConversation());
         EventPool.getAppPool().addListener(this, filter);
 
         /* Asyncrhonously request a panel for this plugin. */
-        Event event = new RequestPluginContainerEvent(conversation);
+        Event event = new RequestPluginContainerEvent(getConversation());
         EventPool.getAppPool().raiseEvent(event);
     }
 
     @Override
-    public void disablePlugin() {
+    public void disablePluginInstance() {
         /* Disable the plugin. */
-        super.disablePlugin();
         EventPool.getAppPool().removeListener(this);
         panel.disablePlugin();
 
@@ -88,31 +93,5 @@ public class CarouselPlugin extends AbstractPlugin implements EventListener {
 
         /* Redraw the container. */
         container.validate();
-    }
-
-    public static void main(String[] args) throws Exception {
-        JFrame frame = new JFrame();
-        Contact contact = new Contact("JPanneel",
-                InetAddress.getByName("google.be"));
-        Conversation conversation = new Conversation(contact, true);
-        CarouselPlugin plugin = new CarouselPlugin();
-        plugin.enablePlugin(conversation);
-
-        //plugin.onReceivePanel(frame.getContentPane());
-        Event event = new RequestedPluginContainerEvent(conversation,
-                frame.getContentPane());
-        EventPool.getAppPool().raiseEvent(event);
-
-        frame.pack();
-        frame.setTitle("Carousel test.");
-        frame.setVisible(true);
-
-        FlickrImageProviderPlugin flickr = new FlickrImageProviderPlugin();
-        flickr.enablePlugin(conversation);
-        flickr.sendNewImageEvent("lolcat");
-        flickr.sendNewImageEvent("fire");
-        flickr.sendNewImageEvent("Bagger 288");
-        flickr.sendNewImageEvent("test");
-        flickr.sendNewImageEvent("jailbait");
     }
 }

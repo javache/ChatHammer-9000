@@ -25,7 +25,7 @@ import org.apache.log4j.Logger;
  * Abstract TextAnalyzer class.
  * @author Jasper Van der Jeugt
  */
-public abstract class TextAnalyzer extends AbstractPlugin
+public abstract class TextAnalyzer extends AbstractPluginInstance
         implements EventListener {
     /**
      * I accidentaly your logger
@@ -71,17 +71,23 @@ public abstract class TextAnalyzer extends AbstractPlugin
         }
     }
 
+    /**
+     * Constructor.
+     * @param conversation Conversation to analyze.
+     */
+    public TextAnalyzer(Conversation conversation) {
+        super(conversation);
+    }
+
     @Override
-    public void enablePlugin(Conversation conversation) {
-        super.enablePlugin(conversation);
+    public void enablePluginInstance() {
         EventFilter filter = new ConversationEventFilter(
-                NewChatMessageEvent.class, conversation);
+                NewChatMessageEvent.class, getConversation());
         EventPool.getAppPool().addListener(this, filter);
     }
 
     @Override
-    public void disablePlugin() {
-        super.disablePlugin();
+    public void disablePluginInstance() {
         EventPool.getAppPool().removeListener(this);
     }
 

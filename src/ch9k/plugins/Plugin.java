@@ -8,13 +8,20 @@ import ch9k.chat.Conversation;
  */
 public interface Plugin {
     /**
-     * Start this plugin by binding it to a conversation.
+     * Check if the plugin is enabled for a certain conversation.
+     * @param conversation Conversation to check for.
+     * @return If this plugin is enabled for the given conversation.
+     */
+    public boolean isEnabled(Conversation conversation);
+
+    /**
+     * Start a plugin for a conversation.
      * @param conversation Conversation to enable this plugin for.
      */
     void enablePlugin(Conversation conversation);
 
     /**
-     * Stop this plugin by unbinding it from it's conversation.
+     * Stop a plugin for a conversation.
      */
-    void disablePlugin();
+    void disablePlugin(Conversation conversation);
 }

@@ -9,10 +9,15 @@ import ch9k.plugins.Plugin;
  */
 public class DummyPlugin implements Plugin {
     @Override
+    public boolean isEnabled(Conversation conversation) {
+        return false;
+    }
+
+    @Override
     public void enablePlugin(Conversation conversation) {
     }
 
     @Override
-    public void disablePlugin() {
+    public void disablePlugin(Conversation conversation) {
     }
 }

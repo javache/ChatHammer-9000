@@ -26,20 +26,9 @@ public class PluginManager extends Model implements EventListener {
     private static final Logger logger = Logger.getLogger(PluginManager.class);
 
     /**
-     * We keep, for every conversation, a list of activated plugins by name.
+     * We keep the plugins by name.
      */
-    private Map<Conversation, Set<String>> enabledPlugins;
-
-    /**
-     * In addition, we keep for every conversation the list of actual plugin
-     * instances.
-     */
-    private Map<Conversation, List<Plugin>> plugins;
-
-    /**
-     * A list of available plugins.
-     */
-    private List<String> availablePlugins;
+    private Map<String, Plugin> plugins;
 
     /**
      * A plugin installer.
@@ -50,18 +39,14 @@ public class PluginManager extends Model implements EventListener {
      * Constructor.
      */
     public PluginManager() {
-        enabledPlugins = new HashMap<Conversation, Set<String>>();
-        plugins = new HashMap<Conversation, List<Plugin>>();
-        availablePlugins = new ArrayList<String>();
+        plugins = new HashMap<String, Plugin>();
         installer = new PluginInstaller(this);
 
         /* Some plugins are always available, because they ship with the
          * application. */
-        availablePlugins.add("ch9k.plugins.carousel.CarouselPlugin");
-        availablePlugins.add("ch9k.plugins.flickr.FlickrImageProviderPlugin");
-        availablePlugins.add(
-                "ch9k.plugins.liteanalyzer.LiteTextAnalyzerPlugin");
-
+        addAvailablePlugin("ch9k.plugins.carousel.CarouselPlugin");
+        addAvailablePlugin("ch9k.plugins.flickr.FlickrImageProviderPlugin");
+        addAvailablePlugin("ch9k.plugins.liteanalyzer.LiteTextAnalyzerPlugin");
 
         /* Register as listener. We will listen to remote enable/disable plugin
          * events, so we can synchronize with the plugin manager on the other
@@ -75,69 +60,21 @@ public class PluginManager extends Model implements EventListener {
      * @return A list of available plugins.
      */
     public List<String> getAvailablePlugins() {
-        return availablePlugins;
+        List<String> list = new ArrayList<String>();
+        for(String plugin: plugins.keySet()) {
+            list.add(plugin);
+        }
+
+        return list;
     }
 
     /**
      * Add an available plugin to the list.
      * @param name Class name of the plugin to add.
      */
-    public void addAvailablePlugin(String name) {
-        availablePlugins.add(name);
-        fireStateChanged();
-    }
-
-    /**
-     * Get the list of enabled plugins for a conversation.
-     * @param conversation Conversation to get a plugin list for.
-     * @return The list of enabled plugins.
-     */
-    public Set<String> getEnabledPlugins(Conversation conversation) {
-        return enabledPlugins.get(conversation);
-    }
-
-    /**
-     * Check if a given plugin is enabled for a given conversation.
-     * @param conversation Conversation to check.
-     * @param name Name of the plugin to check.
-     * @return If the given plugin is enabled for the given conversation.
-     */
-    public boolean isEnabled(Conversation conversation, String name) {
-        Set<String> set = getEnabledPlugins(conversation);
-        if(set == null) {
-            return false;
-        } else {
-            return set.contains(name);
-        }
-    }
-
-    /**
-     * Enable a plugin for a given conversation.
-     * @param conversation Conversation to enable the plugin for.
-     * @param name Name of the plugin to load.
-     */
-    public void enablePlugin(Conversation conversation, String name) {
-        if(enable(conversation, name)) {
-            /* Throw an event. */
-            PluginChangeEvent event =
-                    new PluginChangeEvent(conversation, name, true);
-            EventPool.getAppPool().raiseNetworkEvent(event);
-        }
-    }
-
-    /**
-     * Enable a plugin for a given conversation.
-     * @param conversation Conversation to enable the plugin for.
-     * @param name Name of the plugin to load.
-     * @return If the operation was succesful.
-     */
-    private synchronized boolean enable(
-            Conversation conversation, String name) {
-        /* Check that the plugin is not already enabled for the conversation. */
-        Set<String> conversationPlugins = enabledPlugins.get(conversation);
-        if(conversationPlugins != null && conversationPlugins.contains(name)) {
-            return false;
-        }
+    public synchronized void addAvailablePlugin(String name) {
+        /* Check that we don't have it already. */
+        if(plugins.get(name) == null) return;
 
         /* Find the class of the new plugin. */
         Class<?> pluginClass = null;
@@ -150,7 +87,7 @@ public class PluginManager extends Model implements EventListener {
             } catch (ClassNotFoundException e) {
                 /* Should not happen, because we registered it earlier. */
                 logger.warn("Class not found: " + name);
-                return false;
+                return;
             }
         }
 
@@ -160,39 +97,75 @@ public class PluginManager extends Model implements EventListener {
             plugin = (Plugin) pluginClass.newInstance();
         } catch (InstantiationException exception) {
             logger.warn("Could not instantiate " + name + ": " + exception);
-            return false;
+            return;
         } catch (IllegalAccessException exception) {
             logger.warn("Could not access " + name + ": " + exception);
+            return;
+        }
+
+        plugins.put(name, plugin);
+        fireStateChanged();
+    }
+
+    /**
+     * Check if a given plugin is enabled for a given conversation.
+     * @param name Name of the plugin to check.
+     * @param conversation Conversation to check.
+     * @return If the given plugin is enabled for the given conversation.
+     */
+    public boolean isEnabled(String name, Conversation conversation) {
+        Plugin plugin = plugins.get(name);
+        if(plugin == null) {
+            return false;
+        } else {
+            return plugin.isEnabled(conversation);
+        }
+    }
+
+    /**
+     * Enable a plugin for a given conversation.
+     * @param name Name of the plugin to load.
+     * @param conversation Conversation to enable the plugin for.
+     */
+    public void enablePlugin(String name, Conversation conversation) {
+        if(enable(name, conversation)) {
+            /* Throw an event. */
+            PluginChangeEvent event =
+                    new PluginChangeEvent(conversation, name, true);
+            EventPool.getAppPool().raiseNetworkEvent(event);
+        }
+    }
+
+    /**
+     * Enable a plugin for a given conversation.
+     * @param name Name of the plugin to load.
+     * @param conversation Conversation to enable the plugin for.
+     * @return If the operation was succesful.
+     */
+    private synchronized boolean enable(
+            String name, Conversation conversation) {
+        /* Retrieve the plugin. */
+        Plugin plugin = plugins.get(name);
+
+        /* Check that the plugin is not already enabled for the conversation. */
+        if(plugin == null || plugin.isEnabled(conversation)) {
             return false;
         }
 
         /* Couple it with the conversation. */
         plugin.enablePlugin(conversation);
 
-        /* Register plugin. */
-        if(conversationPlugins == null) {
-            conversationPlugins = new HashSet<String>();
-            enabledPlugins.put(conversation, conversationPlugins);
-        }
-
-        if(plugins.get(conversation) == null) {
-            List<Plugin> tmp = new ArrayList<Plugin>();
-            plugins.put(conversation, tmp);
-        }
-
-        conversationPlugins.add(name);
-        plugins.get(conversation).add(plugin); 
-
         return true;
     }
 
     /**
      * Disable a plugin for a given conversation.
-     * @param conversation Conversation to disable the plugin for.
      * @param name Name of the plugin to disable.
+     * @param conversation Conversation to disable the plugin for.
      */
-    public void disablePlugin(Conversation conversation, String name) {
-        if(disable(conversation, name)) {
+    public synchronized void disablePlugin(
+            String name, Conversation conversation) {
+        if(disable(name, conversation)) {
             /* Throw an event. */
             PluginChangeEvent event =
                     new PluginChangeEvent(conversation, name, false);
@@ -202,33 +175,20 @@ public class PluginManager extends Model implements EventListener {
 
     /**
      * Disable a plugin for a given conversation.
-     * @param conversation Conversation to disable the plugin for.
      * @param name Name of the plugin to disable.
+     * @param conversation Conversation to disable the plugin for.
      * @return If the action was succesful.
      */
     private synchronized boolean disable(
-            Conversation conversation, String name) {
-        Set<String> names = enabledPlugins.get(conversation);
-        List<Plugin> instances = plugins.get(conversation);
-        boolean succes = false;
-
-        if(names != null && names.contains(name)) {
-            names.remove(name);
-            Plugin toRemove = null;
-            for(Plugin plugin: instances) {
-                if(plugin.getClass().getName().equals(name)) {
-                    toRemove = plugin;
-                    succes = true;
-                }
-            }
-
-            if(toRemove != null) {
-                toRemove.disablePlugin();
-                instances.remove(toRemove);
-            }
+            String name, Conversation conversation) {
+        Plugin plugin = plugins.get(conversation);
+        if(plugin == null || !plugin.isEnabled(conversation)) {
+            return false;
         }
 
-        return succes;
+        plugin.disablePlugin(conversation);
+
+        return true;
     }
 
     /**
@@ -246,13 +206,13 @@ public class PluginManager extends Model implements EventListener {
         if(event.isPluginEnabled()) {
             /* If the event was external, enable the plugin here as well. */
             if(event.isExternal()) {
-                enable(event.getConversation(), event.getPlugin());
+                enable(event.getPlugin(), event.getConversation());
             }
         /* A plugin was disabled. */
         } else {
             /* If the event was external, disable the plugin here as well. */
             if(event.isExternal()) {
-                disable(event.getConversation(), event.getPlugin());
+                disable(event.getPlugin(), event.getConversation());
             }
         }
     }
