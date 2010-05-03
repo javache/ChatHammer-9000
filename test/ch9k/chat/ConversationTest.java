@@ -58,7 +58,7 @@ public class ConversationTest {
     @Test
     public void testSubject() {
         ConversationSubject conversationSubject = new ConversationSubject(
-                conversation, new String[] { "subject-a", "subject-b" });
+                new String[] { "subject-a", "subject-b" });
         conversation.setSubject(conversationSubject);
         assertEquals(conversationSubject, conversation.getSubject());
     }

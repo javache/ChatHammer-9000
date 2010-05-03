@@ -99,8 +99,7 @@ public abstract class TextAnalyzer extends AbstractPlugin
 
         /* Create a new subject. */
         String[] result = getSubjects(messages);
-        ConversationSubject subject =
-                new ConversationSubject(getConversation(), result);
+        ConversationSubject subject = new ConversationSubject(result);
 
         /* Throw the new event. */ 
         NewConversationSubjectEvent subjectEvent =

@@ -8,7 +8,7 @@ import java.awt.Container;
  * @author Jens Panneel
  */
 public class RequestedPluginContainerEvent extends ConversationEvent {
-    private Container pluginContainer;
+    private transient Container pluginContainer;
 
     public RequestedPluginContainerEvent(
             Conversation conversation, Container pluginContainer) {

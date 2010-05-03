@@ -8,24 +8,14 @@ import java.io.Serializable;
  */
 public class ConversationSubject implements Serializable {
     private String[] subjects;
-    private Conversation conversation;
 
     /**
      * Constructor
      * @param conversation
      * @param subjects
      */
-    public ConversationSubject(Conversation conversation, String[] subjects) {
-        this.conversation = conversation;
+    public ConversationSubject(String[] subjects) {
         this.subjects = subjects;
-    }
-
-    /**
-     * Get the conversation from which this is the subject
-     * @return
-     */
-    public Conversation getConversation() {
-        return conversation;
     }
 
     /**

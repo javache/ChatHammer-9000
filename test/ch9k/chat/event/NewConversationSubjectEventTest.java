@@ -30,7 +30,7 @@ public class NewConversationSubjectEventTest {
         Conversation conversation = new Conversation(contact, true);
         String[] subjects = new String[] {"seks", "stal", "dieren" };
         ConversationSubject conversationSubject =
-                new ConversationSubject(conversation, subjects);
+                new ConversationSubject(subjects);
         NewConversationSubjectEvent newConversationSubjectEvent =
                 new NewConversationSubjectEvent(conversation, conversationSubject);
         assertEquals(conversationSubject,
