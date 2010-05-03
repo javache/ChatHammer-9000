@@ -117,7 +117,7 @@ public class CarouselRecommendationPanel
         final RecommendedImageEvent event = (RecommendedImageEvent) e;
 
         /* Return when we threw this image ourselves. */
-        // if(!event.isExternal()) return;
+        if(!event.isExternal()) return;
 
         /* Add the image to the queue. */
         queue.push(event.getProvidedImage());
