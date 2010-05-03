@@ -119,20 +119,21 @@ public class Conversation extends AbstractListModel implements EventListener {
     }
 
     /**
-     * Get the n last messages as Strings.
+     * Get the last messages.
      * Most recent message will be last in line.
-     * When there arent n messages the size of the returned array will be reduced to the number of messages.
-     * @param n The number of messages to return
-     * @return String[]
+     * When there arent n messages the size of the returned array will be
+     * reduced to the number of messages.
+     * @param n The number of messages to return.
+     * @return The resulting messages.
      */
-    public String[] getMessages(int n) {
+    public ChatMessage[] getMessages(int n) {
         if(n > messages.size()) {
             n = messages.size();
         }
-        String[] result = new String[n];
+        ChatMessage[] result = new ChatMessage[n];
         int size = messages.size();
         for(int i = size - n; i < size; i++){
-            result[i - size + n] = messages.get(i).getText();
+            result[i - size + n] = messages.get(i);
         }
         return result;
     }

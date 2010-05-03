@@ -3,6 +3,8 @@ package ch9k.chat;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Formatter;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Wrapper around a String that represents a chatMessage
@@ -12,6 +14,11 @@ public class ChatMessage implements Comparable<ChatMessage>, Serializable{
     private String text;
     private String author;
     private Date time;
+
+    /**
+     * Filter to strip out HTML.
+     */
+    private static Pattern htmlStripper = Pattern.compile("<[^<]*>");
 
     /**
      * Constructor.
@@ -30,6 +37,15 @@ public class ChatMessage implements Comparable<ChatMessage>, Serializable{
      */
     public String getText() {
         return text;
+    }
+
+    /**
+     * Get the raw text.
+     * @return HTML-stripped text.
+     */
+    public String getRawText() {
+        Matcher matcher = htmlStripper.matcher(text);
+        return matcher.replaceAll("");
     }
 
     /**

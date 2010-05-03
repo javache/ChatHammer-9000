@@ -27,6 +27,21 @@ public class ChatMessageTest {
     }
 
     /**
+     * Test the getRawText method.
+     */
+    @Test
+    public void testGetRawText() {
+        ChatMessage message1 = new ChatMessage("jasper", "<p>foobar</p>");
+        assertEquals("foobar", message1.getRawText());
+
+        ChatMessage message2 = new ChatMessage("jasper", "<script>");
+        assertEquals("", message2.getRawText());
+
+        ChatMessage message3 = new ChatMessage("jasper", "no HTML here");
+        assertEquals("no HTML here", message3.getRawText());
+    }
+
+    /**
      * Test of getAuthor method, of class ChatMessage.
      */
     @Test

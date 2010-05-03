@@ -1,5 +1,6 @@
 package ch9k.plugins;
 
+import ch9k.chat.ChatMessage;
 import ch9k.chat.Conversation;
 import ch9k.chat.ConversationSubject;
 import ch9k.chat.event.ConversationEventFilter;
@@ -88,9 +89,15 @@ public abstract class TextAnalyzer extends AbstractPlugin
     public void handleEvent(Event e) {
         NewChatMessageEvent event = (NewChatMessageEvent) e;
 
-        /* Create a new subject. */
-        String[] messages =
+        /* Get the raw text from the messages. */
+        ChatMessage[] chatMessages =
                 getConversation().getMessages(getMaxNumberOfMessages());
+        String[] messages = new String[chatMessages.length];
+        for(int i = 0; i < messages.length; i++) {
+            messages[i] = chatMessages[i].getRawText();
+        }
+
+        /* Create a new subject. */
         String[] result = getSubjects(messages);
         ConversationSubject subject =
                 new ConversationSubject(getConversation(), result);
