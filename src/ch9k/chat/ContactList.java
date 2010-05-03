@@ -175,6 +175,7 @@ public class ContactList extends AbstractListModel
                             contact.setIgnored();
                         }
                         addContact(contact, false);
+                        pingContact(contact);
                     }
                 });
             }
