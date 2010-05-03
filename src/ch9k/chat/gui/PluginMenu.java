@@ -117,11 +117,11 @@ public class PluginMenu extends JMenu
         JCheckBoxMenuItem item = itemMap.get(plugin);
 
         /* Enable the plugin. */
-        if(item.getState()) {
-            manager.enablePlugin(conversation, plugin);
+        if(manager.isEnabled(conversation, plugin)) {
+            manager.disablePlugin(conversation, plugin);
         /* Disable the plugin. */
         } else {
-            manager.disablePlugin(conversation, plugin);
+            manager.enablePlugin(conversation, plugin);
         }
     }
 
@@ -155,7 +155,7 @@ public class PluginMenu extends JMenu
     public static void main(String[] args) throws Exception {
         Conversation conversation = new Conversation(
                 new Contact("Javache", InetAddress.getByName("thinkjavache.be")),
-                false);
+                true);
         JFrame frame = new JFrame("PluginMenu test.");
         
         JMenuBar bar = new JMenuBar();

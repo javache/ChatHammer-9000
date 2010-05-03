@@ -62,6 +62,8 @@ public class CarouselPlugin extends AbstractPlugin implements EventListener {
 
         /* Remove everything from the container. */
         container.removeAll();
+        container.validate();
+        container.repaint();
         container = null;
     }
 

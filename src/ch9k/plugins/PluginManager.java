@@ -97,6 +97,21 @@ public class PluginManager extends Model implements EventListener {
     }
 
     /**
+     * Check if a given plugin is enabled for a given conversation.
+     * @param conversation Conversation to check.
+     * @param name Name of the plugin to check.
+     * @return If the given plugin is enabled for the given conversation.
+     */
+    public boolean isEnabled(Conversation conversation, String name) {
+        Set<String> set = getEnabledPlugins(conversation);
+        if(set == null) {
+            return false;
+        } else {
+            return set.contains(name);
+        }
+    }
+
+    /**
      * Enable a plugin for a given conversation.
      * @param conversation Conversation to enable the plugin for.
      * @param name Name of the plugin to load.
@@ -116,7 +131,8 @@ public class PluginManager extends Model implements EventListener {
      * @param name Name of the plugin to load.
      * @return If the operation was succesful.
      */
-    private boolean enable(Conversation conversation, String name) {
+    private synchronized boolean enable(
+            Conversation conversation, String name) {
         /* Check that the plugin is not already enabled for the conversation. */
         Set<String> conversationPlugins = enabledPlugins.get(conversation);
         if(conversationPlugins != null && conversationPlugins.contains(name)) {
@@ -156,9 +172,14 @@ public class PluginManager extends Model implements EventListener {
         /* Register plugin. */
         if(conversationPlugins == null) {
             conversationPlugins = new HashSet<String>();
+            enabledPlugins.put(conversation, conversationPlugins);
+        }
+
+        if(plugins.get(conversation) == null) {
             List<Plugin> tmp = new ArrayList<Plugin>();
             plugins.put(conversation, tmp);
         }
+
         conversationPlugins.add(name);
         plugins.get(conversation).add(plugin); 
 
@@ -185,19 +206,25 @@ public class PluginManager extends Model implements EventListener {
      * @param name Name of the plugin to disable.
      * @return If the action was succesful.
      */
-    private boolean disable(Conversation conversation, String name) {
+    private synchronized boolean disable(
+            Conversation conversation, String name) {
         Set<String> names = enabledPlugins.get(conversation);
         List<Plugin> instances = plugins.get(conversation);
         boolean succes = false;
 
         if(names != null && names.contains(name)) {
             names.remove(name);
+            Plugin toRemove = null;
             for(Plugin plugin: instances) {
                 if(plugin.getClass().getName().equals(name)) {
-                    plugin.disablePlugin();
-                    instances.remove(plugin);
+                    toRemove = plugin;
                     succes = true;
                 }
+            }
+
+            if(toRemove != null) {
+                toRemove.disablePlugin();
+                instances.remove(toRemove);
             }
         }
 
