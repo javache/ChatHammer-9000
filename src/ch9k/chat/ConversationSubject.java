@@ -1,10 +1,12 @@
 package ch9k.chat;
 
+import java.io.Serializable;
+
 /**
  * Holds the topics for a certain conversation
  * @author Jens Panneel
  */
-public class ConversationSubject {
+public class ConversationSubject implements Serializable {
     private String[] subjects;
     private Conversation conversation;
 
