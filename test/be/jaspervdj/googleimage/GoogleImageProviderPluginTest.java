@@ -12,6 +12,6 @@ public class GoogleImageProviderPluginTest {
     @Test
     public void testGetImageUrls() throws MalformedURLException {
         ImageProviderTester test = new ImageProviderTester();
-        test.testGetImageUrls(new GoogleImageProviderPlugin());
+        test.testGetImageUrls(new GoogleImageProviderPlugin(null));
     }
 }

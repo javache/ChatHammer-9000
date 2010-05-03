@@ -11,7 +11,7 @@ public class LiteTextAnalyzerPluginTest {
      */
     @Test
     public void testGetSubject() {
-        TextAnalyzer analyzer = new LiteTextAnalyzerPlugin();
+        TextAnalyzer analyzer = new LiteTextAnalyzerPlugin(null);
         String[] messages = {
             "Mushroom Mushroom Mushroom",
             "Badger Badger",
@@ -29,6 +29,6 @@ public class LiteTextAnalyzerPluginTest {
     @Test
     public void testGetFrequencyMap() {
         TextAnalyzerTester tester = new TextAnalyzerTester();
-        tester.testGetFrequencyMap(new LiteTextAnalyzerPlugin());
+        tester.testGetFrequencyMap(new LiteTextAnalyzerPlugin(null));
     }
 }
