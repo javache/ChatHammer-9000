@@ -4,6 +4,7 @@ import ch9k.chat.ChatMessage;
 import ch9k.chat.Conversation;
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.util.Formatter;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
@@ -60,7 +61,9 @@ class ConversationListView extends JScrollPane {
         public Component getListCellRendererComponent(JList list, Object value,
                 int index, boolean isSelected, boolean cellHasFocus) {
             ChatMessage message = (ChatMessage) value;
-            author.setText(message.getAuthor() + ": ");
+            Formatter formatter = new Formatter();
+            formatter.format("<%1$tH:%1$tM>", message.getTime());
+            author.setText(formatter.toString() + " " + message.getAuthor() + ": ");
             text.setText(message.getText());
             return this;
         }
