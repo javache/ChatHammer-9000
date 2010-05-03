@@ -21,6 +21,11 @@ import javax.swing.JFrame;
  */
 public class CarouselPlugin extends AbstractPlugin implements EventListener {
     /**
+     * The container that we get from the system.
+     */
+    private Container container;
+
+    /**
      * The main view for this plugin.
      */
     private CarouselPanel panel;
@@ -33,6 +38,9 @@ public class CarouselPlugin extends AbstractPlugin implements EventListener {
     @Override
     public void enablePlugin(Conversation conversation) {
         super.enablePlugin(conversation);
+
+        /* We will asynchronously receive a container later. */
+        this.container = null;
 
         /* First, register this plugin as listener so it can receive a container
          * later. */
@@ -47,17 +55,25 @@ public class CarouselPlugin extends AbstractPlugin implements EventListener {
 
     @Override
     public void disablePlugin() {
+        /* Disable the plugin. */
         super.disablePlugin();
         EventPool.getAppPool().removeListener(this);
         panel.disablePlugin();
+
+        /* Remove everything from the container. */
+        container.removeAll();
+        container = null;
     }
 
     @Override
     public void handleEvent(Event e) {
         RequestedPluginContainerEvent event = (RequestedPluginContainerEvent) e;
 
+        /* We only need one panel. */
+        if(container != null) return;
+
         /* Okay, we have a panel now, start using it. */
-        Container container = event.getPluginContainer();
+        container = event.getPluginContainer();
 
         /* Clear the container and set a new layout. */
         container.removeAll();
