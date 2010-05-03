@@ -216,12 +216,12 @@ public class ContactList extends AbstractListModel
      */
     public void addContact(Contact contact, boolean sendRequest) {
         boolean success = contacts.add(contact);
-        if(sendRequest) {
-            contact.setRequested();
-            pingContact(contact);
-        }
-
+        
         if(success) {
+            if(sendRequest) {
+                contact.setRequested();
+                pingContact(contact);
+            }
             contact.addChangeListener(this);
             fireListChanged();
         }
