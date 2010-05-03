@@ -1,5 +1,6 @@
 package ch9k.plugins;
 
+import ch9k.core.Model;
 import ch9k.eventpool.WarningEvent;
 import java.awt.Image;
 import java.io.File;
@@ -11,7 +12,7 @@ import javax.swing.ImageIcon;
 /**
  * Image class for images provided by an ImageProvider.
  */
-public class ProvidedImage implements Serializable {
+public class ProvidedImage extends Model implements Serializable {
     /**
      * URL the image was loaded from. Very suited as unique identifier.
      */
@@ -23,6 +24,11 @@ public class ProvidedImage implements Serializable {
     private transient Image image;
 
     /**
+     * If the image has started loading.
+     */
+    private transient boolean loading;
+
+    /**
      * Create a new image.
      * @param url URL for the image.
      */
@@ -31,6 +37,7 @@ public class ProvidedImage implements Serializable {
             /* Create an image, and send it using an event. */
             this.url = new URL(url);
             image = null;
+            loading = false;
         } catch (MalformedURLException exception) {
             WarningEvent.raise(this,
                 "Could not get image " + url + ": " + exception);
@@ -49,11 +56,21 @@ public class ProvidedImage implements Serializable {
      * Get the actual image.
      * @return The actual image.
      */
-    public Image getImage() {
+    public synchronized Image getImage() {
         /* Time to load the image. */
-        if(image == null) {
-            ImageIcon tmp = new ImageIcon(this.url);
-            image = tmp.getImage();
+        if(!loading) {
+            loading = true;
+            Runnable runnable = new Runnable() {
+                @Override
+                public void run() {
+                    ImageIcon tmp = new ImageIcon(url);
+                    image = tmp.getImage();
+                    fireStateChanged();
+                }
+            };
+
+            Thread thread = new Thread(runnable);
+            thread.start();
         }
 
         return image;

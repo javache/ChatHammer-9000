@@ -8,12 +8,15 @@ import java.awt.Insets;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import javax.swing.JPanel;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 /**
  * View showing a single image. This class implements MouseListener for
  * convenience reasons, it doesn't actually do anything.
  */
-public class ImagePanel extends JPanel implements MouseListener {
+public class ImagePanel extends JPanel
+        implements MouseListener, ChangeListener {
     /**
      * If we should fit the image into the view.
      */
@@ -73,8 +76,14 @@ public class ImagePanel extends JPanel implements MouseListener {
      * @param image Image to set.
      */
     public void setProvidedImage(ProvidedImage providedImage) {
+        if(this.providedImage != null) {
+            this.providedImage.removeChangeListener(this);
+        }
+
         this.providedImage = providedImage;
         repaint();
+
+        providedImage.addChangeListener(this);
     }
 
     /**
@@ -157,5 +166,10 @@ public class ImagePanel extends JPanel implements MouseListener {
 
     @Override
     public void mouseReleased(MouseEvent event) {
+    }
+
+    @Override
+    public void stateChanged(ChangeEvent event) {
+        repaint();
     }
 }
