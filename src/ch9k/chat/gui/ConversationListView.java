@@ -2,9 +2,11 @@ package ch9k.chat.gui;
 
 import ch9k.chat.ChatMessage;
 import ch9k.chat.Conversation;
+import java.awt.BorderLayout;
 import java.awt.Component;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ListCellRenderer;
 
@@ -40,13 +42,26 @@ class ConversationListView extends JScrollPane {
     /**
      * Renders a chat message
      */
-    public class ChatMessageListCellRenderer extends JLabel implements ListCellRenderer {
+    public class ChatMessageListCellRenderer extends JPanel implements ListCellRenderer {
+
+        private JLabel author;
+
+        private JLabel text;
+
+        public ChatMessageListCellRenderer() {
+            setLayout(new BorderLayout());
+            author = new JLabel();
+            text = new JLabel();
+            add(author, BorderLayout.WEST);
+            add(text, BorderLayout.CENTER);
+        }
+
         @Override
         public Component getListCellRendererComponent(JList list, Object value,
                 int index, boolean isSelected, boolean cellHasFocus) {
             ChatMessage message = (ChatMessage) value;
-            setText(message.toString());
-            
+            author.setText(message.getAuthor() + ": ");
+            text.setText(message.getText());
             return this;
         }
     }
