@@ -92,7 +92,8 @@ public class GoogleImageProviderPlugin extends ImageProvider {
         URL url;
         try {
             url = new URL("http://ajax.googleapis.com/ajax/services/search/" +
-                "images?start=0&rsz=large&v=1.0&q=" + text);
+                "images?start=0&rsz=large&v=1.0&q=" + text + "&key=" + API_KEY +
+                "&safe=off");
         } catch (MalformedURLException exception) {
             // TODO: Send warning.
             url = null;
