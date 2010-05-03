@@ -58,7 +58,7 @@ public class MessageEditor extends JPanel {
     public void send(){
         if(!editor.getText().trim().isEmpty()){
             ChatMessage message = new ChatMessage(ChatApplication.getInstance().getAccount().getUsername(), editor.getText());
-            EventPool.getAppPool().raiseEvent(new NewChatMessageEvent(conversation,message));
+            EventPool.getAppPool().raiseNetworkEvent(new NewChatMessageEvent(conversation,message));
             
             editor.setText("");
         }

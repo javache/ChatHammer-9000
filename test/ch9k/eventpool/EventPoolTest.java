@@ -13,7 +13,7 @@ public class EventPoolTest {
     }
 
     /**
-     * Test of raiseEvent method, of class EventPool.
+     * Test of raiseNetworkEvent method, of class EventPool.
      * @throws InterruptedException 
      */
     @Test

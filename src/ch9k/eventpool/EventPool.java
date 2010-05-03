@@ -112,7 +112,7 @@ public class EventPool {
      * Send an event through the network and the local pool
      * @param networkEvent
      */
-    public void raiseEvent(NetworkEvent networkEvent) {
+    public void raiseNetworkEvent(NetworkEvent networkEvent) {
         network.sendEvent(networkEvent);
         eventQueue.add(networkEvent);
     }

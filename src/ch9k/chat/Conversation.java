@@ -58,10 +58,12 @@ public class Conversation extends AbstractListModel implements EventListener {
      */
     public void close() {
         EventPool pool = EventPool.getAppPool();
-        pool.raiseEvent(new CloseConversationEvent(contact));
+        pool.raiseNetworkEvent(new CloseConversationEvent(contact));
         pool.removeListener(this);
 
-        window.markAsClosed(true);
+        if(window != null) {
+            window.markAsClosed(true);
+        }
     }
 
     /**

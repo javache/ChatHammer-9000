@@ -128,7 +128,7 @@ public class ContactList extends AbstractListModel
             if(onlineEvent.isExternal() && contact != null &&
                     !contact.isIgnored() && !contact.isBlocked()) {
                 if(!contact.isOnline()) {
-                    EventPool.getAppPool().raiseEvent(new ContactOnlineEvent(contact));
+                    EventPool.getAppPool().raiseNetworkEvent(new ContactOnlineEvent(contact));
                     
                     /* keep in mind here that this will set the state to online
                      * so in essence this will also handle responses
@@ -184,10 +184,10 @@ public class ContactList extends AbstractListModel
     
     private void pingContact(Contact contact) {
         if (contact.isRequested()) {
-            EventPool.getAppPool().raiseEvent(new ContactRequestEvent(
+            EventPool.getAppPool().raiseNetworkEvent(new ContactRequestEvent(
                     contact.getIp(), contact.getUsername(), account.getUsername()));
         } else {
-            EventPool.getAppPool().raiseEvent(new ContactOnlineEvent(contact));            
+            EventPool.getAppPool().raiseNetworkEvent(new ContactOnlineEvent(contact));
         }
     }
     
@@ -243,7 +243,7 @@ public class ContactList extends AbstractListModel
      */
     private void broadcastOffline() {
         for(Contact contact : onlineHash.values()) {
-            EventPool.getAppPool().raiseEvent(new ContactOfflineEvent(contact));
+            EventPool.getAppPool().raiseNetworkEvent(new ContactOfflineEvent(contact));
         }
     }
 

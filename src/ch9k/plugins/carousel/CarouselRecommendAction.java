@@ -44,7 +44,7 @@ public class CarouselRecommendAction
             /* Raise the recommendation. */
             RecommendedImageEvent event = new RecommendedImageEvent(
                     model.getConversation(), image);
-            EventPool.getAppPool().raiseEvent(event);
+            EventPool.getAppPool().raiseNetworkEvent(event);
 
             /* Register our recommendation. */
             model.setRecommended(true);

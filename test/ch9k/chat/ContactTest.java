@@ -173,14 +173,14 @@ public class ContactTest {
         assertFalse(contact.isOnline());
         assertEquals(oldStatus, contact.getStatus());
 
-        eventPool.raiseEvent(contactOnlineEvent);
-        eventPool.raiseEvent(contactStatusChangeEvent);
+        eventPool.raiseNetworkEvent(contactOnlineEvent);
+        eventPool.raiseNetworkEvent(contactStatusChangeEvent);
         Thread.sleep(100);
 
         assertFalse(contact.isOnline());
         assertEquals(oldStatus, contact.getStatus());
 
-        eventPool.raiseEvent(contactOfflineEvent);
+        eventPool.raiseNetworkEvent(contactOfflineEvent);
         Thread.sleep(100);
 
         assertFalse(contact.isOnline());

@@ -24,6 +24,6 @@ public class StartConversationAction extends AbstractAction {
     @Override
     public void actionPerformed(ActionEvent e) {
         NewConversationEvent event = new NewConversationEvent(contact);
-        EventPool.getAppPool().raiseEvent(event);
+        EventPool.getAppPool().raiseNetworkEvent(event);
     }
 }

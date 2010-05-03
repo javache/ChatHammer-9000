@@ -80,7 +80,7 @@ public class ConversationTest {
         assertEquals(0, conversation.getMessages(10).length);
         ChatMessage chatMessage = new ChatMessage("JPanneel", "Hey!");
         NewChatMessageEvent chatMessageEvent = new NewChatMessageEvent(conversation, chatMessage);
-        EventPool.getAppPool().raiseEvent(chatMessageEvent);
+        EventPool.getAppPool().raiseNetworkEvent(chatMessageEvent);
         Thread.sleep(100);
         assertEquals(1, conversation.getMessages(10).length);
     }
@@ -104,7 +104,7 @@ public class ConversationTest {
         EventPool eventPool = EventPool.getAppPool();
 
         for (int i = 0; i < 5; i++) {
-            EventPool.getAppPool().raiseEvent(
+            EventPool.getAppPool().raiseNetworkEvent(
                     new NewChatMessageEvent(conversation, messages[i]));
             Thread.sleep(100);
         }
@@ -115,7 +115,7 @@ public class ConversationTest {
         assertEquals(3, conversation.getMessages(3).length);
         assertEquals("Hoe gaat het met de overkant?", conversation.getMessages(3)[0]);
 
-        EventPool.getAppPool().raiseEvent(
+        EventPool.getAppPool().raiseNetworkEvent(
                     new NewChatMessageEvent(conversation, messages[5]));
         Thread.sleep(100);
         assertEquals(5, conversation.getMessages(5).length);
@@ -215,7 +215,7 @@ public class ConversationTest {
         ConversationEvent localEvent = new NewChatMessageEvent(localConversation, chatMessage);
 
         // raise the event on the local pool, should get sent to remotePool too
-        localPool.raiseEvent(localEvent);
+        localPool.raiseNetworkEvent(localEvent);
         Thread.sleep(100);
 
         // let's check the results!

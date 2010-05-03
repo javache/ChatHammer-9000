@@ -52,7 +52,7 @@ public class EventReader implements Runnable {
                     processor.process(event);
                     logger.info(String.format("Received event %s from %s",
                             event.getClass().getName(), event.getSource()));
-                    pool.raiseEvent((Event)event);
+                    pool.raiseEvent(event);
                 } catch (ClassNotFoundException e) {
                     logger.warn(e.toString());
                 }

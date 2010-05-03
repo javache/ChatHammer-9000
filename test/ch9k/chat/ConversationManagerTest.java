@@ -83,7 +83,7 @@ public class ConversationManagerTest {
 
         ConversationEvent localCreateEvent = new NewConversationEvent(remoteContact);
 
-        localPool.raiseEvent(localCreateEvent);
+        localPool.raiseNetworkEvent(localCreateEvent);
         // wait while the event gets transmitted
         Thread.sleep(1000);
 
@@ -91,6 +91,7 @@ public class ConversationManagerTest {
         assertNotNull(startedConversation);
 
         // this will raise an CloseConversationEvent
+        Thread.sleep(1000);
         startedConversation.close();
         Thread.sleep(200);
 

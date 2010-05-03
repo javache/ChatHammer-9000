@@ -153,10 +153,10 @@ public class Contact extends Model implements Comparable<Contact>, Persistable {
         if(!status.isRequested() && isBlocked() != blocked) {
             if(blocked) {
                 status.setStatus(ContactStatus.Status.BLOCKED);
-                EventPool.getAppPool().raiseEvent(new ContactOfflineEvent(this));
+                EventPool.getAppPool().raiseNetworkEvent(new ContactOfflineEvent(this));
             } else {
                 status.setStatus(ContactStatus.Status.OFFLINE);
-                EventPool.getAppPool().raiseEvent(new ContactOnlineEvent(this));
+                EventPool.getAppPool().raiseNetworkEvent(new ContactOnlineEvent(this));
             }
             fireStateChanged();
         }

@@ -15,15 +15,15 @@ public class DataSocketTest {
         TestListener listener2 = new TestListener();
         EventPool.getAppPool().addListener(listener,new EventFilter(TestDataEvent.class));
         EventPool.getAppPool().addListener(listener2,new EventFilter(TestNetworkEvent.class));
-        EventPool.getAppPool().raiseEvent(new TestDataEvent(InetAddress.getLocalHost()));
+        EventPool.getAppPool().raiseNetworkEvent(new TestDataEvent(InetAddress.getLocalHost()));
 
         Thread.sleep(1000);
         /* we expect 2 because it will be broadcasted locally too */
         assertEquals(2,listener.getCount());
 
         /* also we should be able to just send regular events */
-        EventPool.getAppPool().raiseEvent(new TestNetworkEvent(InetAddress.getLocalHost()));
-        EventPool.getAppPool().raiseEvent(new TestDataEvent(InetAddress.getLocalHost()));
+        EventPool.getAppPool().raiseNetworkEvent(new TestNetworkEvent(InetAddress.getLocalHost()));
+        EventPool.getAppPool().raiseNetworkEvent(new TestDataEvent(InetAddress.getLocalHost()));
         
         Thread.sleep(1000);
         assertEquals(2,listener2.getCount());

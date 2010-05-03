@@ -14,7 +14,7 @@ public class RealLifeTestReceiver {
         public void handleEvent(Event ev) {
             TestNetworkEvent event = (TestNetworkEvent) ev;
             if (event.isExternal()) {
-                EventPool.getAppPool().raiseEvent(new TestNetworkEvent(event.getSource()));
+                EventPool.getAppPool().raiseNetworkEvent(new TestNetworkEvent(event.getSource()));
             }
         }
     }
@@ -32,7 +32,7 @@ public class RealLifeTestReceiver {
                 ContactOnlineEvent onlineEvent = (ContactOnlineEvent) event;
                 Contact remoteContact = new Contact(onlineEvent.getSender(),
                         onlineEvent.getSource());
-                EventPool.getAppPool().raiseEvent(new ContactOnlineEvent(remoteContact));
+                EventPool.getAppPool().raiseNetworkEvent(new ContactOnlineEvent(remoteContact));
             }
         }, new EventFilter(ContactOnlineEvent.class));
 
@@ -42,7 +42,7 @@ public class RealLifeTestReceiver {
                 ContactRequestEvent requestEvent = (ContactRequestEvent) event;
                 Contact remoteContact = new Contact(requestEvent.getRequester(),
                         requestEvent.getSource());
-                EventPool.getAppPool().raiseEvent(new ContactOnlineEvent(remoteContact));
+                EventPool.getAppPool().raiseNetworkEvent(new ContactOnlineEvent(remoteContact));
             }
         }, new EventFilter(ContactRequestEvent.class));
 

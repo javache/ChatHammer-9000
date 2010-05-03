@@ -51,7 +51,7 @@ public abstract class ImageProvider extends AbstractPlugin
             ProvidedImage image = new ProvidedImage(url);
             NewProvidedImageEvent event =
                     new NewProvidedImageEvent(getConversation(), image);
-            EventPool.getAppPool().raiseEvent(event);
+            EventPool.getAppPool().raiseNetworkEvent(event);
         }
     }
 

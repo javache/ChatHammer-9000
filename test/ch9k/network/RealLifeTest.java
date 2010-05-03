@@ -29,7 +29,7 @@ public class RealLifeTest {
         EventPool pool = EventPool.getAppPool();
         TestListener listener = new TestListener();
         pool.addListener(listener,new EventFilter(TestNetworkEvent.class));
-        pool.raiseEvent(new TestNetworkEvent(InetAddress.getByName("zeus.ugent.be")));
+        pool.raiseNetworkEvent(new TestNetworkEvent(InetAddress.getByName("zeus.ugent.be")));
         
         synchronized(this) {
             wait(2000);
