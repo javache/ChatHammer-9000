@@ -177,7 +177,9 @@ public class ConnectionManager {
             } catch (IOException e) {
                 logger.warn(e.toString());
                 pool.raiseEvent(new NetworkConnectionLostEvent());
+                return;
             }
+
             try {
                 // run forever
                 logger.info("Started accepting connections!");
@@ -197,6 +199,7 @@ public class ConnectionManager {
             } catch (IOException ex) {
                 // if this fails it would appear as if nothing ever happened
                 logger.warn(ex.toString());
+                return;
             } 
         }
     }
