@@ -47,6 +47,10 @@ public class FlickrImageProviderPlugin extends ImageProvider {
         PhotosInterface photosInterface = flickr.getPhotosInterface();
         SearchParameters searchParameters = new SearchParameters();
         searchParameters.setText(text);
+
+        /* Turn off safe search. Good defaults FTW. */
+        searchParameters.setSafeSearch(Flickr.SAFETYLEVEL_RESTRICTED);
+
         logger.info("Searching for " + text);
 
         /* Now search for the text. We limit ourselves to maxResuls photos. */
