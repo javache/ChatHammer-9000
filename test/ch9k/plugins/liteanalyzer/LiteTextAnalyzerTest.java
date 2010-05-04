@@ -5,13 +5,13 @@ import ch9k.plugins.TextAnalyzerTester;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class LiteTextAnalyzerPluginTest {    
+public class LiteTextAnalyzerTest {    
     /**
-     * Test of getSubject method, of class LiteTextAnalyzerPlugin.
+     * Test of getSubject method, of class LiteTextAnalyzer.
      */
     @Test
     public void testGetSubject() {
-        TextAnalyzer analyzer = new LiteTextAnalyzerPlugin(null);
+        TextAnalyzer analyzer = new LiteTextAnalyzer(null);
         String[] messages = {
             "Mushroom Mushroom Mushroom",
             "Badger Badger",
@@ -24,11 +24,11 @@ public class LiteTextAnalyzerPluginTest {
     }
 
     /**
-     * Test of getFrequencyMap method, of class LiteTextAnalyzerPlugin.
+     * Test of getFrequencyMap method, of class LiteTextAnalyzer.
      */
     @Test
     public void testGetFrequencyMap() {
         TextAnalyzerTester tester = new TextAnalyzerTester();
-        tester.testGetFrequencyMap(new LiteTextAnalyzerPlugin(null));
+        tester.testGetFrequencyMap(new LiteTextAnalyzer(null));
     }
 }
