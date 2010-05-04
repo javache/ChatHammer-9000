@@ -1,6 +1,5 @@
 package ch9k.chat;
 
-import ch9k.chat.event.CloseConversationEvent;
 import ch9k.chat.event.ConversationEventFilter;
 import ch9k.chat.event.NewChatMessageEvent;
 import ch9k.chat.gui.ConversationWindow;
@@ -60,10 +59,6 @@ public class Conversation extends AbstractListModel implements EventListener {
     public void close() {
         EventPool pool = EventPool.getAppPool();
         pool.removeListener(this);
-
-        if(window != null) {
-            window.markAsClosed(true);
-        }
     }
 
     /**
@@ -112,7 +107,7 @@ public class Conversation extends AbstractListModel implements EventListener {
      */
     private void addMessage(ChatMessage chatMessage) {
         int size = messages.size();
-        if(size == 0 || !chatMessage.equals(messages.get(size-1))){
+        if(size == 0 || !chatMessage.equals(messages.get(size-1))) {
             messages.add(chatMessage);
             fireIntervalAdded(contact, size, size);
         }

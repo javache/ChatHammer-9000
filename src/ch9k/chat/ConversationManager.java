@@ -2,7 +2,9 @@ package ch9k.chat;
 
 import ch9k.chat.event.CloseConversationEvent;
 import ch9k.chat.event.ConversationEvent;
+import ch9k.chat.event.NewChatMessageEvent;
 import ch9k.chat.event.NewConversationEvent;
+import ch9k.core.I18n;
 import ch9k.core.event.AccountLogoffEvent;
 import ch9k.eventpool.Event;
 import ch9k.eventpool.EventFilter;
@@ -56,9 +58,12 @@ public class ConversationManager implements EventListener, Iterable<Conversation
         Logger.getLogger(ConversationManager.class).info(
                 "Closing conversation with " + 
                 conversation.getContact().getUsername());
-        
-        conversation.close();
-        conversations.remove(conversation.getContact());
+
+        // send a system event
+        NewChatMessageEvent systemEvent = new NewChatMessageEvent(
+                conversation, new ChatMessage(null, I18n.get("ch9k.chat",
+                    "contact_closed_conversation")), true);
+        EventPool.getAppPool().raiseEvent(systemEvent);
     }
 
     public void clear() {
@@ -96,10 +101,12 @@ public class ConversationManager implements EventListener, Iterable<Conversation
         // a conversation has been closed
         if(event instanceof CloseConversationEvent) {
             CloseConversationEvent closeConversationEvent = (CloseConversationEvent)event;
-            if(!closeConversationEvent.isExternal()){
-                closeConversation(closeConversationEvent.getConversation());
-            } else {
-                // TODO what todo then?
+            Conversation conversation = closeConversationEvent.getConversation();
+
+            closeConversation(conversation);
+            if(!closeConversationEvent.isExternal()) {
+                conversation.close();
+                conversations.remove(conversation.getContact());
             }
         }
     }

@@ -112,14 +112,4 @@ public class ConversationWindow extends JFrame {
 
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     }
-
-    /**
-     * Mark the conversation as closed
-     * @param closed
-     */
-    public void markAsClosed(boolean closed) {
-        if(closed) {
-            conversationView.notifyClosed();
-        }
-    }
 }

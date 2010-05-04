@@ -31,15 +31,7 @@ class ConversationListView extends JScrollPane {
 
         setViewportView(messages);
     }
-
-    /**
-     * Display a message to notify the user that this
-     * conversation has been closed
-     */
-    public void notifyClosed() {
-        // TODO: do something useful
-    }
-
+    
     /**
      * Renders a chat message
      */
