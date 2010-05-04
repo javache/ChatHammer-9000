@@ -8,9 +8,9 @@ import ch9k.network.event.NetworkConnectionLostEvent;
 import ch9k.network.event.UserDisconnectedEvent;
 import java.io.IOException;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.UnknownHostException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import org.apache.log4j.Logger;
@@ -137,9 +137,35 @@ public class ConnectionManager {
      * it will try to open a connection to google.com
      */
     private boolean checkHeartbeat() {
-        return online;
+        Socket socket = new Socket();
+        try {
+            socket.connect(new InetSocketAddress("google.com", 80), 2000);
+        } catch(IOException ex) {
+            if(online) {
+                signalOffline();
+            }
+            return false;
+        } finally {
+            try {
+                socket.close();
+            } catch(IOException ex) {
+                
+            }
+        }
+        if(!online){
+            signalOnline();
+        }
+        return true;
     }
-    
+
+    private void signalOffline() {
+        EventPool.getAppPool().raiseEvent(new AccountOfflineEvent());
+    }
+
+    private void signalOnline() {
+        EventPool.getAppPool().raiseEvent(new AccountOnlineEvent());
+    }
+
     private class PingAliveThread extends Thread {
 
         private int timeout = 120000;
@@ -148,19 +174,13 @@ public class ConnectionManager {
         public void run() {
             while(true) {
                 try {
-                    InetAddress.getByName("www.google.com");
+                    checkHeartbeat();
                     if(!online) {
-                        online = true;
-                        EventPool.getAppPool().raiseEvent(new AccountOnlineEvent());
+                        timeout = 30000;
+                    } else {
                         timeout = 120000;
                     }
                     Thread.sleep(timeout);
-                } catch (UnknownHostException e) {
-                    if (online) {
-                        online = false;
-                        EventPool.getAppPool().raiseEvent(new AccountOfflineEvent());
-                        timeout = 1000;
-                    }
                 } catch (InterruptedException e) {
                     logger.warn(e.toString());
                 }

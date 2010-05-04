@@ -74,6 +74,8 @@ public class Account extends Model implements Persistable, EventListener {
      */
     public Account(PersistentDataObject data) {
         load(data);
+        EventPool.getAppPool().addListener(this, new EventFilter(AccountOfflineEvent.class));
+        EventPool.getAppPool().addListener(this, new EventFilter(AccountOnlineEvent.class));
     }
 
     /**
