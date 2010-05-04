@@ -123,10 +123,8 @@ public class ConnectionManager {
      */
     public void handleNetworkError(InetAddress target) {
         connectionMap.remove(target);
-        if (checkHeartbeat()) {
-            // send an event signalling that target is offline
-            pool.raiseEvent(new UserDisconnectedEvent(target));
-        } else {
+        pool.raiseEvent(new UserDisconnectedEvent(target));
+        if (! checkHeartbeat()) {
             // sends an event because we appear to be without network connection
             pool.raiseEvent(new NetworkConnectionLostEvent());
         }
@@ -142,6 +140,7 @@ public class ConnectionManager {
             socket.connect(new InetSocketAddress("google.com", 80), 2000);
         } catch(IOException ex) {
             if(online) {
+                online = false;
                 signalOffline();
             }
             return false;
@@ -153,6 +152,7 @@ public class ConnectionManager {
             }
         }
         if(!online){
+            online = true;
             signalOnline();
         }
         return true;
@@ -168,7 +168,7 @@ public class ConnectionManager {
 
     private class PingAliveThread extends Thread {
 
-        private int timeout = 120000;
+        private int timeout = 5000;
 
         @Override
         public void run() {
@@ -176,9 +176,9 @@ public class ConnectionManager {
                 try {
                     checkHeartbeat();
                     if(!online) {
-                        timeout = 30000;
+                        timeout = 1000;
                     } else {
-                        timeout = 120000;
+                        timeout = 5000;
                     }
                     Thread.sleep(timeout);
                 } catch (InterruptedException e) {
