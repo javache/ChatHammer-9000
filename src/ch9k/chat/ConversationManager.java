@@ -3,7 +3,7 @@ package ch9k.chat;
 import ch9k.chat.event.CloseConversationEvent;
 import ch9k.chat.event.ConversationEvent;
 import ch9k.chat.event.NewConversationEvent;
-import ch9k.core.event.AccountOfflineEvent;
+import ch9k.core.event.AccountLogoffEvent;
 import ch9k.eventpool.Event;
 import ch9k.eventpool.EventFilter;
 import ch9k.eventpool.EventListener;
@@ -29,7 +29,7 @@ public class ConversationManager implements EventListener{
             public void handleEvent(Event event) {
                 clear();
             }
-        }, new EventFilter(AccountOfflineEvent.class));
+        }, new EventFilter(AccountLogoffEvent.class));
     }
 
     /**

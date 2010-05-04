@@ -8,8 +8,8 @@ import ch9k.configuration.PersistentDataObject;
 import ch9k.core.Account;
 import ch9k.core.I18n;
 import ch9k.core.event.AccountEvent;
-import ch9k.core.event.AccountOfflineEvent;
-import ch9k.core.event.AccountOnlineEvent;
+import ch9k.core.event.AccountLogoffEvent;
+import ch9k.core.event.AccountLoginEvent;
 import ch9k.eventpool.Event;
 import ch9k.eventpool.EventFilter;
 import ch9k.eventpool.EventListener;
@@ -108,10 +108,10 @@ public class ContactList extends AbstractListModel
 
     @Override
     public void handleEvent(Event event) {
-        if(event instanceof AccountOnlineEvent) {
+        if(event instanceof AccountLoginEvent) {
             broadcastOnline();
         }
-        if(event instanceof AccountOfflineEvent) {
+        if(event instanceof AccountLogoffEvent) {
             broadcastOffline();
             
             EventPool pool = EventPool.getAppPool();

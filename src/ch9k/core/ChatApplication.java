@@ -1,7 +1,7 @@
 package ch9k.core;
 
-import ch9k.core.event.AccountOfflineEvent;
-import ch9k.core.event.AccountOnlineEvent;
+import ch9k.core.event.AccountLogoffEvent;
+import ch9k.core.event.AccountLoginEvent;
 import ch9k.eventpool.StatusEvent;
 import ch9k.chat.ConversationManager;
 import ch9k.configuration.Configuration;
@@ -83,7 +83,7 @@ public class ChatApplication implements EventListener {
             }
         }
         configuration.save();
-        EventPool.getAppPool().raiseEvent(new AccountOnlineEvent());
+        EventPool.getAppPool().raiseEvent(new AccountLoginEvent());
 
         appWindow.initApplicationView();
         appWindow.setStatus(I18n.get("ch9k.core", "booting"), false);
@@ -118,7 +118,7 @@ public class ChatApplication implements EventListener {
      */
     public void logoff(boolean showLogin) {
         configuration.save();
-        EventPool.getAppPool().raiseEvent(new AccountOfflineEvent());
+        EventPool.getAppPool().raiseEvent(new AccountLogoffEvent());
         configuration = null;
 
         if(showLogin) {

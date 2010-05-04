@@ -1,9 +1,9 @@
 package ch9k.network;
 
-import ch9k.core.event.AccountOfflineEvent;
-import ch9k.core.event.AccountOnlineEvent;
 import ch9k.eventpool.EventPool;
 import ch9k.eventpool.NetworkEvent;
+import ch9k.network.event.AccountOfflineEvent;
+import ch9k.network.event.AccountOnlineEvent;
 import ch9k.network.event.NetworkConnectionLostEvent;
 import ch9k.network.event.UserDisconnectedEvent;
 import java.io.IOException;
@@ -108,7 +108,6 @@ public class ConnectionManager {
     }
 
 
-
     /**
      * Start listening for incoming connections
      */
@@ -142,7 +141,9 @@ public class ConnectionManager {
     }
     
     private class PingAliveThread extends Thread {
-        
+
+        private int timeout = 120000;
+
         @Override
         public void run() {
             while(true) {
@@ -151,12 +152,14 @@ public class ConnectionManager {
                     if(!online) {
                         online = true;
                         EventPool.getAppPool().raiseEvent(new AccountOnlineEvent());
+                        timeout = 120000;
                     }
-                    Thread.sleep(120000);
+                    Thread.sleep(timeout);
                 } catch (UnknownHostException e) {
                     if (online) {
                         online = false;
                         EventPool.getAppPool().raiseEvent(new AccountOfflineEvent());
+                        timeout = 1000;
                     }
                 } catch (InterruptedException e) {
                     logger.warn(e.toString());

@@ -21,7 +21,7 @@ import org.jdom.Element;
  * 
  * @author Bruno
  */
-public class Account implements Persistable {
+public class Account extends Model implements Persistable {
     /**
      * The users contactlist
      */
@@ -36,6 +36,11 @@ public class Account implements Persistable {
      * Users current status
      */
     private String status;
+
+    /**
+     * are we online?
+     */
+    private boolean online = true;
     
     /**
      * the hash of the password
@@ -101,6 +106,17 @@ public class Account implements Persistable {
      */
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public boolean isOnline() {
+        return online;
+    }
+
+    public void setOnline(boolean online) {
+        if(this.online != online) {
+            this.online = online;
+            fireStateChanged();
+        }
     }
 
     /**
