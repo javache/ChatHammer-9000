@@ -10,7 +10,7 @@ import javax.swing.event.EventListenerList;
 /**
  * Abstract settings class, storing key-value pairs.
  */
-public class AbstractSettings implements Serializable {
+public class Settings implements Serializable {
     /**
      * Map delegate.
      */
@@ -24,7 +24,7 @@ public class AbstractSettings implements Serializable {
     /**
      * Constructor.
      */
-    public AbstractSettings() {
+    public Settings() {
         settings = new HashMap<String, String>();
         listenerList = new EventListenerList();
     }
