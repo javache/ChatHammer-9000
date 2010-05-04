@@ -44,18 +44,11 @@ public class ConnectionManager {
     private EventPool pool;
 
     /**
-     * boolean to see if we are online
-     */
-    private boolean online = false;
-
-
-    /**
      * Create a new ConnectionManager
      * @param pool EventPool where received events will be thrown
      */
     public ConnectionManager(EventPool pool) {
         this.pool = pool;
-        new PingAliveThread().start();
     }
 
     /**
@@ -124,72 +117,8 @@ public class ConnectionManager {
     public void handleNetworkError(InetAddress target) {
         connectionMap.remove(target);
         pool.raiseEvent(new UserDisconnectedEvent(target));
-        if (! checkHeartbeat()) {
-            // sends an event because we appear to be without network connection
-            pool.raiseEvent(new NetworkConnectionLostEvent());
-        }
     }
 
-    /**
-     * Check if we are online, how?
-     * it will try to open a connection to google.com
-     */
-    private boolean checkHeartbeat() {
-        Socket socket = new Socket();
-        try {
-            socket.connect(new InetSocketAddress("google.com", 80), 2000);
-        } catch(IOException ex) {
-            if(online) {
-                online = false;
-                signalOffline();
-            }
-            return false;
-        } finally {
-            try {
-                socket.close();
-            } catch(IOException ex) {
-                
-            }
-        }
-        if(!online){
-            online = true;
-            signalOnline();
-        }
-        return true;
-    }
-
-    private void signalOffline() {
-        EventPool.getAppPool().raiseEvent(new AccountOfflineEvent());
-    }
-
-    private void signalOnline() {
-        EventPool.getAppPool().raiseEvent(new AccountOnlineEvent());
-    }
-
-    private class PingAliveThread extends Thread {
-
-        private int timeout = 5000;
-
-        @Override
-        public void run() {
-            while(true) {
-                try {
-                    checkHeartbeat();
-                    if(!online) {
-                        timeout = 1000;
-                    } else {
-                        timeout = 5000;
-                    }
-                    Thread.sleep(timeout);
-                } catch (InterruptedException e) {
-                    logger.warn(e.toString());
-                }
-                
-            }
-        }
-        
-    }
-    
     /**
      * Accepts incoming connections
      */

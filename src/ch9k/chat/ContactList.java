@@ -25,6 +25,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.logging.Level;
 import javax.swing.AbstractListModel;
 import javax.swing.JOptionPane;
 import javax.swing.event.ChangeEvent;
@@ -130,6 +131,8 @@ public class ContactList extends AbstractListModel
         pool.addListener(listeners.get(5),
                 new EventFilter(AccountOfflineEvent.class));
 
+
+        new PingContactThread().start();
     }
 
     @Override
@@ -231,7 +234,27 @@ public class ContactList extends AbstractListModel
             }
         }
     }
-    
+
+    private class PingContactThread extends Thread {
+
+        private int timeout = 15000;
+
+        @Override
+        public void run() {
+            while(true) {
+                try {
+                    Thread.sleep(timeout);
+                    for(Contact contact : contacts) {
+                        pingContact(contact);
+                    }
+                } catch(InterruptedException ex) {
+                    
+                }
+            }
+        }
+
+    }
+
     private void pingContact(Contact contact) {
         logger.info("Pinging contact " + contact.getUsername());
         if (contact.isRequested()) {
