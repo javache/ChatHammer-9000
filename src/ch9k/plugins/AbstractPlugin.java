@@ -1,6 +1,7 @@
 package ch9k.plugins;
 
 import ch9k.chat.Conversation;
+import ch9k.core.settings.Settings;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,10 +16,16 @@ public abstract class AbstractPlugin implements Plugin {
     private transient Map<Conversation, AbstractPluginInstance> instances;
 
     /**
+     * The plugin settings.
+     */
+    private Settings settings;
+
+    /**
      * Constructor.
      */
     public AbstractPlugin() {
         instances = new HashMap<Conversation, AbstractPluginInstance>();
+        settings = new Settings();
     }
 
     /**
@@ -41,7 +48,7 @@ public abstract class AbstractPlugin implements Plugin {
     }
 
     @Override
-    public void enablePlugin(Conversation conversation) {
+    public void enablePlugin(Conversation conversation, Settings settings) {
         /* Create a new instance, store it, and enable it. */
         AbstractPluginInstance instance = createPluginInstance(conversation);
         instances.put(conversation, instance);
@@ -60,5 +67,10 @@ public abstract class AbstractPlugin implements Plugin {
     public String getPrettyName() {
         String name = getName();
         return name.substring(name.lastIndexOf('.') + 1);
+    }
+
+    @Override
+    public Settings getSettings() {
+        return settings;
     }
 }

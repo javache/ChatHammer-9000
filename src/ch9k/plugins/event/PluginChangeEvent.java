@@ -2,6 +2,7 @@ package ch9k.plugins.event;
 
 import ch9k.chat.Conversation;
 import ch9k.chat.event.ConversationEvent;
+import ch9k.core.settings.Settings;
 
 /**
  * Event thrown when a user enables or disables a plugin.
@@ -18,16 +19,23 @@ public class PluginChangeEvent extends ConversationEvent {
     private boolean pluginEnabled;
 
     /**
+     * Reference to the plugin settings.
+     */
+    private Settings settings;
+
+    /**
      * Constructor.
      * @param conversation Conversation to which the plugin belongs.
      * @param name The plugin name.
      * @param pluginEnabled If the plugin was enabled.
+     * @param settings Settings of the plugin.
      */
     public PluginChangeEvent(Conversation conversation,
-            String plugin, boolean pluginEnabled) {
+            String plugin, boolean pluginEnabled, Settings settings) {
         super(conversation);
         this.plugin = plugin;
         this.pluginEnabled = pluginEnabled;
+        this.settings = settings;
     }
 
     /**
@@ -44,6 +52,15 @@ public class PluginChangeEvent extends ConversationEvent {
      */
     public boolean isPluginEnabled() {
         return pluginEnabled;
+    }
+
+    /**
+     * Get the plugin settings. This function is allowed to return null, so
+     * use it with care.
+     * @return The plugin settings.
+     */
+    public Settings getSettins() {
+        return settings;
     }
 }
 

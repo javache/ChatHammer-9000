@@ -133,7 +133,7 @@ public class PluginManager extends Model implements EventListener {
         if(enable(name, conversation)) {
             /* Throw an event. */
             PluginChangeEvent event =
-                    new PluginChangeEvent(conversation, name, true);
+                    new PluginChangeEvent(conversation, name, true, null);
             EventPool.getAppPool().raiseNetworkEvent(event);
         }
     }
@@ -155,7 +155,7 @@ public class PluginManager extends Model implements EventListener {
         }
 
         /* Couple it with the conversation. */
-        plugin.enablePlugin(conversation);
+        plugin.enablePlugin(conversation, null);
 
         return true;
     }
@@ -170,7 +170,7 @@ public class PluginManager extends Model implements EventListener {
         if(disable(name, conversation)) {
             /* Throw an event. */
             PluginChangeEvent event =
-                    new PluginChangeEvent(conversation, name, false);
+                    new PluginChangeEvent(conversation, name, false, null);
             EventPool.getAppPool().raiseNetworkEvent(event);
         }
     }

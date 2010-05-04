@@ -75,7 +75,8 @@ public class Settings implements Serializable {
      * @param value The new value.
      */
     public void fireSettingsChanged(String key, String value) {
-        final SettingsChangeEvent event = new SettingsChangeEvent(key, value);
+        final SettingsChangeEvent event =
+                new SettingsChangeEvent(this, key, value);
         if(EventQueue.isDispatchThread()) {
             settingsChange(event);
         } else {

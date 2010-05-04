@@ -7,6 +7,11 @@ import java.io.Serializable;
  */
 public class SettingsChangeEvent implements Serializable {
     /**
+     * Source of the event.
+     */
+    private Settings source;
+
+    /**
      * Key that was changed.
      */
     private String key;
@@ -18,12 +23,22 @@ public class SettingsChangeEvent implements Serializable {
 
     /**
      * Constructor.
+     * @param source Source of the event.
      * @param key Key that was changed.
      * @param value Value that was changed.
      */
-    public SettingsChangeEvent(String key, String value) {
+    public SettingsChangeEvent(Settings source, String key, String value) {
+        this.source = source;
         this.key = key;
         this.value = value;
+    }
+
+    /**
+     * Get the event source.
+     * @return The event source.
+     */
+    public Settings getSource() {
+        return source;
     }
 
     /**

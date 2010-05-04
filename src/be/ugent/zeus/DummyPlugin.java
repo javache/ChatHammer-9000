@@ -1,6 +1,7 @@
 package be.ugent.zeus;
 
 import ch9k.chat.Conversation;
+import ch9k.core.settings.Settings;
 import ch9k.plugins.Plugin;
 
 /**
@@ -14,7 +15,7 @@ public class DummyPlugin implements Plugin {
     }
 
     @Override
-    public void enablePlugin(Conversation conversation) {
+    public void enablePlugin(Conversation conversation, Settings settings) {
     }
 
     @Override
@@ -24,5 +25,10 @@ public class DummyPlugin implements Plugin {
     @Override
     public String getPrettyName() {
         return "DummyPlugin";
+    }
+
+    @Override
+    public Settings getSettings() {
+        return null;
     }
 }

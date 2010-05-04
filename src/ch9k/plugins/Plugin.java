@@ -1,6 +1,7 @@
 package ch9k.plugins;
 
 import ch9k.chat.Conversation;
+import ch9k.core.settings.Settings;
 
 /**
  * Abstract representation of a plugin.
@@ -17,8 +18,9 @@ public interface Plugin {
     /**
      * Start a plugin for a conversation.
      * @param conversation Conversation to enable this plugin for.
+     * @param setting Settings for the plugin.
      */
-    void enablePlugin(Conversation conversation);
+    void enablePlugin(Conversation conversation, Settings settings);
 
     /**
      * Stop a plugin for a conversation.
@@ -30,4 +32,9 @@ public interface Plugin {
      * @return A human-readable name.
      */
     String getPrettyName();
+
+    /**
+     * Get the settings for this plugin.
+     */
+    Settings getSettings();
 }
