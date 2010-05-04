@@ -62,26 +62,28 @@ public class ChatApplication implements EventListener {
     }
 
     private void start(String[] args) {
+        Configuration newConfiguration = null;
+
         // perform auto login?
         if(args!= null && args.length == 2) {
-            Configuration configuration = new Configuration(args[0]);
-            Account account = configuration.getAccount();
-            if(account != null && account.authenticate(args[1])) {
-                this.configuration = configuration;
-            } else {
+            newConfiguration = new Configuration(args[0]);
+            Account account = newConfiguration.getAccount();
+            if(account == null || !account.authenticate(args[1])) {
+                newConfiguration = null;
                 System.err.println("Failed to login with provided credentials");
             }
         }
 
-        if(configuration == null) {
+        if(newConfiguration == null) {
             // show login dialog
             LoginController loginController = new LoginController();
-            configuration = loginController.run(appWindow);
-            if(configuration == null) {
+            newConfiguration = loginController.run(appWindow);
+            if(newConfiguration == null) {
                 // user closed window
                 System.exit(0);
             }
         }
+        configuration = newConfiguration;
         configuration.save();
         EventPool.getAppPool().raiseEvent(new AccountLoginEvent());
 
@@ -119,7 +121,6 @@ public class ChatApplication implements EventListener {
     public void logoff(boolean showLogin) {
         configuration.save();
         EventPool.getAppPool().raiseEvent(new AccountLogoffEvent());
-        configuration = null;
 
         if(showLogin) {
             new Thread(new Runnable() {
