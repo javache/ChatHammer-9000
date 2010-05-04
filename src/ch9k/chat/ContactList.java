@@ -111,31 +111,9 @@ public class ContactList extends AbstractListModel
         pool.addListener(listeners.get(3),
                 new EventFilter(UserDisconnectedEvent.class));
 
-        listeners.add(new EventListener() {
-            public void handleEvent(Event event) {
-                for(Contact contact : contacts) {
-                    pingContact(contact);
-                }
-            }
-        });
-
-        pool.addListener(listeners.get(4),
-                new EventFilter(AccountOnlineEvent.class));
-
-        listeners.add(new EventListener() {
-
-            @Override
-            public void handleEvent(Event event) {
-                for(Contact contact : contacts) {
-                    contact.setOnline(false);
-                }
-            }
-        });
-        pool.addListener(listeners.get(5),
-                new EventFilter(AccountOfflineEvent.class));
-
-        new PingContactThread().start();
-        shouldPing = true;
+        /* new PingContactThread().start();
+         * shouldPing = true;
+         */
     }
 
     @Override
