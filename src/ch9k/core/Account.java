@@ -4,10 +4,6 @@ import ch9k.chat.ContactList;
 import ch9k.configuration.Persistable;
 import ch9k.configuration.PersistentDataObject;
 import ch9k.eventpool.Event;
-import ch9k.eventpool.EventFilter;
-import ch9k.eventpool.EventListener;
-import ch9k.eventpool.EventPool;
-import ch9k.network.event.AccountOfflineEvent;
 import ch9k.network.event.AccountOnlineEvent;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -27,7 +23,7 @@ import org.jdom.Element;
  * 
  * @author Bruno
  */
-public class Account extends Model implements Persistable, EventListener {
+public class Account implements Persistable {
     /**
      * The users contactlist
      */
@@ -42,11 +38,6 @@ public class Account extends Model implements Persistable, EventListener {
      * Users current status
      */
     private String status;
-
-    /**
-     * are we online?
-     */
-    private boolean online = true;
     
     /**
      * the hash of the password
@@ -62,9 +53,6 @@ public class Account extends Model implements Persistable, EventListener {
         this.username = username;
         this.passwordHash = hash(password);
         contactList = new ContactList(this);
-        EventPool.getAppPool().addListener(this, new EventFilter(AccountOfflineEvent.class));
-        EventPool.getAppPool().addListener(this, new EventFilter(AccountOnlineEvent.class));
-        /* TODO cleanup */
     }
 
     /**
@@ -74,8 +62,6 @@ public class Account extends Model implements Persistable, EventListener {
      */
     public Account(PersistentDataObject data) {
         load(data);
-        EventPool.getAppPool().addListener(this, new EventFilter(AccountOfflineEvent.class));
-        EventPool.getAppPool().addListener(this, new EventFilter(AccountOnlineEvent.class));
     }
 
     /**
@@ -117,17 +103,6 @@ public class Account extends Model implements Persistable, EventListener {
      */
     public void setStatus(String status) {
         this.status = status;
-    }
-
-    public boolean isOnline() {
-        return online;
-    }
-
-    public void setOnline(boolean online) {
-        if(this.online != online) {
-            this.online = online;
-            fireStateChanged();
-        }
     }
 
     /**
@@ -239,12 +214,4 @@ public class Account extends Model implements Persistable, EventListener {
         contactList = new ContactList(this, new PersistentDataObject(el.getChild("contactlist")));
     }
 
-    @Override
-    public void handleEvent(Event event) {
-        if(event instanceof AccountOnlineEvent) {
-            setOnline(true);
-        } else {
-            setOnline(false);
-        }
-    }
 }

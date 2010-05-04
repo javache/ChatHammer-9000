@@ -19,7 +19,7 @@ import javax.swing.event.ChangeListener;
  * Displays information about the
  * @author Pieter De Baets
  */
-public class AccountPanel extends JPanel implements ChangeListener {
+public class AccountPanel extends JPanel {
     private JLabel accountLabel;
     private StatusField statusField;
     private JButton logoffButton;
@@ -33,8 +33,6 @@ public class AccountPanel extends JPanel implements ChangeListener {
 
     public void initComponents() {
         Account account = ChatApplication.getInstance().getAccount();
-
-        account.addChangeListener(this);
 
         accountLabel = new JLabel(account.getUsername());
         accountLabel.setFont(accountLabel.getFont().deriveFont(15f));
@@ -81,9 +79,4 @@ public class AccountPanel extends JPanel implements ChangeListener {
         );
     }
 
-    @Override
-    public void stateChanged(ChangeEvent e) {
-        statusIcon.setOnline(ChatApplication.getInstance().getAccount().isOnline());
-        accountLabel.repaint();
-    }
 }
