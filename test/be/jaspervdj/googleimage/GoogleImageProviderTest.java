@@ -5,13 +5,13 @@ import java.net.MalformedURLException;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class GoogleImageProviderPluginTest {    
+public class GoogleImageProviderTest {    
     /**
-     * Test of getImageUrls method, of class GoogleImageProviderPlugin.
+     * Test of getImageUrls method, of class GoogleImageProvider.
      */
     @Test
     public void testGetImageUrls() throws MalformedURLException {
         ImageProviderTester test = new ImageProviderTester();
-        test.testGetImageUrls(new GoogleImageProviderPlugin(null));
+        test.testGetImageUrls(new GoogleImageProvider(null));
     }
 }
