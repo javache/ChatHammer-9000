@@ -41,6 +41,7 @@ public class PluginManager extends Model implements EventListener {
     public PluginManager() {
         plugins = new HashMap<String, Plugin>();
         installer = new PluginInstaller(this);
+        installer.loadInstalledPlugins();
 
         /* Some plugins are always available, because they ship with the
          * application. */

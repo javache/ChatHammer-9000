@@ -61,16 +61,14 @@ public class FlickrImageProvider extends ImageProvider {
         try {
             photoList = photosInterface.search(searchParameters, maxResults, 0);
         } catch (IOException exception) {
-            WarningEvent.raise(this,
-                "Could not search Flickr: " + exception);
+            WarningEvent.raise(this, "Could not search Flickr: " + exception);
             return null;
         } catch (SAXException exception) {
             WarningEvent.raise(this,
                 "Could not parse Flickr response: " + exception);
             return null;
         } catch (FlickrException exception) {
-            WarningEvent.raise(this,
-                "Flickr internal error: " + exception);
+            WarningEvent.raise(this, "Flickr internal error: " + exception);
             return null;
         }
 

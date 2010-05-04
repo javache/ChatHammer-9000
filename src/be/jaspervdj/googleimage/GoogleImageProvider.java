@@ -1,6 +1,7 @@
 package be.jaspervdj.googleimage;
 
 import ch9k.chat.Conversation;
+import ch9k.eventpool.WarningEvent;
 import ch9k.plugins.ImageProvider;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -49,6 +50,9 @@ public class GoogleImageProvider extends ImageProvider {
     @Override
     public String[] getImageUrls(String text, int maxResults) {
         try {
+            /* Log some information as well. */
+            logger.info("Searching for: " + text);
+
             /* Create an URL and open the connection. */
             URL queryURL = makeURLFromText(text);
             URLConnection connection = queryURL.openConnection();
@@ -75,10 +79,10 @@ public class GoogleImageProvider extends ImageProvider {
 
             return urls;
         } catch (IOException exception) {
-            // TODO: Send relevant warning.
+            WarningEvent.raise(this, "Could not contact Google: " + exception);
             return null;
         } catch (JSONException exception) {
-            // TODO: Send relevant warning.
+            WarningEvent.raise(this, "Could not parse JSON: " + exception);
             return null;
         }
     }
@@ -104,7 +108,7 @@ public class GoogleImageProvider extends ImageProvider {
                 "images?start=0&rsz=large&v=1.0&q=" + text + "&key=" + API_KEY +
                 "&safe=off");
         } catch (MalformedURLException exception) {
-            // TODO: Send warning.
+            WarningEvent.raise(this, "Malformed URL: " + exception);
             url = null;
         }
 

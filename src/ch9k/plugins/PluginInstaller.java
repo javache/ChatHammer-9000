@@ -49,7 +49,12 @@ public class PluginInstaller extends URLClassLoader {
 
         /* Store a reference to the plugin manager. */
         this.pluginManager = pluginManager;
+    }
 
+    /**
+     * Load locally installed plugins.
+     */
+    public void loadInstalledPlugins() {
         /* Create the install directory if it doesn't exist yet. */
         if(!INSTALL_DIRECTORY.isDirectory()) {
             INSTALL_DIRECTORY.mkdirs();
