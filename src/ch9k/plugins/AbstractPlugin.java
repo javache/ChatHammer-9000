@@ -29,6 +29,12 @@ public abstract class AbstractPlugin implements Plugin {
         return this.getClass().getName();
     }
 
+    /**
+     * Abstract factory method creating the actual plugin.
+     */
+    protected abstract AbstractPluginInstance
+            createPluginInstance(Conversation conversation);
+
     @Override
     public boolean isEnabled(Conversation conversation) {
         return instances.get(conversation) != null;
@@ -50,9 +56,9 @@ public abstract class AbstractPlugin implements Plugin {
         instance.disablePluginInstance();
     }
 
-    /**
-     * Abstract factory method creating the actual plugin.
-     */
-    protected abstract AbstractPluginInstance
-            createPluginInstance(Conversation conversation);
+    @Override
+    public String getPrettyName() {
+        String name = getName();
+        return name.substring(name.lastIndexOf('.') + 1);
+    }
 }
