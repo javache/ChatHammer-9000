@@ -20,4 +20,9 @@ public class DummyPlugin implements Plugin {
     @Override
     public void disablePlugin(Conversation conversation) {
     }
+
+    @Override
+    public String getPrettyName() {
+        return "DummyPlugin";
+    }
 }

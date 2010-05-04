@@ -24,4 +24,10 @@ public interface Plugin {
      * Stop a plugin for a conversation.
      */
     void disablePlugin(Conversation conversation);
+
+    /**
+     * Get a pretty name for the plugin.
+     * @return A human-readable name.
+     */
+    String getPrettyName();
 }
