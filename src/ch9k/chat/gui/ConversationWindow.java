@@ -5,6 +5,7 @@ import ch9k.chat.Conversation;
 import ch9k.chat.event.ConversationEventFilter;
 import ch9k.chat.event.RequestPluginContainerEvent;
 import ch9k.chat.event.RequestedPluginContainerEvent;
+import ch9k.core.gui.WindowMenu;
 import ch9k.eventpool.Event;
 import ch9k.eventpool.EventListener;
 import ch9k.eventpool.EventPool;
@@ -50,10 +51,12 @@ public class ConversationWindow extends JFrame {
      * Must be called from the Swing-thread
      * @param conversation
      */
-    public ConversationWindow(final Conversation conversation) {
+    public ConversationWindow(Conversation conversation) {
         super(conversation.getContact().getUsername() + " @ " + conversation.getContact().getIp().getCanonicalHostName());
         this.conversation = conversation;
+    }
 
+    public void init() {
         EventPool.getAppPool().addListener(new EventListener() {
             @Override
             public void handleEvent(Event event) {
@@ -69,6 +72,7 @@ public class ConversationWindow extends JFrame {
          * selected. */
         JMenuBar menuBar = new JMenuBar();
         menuBar.add(new PluginMenu(conversation));
+        menuBar.add(new WindowMenu(this));
         setJMenuBar(menuBar);
 
         setVisible(true);

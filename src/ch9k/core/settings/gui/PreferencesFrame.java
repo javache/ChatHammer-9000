@@ -37,5 +37,4 @@ public class PreferencesFrame extends JFrame implements EventListener {
     public void close() {
         
     }
-
 }

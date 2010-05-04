@@ -29,6 +29,15 @@ public class ContactListMouseListener extends MouseAdapter {
     @Override
     public void mouseReleased(MouseEvent e) {
         act(e);
+
+        // double click
+        if(!e.isPopupTrigger() && e.getClickCount() == 2) {
+            Contact contact = (Contact)list.getSelectedValue();
+            Action action = new StartConversationAction(contact);
+            if(action.isEnabled()) {
+                action.actionPerformed(null);
+            }
+        }
     }
 
     private void act(MouseEvent e) {        
@@ -38,15 +47,6 @@ public class ContactListMouseListener extends MouseAdapter {
             Contact contact = (Contact)list.getSelectedValue();
             JPopupMenu contactListPopupMenu = new ContactListPopupMenu(contact);
             contactListPopupMenu.show(list, e.getX(), e.getY());
-        }
-
-        // double click
-        if(!e.isPopupTrigger() && e.getClickCount() == 2) {
-            Contact contact = (Contact)list.getSelectedValue();
-            Action action = new StartConversationAction(contact);
-            if(action.isEnabled()) {
-                action.actionPerformed(null);
-            }
         }
     }
 

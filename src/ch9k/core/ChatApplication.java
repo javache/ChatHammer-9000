@@ -158,6 +158,14 @@ public class ChatApplication implements EventListener {
     }
 
     /**
+     * Get the main application window
+     * @return window
+     */
+    public ApplicationWindow getWindow() {
+        return appWindow;
+    }
+
+    /**
      * Get the conversation manager
      * @return conversationManager
      */
@@ -169,7 +177,6 @@ public class ChatApplication implements EventListener {
     public void handleEvent(Event event) {
         StatusEvent statusEvent = (StatusEvent)event;
         String message = statusEvent.getMessage();
-        System.out.println(message);
 
         if(statusEvent instanceof WarningEvent) {
             message = "<html><font color=\"red\">" + message;

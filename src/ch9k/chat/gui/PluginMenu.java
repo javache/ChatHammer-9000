@@ -1,6 +1,5 @@
 package ch9k.chat.gui;
 
-import ch9k.chat.Contact;
 import ch9k.chat.Conversation;
 import ch9k.chat.event.ConversationEventFilter;
 import ch9k.core.ChatApplication;
@@ -11,16 +10,12 @@ import ch9k.eventpool.EventListener;
 import ch9k.eventpool.EventPool;
 import ch9k.plugins.PluginManager;
 import ch9k.plugins.event.PluginChangeEvent;
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.net.InetAddress;
 import java.util.HashMap;
 import java.util.Map;
 import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JFrame;
 import javax.swing.JMenu;
-import javax.swing.JMenuBar;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 

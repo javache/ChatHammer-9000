@@ -17,7 +17,7 @@ import org.apache.log4j.Logger;
  * Manages the active conversations
  * @author Jens Panneel
  */
-public class ConversationManager implements EventListener{
+public class ConversationManager implements EventListener, Iterable<Conversation> {
     private Map<Contact, Conversation> conversations;
 
     public ConversationManager() {
@@ -102,5 +102,10 @@ public class ConversationManager implements EventListener{
                 // TODO what todo then?
             }
         }
+    }
+
+    @Override
+    public Iterator<Conversation> iterator() {
+        return conversations.values().iterator();
     }
 }

@@ -42,7 +42,7 @@ public class ApplicationWindow extends JFrame implements EventListener {
     private JLabel statusBar;
     private ContactListView contactList;
     private AccountPanel account;
-
+    private JMenuBar menuBar;
     private PreferencesFrame prefFrame;
 
     /**
@@ -79,6 +79,9 @@ public class ApplicationWindow extends JFrame implements EventListener {
      * Init the 'real' application view, after login has completed
      */
     public void initApplicationView() {
+        menuBar = new JMenuBar();
+        setJMenuBar(menuBar);
+
         panel = new JPanel();
         panel.setLayout(new BorderLayout());
 
@@ -93,18 +96,15 @@ public class ApplicationWindow extends JFrame implements EventListener {
         statusBar.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         panel.add(statusBar, BorderLayout.SOUTH);
 
-        prefFrame = new PreferencesFrame();
-
-        JMenuBar menuBar = new JMenuBar();
-        JMenu menu = new JMenu(ChatApplication.getInstance().getAccount().getUsername());
+        prefFrame = new PreferencesFrame();JMenu menu = new JMenu(ChatApplication.getInstance().getAccount().getUsername());
         menu.add(new AbstractAction("show Preferences"){
             @Override
             public void actionPerformed(ActionEvent e) {
-                prefFrame.setVisible(! prefFrame.isVisible());
+                prefFrame.setVisible(!prefFrame.isVisible());
             }
         });
         menuBar.add(menu);
-        setJMenuBar(menuBar);
+        menuBar.add(new WindowMenu(this));
 
         EventPool.getAppPool().raiseEvent(new PreferencePaneEvent("proxy", new ProxyPrefPane()));
 
@@ -120,7 +120,6 @@ public class ApplicationWindow extends JFrame implements EventListener {
     private Queue<String> statusQueue = new LinkedList<String>();
 
     public synchronized void setStatus(String status) {
-        System.out.println("NEW STATUS: " + status);
         if(status != null) {
             statusQueue.add(status);
         }
@@ -143,7 +142,6 @@ public class ApplicationWindow extends JFrame implements EventListener {
         String status = null;
         if(statusBar != null) {
             status = statusQueue.poll();
-            System.out.println("SHOWING STATUS: " + status);
             statusBar.setText(status);
         }
 

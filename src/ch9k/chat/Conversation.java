@@ -37,10 +37,11 @@ public class Conversation extends AbstractListModel implements EventListener {
         EventPool.getAppPool().addListener(this, new ConversationEventFilter(this));
 
         // create a new window
+        window = new ConversationWindow(Conversation.this);
         EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
-                window = new ConversationWindow(Conversation.this);
+                window.init();
             }
         });
     }
@@ -138,7 +139,13 @@ public class Conversation extends AbstractListModel implements EventListener {
         return result;
     }
 
-
+    /**
+     * Get the conversation window
+     * @return window
+     */
+    public ConversationWindow getWindow() {
+        return window;
+    }
 
     @Override
     public int getSize() {
