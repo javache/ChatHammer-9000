@@ -11,6 +11,7 @@ import ch9k.eventpool.EventPool;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import org.apache.log4j.Logger;
 
 /**
  * Manages the active conversations
@@ -52,6 +53,10 @@ public class ConversationManager implements EventListener{
      * @param conversation The conversation to close
      */
     public void closeConversation(Conversation conversation) {
+        Logger.getLogger(ConversationManager.class).info(
+                "Closing conversation with " + 
+                conversation.getContact().getUsername());
+        
         conversation.close();
         conversations.remove(conversation.getContact());
     }

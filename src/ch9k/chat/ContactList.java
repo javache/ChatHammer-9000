@@ -27,6 +27,7 @@ import javax.swing.AbstractListModel;
 import javax.swing.JOptionPane;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import org.apache.log4j.Logger;
 import org.jdom.Element;
 
 /**
@@ -35,6 +36,11 @@ import org.jdom.Element;
  */
 public class ContactList extends AbstractListModel 
         implements Persistable, ChangeListener, EventListener {
+    /**
+     * Logger
+     */
+    private static Logger logger = Logger.getLogger(ContactList.class);
+
     /**
      * Collection of contacts, a set because you dont want to save
      * the same contact two times.
@@ -200,6 +206,7 @@ public class ContactList extends AbstractListModel
     }
     
     private void pingContact(Contact contact) {
+        logger.info("Pinging contact " + contact.getUsername());
         if (contact.isRequested()) {
             EventPool.getAppPool().raiseNetworkEvent(new ContactRequestEvent(
                     contact.getIp(), contact.getUsername(), account.getUsername()));
@@ -217,6 +224,8 @@ public class ContactList extends AbstractListModel
         boolean success = contacts.add(contact);
         
         if(success) {
+            logger.info("Added contact " + contact.getUsername());
+
             if(sendRequest) {
                 contact.setRequested();
                 pingContact(contact);
@@ -239,6 +248,8 @@ public class ContactList extends AbstractListModel
      * @param contact
      */
     public void removeContact(Contact contact) {
+        logger.info("Removing contact " + contact.getUsername());
+
         if(contact.isOnline()) {
             EventPool.getAppPool().raiseNetworkEvent(new ContactOfflineEvent(contact));
             onlineHash.remove(contact.getIp());
