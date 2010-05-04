@@ -4,7 +4,6 @@
  */
 package ch9k.chat.gui.components;
 
-import ch9k.chat.gui.components.ColorRenderer;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Insets;
@@ -12,9 +11,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.Action;
 import javax.swing.GroupLayout;
-import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JTextPane;
 import javax.swing.JToggleButton;
