@@ -2,6 +2,7 @@ package ch9k.core.gui;
 
 import ch9k.chat.gui.ContactListView;
 import ch9k.core.ChatApplication;
+import ch9k.core.I18n;
 import ch9k.core.event.AccountLogoffEvent;
 import ch9k.core.settings.ProxyPrefPane;
 import ch9k.core.settings.event.PreferencePaneEvent;
@@ -96,8 +97,9 @@ public class ApplicationWindow extends JFrame implements EventListener {
         statusBar.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         panel.add(statusBar, BorderLayout.SOUTH);
 
-        prefFrame = new PreferencesFrame();JMenu menu = new JMenu(ChatApplication.getInstance().getAccount().getUsername());
-        menu.add(new AbstractAction("show Preferences"){
+        prefFrame = new PreferencesFrame();
+        JMenu menu = new JMenu(ChatApplication.getInstance().getAccount().getUsername());
+        menu.add(new AbstractAction(I18n.get("ch9k.core", "show_preferences")){
             @Override
             public void actionPerformed(ActionEvent e) {
                 prefFrame.setVisible(true);
@@ -106,10 +108,11 @@ public class ApplicationWindow extends JFrame implements EventListener {
         menuBar.add(menu);
         menuBar.add(new WindowMenu(this));
 
-        EventPool.getAppPool().raiseEvent(new PreferencePaneEvent("proxy", new ProxyPrefPane()));
+        EventPool.getAppPool().raiseEvent(new PreferencePaneEvent(I18n.get("ch9k.core", "preferences_title"), new ProxyPrefPane()));
 
         /* Request the plugin manager here, so it will add preference panes for
          * the different plugins. */
+
         ChatApplication.getInstance().getPluginManager();
 
         setContentPane(panel);
