@@ -65,6 +65,10 @@ public class ContactList extends AbstractListModel
      * EventListeners managed by this class
      */
     private List<EventListener> listeners;
+    /**
+     * should we ping?
+     */
+    private boolean shouldPing = false;
 
     /**
      * Construct a new ContactList
@@ -132,6 +136,7 @@ public class ContactList extends AbstractListModel
                 new EventFilter(AccountOfflineEvent.class));
 
         new PingContactThread().start();
+        shouldPing = true;
     }
 
     @Override
@@ -140,6 +145,7 @@ public class ContactList extends AbstractListModel
             broadcastOnline();
         }
         if(event instanceof AccountLogoffEvent) {
+            shouldPing = false;
             broadcastOffline();
             
             EventPool pool = EventPool.getAppPool();
@@ -239,7 +245,7 @@ public class ContactList extends AbstractListModel
 
         @Override
         public void run() {
-            while(true) {
+            while(shouldPing) {
                 try {
                     Thread.sleep(timeout);
                     for(Contact contact : contacts) {

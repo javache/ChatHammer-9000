@@ -34,9 +34,8 @@ public class PreferencesFrame extends JFrame implements EventListener {
         repaint();
     }
 
-    public static void main(String[] args) {
-        PreferencesFrame frame = new PreferencesFrame();
-        frame.setVisible(true);
+    public void close() {
+        
     }
 
 }

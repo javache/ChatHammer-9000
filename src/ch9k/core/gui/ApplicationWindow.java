@@ -2,10 +2,13 @@ package ch9k.core.gui;
 
 import ch9k.chat.gui.ContactListView;
 import ch9k.core.ChatApplication;
+import ch9k.core.event.AccountLogoffEvent;
 import ch9k.core.settings.ProxyPrefPane;
 import ch9k.core.settings.event.PreferencePaneEvent;
 import ch9k.core.settings.gui.PreferencesFrame;
 import ch9k.eventpool.Event;
+import ch9k.eventpool.EventFilter;
+import ch9k.eventpool.EventListener;
 import ch9k.eventpool.EventPool;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -14,7 +17,6 @@ import java.awt.event.ActionEvent;
 import java.util.LinkedList;
 import java.util.Queue;
 import javax.swing.AbstractAction;
-import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -29,7 +31,7 @@ import org.apache.log4j.Logger;
  * Main application window
  * @author Pieter De Baets
  */
-public class ApplicationWindow extends JFrame {
+public class ApplicationWindow extends JFrame implements EventListener {
     /**
      * Logger.
      */
@@ -50,6 +52,8 @@ public class ApplicationWindow extends JFrame {
         super("ChatHammer 9000");
         // @TODO: check how this works out on mac (where windows can be 'hidden'
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+
+        EventPool.getAppPool().addListener(this, new EventFilter(AccountLogoffEvent.class));
 
         setPreferredSize(new Dimension(300, 520));
         setMinimumSize(new Dimension(300, 200));
@@ -150,5 +154,11 @@ public class ApplicationWindow extends JFrame {
                 }
             }).start();
         }
+    }
+
+    @Override
+    public void handleEvent(Event event) {
+        getJMenuBar().remove(0);
+        prefFrame.close();
     }
 }
