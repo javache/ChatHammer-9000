@@ -2,6 +2,7 @@ package ch9k.chat.gui;
 
 import ch9k.chat.gui.components.MessageEditor;
 import ch9k.chat.Conversation;
+import ch9k.chat.event.CloseConversationEvent;
 import ch9k.chat.event.ConversationEventFilter;
 import ch9k.chat.event.RequestPluginContainerEvent;
 import ch9k.chat.event.RequestedPluginContainerEvent;
@@ -11,6 +12,8 @@ import ch9k.eventpool.EventListener;
 import ch9k.eventpool.EventPool;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
@@ -66,10 +69,18 @@ public class ConversationWindow extends JFrame {
             }
         }, new ConversationEventFilter(RequestPluginContainerEvent.class, conversation));
 
+        // listen for close-events
+        addWindowListener(new WindowAdapter() {
+            public void windowClosed(WindowEvent e) {
+                EventPool.getAppPool().raiseNetworkEvent(
+                        new CloseConversationEvent(conversation));
+            }
+        });
+
         initComponents();
 
-        /* Add a menu bar, containing a menu in which different plugins can be
-         * selected. */
+        // Add a menu bar, containing a menu in which different 
+        // plugins can be selected
         JMenuBar menuBar = new JMenuBar();
         menuBar.add(new PluginMenu(conversation));
         menuBar.add(new WindowMenu(this));

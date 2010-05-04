@@ -14,6 +14,7 @@ import ch9k.eventpool.Event;
 import ch9k.eventpool.EventFilter;
 import ch9k.eventpool.EventListener;
 import ch9k.eventpool.EventPool;
+import ch9k.eventpool.NetworkEvent;
 import ch9k.network.event.UserDisconnectedEvent;
 import java.awt.EventQueue;
 import java.net.InetAddress;
@@ -183,7 +184,9 @@ public class ContactList extends AbstractListModel
             UserDisconnectedEvent event = (UserDisconnectedEvent)ev;
             Contact contact = onlineHash.get(event.getSource());
             if(contact != null) {
-                EventPool.getAppPool().raiseEvent(new ContactOfflineEvent(contact));
+                NetworkEvent contactOfflineEvent = new ContactOfflineEvent(contact);
+                contactOfflineEvent.setSource(event.getSource());
+                EventPool.getAppPool().raiseEvent(contactOfflineEvent);
             }
         }
         
