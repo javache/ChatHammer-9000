@@ -3,8 +3,6 @@ package ch9k.core;
 import ch9k.chat.ContactList;
 import ch9k.configuration.Persistable;
 import ch9k.configuration.PersistentDataObject;
-import ch9k.eventpool.Event;
-import ch9k.network.event.AccountOnlineEvent;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
