@@ -1,7 +1,7 @@
 package ch9k.core;
 
 import ch9k.configuration.Configuration;
-import ch9k.core.event.AccountOfflineEvent;
+import ch9k.core.event.AccountLogoffEvent;
 import ch9k.core.gui.ApplicationWindow;
 import ch9k.core.gui.LoginPanel;
 import ch9k.eventpool.EventPool;
@@ -63,7 +63,7 @@ public class LoginController {
             notifyAll();
             return true;
         } else {
-            EventPool.getAppPool().raiseEvent(new AccountOfflineEvent());
+            EventPool.getAppPool().raiseEvent(new AccountLogoffEvent());
             return false;
         }
     }
