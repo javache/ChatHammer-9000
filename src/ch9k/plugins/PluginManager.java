@@ -61,7 +61,7 @@ public class PluginManager extends Model implements EventListener {
      * @return A map of pretty names for the plugins.
      */
     public Map<String, String> getPrettyNames() {
-        Map<String, String> map = new HashMap();
+        Map<String, String> map = new HashMap<String, String>();
         for(String plugin: plugins.keySet()) {
             map.put(plugins.get(plugin).getPrettyName(), plugin);
         }
