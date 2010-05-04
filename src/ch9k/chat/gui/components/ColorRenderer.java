@@ -26,7 +26,6 @@ public class ColorRenderer extends JLabel implements ListCellRenderer {
      */
     @Override
     public void setBackground(Color color){
-
     }
 
     @Override

@@ -103,5 +103,4 @@ public class ConversationManager implements EventListener{
             }
         }
     }
-    
 }

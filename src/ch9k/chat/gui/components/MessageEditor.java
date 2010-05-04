@@ -27,12 +27,13 @@ public class MessageEditor extends JPanel {
     public MessageEditor(Conversation conversation) {
         super(new BorderLayout());
         this.conversation = conversation;
-        this.setPreferredSize(new Dimension(0,100));
+        setPreferredSize(new Dimension(0,120));
 
         editor = new JTextPane();
         editor.setEditable(true);
         editor.setContentType("text/html");
-        editor.putClientProperty(JTextPane.HONOR_DISPLAY_PROPERTIES, Boolean.TRUE);
+        // honor display properties so we can set default fonts
+        editor.putClientProperty(JTextPane.HONOR_DISPLAY_PROPERTIES, true);
         editor.setFont(new Font("SansSerif", Font.PLAIN, 14));
         
         JScrollPane scrollPane = new JScrollPane(editor);
@@ -45,14 +46,12 @@ public class MessageEditor extends JPanel {
             }
         });
 
+        add(new FontPanel(editor), BorderLayout.NORTH);
+
         JPanel input = new JPanel(new BorderLayout());
-        JPanel buttons = new FontPanel(editor);
-        
         input.add(scrollPane, BorderLayout.CENTER);
         input.add(sendButton,BorderLayout.EAST);
-
-        this.add(buttons, BorderLayout.NORTH);
-        this.add(input, BorderLayout.CENTER);
+        add(input, BorderLayout.CENTER);
     }
 
     public void send(){
@@ -63,5 +62,4 @@ public class MessageEditor extends JPanel {
             editor.setText("");
         }
     }
-
 }

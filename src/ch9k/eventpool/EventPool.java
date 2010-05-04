@@ -123,6 +123,7 @@ public class EventPool {
         for(int i = 0; i < listeners.size(); i++) {
             FilteredListener pair = listeners.get(i);
             try {
+                System.out.println(pair.listener);
                 if(pair.filter.accept(event)) {
                     pair.listener.handleEvent(event);
                 }
