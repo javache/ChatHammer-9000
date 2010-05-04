@@ -12,6 +12,7 @@ import ch9k.eventpool.EventListener;
 import ch9k.eventpool.EventPool;
 import ch9k.eventpool.WarningEvent;
 import ch9k.plugins.PluginManager;
+import java.awt.EventQueue;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.net.InetAddress;
@@ -85,10 +86,10 @@ public class ChatApplication implements EventListener {
         }
         configuration = newConfiguration;
         configuration.save();
-        EventPool.getAppPool().raiseEvent(new AccountLoginEvent());
 
         appWindow.initApplicationView();
-        appWindow.setStatus(I18n.get("ch9k.core", "booting"), false);
+        appWindow.setStatus(I18n.get("ch9k.core", "booting"));
+        EventPool.getAppPool().raiseEvent(new AccountLoginEvent());
 
         new Thread(new Runnable() {
             public void run() {
@@ -167,12 +168,13 @@ public class ChatApplication implements EventListener {
     @Override
     public void handleEvent(Event event) {
         StatusEvent statusEvent = (StatusEvent)event;
+        String message = statusEvent.getMessage();
+        System.out.println(message);
+
         if(statusEvent instanceof WarningEvent) {
-            // TODO: show something
-            System.err.println("WARNING: " + statusEvent.getMessage());
-        } else {
-            appWindow.setStatus(statusEvent.getMessage(), statusEvent.isAutoFade());
+            message = "<html><font color=\"red\">" + message;
         }
+        appWindow.setStatus(message);
     }
 
     /**

@@ -108,8 +108,6 @@ public class ContactList extends AbstractListModel
                 new EventFilter(UserDisconnectedEvent.class));
 
         listeners.add(new EventListener() {
-
-            @Override
             public void handleEvent(Event event) {
                 for(Contact contact : contacts) {
                     pingContact(contact);
@@ -200,7 +198,7 @@ public class ContactList extends AbstractListModel
         @Override
         public void handleEvent(Event ev) {
             UserDisconnectedEvent event = (UserDisconnectedEvent)ev;
-            Contact contact = onlineHash.get(event.getInetAddress());
+            Contact contact = onlineHash.get(event.getSource());
             if(contact != null) {
                 System.err.println(contact.getUsername());
                 EventPool.getAppPool().raiseEvent(new ContactOfflineEvent(contact));

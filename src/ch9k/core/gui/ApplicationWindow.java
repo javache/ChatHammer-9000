@@ -4,6 +4,8 @@ import ch9k.chat.gui.ContactListView;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.EventQueue;
+import java.util.LinkedList;
+import java.util.Queue;
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -79,17 +81,44 @@ public class ApplicationWindow extends JFrame {
         repaint();
     }
 
-    public void setStatus(final String status, boolean autoFade) {
-        EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                statusBar.setText(status);
-            }
-        });
+    private Queue<String> statusQueue = new LinkedList<String>();
 
-        if(autoFade) {
+    public synchronized void setStatus(String status) {
+        System.out.println("NEW STATUS: " + status);
+        if(status != null) {
+            statusQueue.add(status);
+        }
+
+        if(statusQueue.size() == 1) {
+            refreshStatus();
+        }
+    }
+
+    private synchronized void refreshStatus() {
+        if(!EventQueue.isDispatchThread()) {
+            EventQueue.invokeLater(new Runnable() {
+                public void run() {
+                    refreshStatus();
+                }
+            });
+            return;
+        }
+
+        String status = null;
+        if(statusBar != null) {
+            status = statusQueue.poll();
+            System.out.println("SHOWING STATUS: " + status);
+            statusBar.setText(status);
+        }
+
+        if(status != null || statusQueue.size() > 0) {
             new Thread(new Runnable() {
                 public void run() {
-                    setStatus("", false);
+                    try {
+                        Thread.sleep(3000);
+                    } catch(InterruptedException ex) {}
+
+                    refreshStatus();
                 }
             }).start();
         }

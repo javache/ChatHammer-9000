@@ -12,7 +12,7 @@ public class WarningEvent extends StatusEvent {
      * @param warningMessage Warning message to raise.
      */
     public WarningEvent(Object source, String warningMessage) {
-        super(source, warningMessage, false);
+        super(source, warningMessage);
     }
 
     /**
