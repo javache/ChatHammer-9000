@@ -30,6 +30,11 @@ public class Connection {
     private static final int SOCKET_CONNECT_TIMEOUT = 1000;
 
     /**
+     * kill the socket if it is inactive for 30 seconds
+     */
+    private static final int SOCKET_READ_TIMEOUT = 30000;
+
+    /**
      * I'm a lumberjack, and I'm okay.
      * I sleep all night and I work all day.
      *
@@ -138,7 +143,7 @@ public class Connection {
     private void init(Socket socket) throws IOException {
         socket.setKeepAlive(true);
 
-        socket.setSoTimeout(20000);
+        socket.setSoTimeout(SOCKET_READ_TIMEOUT);
         eventSocketHandler = new SocketHandler(socket,eventQueue,pool,this);
         
         notifyInitComplete();
