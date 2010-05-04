@@ -1,9 +1,11 @@
 package ch9k.network;
 
+import ch9k.core.event.AccountOfflineEvent;
+import ch9k.core.event.AccountOnlineEvent;
 import ch9k.eventpool.EventPool;
 import ch9k.eventpool.NetworkEvent;
-import ch9k.network.event.CouldNotConnectEvent;
 import ch9k.network.event.NetworkConnectionLostEvent;
+import ch9k.network.event.UserDisconnectedEvent;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
@@ -42,11 +44,18 @@ public class ConnectionManager {
     private EventPool pool;
 
     /**
+     * boolean to see if we are online
+     */
+    private boolean online = false;
+
+
+    /**
      * Create a new ConnectionManager
      * @param pool EventPool where received events will be thrown
      */
     public ConnectionManager(EventPool pool) {
         this.pool = pool;
+        new PingAliveThread().start();
     }
 
     /**
@@ -117,7 +126,7 @@ public class ConnectionManager {
         connectionMap.remove(target);
         if (checkHeartbeat()) {
             // send an event signalling that target is offline
-            pool.raiseEvent(new CouldNotConnectEvent(target));
+            pool.raiseEvent(new UserDisconnectedEvent(target));
         } else {
             // sends an event because we appear to be without network connection
             pool.raiseEvent(new NetworkConnectionLostEvent());
@@ -129,31 +138,25 @@ public class ConnectionManager {
      * it will try to open a connection to google.com
      */
     private boolean checkHeartbeat() {
-        try {
-            new Socket("www.google.com", 80);
-        } catch (IOException ex) {
-            logger.warn(ex.toString());
-            return false;
-        }
-        return true;
+        return online;
     }
     
-    private class PingAliveThread implements Runnable {
+    private class PingAliveThread extends Thread {
         
-        private boolean online = false;
-        
+        @Override
         public void run() {
             while(true) {
                 try {
                     InetAddress.getByName("www.google.com");
                     if(!online) {
-                        /* signal online */
+                        online = true;
+                        EventPool.getAppPool().raiseEvent(new AccountOnlineEvent());
                     }
                     Thread.sleep(120000);
                 } catch (UnknownHostException e) {
                     if (online) {
                         online = false;
-                        /* signal offline */
+                        EventPool.getAppPool().raiseEvent(new AccountOfflineEvent());
                     }
                 } catch (InterruptedException e) {
                     logger.warn(e.toString());
