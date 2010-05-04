@@ -47,7 +47,7 @@ public class FilteredContactList extends AbstractListModel implements ListDataLi
         }
     }
 
-    private void updateMapping() {
+    private synchronized void updateMapping() {
         mapping.clear();
         int i = 0;
         for(Contact contact : contactList.getContacts()) {
