@@ -1,16 +1,19 @@
 package ch9k.core.settings;
 
+import ch9k.configuration.Persistable;
+import ch9k.configuration.PersistentDataObject;
 import java.awt.EventQueue;
 import java.io.Serializable;
-import java.beans.PropertyChangeSupport;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import javax.swing.event.EventListenerList;
+import org.jdom.Element;
 
 /**
  * Abstract settings class, storing key-value pairs.
  */
-public class Settings implements Serializable {
+public class Settings implements Serializable, Persistable {
     /**
      * False string value.
      */
@@ -37,6 +40,11 @@ public class Settings implements Serializable {
     public Settings() {
         settings = new HashMap<String, String>();
         listenerList = new EventListenerList();
+    }
+
+    public Settings(PersistentDataObject object){
+        this();
+        load(object);
     }
 
     /**
@@ -110,6 +118,28 @@ public class Settings implements Serializable {
                         (SettingsChangeListener) listeners[i + 1];
                 listener.settingsChanged(event);
             }
+        }
+    }
+
+    @Override
+    public PersistentDataObject persist() {
+        // Initiate the root element
+        Element root = new Element("settings");
+        // Iterate through the settings, and add them to the XML tree.
+        for (Entry<String,String> entry : settings.entrySet()) {
+            Element child = new Element(entry.getKey());
+            child.setAttribute("setting", entry.getValue());
+            root.addContent(child);
+        }
+        return new PersistentDataObject(root);
+    }
+
+    @Override
+    public void load(PersistentDataObject object) {
+        //put all the settings back in the map
+         for (Object obj : object.getElement().getChildren()) {
+            Element child = (Element) obj;
+            settings.put(child.getAttributeValue("setting"), child.getText());
         }
     }
 }
