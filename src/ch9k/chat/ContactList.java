@@ -119,7 +119,17 @@ public class ContactList extends AbstractListModel
 
         pool.addListener(listeners.get(4),
                 new EventFilter(AccountOnlineEvent.class));
-        pool.addListener(listeners.get(4),
+
+        listeners.add(new EventListener() {
+
+            @Override
+            public void handleEvent(Event event) {
+                for(Contact contact : contacts) {
+                    contact.setOnline(false);
+                }
+            }
+        });
+        pool.addListener(listeners.get(5),
                 new EventFilter(AccountOfflineEvent.class));
 
     }
@@ -156,7 +166,7 @@ public class ContactList extends AbstractListModel
             /* all this has to be true, otherwise we just have to ignore */
             if(onlineEvent.isExternal() && contact != null &&
                     !contact.isIgnored() && !contact.isBlocked()) {
-                if(!contact.isOnline()) {
+                if(onlineEvent.requiresReponse()) {
                     EventPool.getAppPool().raiseNetworkEvent(new ContactOnlineEvent(contact));
                     
                     /* keep in mind here that this will set the state to online
@@ -230,7 +240,7 @@ public class ContactList extends AbstractListModel
             EventPool.getAppPool().raiseNetworkEvent(new ContactRequestEvent(
                     contact.getIp(), contact.getUsername(), account.getUsername()));
         } else {
-            EventPool.getAppPool().raiseNetworkEvent(new ContactOnlineEvent(contact));
+            EventPool.getAppPool().raiseNetworkEvent(new ContactOnlineEvent(contact, true));
         }
     }
     
