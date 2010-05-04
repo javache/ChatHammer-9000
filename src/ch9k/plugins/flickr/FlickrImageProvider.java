@@ -53,8 +53,15 @@ public class FlickrImageProvider extends ImageProvider {
         SearchParameters searchParameters = new SearchParameters();
         searchParameters.setText(text);
 
-        /* Turn off safe search. Good defaults FTW. */
-        searchParameters.setSafeSearch(Flickr.SAFETYLEVEL_RESTRICTED);
+        if(Settings.TRUE.equals(getSettings().get(
+                    FlickrImageProviderPreferencePane.SAFE_SEARCH))) {
+            searchParameters.setSafeSearch(Flickr.SAFETYLEVEL_MODERATE);
+            System.out.println("Moderate");
+        } else {
+            /* Turn off safe search. Good defaults FTW. */
+            searchParameters.setSafeSearch(Flickr.SAFETYLEVEL_RESTRICTED);
+            System.out.println("Restricted.");
+        }
 
         logger.info("Searching for " + text);
 

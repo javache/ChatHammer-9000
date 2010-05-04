@@ -17,7 +17,7 @@ public class FlickrImageProviderPreferencePane
     /**
      * Safe search key.
      */
-    private static final String SAFE_SEARCH = "safeSearch";
+    public static final String SAFE_SEARCH = "safeSearch";
 
     /**
      * Settings to manipulate.
@@ -49,6 +49,9 @@ public class FlickrImageProviderPreferencePane
                 }
             }
         });
+
+        safeSearchCheckBox.setSelected(
+                Settings.TRUE.equals(settings.get(SAFE_SEARCH)));
     }
 
     @Override
