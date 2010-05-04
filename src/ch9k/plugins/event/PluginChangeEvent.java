@@ -59,7 +59,7 @@ public class PluginChangeEvent extends ConversationEvent {
      * use it with care.
      * @return The plugin settings.
      */
-    public Settings getSettins() {
+    public Settings getSettings() {
         return settings;
     }
 }

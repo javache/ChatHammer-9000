@@ -1,6 +1,7 @@
 package be.jaspervdj.googleimage;
 
 import ch9k.chat.Conversation;
+import ch9k.core.settings.Settings;
 import ch9k.eventpool.WarningEvent;
 import ch9k.plugins.ImageProvider;
 import java.io.BufferedReader;
@@ -42,9 +43,10 @@ public class GoogleImageProvider extends ImageProvider {
     /**
      * Constructor.
      * @param conversation The relevant conversation.
+     * @param settings Local settings for the plugin.
      */
-    public GoogleImageProvider(Conversation conversation) {
-        super(conversation);
+    public GoogleImageProvider(Conversation conversation, Settings settings) {
+        super(conversation, settings);
     }
 
     @Override

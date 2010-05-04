@@ -1,5 +1,6 @@
 package be.jaspervdj.googleimage;
 
+import ch9k.core.settings.Settings;
 import ch9k.plugins.ImageProviderTester;
 import java.net.MalformedURLException;
 import org.junit.Test;
@@ -12,6 +13,6 @@ public class GoogleImageProviderTest {
     @Test
     public void testGetImageUrls() throws MalformedURLException {
         ImageProviderTester test = new ImageProviderTester();
-        test.testGetImageUrls(new GoogleImageProvider(null));
+        test.testGetImageUrls(new GoogleImageProvider(null, new Settings()));
     }
 }

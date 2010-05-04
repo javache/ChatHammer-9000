@@ -5,6 +5,7 @@ import ch9k.chat.Conversation;
 import ch9k.chat.event.ConversationEventFilter;
 import ch9k.chat.event.RequestPluginContainerEvent;
 import ch9k.chat.event.RequestedPluginContainerEvent;
+import ch9k.core.settings.Settings;
 import ch9k.eventpool.Event;
 import ch9k.eventpool.EventFilter;
 import ch9k.eventpool.EventListener;
@@ -38,9 +39,10 @@ public class Carousel extends AbstractPluginInstance implements EventListener {
     /**
      * Constructor.
      * @param conversation Conversation to display carousel for.
+     * @param settings Local plugin instance settings.
      */
-    public Carousel(Conversation conversation) {
-        super(conversation);
+    public Carousel(Conversation conversation, Settings settings) {
+        super(conversation, settings);
         /* We will asynchronously receive a container later. */
         this.container = null;
     }

@@ -1,5 +1,6 @@
 package ch9k.plugins.liteanalyzer;
 
+import ch9k.core.settings.Settings;
 import ch9k.plugins.TextAnalyzer;
 import ch9k.plugins.TextAnalyzerTester;
 import org.junit.Test;
@@ -11,7 +12,7 @@ public class LiteTextAnalyzerTest {
      */
     @Test
     public void testGetSubject() {
-        TextAnalyzer analyzer = new LiteTextAnalyzer(null);
+        TextAnalyzer analyzer = new LiteTextAnalyzer(null, new Settings());
         String[] messages = {
             "Mushroom Mushroom Mushroom",
             "Badger Badger",
@@ -29,6 +30,6 @@ public class LiteTextAnalyzerTest {
     @Test
     public void testGetFrequencyMap() {
         TextAnalyzerTester tester = new TextAnalyzerTester();
-        tester.testGetFrequencyMap(new LiteTextAnalyzer(null));
+        tester.testGetFrequencyMap(new LiteTextAnalyzer(null, new Settings()));
     }
 }

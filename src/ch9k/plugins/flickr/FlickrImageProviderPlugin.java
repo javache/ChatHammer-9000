@@ -1,6 +1,7 @@
 package ch9k.plugins.flickr;
 
 import ch9k.chat.Conversation;
+import ch9k.core.settings.Settings;
 import ch9k.core.settings.event.PreferencePaneEvent;
 import ch9k.eventpool.Event;
 import ch9k.eventpool.EventPool;
@@ -24,7 +25,7 @@ public class FlickrImageProviderPlugin extends AbstractPlugin {
 
     @Override
     public AbstractPluginInstance createPluginInstance(
-            Conversation conversation) {
-        return new FlickrImageProvider(conversation);
+            Conversation conversation, Settings settings) {
+        return new FlickrImageProvider(conversation, settings);
     }
 }

@@ -38,9 +38,12 @@ public abstract class AbstractPlugin implements Plugin {
 
     /**
      * Abstract factory method creating the actual plugin.
+     * @param conversation Conversation to create the plugin instance for.
+     * @param settings Settings to use for the instance.
+     * @return A plugin instance.
      */
     protected abstract AbstractPluginInstance
-            createPluginInstance(Conversation conversation);
+            createPluginInstance(Conversation conversation, Settings settings);
 
     @Override
     public boolean isEnabled(Conversation conversation) {
@@ -50,7 +53,8 @@ public abstract class AbstractPlugin implements Plugin {
     @Override
     public void enablePlugin(Conversation conversation, Settings settings) {
         /* Create a new instance, store it, and enable it. */
-        AbstractPluginInstance instance = createPluginInstance(conversation);
+        AbstractPluginInstance instance =
+                createPluginInstance(conversation, settings);
         instances.put(conversation, instance);
         instance.enablePluginInstance();
     }

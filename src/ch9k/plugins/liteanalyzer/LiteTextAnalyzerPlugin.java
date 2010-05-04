@@ -1,6 +1,7 @@
 package ch9k.plugins.liteanalyzer;
 
 import ch9k.chat.Conversation;
+import ch9k.core.settings.Settings;
 import ch9k.plugins.AbstractPlugin;
 import ch9k.plugins.AbstractPluginInstance;
 
@@ -11,7 +12,7 @@ import ch9k.plugins.AbstractPluginInstance;
 public class LiteTextAnalyzerPlugin extends AbstractPlugin {
     @Override
     public AbstractPluginInstance createPluginInstance(
-            Conversation conversation) {
-        return new LiteTextAnalyzer(conversation);
+            Conversation conversation, Settings settings) {
+        return new LiteTextAnalyzer(conversation, settings);
     }
 }

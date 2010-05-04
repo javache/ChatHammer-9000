@@ -2,6 +2,7 @@ package ch9k.plugins;
 
 import ch9k.chat.Conversation;
 import ch9k.core.Model;
+import ch9k.core.settings.Settings;
 import ch9k.eventpool.Event;
 import ch9k.eventpool.EventFilter;
 import ch9k.eventpool.EventListener;
@@ -126,10 +127,15 @@ public class PluginManager extends Model implements EventListener {
      * @param conversation Conversation to enable the plugin for.
      */
     public void enablePlugin(String name, Conversation conversation) {
-        if(enable(name, conversation)) {
+        /* We are enabling this plugin, so we use our settings. */
+        Plugin plugin = plugins.get(name);
+        if(plugin == null) return;
+        Settings settings = plugin.getSettings();
+
+        if(enable(name, conversation, settings)) {
             /* Throw an event. */
             PluginChangeEvent event =
-                    new PluginChangeEvent(conversation, name, true, null);
+                    new PluginChangeEvent(conversation, name, true, settings);
             EventPool.getAppPool().raiseNetworkEvent(event);
         }
     }
@@ -138,10 +144,11 @@ public class PluginManager extends Model implements EventListener {
      * Enable a plugin for a given conversation.
      * @param name Name of the plugin to load.
      * @param conversation Conversation to enable the plugin for.
+     * @param settings Settings for the plugin.
      * @return If the operation was succesful.
      */
     private synchronized boolean enable(
-            String name, Conversation conversation) {
+            String name, Conversation conversation, Settings settings) {
         /* Retrieve the plugin. */
         Plugin plugin = plugins.get(name);
 
@@ -151,7 +158,7 @@ public class PluginManager extends Model implements EventListener {
         }
 
         /* Couple it with the conversation. */
-        plugin.enablePlugin(conversation, null);
+        plugin.enablePlugin(conversation, settings);
 
         return true;
     }
@@ -204,7 +211,8 @@ public class PluginManager extends Model implements EventListener {
         if(event.isPluginEnabled()) {
             /* If the event was external, enable the plugin here as well. */
             if(event.isExternal()) {
-                enable(event.getPlugin(), event.getConversation());
+                enable(event.getPlugin(), event.getConversation(),
+                        event.getSettings());
             }
         /* A plugin was disabled. */
         } else {

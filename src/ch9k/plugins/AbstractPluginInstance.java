@@ -1,6 +1,7 @@
 package ch9k.plugins;
 
 import ch9k.chat.Conversation;
+import ch9k.core.settings.Settings;
 
 /**
  * Class that can serve as a base class for a simple plugin instance.
@@ -13,11 +14,19 @@ public abstract class AbstractPluginInstance {
     private Conversation conversation;
 
     /**
+     * The current settings.
+     */
+    private Settings settings;
+
+    /**
      * Constructor.
      * @param conversation Conversation to bind the plugin to.
+     * @param settings Local plugin settings.
      */
-    public AbstractPluginInstance(Conversation conversation) {
+    public AbstractPluginInstance(
+            Conversation conversation, Settings settings) {
         this.conversation = conversation;
+        this.settings = settings;
     }
 
     /**
@@ -26,6 +35,14 @@ public abstract class AbstractPluginInstance {
      */
     public Conversation getConversation() {
         return conversation;
+    }
+
+    /**
+     * Get the current local settings.
+     * @return The local settings for this instance.
+     */
+    public Settings getSettings() {
+        return settings;
     }
 
     /**

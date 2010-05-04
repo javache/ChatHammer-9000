@@ -4,6 +4,7 @@ import ch9k.chat.Conversation;
 import ch9k.chat.ConversationSubject;
 import ch9k.chat.event.ConversationEventFilter;
 import ch9k.chat.event.NewConversationSubjectEvent;
+import ch9k.core.settings.Settings;
 import ch9k.eventpool.Event;
 import ch9k.eventpool.EventFilter;
 import ch9k.eventpool.EventListener;
@@ -20,8 +21,8 @@ public abstract class ImageProvider extends AbstractPluginInstance
      * Constructor.
      * @param conversation Conversation to provide images for.
      */
-    public ImageProvider(Conversation conversation) {
-        super(conversation);
+    public ImageProvider(Conversation conversation, Settings settings) {
+        super(conversation, settings);
     }
      
     @Override
