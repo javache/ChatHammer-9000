@@ -100,7 +100,7 @@ public class ApplicationWindow extends JFrame implements EventListener {
         menu.add(new AbstractAction("show Preferences"){
             @Override
             public void actionPerformed(ActionEvent e) {
-                prefFrame.setVisible(!prefFrame.isVisible());
+                prefFrame.setVisible(true);
             }
         });
         menuBar.add(menu);
