@@ -12,6 +12,16 @@ import javax.swing.event.EventListenerList;
  */
 public class Settings implements Serializable {
     /**
+     * False string value.
+     */
+    public final static String FALSE = "false";
+
+    /**
+     * True string value.
+     */
+    public final static String TRUE = "true";
+
+    /**
      * Map delegate.
      */
     private Map<String, String> settings;

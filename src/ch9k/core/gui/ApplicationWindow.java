@@ -108,6 +108,10 @@ public class ApplicationWindow extends JFrame implements EventListener {
 
         EventPool.getAppPool().raiseEvent(new PreferencePaneEvent("proxy", new ProxyPrefPane()));
 
+        /* Request the plugin manager here, so it will add preference panes for
+         * the different plugins. */
+        ChatApplication.getInstance().getPluginManager();
+
         setContentPane(panel);
         setVisible(true);
         repaint();
