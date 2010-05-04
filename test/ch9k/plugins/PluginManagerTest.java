@@ -27,7 +27,7 @@ public class PluginManagerTest {
         installer.installPlugin(new URL(url));
 
         /* The plugin class should now be available. */
-        String expectedPlugin = "be.ugent.zeus.DummyPlugin";
-        assertTrue(manager.getAvailablePlugins().contains(expectedPlugin));
+        String expectedPlugin = "DummyPlugin";
+        assertTrue(manager.getPrettyNames().keySet().contains(expectedPlugin));
     }
 }

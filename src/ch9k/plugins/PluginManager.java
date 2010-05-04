@@ -75,7 +75,7 @@ public class PluginManager extends Model implements EventListener {
      */
     public synchronized void addAvailablePlugin(String name) {
         /* Check that we don't have it already. */
-        if(plugins.get(name) == null) return;
+        if(plugins.get(name) != null) return;
 
         /* Find the class of the new plugin. */
         Class<?> pluginClass = null;
