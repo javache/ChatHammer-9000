@@ -5,6 +5,6 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-    be.jaspervdj.googleimage.GoogleImageProviderPluginTest.class
+    be.jaspervdj.googleimage.GoogleImageProviderTest.class
 })
 public class GoogleImageSuite {}

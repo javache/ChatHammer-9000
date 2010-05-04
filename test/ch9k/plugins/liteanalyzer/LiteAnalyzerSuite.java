@@ -5,5 +5,5 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-    ch9k.plugins.liteanalyzer.LiteTextAnalyzerPluginTest.class})
+    ch9k.plugins.liteanalyzer.LiteTextAnalyzerTest.class})
 public class LiteAnalyzerSuite {}
