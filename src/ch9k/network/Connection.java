@@ -138,6 +138,7 @@ public class Connection {
     private void init(Socket socket) throws IOException {
         socket.setKeepAlive(true);
 
+        socket.setSoTimeout(20000);
         eventSocketHandler = new SocketHandler(socket,eventQueue,pool,this);
         
         notifyInitComplete();

@@ -131,7 +131,6 @@ public class ContactList extends AbstractListModel
         pool.addListener(listeners.get(5),
                 new EventFilter(AccountOfflineEvent.class));
 
-
         new PingContactThread().start();
     }
 
@@ -203,7 +202,6 @@ public class ContactList extends AbstractListModel
             UserDisconnectedEvent event = (UserDisconnectedEvent)ev;
             Contact contact = onlineHash.get(event.getSource());
             if(contact != null) {
-                System.err.println(contact.getUsername());
                 EventPool.getAppPool().raiseEvent(new ContactOfflineEvent(contact));
             }
         }
