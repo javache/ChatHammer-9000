@@ -1,8 +1,5 @@
 package ch9k.core.settings.gui;
 
-import ch9k.core.settings.Settings;
-import ch9k.core.settings.SettingsChangeEvent;
-import ch9k.core.settings.SettingsChangeListener;
 import ch9k.core.settings.event.PreferencePaneEvent;
 import ch9k.eventpool.Event;
 import ch9k.eventpool.EventFilter;
@@ -20,6 +17,7 @@ public class PreferencesFrame extends JFrame implements EventListener {
     private JTabbedPane tabbedPane;
 
     public PreferencesFrame() {
+        super("Preferences");
 
         EventPool.getAppPool().addListener(this, new EventFilter(PreferencePaneEvent.class));
 

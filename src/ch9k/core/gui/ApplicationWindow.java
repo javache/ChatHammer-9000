@@ -1,14 +1,25 @@
 package ch9k.core.gui;
 
 import ch9k.chat.gui.ContactListView;
+import ch9k.core.ChatApplication;
+import ch9k.core.settings.ProxyPrefPane;
+import ch9k.core.settings.event.PreferencePaneEvent;
+import ch9k.core.settings.gui.PreferencesFrame;
+import ch9k.eventpool.Event;
+import ch9k.eventpool.EventPool;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.EventQueue;
+import java.awt.event.ActionEvent;
 import java.util.LinkedList;
 import java.util.Queue;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
@@ -29,6 +40,8 @@ public class ApplicationWindow extends JFrame {
     private JLabel statusBar;
     private ContactListView contactList;
     private AccountPanel account;
+
+    private PreferencesFrame prefFrame;
 
     /**
      * Create a new window
@@ -75,7 +88,22 @@ public class ApplicationWindow extends JFrame {
         statusBar = new JLabel();
         statusBar.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         panel.add(statusBar, BorderLayout.SOUTH);
-        
+
+        prefFrame = new PreferencesFrame();
+
+        JMenuBar menuBar = new JMenuBar();
+        JMenu menu = new JMenu(ChatApplication.getInstance().getAccount().getUsername());
+        menu.add(new AbstractAction("show Preferences"){
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                prefFrame.setVisible(! prefFrame.isVisible());
+            }
+        });
+        menuBar.add(menu);
+        setJMenuBar(menuBar);
+
+        EventPool.getAppPool().raiseEvent(new PreferencePaneEvent("proxy", new ProxyPrefPane()));
+
         setContentPane(panel);
         setVisible(true);
         repaint();

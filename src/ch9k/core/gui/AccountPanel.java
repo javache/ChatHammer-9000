@@ -12,8 +12,6 @@ import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
 /**
  * Displays information about the
