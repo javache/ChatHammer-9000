@@ -78,11 +78,12 @@ public class PluginMenu extends JMenu
         itemMap.clear();
 
         /* Add a button for every available plugin. */
-        for(String p: manager.getAvailablePlugins()) {
+        Map<String, String> map = manager.getPrettyNames();
+        for(String prettyName: map.keySet()) {
             /* Declare the string object final for use in our listener. */
-            final String plugin = p;
+            final String plugin = map.get(prettyName);
 
-            JCheckBoxMenuItem item = new JCheckBoxMenuItem(prettify(plugin));
+            JCheckBoxMenuItem item = new JCheckBoxMenuItem(prettyName);
             add(item);
             itemMap.put(plugin, item);
 
@@ -97,15 +98,6 @@ public class PluginMenu extends JMenu
              * enable and disable plugins. */
             item.setEnabled(conversation.isInitiatedByMe());
         }
-    }
-
-    /**
-     * Prettify a plugin name.
-     * @param plugin Original plugin name.
-     * @return Prettier plugin name.
-     */
-    private String prettify(String plugin) {
-        return plugin.substring(plugin.lastIndexOf('.') + 1);
     }
 
     /**
