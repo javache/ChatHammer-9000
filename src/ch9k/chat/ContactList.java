@@ -166,7 +166,7 @@ public class ContactList extends AbstractListModel
             /* all this has to be true, otherwise we just have to ignore */
             if(onlineEvent.isExternal() && contact != null &&
                     !contact.isIgnored() && !contact.isBlocked()) {
-                if(onlineEvent.requiresReponse()) {
+                if(onlineEvent.requiresReponse() || !contact.isOnline()) {
                     EventPool.getAppPool().raiseNetworkEvent(new ContactOnlineEvent(contact));
                     
                     /* keep in mind here that this will set the state to online
