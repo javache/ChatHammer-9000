@@ -24,7 +24,7 @@ public class GoogleImageProvider extends ImageProvider {
      * Logger, well, to log.
      */
     private static final Logger logger =
-            Logger.getLogger(GoogleImageProviderPlugin.class);
+            Logger.getLogger(GoogleImageProvider.class);
 
     /**
      * The google API needs a referer.
