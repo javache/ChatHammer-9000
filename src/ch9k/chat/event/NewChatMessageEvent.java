@@ -9,6 +9,7 @@ import ch9k.chat.Conversation;
  */
 public class NewChatMessageEvent extends ConversationEvent {
     private ChatMessage message;
+    private boolean systemEvent;
 
     /**
      * Create a new NewChatMessageEvent
@@ -16,9 +17,22 @@ public class NewChatMessageEvent extends ConversationEvent {
      * @param message
      */
     public NewChatMessageEvent(Conversation conversation, ChatMessage message) {
+        this(conversation, message, false);
+    }
+
+    /**
+     * Create a new NewChatMessageEvent
+     * @param conversation
+     * @param message
+     * @param systemEvent
+     */
+    public NewChatMessageEvent(Conversation conversation, ChatMessage message,
+            boolean systemEvent) {
         super(conversation);
         this.message = message;
+        this.systemEvent = systemEvent;
     }
+
 
     /**
      * Get the ChatMessage
@@ -26,5 +40,14 @@ public class NewChatMessageEvent extends ConversationEvent {
      */
     public ChatMessage getChatMessage() {
         return message;
+    }
+    
+    /**
+     * Get the value of systemEvent
+     *
+     * @return the value of systemEvent
+     */
+    public boolean isSystemMessage() {
+        return systemEvent;
     }
 }
