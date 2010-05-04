@@ -12,15 +12,19 @@ import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 /**
  * Displays information about the
  * @author Pieter De Baets
  */
-public class AccountPanel extends JPanel {
+public class AccountPanel extends JPanel implements ChangeListener {
     private JLabel accountLabel;
     private StatusField statusField;
     private JButton logoffButton;
+    private StatusIcon statusIcon = new StatusIcon(20, true);
+
 
     public AccountPanel() {
         initComponents();
@@ -30,9 +34,11 @@ public class AccountPanel extends JPanel {
     public void initComponents() {
         Account account = ChatApplication.getInstance().getAccount();
 
+        account.addChangeListener(this);
+
         accountLabel = new JLabel(account.getUsername());
         accountLabel.setFont(accountLabel.getFont().deriveFont(15f));
-        accountLabel.setIcon(new StatusIcon(20, true));
+        accountLabel.setIcon(statusIcon);
         accountLabel.setBorder(BorderFactory.createEmptyBorder(5, 3, 5, 0));
 
         statusField = new StatusField();
@@ -73,5 +79,11 @@ public class AccountPanel extends JPanel {
             .addComponent(statusField)
             .addContainerGap()
         );
+    }
+
+    @Override
+    public void stateChanged(ChangeEvent e) {
+        statusIcon.setOnline(ChatApplication.getInstance().getAccount().isOnline());
+        accountLabel.repaint();
     }
 }
