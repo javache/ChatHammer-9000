@@ -2,7 +2,6 @@ package ch9k.core;
 
 import ch9k.core.gui.ApplicationWindow;
 import ch9k.core.gui.RegistrationPanel;
-import java.awt.Dialog.ModalityType;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.net.InetAddress;
@@ -22,8 +21,7 @@ public class RegistrationController {
 
         // create dialog
         JDialog dialog = new JDialog(window,
-                I18n.get("ch9k.core", "register_account"),
-                ModalityType.APPLICATION_MODAL);
+                I18n.get("ch9k.core", "register_account"), true);
         dialog.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         dialog.setLocationRelativeTo(window);
         dialog.setResizable(false);

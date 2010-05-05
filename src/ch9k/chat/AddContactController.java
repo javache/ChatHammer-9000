@@ -3,8 +3,7 @@ package ch9k.chat;
 import ch9k.chat.gui.AddContactPanel;
 import ch9k.core.ChatApplication;
 import ch9k.core.I18n;
-import java.awt.Dialog.ModalityType;
-import java.awt.Window;
+import java.awt.Frame;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import javax.swing.JDialog;
@@ -17,10 +16,9 @@ import javax.swing.JFrame;
 public class AddContactController {
     private AddContactPanel view;
 
-    public AddContactController(Window window) {
+    public AddContactController(Frame window) {
         JDialog dialog = new JDialog(window,
-                I18n.get("ch9k.chat", "add_contact"),
-                ModalityType.APPLICATION_MODAL);
+                I18n.get("ch9k.chat", "add_contact"), true);
         dialog.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         dialog.setLocationRelativeTo(window);
         dialog.setResizable(false);

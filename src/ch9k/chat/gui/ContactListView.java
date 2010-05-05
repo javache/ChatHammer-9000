@@ -12,7 +12,7 @@ import ch9k.core.ChatApplication;
 import ch9k.core.I18n;
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.Window;
+import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -119,11 +119,11 @@ public class ContactListView extends JPanel {
     }
 
     public static class AddContactAction extends AbstractAction {
-        private Window parent;
+        private Frame parent;
 
         public AddContactAction(Component component) {
             super(I18n.get("ch9k.chat", "add_contact"));
-            parent = SwingUtilities.getWindowAncestor(component);
+            parent = (Frame)SwingUtilities.getRoot(component);
         }
 
         public void actionPerformed(ActionEvent e) {

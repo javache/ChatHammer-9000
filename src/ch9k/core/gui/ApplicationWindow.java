@@ -70,7 +70,7 @@ public class ApplicationWindow extends JFrame {
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception ex) {
-            logger.info("Unable to load native look & feel");
+            logger.warn("Unable to load native look & feel");
         }
 
         // set the menu bar on top of the screen on mac
@@ -149,6 +149,15 @@ public class ApplicationWindow extends JFrame {
 
         // window-menu
         menuBar.add(new WindowMenu(this));
+
+        // about-menu
+        JMenu aboutMenu = new JMenu(I18n.get("ch9k.core", "about"));
+        aboutMenu.add(new AbstractAction(I18n.get("ch9k.core", "about")) {
+            public void actionPerformed(ActionEvent e) {
+                new AboutDialog(ApplicationWindow.this);
+            }
+        });
+        menuBar.add(aboutMenu);
     }
 
     private Queue<String> statusQueue = new LinkedList<String>();

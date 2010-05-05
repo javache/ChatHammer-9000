@@ -42,7 +42,8 @@ public class RegistrationPanel extends JPanel {
 
     /**
      * Create a new RegisterWindow
-     * @param controller 
+     * @param controller
+     * @param dialog 
      */
     public RegistrationPanel(RegistrationController controller, JDialog dialog) {
         this.controller = controller;
