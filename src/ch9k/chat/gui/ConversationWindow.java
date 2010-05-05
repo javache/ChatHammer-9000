@@ -6,10 +6,12 @@ import ch9k.chat.event.CloseConversationEvent;
 import ch9k.chat.event.ConversationEventFilter;
 import ch9k.chat.event.RequestPluginContainerEvent;
 import ch9k.chat.event.RequestedPluginContainerEvent;
+import ch9k.chat.event.ReleasePluginContainerEvent;
 import ch9k.core.gui.WindowMenu;
 import ch9k.eventpool.Event;
 import ch9k.eventpool.EventListener;
 import ch9k.eventpool.EventPool;
+import ch9k.eventpool.EventFilter;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.WindowAdapter;
@@ -18,12 +20,13 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.JMenuBar;
+import javax.swing.JTabbedPane;
 
 /**
  * Shows a conversation
  * @author Pieter De Baets
  */
-public class ConversationWindow extends JFrame {
+public class ConversationWindow extends JFrame implements EventListener {
     /**
      * The shown conversation
      */
@@ -35,9 +38,9 @@ public class ConversationWindow extends JFrame {
     private JSplitPane splitPane;
 
     /**
-     * Panel upon which a plugin is rendered
+     * Pane with visual plugins.
      */
-    private JPanel pluginPanel;
+    private JTabbedPane pluginPane;
 
     /**
      * Show all messages in the conversation
@@ -60,15 +63,13 @@ public class ConversationWindow extends JFrame {
     }
 
     public void init() {
-        EventPool.getAppPool().addListener(new EventListener() {
-            @Override
-            public void handleEvent(Event event) {
-                RequestPluginContainerEvent requestEvent = (RequestPluginContainerEvent)event;
-                EventPool.getAppPool().raiseEvent(new RequestedPluginContainerEvent(
-                    conversation, pluginPanel));
-            }
-        }, new ConversationEventFilter(RequestPluginContainerEvent.class, conversation));
-
+        EventFilter filter1 = new ConversationEventFilter(
+                RequestPluginContainerEvent.class, conversation);
+        EventPool.getAppPool().addListener(this, filter1);
+        EventFilter filter2 = new ConversationEventFilter(
+                ReleasePluginContainerEvent.class, conversation);
+        EventPool.getAppPool().addListener(this, filter2);
+        
         // listen for close-events
         addWindowListener(new WindowAdapter() {
             public void windowClosed(WindowEvent e) {
@@ -90,7 +91,7 @@ public class ConversationWindow extends JFrame {
     }
 
     private void initComponents() {
-        pluginPanel = new JPanel();
+        pluginPane = new JTabbedPane();
         conversationView = new ConversationListView(conversation);
         editor = new MessageEditor(conversation);
 
@@ -98,7 +99,7 @@ public class ConversationWindow extends JFrame {
         conversationPanel.add(conversationView, BorderLayout.CENTER);
         conversationPanel.add(editor, BorderLayout.SOUTH);
         splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, true,
-                pluginPanel, conversationPanel);
+                pluginPane, conversationPanel);
         splitPane.setSize(new Dimension(900, 600));
 
         splitPane.setDividerLocation(0.55);
@@ -111,5 +112,24 @@ public class ConversationWindow extends JFrame {
         setMinimumSize(new Dimension(600, 400));
 
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+    }
+
+    @Override
+    public void handleEvent(Event e) {
+        if(e instanceof RequestPluginContainerEvent) {
+            RequestPluginContainerEvent event = (RequestPluginContainerEvent) e;
+            JPanel newTab = new JPanel();
+            pluginPane.add(event.getTitle(), newTab);
+            EventPool.getAppPool().raiseEvent(new RequestedPluginContainerEvent(
+                conversation, newTab));
+        }
+
+        if(e instanceof ReleasePluginContainerEvent) {
+            ReleasePluginContainerEvent event = (ReleasePluginContainerEvent) e;
+            pluginPane.remove(event.getPluginContainer());
+        }
+
+        pluginPane.revalidate();
+        pluginPane.repaint();
     }
 }

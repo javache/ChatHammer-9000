@@ -5,7 +5,9 @@ import ch9k.chat.Conversation;
 import ch9k.chat.event.ConversationEventFilter;
 import ch9k.chat.event.RequestPluginContainerEvent;
 import ch9k.chat.event.RequestedPluginContainerEvent;
+import ch9k.chat.event.ReleasePluginContainerEvent;
 import ch9k.core.settings.Settings;
+import ch9k.core.I18n;
 import ch9k.eventpool.Event;
 import ch9k.eventpool.EventFilter;
 import ch9k.eventpool.EventListener;
@@ -56,7 +58,8 @@ public class Carousel extends AbstractPluginInstance implements EventListener {
         EventPool.getAppPool().addListener(this, filter);
 
         /* Asyncrhonously request a panel for this plugin. */
-        Event event = new RequestPluginContainerEvent(getConversation());
+        Event event = new RequestPluginContainerEvent(getConversation(),
+                I18n.get("ch9k.plugins.carousel", "carousel"));
         EventPool.getAppPool().raiseEvent(event);
     }
 
@@ -66,10 +69,11 @@ public class Carousel extends AbstractPluginInstance implements EventListener {
         EventPool.getAppPool().removeListener(this);
         panel.disablePlugin();
 
-        /* Remove everything from the container. */
+        /* Release the container request a panel for this plugin. */
+        Event event =
+                new ReleasePluginContainerEvent(getConversation(), container);
+        EventPool.getAppPool().raiseEvent(event);
         container.removeAll();
-        container.validate();
-        container.repaint();
         container = null;
     }
 
