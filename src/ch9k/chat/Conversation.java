@@ -85,7 +85,9 @@ public class Conversation implements EventListener {
             EventPool pool = EventPool.getAppPool();
             pool.removeListener(this);
 
-            window.dispose();
+            if(window.isVisible()) {
+                window.dispose();
+            }
         }
     }
 

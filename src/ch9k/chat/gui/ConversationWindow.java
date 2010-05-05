@@ -67,6 +67,7 @@ public class ConversationWindow extends JFrame implements EventListener {
         EventFilter requestFilter = new ConversationEventFilter(
                 RequestPluginContainerEvent.class, conversation);
         EventPool.getAppPool().addListener(this, requestFilter);
+        
         EventFilter releaseFilter = new ConversationEventFilter(
                 ReleasePluginContainerEvent.class, conversation);
         EventPool.getAppPool().addListener(this, releaseFilter);

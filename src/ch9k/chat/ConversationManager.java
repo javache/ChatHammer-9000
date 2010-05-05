@@ -139,9 +139,6 @@ public class ConversationManager implements Iterable<Conversation> {
 
             if(conversation != null) {
                 closeConversation(conversation, !closeConversationEvent.isExternal());
-            } else {
-                System.err.println("Got a CloseConversationEvent for" +
-                        "a conversation I do not know. WTF");
             }
         }
     }
