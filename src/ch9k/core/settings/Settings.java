@@ -65,7 +65,7 @@ public class Settings implements Serializable, Persistable {
         String old = settings.get(key);
         if(old == null && value == null) {
             return;
-        } else if(old != null && !old.equals(value)) {
+        } else if(old != null && !old.equals(value) || old == null) {
             settings.put(key, value);
             fireSettingsChanged(key, value);
         }
