@@ -71,20 +71,17 @@ public class ConversationManager implements Iterable<Conversation> {
                 conversation, new ChatMessage("info", I18n.get("ch9k.chat",
                     "contact_closed_conversation")), true);
         EventPool.getAppPool().raiseEvent(systemEvent);
-
-        // remove the conversation from the manager-list
-        conversations.remove(conversation.getContact());
-
+        
         // close the conversation
         conversation.close(forceClose);
     }
 
     public void clear() {
-        // using an iterator, so we can remove them immediately
-        Iterator<Conversation> it = conversations.values().iterator();
-        while(it.hasNext()) {
-            closeConversation(it.next(), true);
-            it.remove();
+        EventPool pool = EventPool.getAppPool();
+
+        // send a close event to each conversation
+        for(Conversation conversation : conversations.values()) {
+            pool.raiseNetworkEvent(new CloseConversationEvent(conversation));
         }
     }
 
