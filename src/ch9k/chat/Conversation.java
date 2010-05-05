@@ -155,6 +155,14 @@ public class Conversation implements EventListener {
         return window;
     }
 
+    /**
+     * Check if window is closed
+     * @return closed
+     */
+    public boolean isClosed() {
+        return closed;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (obj == null) {
