@@ -1,5 +1,6 @@
 package ch9k.chat;
 
+import ch9k.chat.event.CloseConversationEvent;
 import ch9k.chat.event.ConversationEvent;
 import ch9k.chat.event.NewConversationEvent;
 import ch9k.core.ChatApplication;
@@ -41,7 +42,7 @@ public class ConversationManagerTest {
         Conversation conversation = localConversationManager.startConversation(contact, true);
         assertEquals(conversation, localConversationManager.getConversation(contact));
         localConversationManager.closeConversation(conversation, true);
-        assertNull(localConversationManager.getConversation(contact));
+        assertTrue(localConversationManager.getConversation(contact).isClosed());
     }
 
     /**
@@ -54,8 +55,6 @@ public class ConversationManagerTest {
         localConversationManager.clear();
         assertNull(localConversationManager.getConversation(contact));
     }
-
-
 
     /**
      * Test of getConversation method, of class ConversationManager.
@@ -72,7 +71,7 @@ public class ConversationManagerTest {
      * Tests only the local side
      */
     @Test
-    public void testLocalHandleEvent() throws UnknownHostException, IOException, InterruptedException {
+    public void testHandleEvent() throws UnknownHostException, IOException, InterruptedException {
         EventPool localPool = EventPool.getAppPool();
         // wait for apppool to start up
         Thread.sleep(100);
@@ -81,21 +80,19 @@ public class ConversationManagerTest {
         remoteContact.setOnline(true);
         ChatApplication.getInstance().getAccount().getContactList().addContact(remoteContact);
 
+        // start a conversation
         ConversationEvent localCreateEvent = new NewConversationEvent(remoteContact);
-
         localPool.raiseNetworkEvent(localCreateEvent);
-        // wait while the event gets transmitted
         Thread.sleep(1000);
 
         Conversation startedConversation = localConversationManager.getConversation(remoteContact);
         assertNotNull(startedConversation);
 
-        // this will raise an CloseConversationEvent
+        // close the conversation
+        ConversationEvent localCloseEvent = new CloseConversationEvent(startedConversation);
+        localPool.raiseNetworkEvent(localCloseEvent);
         Thread.sleep(1000);
-        startedConversation.close(true);
-        Thread.sleep(200);
 
         assertNull(localConversationManager.getConversation(remoteContact));
-        
     }
 }

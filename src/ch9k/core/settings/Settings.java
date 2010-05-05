@@ -42,6 +42,10 @@ public class Settings implements Serializable, Persistable {
         listenerList = new EventListenerList();
     }
 
+    /**
+     * Construct from PDO
+     * @param object
+     */
     public Settings(PersistentDataObject object){
         this();
         load(object);
@@ -138,7 +142,7 @@ public class Settings implements Serializable, Persistable {
      * Remove a listener.
      * @param listener Listener to remove.
      */
-    public void removeSettinsListener(SettingsChangeListener listener) {
+    public void removeSettingsListener(SettingsChangeListener listener) {
         listenerList.remove(SettingsChangeListener.class, listener);
     }
 

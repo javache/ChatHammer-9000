@@ -13,11 +13,12 @@ import ch9k.eventpool.EventListener;
 import ch9k.eventpool.EventPool;
 import ch9k.eventpool.WarningEvent;
 import ch9k.plugins.PluginManager;
-import java.awt.EventQueue;
+import java.awt.Frame;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import org.apache.log4j.Logger;
 
 /**
  * The main application, OMG!
@@ -47,15 +48,13 @@ public class ChatApplication implements EventListener {
     private ChatApplication() {
         conversationManager = new ConversationManager();
         appWindow = new ApplicationWindow();
-
-        appWindow.addWindowListener(new WindowAdapter() {
-            public void windowClosed(WindowEvent e) {
-                exit();
-            }
-        });
-        Runtime.getRuntime().addShutdownHook(new Thread() {
+        
+        Runtime.getRuntime().addShutdownHook(new Thread("Shutdown-handler") {
             public void run() {
-                exit();
+                if(configuration != null) {
+                    logoff(false);
+                }
+                EventPool.getAppPool().close();
             }
         });
 
@@ -82,7 +81,7 @@ public class ChatApplication implements EventListener {
             newConfiguration = loginController.run(appWindow);
             if(newConfiguration == null) {
                 // user closed window
-                System.exit(0);
+                System.exit(1);
             }
         }
         configuration = newConfiguration;
@@ -107,13 +106,6 @@ public class ChatApplication implements EventListener {
                 // they will be executed 2 seconds after app started
             }
         }).start();
-    }
-
-    public void exit() {
-        if(configuration != null) {
-            logoff(false);
-        }
-        EventPool.getAppPool().close();
     }
 
     /**
