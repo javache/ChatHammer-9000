@@ -37,9 +37,6 @@ public class ConversationManager implements EventListener, Iterable<Conversation
             }
         }, new EventFilter(AccountLogoffEvent.class));
 
-        EventPool.getAppPool().addListener(new ContactOfflineListener(),
-                new EventFilter(ContactOfflineEvent.class));
-
     }
 
     /**
@@ -108,13 +105,6 @@ public class ConversationManager implements EventListener, Iterable<Conversation
             }
         }
         
-    }
-
-    private class AccountLogoffListener implements EventListener {
-        @Override
-        public void handleEvent(Event ev) {
-            clear();
-        }
     }
 
     @Override
