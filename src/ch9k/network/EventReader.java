@@ -1,6 +1,5 @@
 package ch9k.network;
 
-import ch9k.eventpool.Event;
 import ch9k.eventpool.EventPool;
 import ch9k.eventpool.NetworkEvent;
 import java.io.IOException;
@@ -50,7 +49,7 @@ public class EventReader implements Runnable {
                 try {
                     NetworkEvent event = (NetworkEvent)in.readObject();
                     processor.process(event);
-                    logger.info(String.format("Received event %s from %s",
+                    logger.info(String.format("Read event %s from %s",
                             event.getClass().getName(), event.getSource()));
                     pool.raiseEvent(event);
                 } catch (ClassNotFoundException e) {

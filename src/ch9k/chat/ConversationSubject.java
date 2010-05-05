@@ -11,7 +11,6 @@ public class ConversationSubject implements Serializable {
 
     /**
      * Constructor
-     * @param conversation
      * @param subjects
      */
     public ConversationSubject(String[] subjects) {

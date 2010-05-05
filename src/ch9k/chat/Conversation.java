@@ -17,6 +17,7 @@ import javax.swing.ListModel;
  */ 
 public class Conversation implements EventListener {
     private Contact contact;
+    private boolean closed;
     private boolean initiatedByMe;
     private Date startTime = new Date();
     private ConversationSubject subject;
@@ -31,6 +32,7 @@ public class Conversation implements EventListener {
     public Conversation(Contact contact, boolean initiatedByMe) {
         this.contact = contact;
         this.initiatedByMe = initiatedByMe;
+        this.closed = false;
         
         EventPool.getAppPool().addListener(this, new ConversationEventFilter(this));
 
@@ -52,8 +54,13 @@ public class Conversation implements EventListener {
         }
     }
 
-    /*
-     * Get the n last messages.
+    /**
+     * Get the last messages.
+     * Most recent message will be last in line.
+     * When there arent n messages the size of the returned array will be
+     * reduced to the number of messages.
+     * @param n The number of messages to return.
+     * @return The resulting messages.
      */
     public ChatMessage[] getMessages(int n) {
         int size = messages.getSize();
@@ -69,10 +76,19 @@ public class Conversation implements EventListener {
 
     /**
      * Close this conversation
+     * @param closeWindow Close the window or not?
      */
-    public void close() {
-        EventPool pool = EventPool.getAppPool();
-        pool.removeListener(this);
+    public void close(boolean closeWindow) {
+        closed = true;
+
+        if(closeWindow) {
+            EventPool pool = EventPool.getAppPool();
+            pool.removeListener(this);
+
+            if(window.isVisible()) {
+                window.dispose();
+            }
+        }
     }
 
     /**
@@ -124,12 +140,8 @@ public class Conversation implements EventListener {
     }
 
     /**
-     * Get the last messages.
-     * Most recent message will be last in line.
-     * When there arent n messages the size of the returned array will be
-     * reduced to the number of messages.
-     * @param n The number of messages to return.
-     * @return The resulting messages.
+     * Get the Messages ListModel
+     * @return
      */
     public ListModel getMessageList() {
         return messages;
@@ -141,6 +153,14 @@ public class Conversation implements EventListener {
      */
     public ConversationWindow getWindow() {
         return window;
+    }
+
+    /**
+     * Check if window is closed
+     * @return closed
+     */
+    public boolean isClosed() {
+        return closed;
     }
 
     @Override

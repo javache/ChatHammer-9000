@@ -118,8 +118,8 @@ public class EventPool {
     }
 
     private void broadcastEvent(Event event) {
-        logger.info("Sending " + event.getClass().getName() + " to " + listeners.size()
-                + " listener(s)");
+        logger.info("Broadcasting " + event.getClass().getName() + " to " + 
+                listeners.size() + " listener(s)");
         for(int i = 0; i < listeners.size(); i++) {
             FilteredListener pair = listeners.get(i);
             try {
