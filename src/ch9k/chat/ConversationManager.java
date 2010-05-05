@@ -118,8 +118,6 @@ public class ConversationManager implements Iterable<Conversation> {
             NewConversationEvent newConversationEvent = (NewConversationEvent)ev;
             Contact contact = newConversationEvent.getContact();
 
-            // TODO: handle events that come from reopening conversations
-
             // verify that this request comes from a real contact
             if(contact != null && contact.isOnline()) {
                 startConversation(newConversationEvent.getContact(),
@@ -137,10 +135,8 @@ public class ConversationManager implements Iterable<Conversation> {
             if(conversation != null) {
                 closeConversation(conversation, !closeConversationEvent.isExternal());
 
-                if(!closeConversationEvent.isExternal()) {
-                    // remove the conversation from the manager-list
-                    conversations.remove(conversation.getContact());
-                }
+                // remove the conversation from the manager-list
+                conversations.remove(conversation.getContact());
             }
         }
     }

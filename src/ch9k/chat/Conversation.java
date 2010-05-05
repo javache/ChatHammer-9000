@@ -3,7 +3,9 @@ package ch9k.chat;
 import ch9k.chat.event.ConversationEventFilter;
 import ch9k.chat.event.NewChatMessageEvent;
 import ch9k.chat.gui.ConversationWindow;
+import ch9k.core.event.AccountLogoffEvent;
 import ch9k.eventpool.Event;
+import ch9k.eventpool.EventFilter;
 import ch9k.eventpool.EventListener;
 import ch9k.eventpool.EventPool;
 import java.awt.EventQueue;
@@ -82,12 +84,19 @@ public class Conversation implements EventListener {
         closed = true;
 
         if(closeWindow) {
-            EventPool pool = EventPool.getAppPool();
-            pool.removeListener(this);
+            EventPool.getAppPool().removeListener(this);
 
             if(window.isVisible()) {
                 window.dispose();
             }
+        } else {
+            // add a listener so we can close when logoff happens
+            EventPool.getAppPool().addListener(new EventListener() {
+                public void handleEvent(Event event) {
+                    close(true);
+                    EventPool.getAppPool().removeListener(this);
+                }
+            }, new EventFilter(AccountLogoffEvent.class));
         }
     }
 
@@ -136,7 +145,9 @@ public class Conversation implements EventListener {
      * @param chatMessage
      */
     private void addMessage(ChatMessage chatMessage) {
-        messages.addElement(chatMessage);
+        if(!isClosed()) {
+            messages.addElement(chatMessage);
+        }
     }
 
     /**
