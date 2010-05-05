@@ -137,6 +137,7 @@ public class EventPool {
      * @throws PoolsClosedException
      */
     public void close() {
+        network.disconnect();
         eventProcessor.interrupt();
     }
 

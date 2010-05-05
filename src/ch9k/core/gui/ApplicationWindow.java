@@ -51,7 +51,7 @@ public class ApplicationWindow extends JFrame implements EventListener {
      */
     public ApplicationWindow() {
         super("ChatHammer 9000");
-        // @TODO: check how this works out on mac (where windows can be 'hidden'
+        // @TODO: check how this works out on mac (where windows can be 'hidden')
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 
         EventPool.getAppPool().addListener(this, new EventFilter(AccountLogoffEvent.class));
@@ -80,8 +80,15 @@ public class ApplicationWindow extends JFrame implements EventListener {
      * Init the 'real' application view, after login has completed
      */
     public void initApplicationView() {
-        menuBar = new JMenuBar();
-        setJMenuBar(menuBar);
+        prefFrame = new PreferencesFrame();
+        EventPool.getAppPool().raiseEvent(new PreferencePaneEvent(
+                I18n.get("ch9k.core", "preferences_title"),
+                new ProxyPrefPane(ChatApplication.getInstance().getSettings()))
+        );
+
+        // Request the plugin manager here, so it will add preference panes
+        // for the different plugins.
+        ChatApplication.getInstance().getPluginManager();
 
         panel = new JPanel();
         panel.setLayout(new BorderLayout());
@@ -96,29 +103,40 @@ public class ApplicationWindow extends JFrame implements EventListener {
         statusBar = new JLabel();
         statusBar.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         panel.add(statusBar, BorderLayout.SOUTH);
-
-        prefFrame = new PreferencesFrame();
-        JMenu menu = new JMenu(ChatApplication.getInstance().getAccount().getUsername());
-        menu.add(new AbstractAction(I18n.get("ch9k.core", "show_preferences")){
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                prefFrame.setVisible(true);
-            }
-        });
-        menuBar.add(menu);
-        menuBar.add(new WindowMenu(this));
-
-        EventPool.getAppPool().raiseEvent(new PreferencePaneEvent(I18n.get("ch9k.core", "preferences_title"), 
-                new ProxyPrefPane(ChatApplication.getInstance().getSettings())));
-
-        /* Request the plugin manager here, so it will add preference panes for
-         * the different plugins. */
-
-        ChatApplication.getInstance().getPluginManager();
+        
+        initMenu();
 
         setContentPane(panel);
         setVisible(true);
         repaint();
+    }
+
+    private void initMenu() {
+        menuBar = new JMenuBar();
+        setJMenuBar(menuBar);
+        
+        // file-menu
+        JMenu fileMenu = new JMenu(I18n.get("ch9k.core", "file"));
+        fileMenu.add(new AbstractAction(I18n.get("ch9k.core", "preferences")){
+            public void actionPerformed(ActionEvent e) {
+                prefFrame.setVisible(true);
+            }
+        });
+        fileMenu.add(new AbstractAction(I18n.get("ch9k.core", "log_off")) {
+            public void actionPerformed(ActionEvent e) {
+                ChatApplication.getInstance().logoff(true);
+            }
+        });
+        fileMenu.add(new AbstractAction(I18n.get("ch9k.core", "exit")) {
+            public void actionPerformed(ActionEvent e) {
+                ChatApplication.getInstance().exit();
+                ApplicationWindow.this.dispose();
+            }
+        });
+        menuBar.add(fileMenu);
+
+        // window-menu
+        menuBar.add(new WindowMenu(this));
     }
 
     private Queue<String> statusQueue = new LinkedList<String>();
