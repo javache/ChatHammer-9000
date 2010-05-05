@@ -24,6 +24,8 @@ public class Connection {
      */
     public static final int DEFAULT_PORT = 4011;
 
+    public static final boolean TRUST_TCP = true;
+
     /**
      * Amount of time to wait for a socket on connect
      */
@@ -143,7 +145,10 @@ public class Connection {
     private void init(Socket socket) throws IOException {
         socket.setKeepAlive(true);
 
-        /* socket.setSoTimeout(SOCKET_READ_TIMEOUT); */
+        if(!Connection.TRUST_TCP) {
+            socket.setSoTimeout(SOCKET_READ_TIMEOUT);
+        }
+        
         eventSocketHandler = new SocketHandler(socket,eventQueue,pool,this);
         
         notifyInitComplete();
