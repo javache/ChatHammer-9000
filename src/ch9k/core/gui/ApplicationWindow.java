@@ -144,6 +144,7 @@ public class ApplicationWindow extends JFrame {
         JMenu contactsMenu = new JMenu(I18n.get("ch9k.core", "contacts"));
         contactsMenu.add(new ContactListView.AddContactAction(this));
         contactsMenu.addSeparator();
+        contactList.initMenu(contactsMenu);
         menuBar.add(contactsMenu);
 
         // window-menu

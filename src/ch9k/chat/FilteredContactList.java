@@ -2,6 +2,7 @@ package ch9k.chat;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 import javax.swing.AbstractListModel;
 import javax.swing.event.ListDataEvent;
@@ -25,12 +26,13 @@ public class FilteredContactList extends AbstractListModel implements ListDataLi
     /*
      * Represents a mapping from this array to the ContactList
      */
-    private ArrayList<Integer> mapping;
+    private ArrayList<Contact> mapping;
 
     public FilteredContactList(ContactList contactList) {
         this.contactList = contactList;
         contactList.addListDataListener(this);
-        mapping = new ArrayList<Integer>();
+
+        mapping = new ArrayList<Contact>();
         filterSet = new HashSet<ContactFilter>();
         updateMapping();
     }
@@ -49,21 +51,19 @@ public class FilteredContactList extends AbstractListModel implements ListDataLi
 
     private synchronized void updateMapping() {
         mapping.clear();
-        int i = 0;
+        
         for(Contact contact : contactList.getContacts()) {
+            Iterator<ContactFilter> it = filterSet.iterator();
             boolean shouldDisplay = true;
-            for(ContactFilter contactFilter : filterSet) {
-                /* i'm to lazy to write beautiful loops */
-                if(!shouldDisplay) {
-                    break;
-                }
-                shouldDisplay &= contactFilter.shouldDisplay(contact);
+            while(it.hasNext() && shouldDisplay) {
+                shouldDisplay &= it.next().shouldDisplay(contact);
             }
+
             if(shouldDisplay) {
-                mapping.add(i);
+                mapping.add(contact);
             }
-            i++;
         }
+        
         fireListChanged();
     }
 
@@ -78,7 +78,7 @@ public class FilteredContactList extends AbstractListModel implements ListDataLi
 
     @Override
     public Object getElementAt(int index) {
-        return contactList.getElementAt(mapping.get(index));
+        return mapping.get(index);
     }
 
     @Override
