@@ -1,6 +1,7 @@
 package ch9k.chat;
 
 import ch9k.chat.event.CloseConversationEvent;
+import ch9k.chat.event.ContactOfflineEvent;
 import ch9k.chat.event.ConversationEvent;
 import ch9k.chat.event.NewChatMessageEvent;
 import ch9k.chat.event.NewConversationEvent;
@@ -10,9 +11,12 @@ import ch9k.eventpool.Event;
 import ch9k.eventpool.EventFilter;
 import ch9k.eventpool.EventListener;
 import ch9k.eventpool.EventPool;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.logging.Level;
 import org.apache.log4j.Logger;
 
 /**
@@ -32,6 +36,10 @@ public class ConversationManager implements EventListener, Iterable<Conversation
                 clear();
             }
         }, new EventFilter(AccountLogoffEvent.class));
+
+        EventPool.getAppPool().addListener(new ContactOfflineListener(),
+                new EventFilter(ContactOfflineEvent.class));
+
     }
 
     /**
@@ -82,6 +90,24 @@ public class ConversationManager implements EventListener, Iterable<Conversation
      */
     public Conversation getConversation(Contact contact) {
         return conversations.get(contact);
+    }
+
+    private class ContactOfflineListener implements EventListener {
+
+        @Override
+        public void handleEvent(Event ev) {
+            ContactOfflineEvent event = (ContactOfflineEvent)ev;
+            Conversation conversation = conversations.get(event.getContact());
+            if(conversation != null) {
+                CloseConversationEvent closeEvent = new CloseConversationEvent(conversation);
+                try {
+                    closeEvent.setSource(InetAddress.getLocalHost());
+                } catch(UnknownHostException ex) {
+                }
+                EventPool.getAppPool().raiseEvent(closeEvent);
+            }
+        }
+        
     }
 
     @Override
