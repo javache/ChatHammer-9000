@@ -97,10 +97,7 @@ public class ConversationManager implements EventListener, Iterable<Conversation
             Conversation conversation = conversations.get(event.getContact());
             if(conversation != null) {
                 CloseConversationEvent closeEvent = new CloseConversationEvent(conversation);
-                try {
-                    closeEvent.setSource(InetAddress.getLocalHost());
-                } catch(UnknownHostException ex) {
-                }
+                closeEvent.setSource(event.getContact().getIp());
                 EventPool.getAppPool().raiseEvent(closeEvent);
             }
         }

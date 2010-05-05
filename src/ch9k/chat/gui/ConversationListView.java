@@ -26,7 +26,7 @@ class ConversationListView extends JScrollPane {
     public ConversationListView(Conversation conversation) {
         this.conversation = conversation;
 
-        messages = new JList(conversation);
+        messages = new JList(conversation.getMessageList());
         messages.setCellRenderer(new ChatMessageListCellRenderer());
 
         setViewportView(messages);
