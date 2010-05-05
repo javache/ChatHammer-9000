@@ -15,6 +15,8 @@ import java.awt.Image;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 import java.util.HashSet;
 import java.util.Set;
 import javax.swing.JPanel;
@@ -28,7 +30,7 @@ import java.awt.geom.AffineTransform;
  * Panel in which the user can select an image.
  */
 public class CarouselImageChooserPanel
-        extends JPanel implements ChangeListener {
+        extends JPanel implements ChangeListener, MouseWheelListener {
     /**
      * Number of images visible. MUST BE ODD.
      */
@@ -76,6 +78,7 @@ public class CarouselImageChooserPanel
         setBackground(new Color(50, 50, 50));
 
         chooserModel.addChangeListener(this);
+        addMouseWheelListener(this);
     }
 
     /**
@@ -139,8 +142,8 @@ public class CarouselImageChooserPanel
         graphics.drawImage(image, transform, null);
 
         /* Scale and transform. */
-        transform.translate(0.0, image.getHeight(null) * 2);
-        transform.scale(1.0, -1.0);
+        transform.translate(0.0, image.getHeight(null) * 1.6);
+        transform.scale(1.0, - 0.6);
         graphics.drawImage(image, transform, null);
 
         /* Scale back to original format. */
@@ -156,5 +159,14 @@ public class CarouselImageChooserPanel
     @Override
     public void stateChanged(ChangeEvent event) {
         repaint();
+    }
+
+    @Override
+    public void mouseWheelMoved(MouseWheelEvent event) {
+        if(event.getWheelRotation() > 0) {
+            chooserModel.setNextSelection(chooserModel.getNextSelection() + 1);
+        } else {
+            chooserModel.setNextSelection(chooserModel.getNextSelection() - 1);
+        }
     }
 }

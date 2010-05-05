@@ -143,7 +143,8 @@ public class CarouselImageChooserModel
      * @param nextSelection The next selection.
      */
     public void setNextSelection(int nextSelection) {
-        if(this.nextSelection != nextSelection) {
+        if(this.nextSelection != nextSelection &&
+                nextSelection >= 0 && nextSelection < images.length) {
             previousSelection = currentSelection;
             this.nextSelection = nextSelection;
 
