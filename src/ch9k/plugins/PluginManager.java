@@ -186,7 +186,7 @@ public class PluginManager extends Model implements EventListener {
      */
     private synchronized boolean disable(
             String name, Conversation conversation) {
-        Plugin plugin = plugins.get(conversation);
+        Plugin plugin = plugins.get(name);
         if(plugin == null || !plugin.isEnabled(conversation)) {
             return false;
         }
