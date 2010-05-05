@@ -42,23 +42,18 @@ public class FlickrImageProviderPreferencePane
 
         safeSearchCheckBox.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent event) {
-                if(Settings.TRUE.equals(settings.get(SAFE_SEARCH))) {
-                    settings.set(SAFE_SEARCH, Settings.FALSE);
-                } else {
-                    settings.set(SAFE_SEARCH, Settings.TRUE);
-                }
+                settings.setBoolean(SAFE_SEARCH,
+                        !settings.getBoolean(SAFE_SEARCH));
             }
         });
 
-        safeSearchCheckBox.setSelected(
-                Settings.TRUE.equals(settings.get(SAFE_SEARCH)));
+        safeSearchCheckBox.setSelected(settings.getBoolean(SAFE_SEARCH));
     }
 
     @Override
     public void settingsChanged(SettingsChangeEvent event) {
         if(SAFE_SEARCH.equals(event.getKey())) {
-            safeSearchCheckBox.setSelected(
-                    Settings.TRUE.equals(event.getValue()));
+            safeSearchCheckBox.setSelected(settings.getBoolean(SAFE_SEARCH));
         }
     }
 }

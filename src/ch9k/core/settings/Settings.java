@@ -52,8 +52,17 @@ public class Settings implements Serializable, Persistable {
      * @param key Key of the setting to get.
      * @return Value of the requested setting.
      */
-    public String get(String key) {
+    public synchronized String get(String key) {
         return settings.get(key);
+    }
+
+    /**
+     * Get a setting as boolean value.
+     * @param key Key of the setting to get.
+     * @return The value as a boolean.
+     */
+    public synchronized boolean getBoolean(String key) {
+        return TRUE.equals(get(key));
     }
 
     /**
@@ -61,13 +70,31 @@ public class Settings implements Serializable, Persistable {
      * @param key Key of the setting to change.
      * @param value New setting value.
      */
-    public void set(String key, String value) {
+    public synchronized void set(String key, String value) {
         String old = settings.get(key);
         if(old == null && value == null) {
             return;
         } else if(old != null && !old.equals(value) || old == null) {
             settings.put(key, value);
             fireSettingsChanged(key, value);
+        }
+    }
+
+    /**
+     * Change a boolean setting.
+     * @param key Key of the setting to change.
+     * @param value New setting value.
+     */
+    public synchronized void setBoolean(String key, boolean value) {
+        boolean old = getBoolean(key);
+        if(old != value) {
+            if(value) {
+                settings.put(key, TRUE);
+            } else {
+                settings.put(key, FALSE);
+            }
+
+            fireSettingsChanged(key, get(key));
         }
     }
 
