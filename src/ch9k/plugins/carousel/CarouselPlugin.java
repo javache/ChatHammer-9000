@@ -20,4 +20,9 @@ public class CarouselPlugin extends AbstractPlugin {
     protected JPanel createPreferencePane(Settings settings) {
         return null;
     }
+
+    @Override
+    protected Settings createDefaultSettings() {
+        return new Settings();
+    }
 }

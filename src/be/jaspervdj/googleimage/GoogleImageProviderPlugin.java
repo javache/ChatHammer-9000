@@ -21,4 +21,9 @@ public class GoogleImageProviderPlugin extends AbstractPlugin {
     protected JPanel createPreferencePane(Settings settings) {
         return new ImageProviderPreferencePane(settings);
     }
+
+    @Override
+    protected Settings createDefaultSettings() {
+        return new Settings();
+    }
 }

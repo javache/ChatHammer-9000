@@ -19,6 +19,14 @@ public class LiteTextAnalyzerPlugin extends AbstractPlugin {
 
     @Override
     protected JPanel createPreferencePane(Settings settings) {
-        return null;
+        return new LiteTextAnalyzerPreferencePane(settings);
+    }
+
+    @Override
+    protected Settings createDefaultSettings() {
+        Settings settings = new Settings();
+        settings.setInt(LiteTextAnalyzerPreferencePane.MAX_SUBJECTS, 3);
+        settings.setInt(LiteTextAnalyzerPreferencePane.MAX_MESSAGES, 5);
+        return settings;
     }
 }

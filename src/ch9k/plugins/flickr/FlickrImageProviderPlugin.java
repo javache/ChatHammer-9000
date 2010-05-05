@@ -22,4 +22,9 @@ public class FlickrImageProviderPlugin extends AbstractPlugin {
     public JPanel createPreferencePane(Settings settings) {
         return new ImageProviderPreferencePane(settings);
     }
+
+    @Override
+    public Settings createDefaultSettings() {
+        return new Settings();
+    }
 }

@@ -23,7 +23,8 @@ public class LiteTextAnalyzer extends TextAnalyzer {
 
     @Override
     public int getMaxNumberOfMessages() {
-        return 10;
+        return getSettings().getInt(
+                LiteTextAnalyzerPreferencePane.MAX_MESSAGES);
     }
 
     @Override

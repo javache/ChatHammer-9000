@@ -105,6 +105,7 @@ public abstract class TextAnalyzer extends AbstractPluginInstance
         /* Get the raw text from the messages. */
         ChatMessage[] chatMessages =
                 getConversation().getMessages(getMaxNumberOfMessages());
+        System.out.println("Messages: " + getMaxNumberOfMessages());
         String[] messages = new String[chatMessages.length];
         for(int i = 0; i < messages.length; i++) {
             messages[i] = chatMessages[i].getRawText();
@@ -113,6 +114,7 @@ public abstract class TextAnalyzer extends AbstractPluginInstance
         /* Create a new subject. */
         String[] result = getSubjects(messages);
         ConversationSubject subject = new ConversationSubject(result);
+        System.out.println("Subjects: " + result.length);
 
         /* Throw the new event. */ 
         NewConversationSubjectEvent subjectEvent =

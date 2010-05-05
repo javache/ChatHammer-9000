@@ -83,6 +83,8 @@ public class LiteTextAnalyzerPreferencePane
                 .addComponent(maxMessagesLabel)
                 .addComponent(maxMessagesSpinner)));
 
+        setLayout(layout);
+
         maxSubjectsSpinner.addChangeListener(this);
         maxMessagesSpinner.addChangeListener(this);
         settings.addSettingsListener(this);
