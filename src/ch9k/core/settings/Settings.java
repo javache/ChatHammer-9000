@@ -66,6 +66,29 @@ public class Settings implements Serializable, Persistable {
     }
 
     /**
+     * Get a setting as int value.
+     * @param key Key of the setting to get.
+     * @return The value as an int.
+     */
+    public synchronized int getInt(String key) {
+        return getInt(key, 0);
+    }
+
+    /**
+     * Get a settings as int value.
+     * @param key Key of the setting to get.
+     * @param fallback Default value, if the key is not found.
+     */
+    public synchronized int getInt(String key, int fallback) {
+        String value = get(key);
+        if(value == null) {
+            return fallback;
+        } else {
+            return Integer.parseInt(value);
+        }
+    }
+
+    /**
      * Change a setting.
      * @param key Key of the setting to change.
      * @param value New setting value.
@@ -97,6 +120,20 @@ public class Settings implements Serializable, Persistable {
             fireSettingsChanged(key, get(key));
         }
     }
+
+    /**
+     * Change an integer setting.
+     * @param key Key of the setting to change.
+     * @param value New setting value.
+     */
+    public synchronized void setInt(String key, int value) {
+        int old = getInt(key);
+        if(old != value) {
+            settings.put(key, "" + value);
+            fireSettingsChanged(key, "" + value);
+        }
+    }
+
 
     /**
      * Register a listener.
