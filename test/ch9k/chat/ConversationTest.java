@@ -135,7 +135,7 @@ public class ConversationTest {
         Thread.sleep(500);
         TestListener testListener = new TestListener();
         EventPool.getAppPool().addListener(testListener, new EventFilter(CloseConversationEvent.class));
-        conversation.close();
+        conversation.close(true);
         Thread.sleep(100);
 
         CloseConversationEvent closeConversationEvent = (CloseConversationEvent)testListener.lastReceivedEvent;

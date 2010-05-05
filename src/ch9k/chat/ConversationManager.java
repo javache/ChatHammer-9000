@@ -106,6 +106,7 @@ public class ConversationManager implements Iterable<Conversation> {
         public void handleEvent(Event ev) {
             ContactOfflineEvent event = (ContactOfflineEvent)ev;
             Conversation conversation = conversations.get(event.getContact());
+            
             if(conversation != null) {
                 CloseConversationEvent closeEvent = new CloseConversationEvent(conversation);
                 closeEvent.setSource(event.getContact().getIp());
@@ -136,7 +137,12 @@ public class ConversationManager implements Iterable<Conversation> {
             CloseConversationEvent closeConversationEvent = (CloseConversationEvent)ev;
             Conversation conversation = closeConversationEvent.getConversation();
 
-            closeConversation(conversation, !closeConversationEvent.isExternal());
+            if(conversation != null) {
+                closeConversation(conversation, !closeConversationEvent.isExternal());
+            } else {
+                System.err.println("Got a CloseConversationEvent for" +
+                        "a conversation I do not know. WTF");
+            }
         }
     }
 }

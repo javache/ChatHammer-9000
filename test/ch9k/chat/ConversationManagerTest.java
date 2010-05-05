@@ -40,7 +40,7 @@ public class ConversationManagerTest {
     public void testCloseConversation() {
         Conversation conversation = localConversationManager.startConversation(contact, true);
         assertEquals(conversation, localConversationManager.getConversation(contact));
-        localConversationManager.closeConversation(conversation);
+        localConversationManager.closeConversation(conversation, true);
         assertNull(localConversationManager.getConversation(contact));
     }
 
@@ -92,7 +92,7 @@ public class ConversationManagerTest {
 
         // this will raise an CloseConversationEvent
         Thread.sleep(1000);
-        startedConversation.close();
+        startedConversation.close(true);
         Thread.sleep(200);
 
         assertNull(localConversationManager.getConversation(remoteContact));

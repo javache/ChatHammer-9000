@@ -64,12 +64,12 @@ public class ConversationWindow extends JFrame implements EventListener {
     }
 
     public void init() {
-        EventFilter filter1 = new ConversationEventFilter(
+        EventFilter requestFilter = new ConversationEventFilter(
                 RequestPluginContainerEvent.class, conversation);
-        EventPool.getAppPool().addListener(this, filter1);
-        EventFilter filter2 = new ConversationEventFilter(
+        EventPool.getAppPool().addListener(this, requestFilter);
+        EventFilter releaseFilter = new ConversationEventFilter(
                 ReleasePluginContainerEvent.class, conversation);
-        EventPool.getAppPool().addListener(this, filter2);
+        EventPool.getAppPool().addListener(this, releaseFilter);
         
         // listen for close-events
         addWindowListener(new WindowAdapter() {
@@ -78,8 +78,7 @@ public class ConversationWindow extends JFrame implements EventListener {
                     new CloseConversationEvent(conversation));
             }
         });
-
-
+        
         initComponents();
 
         // Add a menu bar, containing a menu in which different 
