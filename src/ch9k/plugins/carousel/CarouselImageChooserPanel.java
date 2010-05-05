@@ -20,6 +20,8 @@ import java.util.Set;
 import javax.swing.JPanel;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ChangeEvent;
+import javax.imageio.ImageIO;
+import java.io.IOException;
 import java.awt.geom.AffineTransform;
 
 /**
@@ -46,6 +48,21 @@ public class CarouselImageChooserPanel
      * The chooser model.
      */
     private CarouselImageChooserModel chooserModel;
+
+    /**
+     * Gradient for reflections.
+     */
+    private static Image gradient = null;
+    
+    static {
+        try {
+            gradient = ImageIO.read(
+                    CarouselImageChooserPanel.class.getResource(
+                            "/ch9k/plugins/carousel/gradient.png"));
+        } catch (IOException exception) {
+            // Ignore.
+        }
+    }
 
     /**
      * Constructor.
@@ -125,6 +142,15 @@ public class CarouselImageChooserPanel
         transform.translate(0.0, image.getHeight(null) * 2);
         transform.scale(1.0, -1.0);
         graphics.drawImage(image, transform, null);
+
+        /* Scale back to original format. */
+        transform.scale((double) image.getWidth(null) / imageWidth,
+                (double) image.getHeight(null) / imageHeight);
+
+        /* Scale to gradient format. */
+        transform.scale(imageWidth / (double) gradient.getWidth(null),
+                imageHeight / (double) gradient.getHeight(null));
+        graphics.drawImage(gradient, transform, null);
     }
 
     @Override
