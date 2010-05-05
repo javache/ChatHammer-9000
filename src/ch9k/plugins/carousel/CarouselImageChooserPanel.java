@@ -23,7 +23,8 @@ import javax.swing.event.ChangeEvent;
 /**
  * Panel in which the user can select an image.
  */
-public class CarouselImageChooserPanel extends JPanel implements ChangeListener {
+public class CarouselImageChooserPanel
+        extends JPanel implements ChangeListener {
     /**
      * Number of images visible. MUST BE ODD.
      */
@@ -81,15 +82,42 @@ public class CarouselImageChooserPanel extends JPanel implements ChangeListener 
     private void drawImage(Graphics graphics, Image image, int index,
             double offset) {
         if(image == null) {
+            // System.out.println("So not drawing your image.");
             return;
         }
+
+        // System.out.println("Drawing image.");
 
         Insets insets = getInsets();
         double width = (double) getWidth() - insets.left - insets.right;
         double height = (double) getHeight() - insets.top - insets.bottom;
 
-        double imageWidth = (width - NUM_IMAGES * 2 * SPACING) / NUM_IMAGES;
-        double x = offset + imageWidth * (double) index + imageWidth * 0.5;
+        double imageMaxWidth = (width - NUM_IMAGES * 2 * SPACING) / NUM_IMAGES;
+        double imageMaxHeight = height * 0.7;
+        double x = offset + imageMaxWidth * (double) index +
+                imageMaxWidth * 0.5;
+
+        // System.out.println(x);
+
+        /* Find out the ascpet ratio of the image. */
+        double imageAspect =
+                (double) image.getWidth(null) / image.getHeight(null);
+
+        /* Scale by width. */
+        double imageWidth = imageMaxWidth;
+        double imageHeight = (double) imageWidth / imageAspect;
+
+        /* We're wrong, scale by imageHeight. */
+        if(imageHeight > imageMaxHeight) {
+            imageHeight = imageMaxHeight;
+            imageWidth = imageAspect * (double) imageHeight;
+        }
+
+        /* Actually draw the image. */
+        graphics.drawImage(image,
+                insets.left + (int) (x - imageWidth * 0.5),
+                insets.top + (int) (height * 0.5 - imageHeight * 0.5),
+                (int) imageWidth, (int) imageHeight, Color.BLACK, null);
     }
 
     @Override

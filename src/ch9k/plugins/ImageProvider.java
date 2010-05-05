@@ -75,7 +75,7 @@ public abstract class ImageProvider extends AbstractPluginInstance
         ConversationSubject subject = event.getConversationSubject();
         String[] subjects = subject.getSubjects();
 
-        StringBuilder text = new StringBuilder();
+        final StringBuilder text = new StringBuilder();
         if(subjects.length > 0) {
             text.append(subjects[0]);
         }
@@ -84,7 +84,11 @@ public abstract class ImageProvider extends AbstractPluginInstance
         }
 
         /* Send the new image event. */
-        sendNewImageEvent(text.toString());
+        new Thread(new Runnable() {
+            public void run() {
+                sendNewImageEvent(text.toString());
+            }
+        }).run();
     }
 
     /**
