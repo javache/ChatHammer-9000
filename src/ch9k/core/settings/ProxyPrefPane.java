@@ -15,8 +15,8 @@ public class ProxyPrefPane extends JPanel {
     private Settings settings;
     private JTextField proxy;
 
-    public ProxyPrefPane() {
-        settings = new Settings();
+    public ProxyPrefPane(Settings sets) {
+        this.settings = sets;
         proxy = new JTextField();
         proxy.setColumns(30);
         proxy.addActionListener(new ActionListener() {
@@ -26,6 +26,9 @@ public class ProxyPrefPane extends JPanel {
                 settings.set("proxy", proxy.getText());
             }
         });
+        if(settings.get("proxy") != null && !settings.get("proxy").isEmpty()){
+            proxy.setText(settings.get("proxy"));
+        }
         add(new JLabel("proxy: "));
         add(proxy);
 

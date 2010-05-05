@@ -6,6 +6,7 @@ import ch9k.eventpool.StatusEvent;
 import ch9k.chat.ConversationManager;
 import ch9k.configuration.Configuration;
 import ch9k.core.gui.ApplicationWindow;
+import ch9k.core.settings.Settings;
 import ch9k.eventpool.Event;
 import ch9k.eventpool.EventFilter;
 import ch9k.eventpool.EventListener;
@@ -140,6 +141,19 @@ public class ChatApplication implements EventListener {
     public Account getAccount() {
         if(configuration != null) {
             return configuration.getAccount();
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Get the current user's settings, may return null if authentication
+     * is not performed yet
+     * @return
+     */
+    public Settings getSettings() {
+        if(configuration != null) {
+            return configuration.getSettings();
         } else {
             return null;
         }
