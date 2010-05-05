@@ -9,6 +9,7 @@ import ch9k.plugins.ProvidedImage;
 import ch9k.plugins.event.NewProvidedImageEvent;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Insets;
 import java.awt.Image;
 import java.awt.Dimension;
@@ -19,6 +20,7 @@ import java.util.Set;
 import javax.swing.JPanel;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ChangeEvent;
+import java.awt.geom.AffineTransform;
 
 /**
  * Panel in which the user can select an image.
@@ -67,8 +69,9 @@ public class CarouselImageChooserPanel
     }
 
     @Override
-    public void paintComponent(Graphics graphics) {
-        super.paintComponent(graphics);
+    public void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        Graphics2D graphics = (Graphics2D) g;
 
         /* Do not forget to draw two extra images. */
         int index = (int) chooserModel.getCurrentSelection();
@@ -79,7 +82,7 @@ public class CarouselImageChooserPanel
         }
     }
 
-    private void drawImage(Graphics graphics, Image image, int index,
+    private void drawImage(Graphics2D graphics, Image image, int index,
             double offset) {
         if(image == null) {
             return;
@@ -92,8 +95,7 @@ public class CarouselImageChooserPanel
         double imageMaxWidth = (width - (double) NUM_IMAGES * 2.0 * SPACING) /
                 (double) NUM_IMAGES;
         double imageMaxHeight = height * 0.6;
-        double x = imageMaxWidth * ((double) index + offset) +
-                imageMaxWidth * 0.5;
+        double x = imageMaxWidth * ((double) index + offset + 0.5);
 
         /* Find out the aspect ratio of the image. */
         double imageAspect =
@@ -101,19 +103,28 @@ public class CarouselImageChooserPanel
 
         /* Scale by width. */
         double imageWidth = imageMaxWidth - 2 * SPACING;
-        double imageHeight = (double) imageWidth / imageAspect;
+        double imageHeight = imageWidth / imageAspect;
 
         /* We're wrong, scale by imageHeight. */
         if(imageHeight > imageMaxHeight) {
             imageHeight = imageMaxHeight;
-            imageWidth = imageAspect * (double) imageHeight;
+            imageWidth = imageAspect * imageHeight;
         }
 
-        /* Actually draw the image. */
-        graphics.drawImage(image,
-                insets.left + (int) (x - imageWidth * 0.5),
-                insets.top + (int) (height * 0.7 - imageHeight),
-                (int) imageWidth, (int) imageHeight, Color.BLACK, null);
+        /* Build a transformation for the image. */
+        AffineTransform transform = new AffineTransform();
+        transform.translate(insets.left + (int) x,
+                insets.top + height * 0.7);
+        transform.scale(imageWidth / (double) image.getWidth(null),
+                imageHeight / (double) image.getHeight(null));
+        transform.translate(- (double) image.getWidth(null) * 0.5,
+                -image.getHeight(null));
+        graphics.drawImage(image, transform, null);
+
+        /* Scale and transform. */
+        transform.translate(0.0, image.getHeight(null) * 2);
+        transform.scale(1.0, -1.0);
+        graphics.drawImage(image, transform, null);
     }
 
     @Override
