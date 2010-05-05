@@ -1,19 +1,17 @@
 package ch9k.chat;
 
-import ch9k.chat.event.CloseConversationEvent;
 import ch9k.chat.event.ConversationEvent;
 import ch9k.chat.event.ConversationEventFilter;
 import ch9k.chat.event.NewChatMessageEvent;
 import ch9k.core.Account;
 import ch9k.core.ChatApplication;
-import ch9k.eventpool.EventFilter;
 import ch9k.eventpool.EventPool;
-import ch9k.eventpool.TestListener;
 import ch9k.network.Connection;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Date;
+import javax.swing.JFrame;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -110,18 +108,18 @@ public class ConversationTest {
         }
 
         assertEquals(5, conversation.getMessages(10).length);
-        assertEquals("Hey!", conversation.getMessages(5)[0]);
-        assertEquals("Ik weet het :)", conversation.getMessages(5)[4]);
+        assertEquals("Hey!", conversation.getMessages(5)[0].getText());
+        assertEquals("Ik weet het :)", conversation.getMessages(5)[4].getText());
         assertEquals(3, conversation.getMessages(3).length);
-        assertEquals("Hoe gaat het met de overkant?", conversation.getMessages(3)[0]);
+        assertEquals("Hoe gaat het met de overkant?", conversation.getMessages(3)[0].getText());
 
         EventPool.getAppPool().raiseNetworkEvent(
                     new NewChatMessageEvent(conversation, messages[5]));
         Thread.sleep(100);
         assertEquals(5, conversation.getMessages(5).length);
         assertEquals(6, conversation.getMessages(10).length);
-        assertEquals("Hoe gaat het met de overkant?", conversation.getMessages(5)[1]);
-        assertEquals("Doei!", conversation.getMessages(5)[4]);
+        assertEquals("Hoe gaat het met de overkant?", conversation.getMessages(5)[1].getText());
+        assertEquals("Doei!", conversation.getMessages(5)[4].getText());
     }
 
     /**
@@ -133,13 +131,11 @@ public class ConversationTest {
         // wait for the window to be created. (is in another thread)
         // otherwise nullpointers
         Thread.sleep(500);
-        TestListener testListener = new TestListener();
-        EventPool.getAppPool().addListener(testListener, new EventFilter(CloseConversationEvent.class));
+        JFrame window = conversation.getWindow();
         conversation.close(true);
-        Thread.sleep(100);
 
-        CloseConversationEvent closeConversationEvent = (CloseConversationEvent)testListener.lastReceivedEvent;
-        assertEquals(contact, closeConversationEvent.getContact());
+        Thread.sleep(100);
+        
     }
 
     /**
@@ -220,9 +216,9 @@ public class ConversationTest {
 
         // let's check the results!
         assertEquals(1, remoteConversation.getMessages(10).length);
-        assertEquals("Dag Javache, jij jij remoteUser!", remoteConversation.getMessages(1)[0]);
+        assertEquals("Dag Javache, jij jij remoteUser!", remoteConversation.getMessages(1)[0].getText());
 
         assertEquals(1, localConversation.getMessages(10).length);
-        assertEquals("Dag Javache, jij jij remoteUser!", localConversation.getMessages(1)[0]);
+        assertEquals("Dag Javache, jij jij remoteUser!", localConversation.getMessages(1)[0].getText());
     }
 }
