@@ -4,6 +4,7 @@ import ch9k.configuration.Configuration;
 import ch9k.core.event.AccountLogoffEvent;
 import ch9k.core.gui.ApplicationWindow;
 import ch9k.core.gui.LoginPanel;
+import ch9k.core.settings.Settings;
 import ch9k.eventpool.EventPool;
 import java.awt.EventQueue;
 
@@ -76,6 +77,7 @@ public class LoginController {
     public synchronized void register(String username, String password) {
         configuration = new Configuration(username);
         configuration.setAccount(new Account(username, password));
+        configuration.setSettings(new Settings());
 
         notifyAll();
     }

@@ -15,6 +15,7 @@ import ch9k.eventpool.EventFilter;
 import ch9k.eventpool.EventListener;
 import ch9k.eventpool.EventPool;
 import ch9k.eventpool.NetworkEvent;
+import ch9k.network.Connection;
 import ch9k.network.event.UserDisconnectedEvent;
 import java.awt.EventQueue;
 import java.net.InetAddress;
@@ -110,9 +111,11 @@ public class ContactList extends AbstractListModel
         pool.addListener(listeners.get(3),
                 new EventFilter(UserDisconnectedEvent.class));
 
-        /* new PingContactThread().start();
-         * shouldPing = true;
-         */
+        if(!Connection.TRUST_TCP) {
+            new PingContactThread().start();
+            shouldPing = true;
+        }
+
     }
 
     @Override

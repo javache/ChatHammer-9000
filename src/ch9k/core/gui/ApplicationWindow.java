@@ -108,7 +108,8 @@ public class ApplicationWindow extends JFrame implements EventListener {
         menuBar.add(menu);
         menuBar.add(new WindowMenu(this));
 
-        EventPool.getAppPool().raiseEvent(new PreferencePaneEvent(I18n.get("ch9k.core", "preferences_title"), new ProxyPrefPane()));
+        EventPool.getAppPool().raiseEvent(new PreferencePaneEvent(I18n.get("ch9k.core", "preferences_title"), 
+                new ProxyPrefPane(ChatApplication.getInstance().getSettings())));
 
         /* Request the plugin manager here, so it will add preference panes for
          * the different plugins. */

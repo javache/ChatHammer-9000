@@ -183,7 +183,7 @@ public class Settings implements Serializable, Persistable {
         // Iterate through the settings, and add them to the XML tree.
         for (Entry<String,String> entry : settings.entrySet()) {
             Element child = new Element(entry.getKey());
-            child.setAttribute("setting", entry.getValue());
+            child.addContent(entry.getValue());
             root.addContent(child);
         }
         return new PersistentDataObject(root);
@@ -194,7 +194,7 @@ public class Settings implements Serializable, Persistable {
         //put all the settings back in the map
          for (Object obj : object.getElement().getChildren()) {
             Element child = (Element) obj;
-            settings.put(child.getAttributeValue("setting"), child.getText());
+            settings.put(child.getName(), child.getText());
         }
     }
 }
