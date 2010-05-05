@@ -66,23 +66,14 @@ public class Settings implements Serializable, Persistable {
     }
 
     /**
-     * Get a setting as int value.
+     * Get a settings as int value.
      * @param key Key of the setting to get.
      * @return The value as an int.
      */
     public synchronized int getInt(String key) {
-        return getInt(key, 0);
-    }
-
-    /**
-     * Get a settings as int value.
-     * @param key Key of the setting to get.
-     * @param fallback Default value, if the key is not found.
-     */
-    public synchronized int getInt(String key, int fallback) {
         String value = get(key);
         if(value == null) {
-            return fallback;
+            return 0;
         } else {
             return Integer.parseInt(value);
         }

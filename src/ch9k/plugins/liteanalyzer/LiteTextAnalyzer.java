@@ -13,11 +13,6 @@ import java.util.Map;
  */
 public class LiteTextAnalyzer extends TextAnalyzer {
     /**
-     * Number of subjects to return.
-     */
-    private static final int NUM_SUBJECTS = 3;
-
-    /**
      * Constructor.
      * @param conversation Conversation to analyze.
      * @param settings Local settings to use.
@@ -43,9 +38,11 @@ public class LiteTextAnalyzer extends TextAnalyzer {
         }
         Collections.sort(list);
 
-        /* Take the NUM_SUBJECTS most important subjects. */
-        int numSubjects = list.size() > NUM_SUBJECTS ?
-                NUM_SUBJECTS : list.size();
+        /* Take the MAX_SUBJECTS most important subjects. */
+        int maxSubjects = getSettings().getInt(
+                LiteTextAnalyzerPreferencePane.MAX_SUBJECTS);
+        int numSubjects = list.size() > maxSubjects ?
+                maxSubjects : list.size();
         String[] subject = new String[numSubjects];
         for(int i = 0; i < numSubjects; i++) {
             subject[i] = list.get(i).getSubject();
