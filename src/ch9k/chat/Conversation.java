@@ -7,21 +7,20 @@ import ch9k.eventpool.Event;
 import ch9k.eventpool.EventListener;
 import ch9k.eventpool.EventPool;
 import java.awt.EventQueue;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
-import javax.swing.AbstractListModel;
+import javax.swing.DefaultListModel;
+import javax.swing.ListModel;
 
 /**
  * Represents a conversation between two users.
  * @author Jens Panneel
- */
-public class Conversation extends AbstractListModel implements EventListener {
+ */ 
+public class Conversation implements EventListener {
     private Contact contact;
     private boolean initiatedByMe;
     private Date startTime = new Date();
     private ConversationSubject subject;
-    private List<ChatMessage> messages = new ArrayList<ChatMessage>();
+    private DefaultListModel messages = new DefaultListModel();
     private ConversationWindow window;
 
     /**
@@ -52,7 +51,22 @@ public class Conversation extends AbstractListModel implements EventListener {
             addMessage(newChatMessageEvent.getChatMessage());
         }
     }
-    
+
+    /*
+     * Get the n last messages.
+     */
+    public ChatMessage[] getMessages(int n) {
+        int size = messages.getSize();
+        n = n < size ? size : n;
+        ChatMessage[] array = new ChatMessage[n];
+
+        for(int i = 0; i < n; i++) {
+            array[i] = (ChatMessage)messages.getElementAt(size-n+i);
+        }
+        
+        return array;
+    }
+
     /**
      * Close this conversation
      */
@@ -106,11 +120,7 @@ public class Conversation extends AbstractListModel implements EventListener {
      * @param chatMessage
      */
     private void addMessage(ChatMessage chatMessage) {
-        int size = messages.size();
-        if(size == 0 || !chatMessage.equals(messages.get(size-1))) {
-            messages.add(chatMessage);
-            fireIntervalAdded(contact, size, size);
-        }
+        messages.addElement(chatMessage);
     }
 
     /**
@@ -121,16 +131,8 @@ public class Conversation extends AbstractListModel implements EventListener {
      * @param n The number of messages to return.
      * @return The resulting messages.
      */
-    public ChatMessage[] getMessages(int n) {
-        if(n > messages.size()) {
-            n = messages.size();
-        }
-        ChatMessage[] result = new ChatMessage[n];
-        int size = messages.size();
-        for(int i = size - n; i < size; i++){
-            result[i - size + n] = messages.get(i);
-        }
-        return result;
+    public ListModel getMessageList() {
+        return messages;
     }
 
     /**
@@ -139,16 +141,6 @@ public class Conversation extends AbstractListModel implements EventListener {
      */
     public ConversationWindow getWindow() {
         return window;
-    }
-
-    @Override
-    public int getSize() {
-        return messages.size();
-    }
-
-    @Override
-    public Object getElementAt(int index) {
-        return messages.get(index);
     }
 
     @Override
