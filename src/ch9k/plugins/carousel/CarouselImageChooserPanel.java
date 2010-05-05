@@ -82,24 +82,20 @@ public class CarouselImageChooserPanel
     private void drawImage(Graphics graphics, Image image, int index,
             double offset) {
         if(image == null) {
-            // System.out.println("So not drawing your image.");
             return;
         }
-
-        // System.out.println("Drawing image.");
 
         Insets insets = getInsets();
         double width = (double) getWidth() - insets.left - insets.right;
         double height = (double) getHeight() - insets.top - insets.bottom;
 
-        double imageMaxWidth = (width - NUM_IMAGES * 2 * SPACING) / NUM_IMAGES;
-        double imageMaxHeight = height * 0.7;
+        double imageMaxWidth = (width - (double) NUM_IMAGES * 2.0 * SPACING) /
+                (double) NUM_IMAGES;
+        double imageMaxHeight = height * 0.6;
         double x = imageMaxWidth * ((double) index + offset) +
                 imageMaxWidth * 0.5;
 
-        // System.out.println(x);
-
-        /* Find out the ascpet ratio of the image. */
+        /* Find out the aspect ratio of the image. */
         double imageAspect =
                 (double) image.getWidth(null) / image.getHeight(null);
 
@@ -116,7 +112,7 @@ public class CarouselImageChooserPanel
         /* Actually draw the image. */
         graphics.drawImage(image,
                 insets.left + (int) (x - imageWidth * 0.5),
-                insets.top + (int) (height * 0.5 - imageHeight * 0.5),
+                insets.top + (int) (height * 0.7 - imageHeight),
                 (int) imageWidth, (int) imageHeight, Color.BLACK, null);
     }
 

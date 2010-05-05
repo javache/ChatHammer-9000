@@ -77,7 +77,7 @@ public class CarouselImageChooserModel
         this.model = model;
         this.images = new ProvidedImage[NUM_IMAGES];
         imageSet = new HashSet<ProvidedImage>();
-        nextSelection = 0;
+        nextSelection = 4; // TODO: make it 0
         currentSelection = 0.0;
         previousSelection = 0.0;
 
