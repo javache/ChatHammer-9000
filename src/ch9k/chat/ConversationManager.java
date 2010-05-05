@@ -110,6 +110,13 @@ public class ConversationManager implements EventListener, Iterable<Conversation
         
     }
 
+    private class AccountLogoffListener implements EventListener {
+        @Override
+        public void handleEvent(Event ev) {
+            clear();
+        }
+    }
+
     @Override
     public void handleEvent(Event event) {
         // a conversation has been started
