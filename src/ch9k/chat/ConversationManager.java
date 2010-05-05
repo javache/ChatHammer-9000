@@ -77,11 +77,11 @@ public class ConversationManager implements Iterable<Conversation> {
     }
 
     public void clear() {
-        EventPool pool = EventPool.getAppPool();
-
-        // send a close event to each conversation
-        for(Conversation conversation : conversations.values()) {
-            pool.raiseNetworkEvent(new CloseConversationEvent(conversation));
+        // using an iterator, so we can remove them immediately
+        Iterator<Conversation> it = conversations.values().iterator();
+        while(it.hasNext()) {
+            closeConversation(it.next(), true);
+            it.remove();
         }
     }
 
@@ -136,6 +136,9 @@ public class ConversationManager implements Iterable<Conversation> {
 
             if(conversation != null) {
                 closeConversation(conversation, !closeConversationEvent.isExternal());
+
+                // remove the conversation from the manager-list
+                conversations.remove(conversation.getContact());
             }
         }
     }

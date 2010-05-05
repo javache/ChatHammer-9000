@@ -55,7 +55,7 @@ public class EventWriter implements Runnable, Closeable {
      * useful for testing if the outputstream is still alive
      */
     public synchronized void sendEvent(NetworkEvent event) throws IOException {
-        logger.info(String.format("Sending event %s to %s",
+        logger.info(String.format("Writing event %s to %s",
                 event.getClass().getName(), event.getTarget()));
         out.writeObject(event);
         out.flush();
