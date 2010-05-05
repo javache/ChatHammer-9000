@@ -64,7 +64,7 @@ public class Conversation implements EventListener {
      */
     public ChatMessage[] getMessages(int n) {
         int size = messages.getSize();
-        n = n < size ? size : n;
+        n = n > size ? size : n;
         ChatMessage[] array = new ChatMessage[n];
 
         for(int i = 0; i < n; i++) {
