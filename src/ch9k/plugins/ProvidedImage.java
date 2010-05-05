@@ -55,7 +55,7 @@ public class ProvidedImage extends Model implements Serializable {
      * Get the actual image.
      * @return The actual image.
      */
-    public synchronized Image getImage() {
+    public Image getImage() {
         return image;
     }
 
