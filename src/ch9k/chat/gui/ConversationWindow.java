@@ -7,6 +7,7 @@ import ch9k.chat.event.ConversationEventFilter;
 import ch9k.chat.event.RequestPluginContainerEvent;
 import ch9k.chat.event.RequestedPluginContainerEvent;
 import ch9k.chat.event.ReleasePluginContainerEvent;
+import ch9k.core.event.AccountLogoffEvent;
 import ch9k.core.gui.WindowMenu;
 import ch9k.eventpool.Event;
 import ch9k.eventpool.EventListener;
@@ -77,6 +78,13 @@ public class ConversationWindow extends JFrame implements EventListener {
                         new CloseConversationEvent(conversation));
             }
         });
+
+        EventPool.getAppPool().addListener(new EventListener(){
+            public void handleEvent(Event event) {
+                dispose();
+            }
+        }, new EventFilter(AccountLogoffEvent.class));
+
 
         initComponents();
 
