@@ -2,8 +2,12 @@ package ch9k.plugins;
 
 import ch9k.chat.Conversation;
 import ch9k.core.settings.Settings;
+import ch9k.core.settings.event.PreferencePaneEvent;
+import ch9k.eventpool.Event;
+import ch9k.eventpool.EventPool;
 import java.util.HashMap;
 import java.util.Map;
+import javax.swing.JPanel;
 
 /**
  * Class implementing Plugin for convenience reasons.
@@ -26,6 +30,14 @@ public abstract class AbstractPlugin implements Plugin {
     public AbstractPlugin() {
         instances = new HashMap<Conversation, AbstractPluginInstance>();
         settings = new Settings();
+
+        /* Throw our preference pane if the plugin needs one. */
+        JPanel preferencePane = createPreferencePane(getSettings());
+        if(preferencePane != null) {
+            Event event = new PreferencePaneEvent(
+                    getPrettyName(), preferencePane);
+            EventPool.getAppPool().raiseEvent(event);
+        }
     }
 
     /**
@@ -44,6 +56,13 @@ public abstract class AbstractPlugin implements Plugin {
      */
     protected abstract AbstractPluginInstance
             createPluginInstance(Conversation conversation, Settings settings);
+
+    /**
+     * Create a preference pane. Can return null -- in this case, the plugin
+     * will have no preference pane.
+     * @param settings Settings to use in the preference pane.
+     */
+    protected abstract JPanel createPreferencePane(Settings settings);
 
     @Override
     public boolean isEnabled(Conversation conversation) {
