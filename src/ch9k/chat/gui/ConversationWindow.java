@@ -79,12 +79,6 @@ public class ConversationWindow extends JFrame implements EventListener {
             }
         });
 
-        EventPool.getAppPool().addListener(new EventListener(){
-            public void handleEvent(Event event) {
-                dispose();
-            }
-        }, new EventFilter(AccountLogoffEvent.class));
-
 
         initComponents();
 
