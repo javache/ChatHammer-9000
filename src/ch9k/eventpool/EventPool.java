@@ -73,6 +73,7 @@ public class EventPool {
                 }
             }
         };
+        eventProcessor.setDaemon(true);
         eventProcessor.start();
     }
 
@@ -137,8 +138,8 @@ public class EventPool {
      * @throws PoolsClosedException
      */
     public void close() {
-        network.disconnect();
         eventProcessor.interrupt();
+        network.disconnect();
     }
 
     /**

@@ -32,7 +32,7 @@ import org.apache.log4j.Logger;
  * Main application window
  * @author Pieter De Baets
  */
-public class ApplicationWindow extends JFrame implements EventListener {
+public class ApplicationWindow extends JFrame {
     /**
      * Logger.
      */
@@ -54,14 +54,18 @@ public class ApplicationWindow extends JFrame implements EventListener {
         // @TODO: check how this works out on mac (where windows can be 'hidden')
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 
-        EventPool.getAppPool().addListener(this, new EventFilter(AccountLogoffEvent.class));
-
         setPreferredSize(new Dimension(300, 520));
         setMinimumSize(new Dimension(300, 200));
         setSize(getPreferredSize());
         setLocationByPlatform(true);
 
         initSettings();
+    }
+
+    @Override
+    public void dispose() {
+        super.dispose();
+        prefFrame.dispose();
     }
 
     private void initSettings() {
@@ -129,8 +133,11 @@ public class ApplicationWindow extends JFrame implements EventListener {
         });
         fileMenu.add(new AbstractAction(I18n.get("ch9k.core", "exit")) {
             public void actionPerformed(ActionEvent e) {
-                ChatApplication.getInstance().exit();
-                ApplicationWindow.this.dispose();
+                EventQueue.invokeLater(new Runnable() {
+                    public void run() {
+                        ApplicationWindow.this.dispose();
+                    }
+                });
             }
         });
         menuBar.add(fileMenu);
@@ -158,31 +165,24 @@ public class ApplicationWindow extends JFrame implements EventListener {
                     refreshStatus();
                 }
             });
-            return;
+        } else {
+            String status = null;
+            if(statusBar != null) {
+                status = statusQueue.poll();
+                statusBar.setText(status);
+            }
+
+            if(status != null || statusQueue.size() > 0) {
+                new Thread(new Runnable() {
+                    public void run() {
+                        try {
+                            Thread.sleep(3000);
+                        } catch(InterruptedException ex) {}
+
+                        refreshStatus();
+                    }
+                }).start();
+            }
         }
-
-        String status = null;
-        if(statusBar != null) {
-            status = statusQueue.poll();
-            statusBar.setText(status);
-        }
-
-        if(status != null || statusQueue.size() > 0) {
-            new Thread(new Runnable() {
-                public void run() {
-                    try {
-                        Thread.sleep(3000);
-                    } catch(InterruptedException ex) {}
-
-                    refreshStatus();
-                }
-            }).start();
-        }
-    }
-
-    @Override
-    public void handleEvent(Event event) {
-        getJMenuBar().remove(0);
-        prefFrame.close();
     }
 }
