@@ -69,7 +69,7 @@ public class ConversationManager implements EventListener, Iterable<Conversation
 
         // send a system event
         NewChatMessageEvent systemEvent = new NewChatMessageEvent(
-                conversation, new ChatMessage(null, I18n.get("ch9k.chat",
+                conversation, new ChatMessage("info", I18n.get("ch9k.chat",
                     "contact_closed_conversation")), true);
         EventPool.getAppPool().raiseEvent(systemEvent);
     }
