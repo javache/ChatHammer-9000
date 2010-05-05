@@ -116,8 +116,6 @@ public class GoogleImageProvider extends ImageProvider {
                 safe = "off";
             }
 
-            System.out.println("Safe setting: " + safe);
-
             url = new URL("http://ajax.googleapis.com/ajax/services/search/" +
                 "images?start=0&rsz=large&v=1.0&q=" + encoded + "&key=" +
                 API_KEY + "&safe" + safe);
