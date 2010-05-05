@@ -101,5 +101,14 @@ public class LiteTextAnalyzerPreferencePane
 
     @Override
     public void stateChanged(ChangeEvent event) {
+        if(event.getSource() == maxSubjectsSpinner) {
+            settings.setInt(MAX_SUBJECTS,
+                    (Integer) maxSubjectsSpinner.getValue());
+        }
+
+        if(event.getSource() == maxMessagesSpinner) {
+            settings.setInt(MAX_MESSAGES,
+                    (Integer) maxMessagesSpinner.getValue());
+        }
     }
 }
