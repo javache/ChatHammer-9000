@@ -1,4 +1,4 @@
-package ch9k.plugins.flickr;
+package ch9k.plugins;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -10,9 +10,9 @@ import ch9k.core.settings.SettingsChangeEvent;
 import ch9k.core.settings.SettingsChangeListener;
 
 /**
- * Preference pane for the Flickr plugin.
+ * Preference pane for an image provider plugin.
  */
-public class FlickrImageProviderPreferencePane
+public class ImageProviderPreferencePane
         extends JPanel implements SettingsChangeListener {
     /**
      * Safe search key.
@@ -33,7 +33,7 @@ public class FlickrImageProviderPreferencePane
      * Constructor.
      * @param settings Settings to manipulate.
      */
-    public FlickrImageProviderPreferencePane(final Settings settings) {
+    public ImageProviderPreferencePane(final Settings settings) {
         this.settings = settings;
         add(new JLabel("Enable safe search:"));
         

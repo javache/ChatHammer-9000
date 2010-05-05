@@ -4,6 +4,7 @@ import ch9k.chat.Conversation;
 import ch9k.core.settings.Settings;
 import ch9k.plugins.AbstractPlugin;
 import ch9k.plugins.AbstractPluginInstance;
+import ch9k.plugins.ImageProviderPreferencePane;
 import javax.swing.JPanel;
 
 /**
@@ -19,6 +20,6 @@ public class FlickrImageProviderPlugin extends AbstractPlugin {
 
     @Override
     public JPanel createPreferencePane(Settings settings) {
-        return new FlickrImageProviderPreferencePane(settings);
+        return new ImageProviderPreferencePane(settings);
     }
 }

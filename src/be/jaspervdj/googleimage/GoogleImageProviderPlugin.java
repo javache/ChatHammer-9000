@@ -4,6 +4,7 @@ import ch9k.chat.Conversation;
 import ch9k.core.settings.Settings;
 import ch9k.plugins.AbstractPlugin;
 import ch9k.plugins.AbstractPluginInstance;
+import ch9k.plugins.ImageProviderPreferencePane;
 import javax.swing.JPanel;
 
 /**
@@ -18,6 +19,6 @@ public class GoogleImageProviderPlugin extends AbstractPlugin {
 
     @Override
     protected JPanel createPreferencePane(Settings settings) {
-        return null;
+        return new ImageProviderPreferencePane(settings);
     }
 }

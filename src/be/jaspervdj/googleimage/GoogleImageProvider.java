@@ -4,6 +4,7 @@ import ch9k.chat.Conversation;
 import ch9k.core.settings.Settings;
 import ch9k.eventpool.WarningEvent;
 import ch9k.plugins.ImageProvider;
+import ch9k.plugins.ImageProviderPreferencePane;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -106,10 +107,22 @@ public class GoogleImageProvider extends ImageProvider {
         /* Construct the url. */
         URL url;
         try {
+            String safe;
+
+            if(getSettings().getBoolean(
+                    ImageProviderPreferencePane.SAFE_SEARCH)) {
+                safe = "moderate";
+            } else {
+                safe = "off";
+            }
+
+            System.out.println("Safe setting: " + safe);
+
             url = new URL("http://ajax.googleapis.com/ajax/services/search/" +
                 "images?start=0&rsz=large&v=1.0&q=" + encoded + "&key=" +
-                API_KEY + "&safe=off");
+                API_KEY + "&safe" + safe);
         } catch (MalformedURLException exception) {
+
             WarningEvent.raise(this, "Malformed URL: " + exception);
             url = null;
         }

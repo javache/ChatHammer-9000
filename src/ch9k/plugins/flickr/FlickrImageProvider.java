@@ -3,6 +3,7 @@ package ch9k.plugins.flickr;
 import ch9k.chat.Conversation;
 import ch9k.eventpool.WarningEvent;
 import ch9k.plugins.ImageProvider;
+import ch9k.plugins.ImageProviderPreferencePane;
 import ch9k.core.settings.Settings;
 import com.aetrion.flickr.Flickr;
 import com.aetrion.flickr.FlickrException;
@@ -54,7 +55,7 @@ public class FlickrImageProvider extends ImageProvider {
         searchParameters.setText(text);
 
         if(getSettings().getBoolean(
-                FlickrImageProviderPreferencePane.SAFE_SEARCH)) {
+                ImageProviderPreferencePane.SAFE_SEARCH)) {
             searchParameters.setSafeSearch(Flickr.SAFETYLEVEL_MODERATE);
             System.out.println("Moderate");
         } else {
