@@ -82,13 +82,13 @@ public class CarouselImageChooserModel
         previousSelection = 0.0;
 
         /* Timer to update the animation. */
-        timer = new Timer(50, new ActionListener() {
+        timer = new Timer(10, new ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 ticks++;
                 double diff = (double) currentSelection - previousSelection;
                 currentSelection = previousSelection +
-                        ((double) ticks / 50.0) * diff;
-                if(ticks >= 50) {
+                        ((double) ticks / 100.0) * diff;
+                if(ticks >= 100) {
                     currentSelection = (double) nextSelection;
                     timer.stop();
                 }

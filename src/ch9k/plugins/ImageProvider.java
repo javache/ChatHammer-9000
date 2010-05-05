@@ -88,7 +88,7 @@ public abstract class ImageProvider extends AbstractPluginInstance
             public void run() {
                 sendNewImageEvent(text.toString());
             }
-        }).run();
+        }).start();
     }
 
     /**
