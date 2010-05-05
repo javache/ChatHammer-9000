@@ -3,13 +3,9 @@ package ch9k.core.gui;
 import ch9k.chat.gui.ContactListView;
 import ch9k.core.ChatApplication;
 import ch9k.core.I18n;
-import ch9k.core.event.AccountLogoffEvent;
 import ch9k.core.settings.ProxyPrefPane;
 import ch9k.core.settings.event.PreferencePaneEvent;
 import ch9k.core.settings.gui.PreferencesFrame;
-import ch9k.eventpool.Event;
-import ch9k.eventpool.EventFilter;
-import ch9k.eventpool.EventListener;
 import ch9k.eventpool.EventPool;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -23,6 +19,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
@@ -126,6 +123,7 @@ public class ApplicationWindow extends JFrame {
                 prefFrame.setVisible(true);
             }
         });
+        fileMenu.addSeparator();
         fileMenu.add(new AbstractAction(I18n.get("ch9k.core", "log_off")) {
             public void actionPerformed(ActionEvent e) {
                 ChatApplication.getInstance().logoff(true);
@@ -141,6 +139,12 @@ public class ApplicationWindow extends JFrame {
             }
         });
         menuBar.add(fileMenu);
+
+        // contacts-menu
+        JMenu contactsMenu = new JMenu(I18n.get("ch9k.core", "contacts"));
+        contactsMenu.add(new ContactListView.AddContactAction(this));
+        contactsMenu.addSeparator();
+        menuBar.add(contactsMenu);
 
         // window-menu
         menuBar.add(new WindowMenu(this));

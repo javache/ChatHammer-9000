@@ -13,12 +13,8 @@ import ch9k.eventpool.EventListener;
 import ch9k.eventpool.EventPool;
 import ch9k.eventpool.WarningEvent;
 import ch9k.plugins.PluginManager;
-import java.awt.Frame;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import org.apache.log4j.Logger;
 
 /**
  * The main application, OMG!

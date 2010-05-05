@@ -42,12 +42,7 @@ public class ContactListView extends JPanel {
     }
 
     private void initComponents() {
-        addButton = new JButton(new AbstractAction(I18n.get("ch9k.chat", "add_contact")) {
-            public void actionPerformed(ActionEvent e) {
-                Window window = SwingUtilities.getWindowAncestor(ContactListView.this);
-                new AddContactController(window);
-            }
-        });
+        addButton = new JButton(new AddContactAction(this));
         
         list = new JList(new FilteredContactList(contacts));
         list.setBackground(getBackground());
@@ -105,6 +100,19 @@ public class ContactListView extends JPanel {
             }
 
             return this;
+        }
+    }
+
+    public static class AddContactAction extends AbstractAction {
+        private Window parent;
+
+        public AddContactAction(Component component) {
+            super(I18n.get("ch9k.chat", "add_contact"));
+            parent = SwingUtilities.getWindowAncestor(component);
+        }
+
+        public void actionPerformed(ActionEvent e) {
+            new AddContactController(parent);
         }
     }
 }
