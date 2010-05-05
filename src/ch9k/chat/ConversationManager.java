@@ -2,7 +2,6 @@ package ch9k.chat;
 
 import ch9k.chat.event.CloseConversationEvent;
 import ch9k.chat.event.ContactOfflineEvent;
-import ch9k.chat.event.ConversationEvent;
 import ch9k.chat.event.NewChatMessageEvent;
 import ch9k.chat.event.NewConversationEvent;
 import ch9k.core.I18n;
@@ -11,25 +10,27 @@ import ch9k.eventpool.Event;
 import ch9k.eventpool.EventFilter;
 import ch9k.eventpool.EventListener;
 import ch9k.eventpool.EventPool;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.logging.Level;
 import org.apache.log4j.Logger;
 
 /**
  * Manages the active conversations
  * @author Jens Panneel
  */
-public class ConversationManager implements EventListener, Iterable<Conversation> {
+public class ConversationManager implements Iterable<Conversation> {
     private Map<Contact, Conversation> conversations;
 
     public ConversationManager() {
         conversations = new HashMap<Contact, Conversation>();
-        EventPool.getAppPool().addListener(this,
-                new EventFilter(ConversationEvent.class));
+
+        EventPool.getAppPool().addListener(new ContactOfflineListener(),
+                new EventFilter(ContactOfflineEvent.class));
+        EventPool.getAppPool().addListener(new CloseConversationListener(),
+                new EventFilter(CloseConversationEvent.class));
+        EventPool.getAppPool().addListener(new NewConversationListener(),
+                new EventFilter(NewConversationEvent.class));
 
         EventPool.getAppPool().addListener(new EventListener() {
             public void handleEvent(Event event) {
@@ -58,8 +59,9 @@ public class ConversationManager implements EventListener, Iterable<Conversation
     /**
      * Close the conversation with the given contact
      * @param conversation The conversation to close
+     * @param forceClose If the window should be really closed
      */
-    public void closeConversation(Conversation conversation) {
+    public void closeConversation(Conversation conversation, boolean forceClose) {
         Logger.getLogger(ConversationManager.class).info(
                 "Closing conversation with " + 
                 conversation.getContact().getUsername());
@@ -69,13 +71,19 @@ public class ConversationManager implements EventListener, Iterable<Conversation
                 conversation, new ChatMessage("info", I18n.get("ch9k.chat",
                     "contact_closed_conversation")), true);
         EventPool.getAppPool().raiseEvent(systemEvent);
+
+        // remove the conversation from the manager-list
+        conversations.remove(conversation.getContact());
+
+        // close the conversation
+        conversation.close(forceClose);
     }
 
     public void clear() {
+        // using an iterator, so we can remove them immediately
         Iterator<Conversation> it = conversations.values().iterator();
         while(it.hasNext()) {
-            Conversation conversation = it.next();
-            conversation.close();
+            closeConversation(it.next(), true);
             it.remove();
         }
     }
@@ -89,9 +97,12 @@ public class ConversationManager implements EventListener, Iterable<Conversation
         return conversations.get(contact);
     }
 
-    private class ContactOfflineListener implements EventListener {
+    @Override
+    public Iterator<Conversation> iterator() {
+        return conversations.values().iterator();
+    }
 
-        @Override
+    private class ContactOfflineListener implements EventListener {
         public void handleEvent(Event ev) {
             ContactOfflineEvent event = (ContactOfflineEvent)ev;
             Conversation conversation = conversations.get(event.getContact());
@@ -101,15 +112,15 @@ public class ConversationManager implements EventListener, Iterable<Conversation
                 EventPool.getAppPool().raiseEvent(closeEvent);
             }
         }
-        
     }
 
-    @Override
-    public void handleEvent(Event event) {
-        // a conversation has been started
-        if(event instanceof NewConversationEvent) {
-            NewConversationEvent newConversationEvent = (NewConversationEvent)event;
+    private class NewConversationListener implements EventListener {
+        public void handleEvent(Event ev) {
+            // a new conversation has been started
+            NewConversationEvent newConversationEvent = (NewConversationEvent)ev;
             Contact contact = newConversationEvent.getContact();
+
+            // TODO: handle events that come from reopening conversations
 
             // verify that this request comes from a real contact
             if(contact != null && contact.isOnline()) {
@@ -117,22 +128,15 @@ public class ConversationManager implements EventListener, Iterable<Conversation
                     !newConversationEvent.isExternal());
             }
         }
-
-        // a conversation has been closed
-        if(event instanceof CloseConversationEvent) {
-            CloseConversationEvent closeConversationEvent = (CloseConversationEvent)event;
-            Conversation conversation = closeConversationEvent.getConversation();
-
-            closeConversation(conversation);
-            if(!closeConversationEvent.isExternal()) {
-                conversation.close();
-                conversations.remove(conversation.getContact());
-            }
-        }
     }
 
-    @Override
-    public Iterator<Conversation> iterator() {
-        return conversations.values().iterator();
+    public class CloseConversationListener implements EventListener {
+        public void handleEvent(Event ev) {
+            // a conversation has been closed
+            CloseConversationEvent closeConversationEvent = (CloseConversationEvent)ev;
+            Conversation conversation = closeConversationEvent.getConversation();
+
+            closeConversation(conversation, !closeConversationEvent.isExternal());
+        }
     }
 }

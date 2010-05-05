@@ -75,7 +75,7 @@ public class ConversationWindow extends JFrame implements EventListener {
         addWindowListener(new WindowAdapter() {
             public void windowClosed(WindowEvent e) {
                 EventPool.getAppPool().raiseNetworkEvent(
-                        new CloseConversationEvent(conversation));
+                    new CloseConversationEvent(conversation));
             }
         });
 

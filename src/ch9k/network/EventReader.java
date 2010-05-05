@@ -1,6 +1,5 @@
 package ch9k.network;
 
-import ch9k.eventpool.Event;
 import ch9k.eventpool.EventPool;
 import ch9k.eventpool.NetworkEvent;
 import java.io.IOException;
