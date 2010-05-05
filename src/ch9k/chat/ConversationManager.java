@@ -137,8 +137,10 @@ public class ConversationManager implements Iterable<Conversation> {
             if(conversation != null) {
                 closeConversation(conversation, !closeConversationEvent.isExternal());
 
-                // remove the conversation from the manager-list
-                conversations.remove(conversation.getContact());
+                if(!closeConversationEvent.isExternal()) {
+                    // remove the conversation from the manager-list
+                    conversations.remove(conversation.getContact());
+                }
             }
         }
     }
