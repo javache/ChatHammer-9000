@@ -82,13 +82,13 @@ public class CarouselImageChooserModel
         previousSelection = 0.0;
 
         /* Timer to update the animation. */
-        timer = new Timer(10, new ActionListener() {
+        timer = new Timer(50, new ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 ticks++;
-                double diff = (double) currentSelection - previousSelection;
+                double diff = (double) nextSelection - previousSelection;
                 currentSelection = previousSelection +
-                        ((double) ticks / 100.0) * diff;
-                if(ticks >= 100) {
+                        (double) ticks * diff / 20.0;
+                if(ticks >= 20) {
                     currentSelection = (double) nextSelection;
                     timer.stop();
                 }
@@ -187,6 +187,9 @@ public class CarouselImageChooserModel
         ProvidedImage image = event.getProvidedImage();
         if(imageSet.contains(image)) return;
 
+        /* Return if the image was badly loaded. */
+        if(image.getImage() == null) return;
+
         /* We need to remove the old image from the set. */
         ProvidedImage old = images[0];
         if(old != null) {
@@ -216,8 +219,9 @@ public class CarouselImageChooserModel
         image.addChangeListener(this);
 
         /* Update positions. */
-        previousSelection = (double) nextSelection - 1;
-        nextSelection = nextSelection - 1;
+        nextSelection--;
+        previousSelection -= 1;
+        currentSelection -= 1;
         setNextSelection(nextSelection + 1);
     }
 

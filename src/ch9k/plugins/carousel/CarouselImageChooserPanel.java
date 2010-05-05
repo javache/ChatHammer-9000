@@ -33,7 +33,7 @@ public class CarouselImageChooserPanel
     /**
      * Spacing between images (in pixels).
      */
-    private static final int SPACING = 10;
+    private static final double SPACING = 10.0;
 
     /**
      * The selection model.
@@ -94,7 +94,7 @@ public class CarouselImageChooserPanel
 
         double imageMaxWidth = (width - NUM_IMAGES * 2 * SPACING) / NUM_IMAGES;
         double imageMaxHeight = height * 0.7;
-        double x = offset + imageMaxWidth * (double) index +
+        double x = imageMaxWidth * ((double) index + offset) +
                 imageMaxWidth * 0.5;
 
         // System.out.println(x);
@@ -104,7 +104,7 @@ public class CarouselImageChooserPanel
                 (double) image.getWidth(null) / image.getHeight(null);
 
         /* Scale by width. */
-        double imageWidth = imageMaxWidth;
+        double imageWidth = imageMaxWidth - 2 * SPACING;
         double imageHeight = (double) imageWidth / imageAspect;
 
         /* We're wrong, scale by imageHeight. */
