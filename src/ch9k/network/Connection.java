@@ -143,7 +143,7 @@ public class Connection {
     private void init(Socket socket) throws IOException {
         socket.setKeepAlive(true);
 
-        socket.setSoTimeout(SOCKET_READ_TIMEOUT);
+        /* socket.setSoTimeout(SOCKET_READ_TIMEOUT); */
         eventSocketHandler = new SocketHandler(socket,eventQueue,pool,this);
         
         notifyInitComplete();
