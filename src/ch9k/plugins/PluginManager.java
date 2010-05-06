@@ -11,12 +11,15 @@ import ch9k.plugins.event.PluginChangeEvent;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.log4j.Logger;
+import ch9k.configuration.Persistable;
+import ch9k.configuration.PersistentDataObject;
+import org.jdom.Element;
 
 /**
  * A singleton to manage plugins.
  * @author Jasper Van der Jeugt
  */
-public class PluginManager extends Model implements EventListener {
+public class PluginManager extends Model implements EventListener, Persistable {
     /**
      * Logger.
      */
@@ -51,6 +54,15 @@ public class PluginManager extends Model implements EventListener {
          * side. */
         EventFilter filter = new EventFilter(PluginChangeEvent.class);
         EventPool.getAppPool().addListener(this, filter);
+    }
+
+    /**
+     * Constructor.
+     * @param pdo PersistentDataObject to load settings from.
+     */
+    public PluginManager(PersistentDataObject pdo) {
+        this();
+        load(pdo);
     }
 
     /**
@@ -221,5 +233,27 @@ public class PluginManager extends Model implements EventListener {
                 disable(event.getPlugin(), event.getConversation());
             }
         }
+    }
+
+    @Override
+    public PersistentDataObject persist() {
+        Element pluginManager = new Element("pluginManager");
+        for(String name: plugins.keySet()) {
+            Plugin plugin = plugins.get(name);
+            /* Persist only the settings. */
+            PersistentDataObject pdo = plugin.getSettings().persist();
+            /* Get the element. */
+            Element element = pdo.getElement();
+            /* Set the correct name. */
+            element.setAttribute("plugin", name);
+            /* Add it as a child. */
+            pluginManager.addContent(element);
+        }
+
+        return new PersistentDataObject(pluginManager);
+    }
+
+    @Override
+    public void load(PersistentDataObject object) {
     }
 }

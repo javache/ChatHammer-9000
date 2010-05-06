@@ -97,9 +97,16 @@ public class Configuration {
      * @return PluginManager currently in use.
      */
     public PluginManager getPluginManager() {
-        //Create a new pluginManager, should initiate himself
         if (pluginManager == null) {
-            pluginManager = new PluginManager();
+            //Load the pluginManager object, or create a new one
+            PersistentDataObject pdo = storage.fetch("pluginManager");
+            if (pdo != null) {
+                pluginManager = new PluginManager(pdo);
+                storage.store("pluginManager", pluginManager);
+            } else {
+                pluginManager = new PluginManager();
+                storage.store("pluginManager", pluginManager);
+            }
         }
         return pluginManager;
     }
