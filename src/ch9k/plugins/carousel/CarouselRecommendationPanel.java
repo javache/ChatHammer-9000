@@ -120,7 +120,13 @@ public class CarouselRecommendationPanel
         if(!event.isExternal()) return;
 
         /* Add the image to the queue. */
-        queue.push(event.getProvidedImage());
+        new Thread(new Runnable() {
+            public void run() {
+                ProvidedImage image = event.getProvidedImage();
+                image.ensureLoaded();
+                queue.push(image);
+            }
+        });
     }
 
     /**
