@@ -14,6 +14,7 @@ import ch9k.eventpool.EventListener;
 import ch9k.plugins.event.RemotePluginSettingsChangeEvent;
 import ch9k.eventpool.EventPool;
 import ch9k.plugins.AbstractPluginInstance;
+import ch9k.plugins.Plugin;
 import ch9k.plugins.flickr.FlickrImageProviderPlugin;
 import java.awt.GridLayout;
 import java.awt.Container;
@@ -41,11 +42,13 @@ public class Carousel extends AbstractPluginInstance {
 
     /**
      * Constructor.
+     * @param plugin Corresponding plugin.
      * @param conversation Conversation to display carousel for.
      * @param settings Local plugin instance settings.
      */
-    public Carousel(Conversation conversation, Settings settings) {
-        super(conversation, settings);
+    public Carousel(Plugin plugin,
+            Conversation conversation, Settings settings) {
+        super(plugin, conversation, settings);
         /* We will asynchronously receive a container later. */
         this.container = null;
     }

@@ -2,6 +2,7 @@ package ch9k.plugins;
 
 import ch9k.chat.ChatMessage;
 import ch9k.plugins.event.RemotePluginSettingsChangeEvent;
+import ch9k.plugins.Plugin;
 import ch9k.chat.Conversation;
 import ch9k.chat.ConversationSubject;
 import ch9k.chat.event.ConversationEventFilter;
@@ -75,11 +76,13 @@ public abstract class TextAnalyzer extends AbstractPluginInstance
 
     /**
      * Constructor.
+     * @param plugin Corresponding plugin.
      * @param conversation Conversation to analyze.
      * @param settings Local plugin instance settings.
      */
-    public TextAnalyzer(Conversation conversation, Settings settings) {
-        super(conversation, settings);
+    public TextAnalyzer(Plugin plugin,
+            Conversation conversation, Settings settings) {
+        super(plugin, conversation, settings);
     }
 
     @Override

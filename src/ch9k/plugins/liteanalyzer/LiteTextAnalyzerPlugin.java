@@ -3,6 +3,7 @@ package ch9k.plugins.liteanalyzer;
 import ch9k.chat.Conversation;
 import ch9k.core.settings.Settings;
 import ch9k.plugins.AbstractPlugin;
+import ch9k.plugins.Plugin;
 import ch9k.plugins.AbstractPluginInstance;
 import javax.swing.JPanel;
 
@@ -13,8 +14,8 @@ import javax.swing.JPanel;
 public class LiteTextAnalyzerPlugin extends AbstractPlugin {
     @Override
     protected AbstractPluginInstance createPluginInstance(
-            Conversation conversation, Settings settings) {
-        return new LiteTextAnalyzer(conversation, settings);
+            Plugin plugin, Conversation conversation, Settings settings) {
+        return new LiteTextAnalyzer(plugin, conversation, settings);
     }
 
     @Override

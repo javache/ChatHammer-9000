@@ -60,12 +60,13 @@ public abstract class AbstractPlugin
 
     /**
      * Abstract factory method creating the actual plugin.
+     * @param plugin Reference to the plugin.
      * @param conversation Conversation to create the plugin instance for.
      * @param settings Settings to use for the instance.
      * @return A plugin instance.
      */
-    protected abstract AbstractPluginInstance
-            createPluginInstance(Conversation conversation, Settings settings);
+    protected abstract AbstractPluginInstance createPluginInstance(
+            Plugin plugin, Conversation conversation, Settings settings);
 
     /**
      * Create a preference pane. Can return null -- in this case, the plugin
@@ -90,7 +91,7 @@ public abstract class AbstractPlugin
     public void enablePlugin(Conversation conversation, Settings settings) {
         /* Create a new instance, store it, and enable it. */
         AbstractPluginInstance instance =
-                createPluginInstance(conversation, settings);
+                createPluginInstance(this, conversation, settings);
         instances.put(conversation, instance);
         instance.enablePluginInstance();
     }
@@ -122,7 +123,7 @@ public abstract class AbstractPlugin
             /* Only propagate the settings if we started the conversation. */
             if(conversation.isInitiatedByMe()) {
                 NetworkEvent event = new RemotePluginSettingsChangeEvent(
-                        conversation, changeEvent);
+                        conversation, this.getClass().getName(), changeEvent);
                 EventPool.getAppPool().raiseNetworkEvent(event);
                 System.out.println("Sending change event to conversation.");
             }

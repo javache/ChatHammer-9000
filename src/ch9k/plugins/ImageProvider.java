@@ -5,6 +5,7 @@ import ch9k.chat.ConversationSubject;
 import ch9k.chat.event.ConversationEventFilter;
 import ch9k.chat.event.NewConversationSubjectEvent;
 import ch9k.plugins.event.RemotePluginSettingsChangeEvent;
+import ch9k.plugins.Plugin;
 import ch9k.core.settings.Settings;
 import ch9k.eventpool.Event;
 import ch9k.eventpool.EventFilter;
@@ -19,10 +20,13 @@ import ch9k.plugins.event.NewProvidedImageEvent;
 public abstract class ImageProvider extends AbstractPluginInstance {
     /**
      * Constructor.
+     * @param plugin The corresponding plugin.
      * @param conversation Conversation to provide images for.
+     * @param settings Settings for the instance.
      */
-    public ImageProvider(Conversation conversation, Settings settings) {
-        super(conversation, settings);
+    public ImageProvider(Plugin plugin,
+            Conversation conversation, Settings settings) {
+        super(plugin, conversation, settings);
     }
      
     @Override

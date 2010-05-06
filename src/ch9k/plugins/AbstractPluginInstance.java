@@ -17,6 +17,11 @@ import ch9k.plugins.event.RemotePluginSettingsChangeEvent;
  */
 public abstract class AbstractPluginInstance implements EventListener {
     /**
+     * The plugin.
+     */
+    private Plugin plugin;
+
+    /**
      * The conversation we are bound to.
      */
     private Conversation conversation;
@@ -28,11 +33,13 @@ public abstract class AbstractPluginInstance implements EventListener {
 
     /**
      * Constructor.
+     * @param plugin The corresponding plugin.
      * @param conversation Conversation to bind the plugin to.
      * @param settings Local plugin settings.
      */
-    public AbstractPluginInstance(
+    public AbstractPluginInstance(Plugin plugin,
             Conversation conversation, Settings settings) {
+        this.plugin = plugin;
         this.conversation = conversation;
         this.settings = settings;
 
@@ -76,6 +83,11 @@ public abstract class AbstractPluginInstance implements EventListener {
                 !conversation.isInitiatedByMe()) {
             RemotePluginSettingsChangeEvent event =
                     (RemotePluginSettingsChangeEvent) e;
+
+            /* Check that we're dealing with the correct plugin. */
+            if(event.getPlugin() != plugin.getClass().getName()) return;
+
+            /* Propogate the changes. */
             SettingsChangeEvent changeEvent = event.getChangeEvent();
             settings.set(changeEvent.getKey(), changeEvent.getValue());
             System.out.println("Adapted local settings.");

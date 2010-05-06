@@ -3,6 +3,7 @@ package ch9k.plugins.liteanalyzer;
 import ch9k.chat.Conversation;
 import ch9k.core.settings.Settings;
 import ch9k.plugins.TextAnalyzer;
+import ch9k.plugins.Plugin;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -14,11 +15,13 @@ import java.util.Map;
 public class LiteTextAnalyzer extends TextAnalyzer {
     /**
      * Constructor.
+     * @param plugin Corresponding plugin.
      * @param conversation Conversation to analyze.
      * @param settings Local settings to use.
      */
-    public LiteTextAnalyzer(Conversation conversation, Settings settings) {
-        super(conversation, settings);
+    public LiteTextAnalyzer(Plugin plugin,
+            Conversation conversation, Settings settings) {
+        super(plugin, conversation, settings);
     }
 
     @Override

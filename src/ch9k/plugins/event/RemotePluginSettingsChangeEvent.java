@@ -22,12 +22,21 @@ public class RemotePluginSettingsChangeEvent extends ConversationEvent {
     /**
      * Constructor.
      * @param conversation Conversation to which the plugin belongs.
+     * @param name The plugin name.
      * @param changeEvent The local change event.
      */
     public RemotePluginSettingsChangeEvent(Conversation conversation,
-            SettingsChangeEvent changeEvent) {
+            String plugin, SettingsChangeEvent changeEvent) {
         super(conversation);
         this.changeEvent = changeEvent;
+    }
+
+    /**
+     * Obtain the plugin name.
+     * @return The plugin name.
+     */
+    public String getPlugin() {
+        return plugin;
     }
 
     /**

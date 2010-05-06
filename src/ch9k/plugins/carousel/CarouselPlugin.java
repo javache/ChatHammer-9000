@@ -3,6 +3,7 @@ package ch9k.plugins.carousel;
 import ch9k.chat.Conversation;
 import ch9k.core.settings.Settings;
 import ch9k.plugins.AbstractPlugin;
+import ch9k.plugins.Plugin;
 import ch9k.plugins.AbstractPluginInstance;
 import javax.swing.JPanel;
 
@@ -20,8 +21,8 @@ import ch9k.plugins.flickr.FlickrImageProvider;
 public class CarouselPlugin extends AbstractPlugin {
     @Override
     protected AbstractPluginInstance createPluginInstance(
-            Conversation conversation, Settings settings) {
-        return new Carousel(conversation, settings);
+            Plugin plugin, Conversation conversation, Settings settings) {
+        return new Carousel(plugin, conversation, settings);
     }
 
     @Override
@@ -51,8 +52,8 @@ public class CarouselPlugin extends AbstractPlugin {
         frame.setTitle("Carousel test.");
         frame.setVisible(true);
 
-        FlickrImageProvider flickr = new FlickrImageProvider(conversation,
-                new Settings());
+        FlickrImageProvider flickr = new FlickrImageProvider(null, 
+                conversation, new Settings());
         flickr.sendNewImageEvent("jailbait");
     }
 }
