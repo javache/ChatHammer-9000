@@ -9,11 +9,14 @@ import ch9k.eventpool.Event;
 import ch9k.eventpool.EventFilter;
 import ch9k.eventpool.EventListener;
 import ch9k.eventpool.EventPool;
+import ch9k.core.settings.event.PreferencePaneEvent;
 import ch9k.plugins.event.PluginChangeEvent;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.log4j.Logger;
 import org.jdom.Element;
+import javax.swing.JPanel;
+import ch9k.core.I18n;
 
 /**
  * A singleton to manage plugins.
@@ -54,6 +57,12 @@ public class PluginManager extends Model implements EventListener, Persistable {
          * side. */
         EventFilter filter = new EventFilter(PluginChangeEvent.class);
         EventPool.getAppPool().addListener(this, filter);
+
+        /* Throw our preference pane so the user can install more plugins */
+        JPanel preferencePane = new PluginPreferencePane(this);
+        Event event = new PreferencePaneEvent(
+                I18n.get("ch9k.plugins", "plugins") , preferencePane);
+        EventPool.getAppPool().raiseEvent(event);
     }
 
     /**
