@@ -35,19 +35,15 @@ public class CarouselPanel extends JPanel {
     public CarouselPanel(CarouselImageModel model) {
         super(new BorderLayout());
         this.model = model;
-        
-        JPanel grid = new JPanel(new GridLayout(2, 0));
-
-        imagePanel = new CarouselImagePanel(model);
-        grid.add(imagePanel);
-
-        imageChooserPanel = new CarouselImageChooserPanel(model);
-        grid.add(imageChooserPanel);
 
         recommendationPanel = new CarouselRecommendationPanel(model);
-
         add(recommendationPanel, BorderLayout.NORTH);
-        add(grid, BorderLayout.CENTER);
+
+        imagePanel = new CarouselImagePanel(model);
+        add(imagePanel, BorderLayout.CENTER);
+
+        imageChooserPanel = new CarouselImageChooserPanel(model);
+        add(imageChooserPanel, BorderLayout.SOUTH);
     }
 
     /**

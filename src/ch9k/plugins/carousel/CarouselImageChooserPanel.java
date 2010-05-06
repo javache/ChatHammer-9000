@@ -77,6 +77,7 @@ public class CarouselImageChooserPanel extends JPanel
         this.chooserModel = new CarouselImageChooserModel(model); 
 
         setBackground(new Color(50, 50, 50));
+        setPreferredSize(new Dimension(0, 140));
 
         chooserModel.addChangeListener(this);
         addMouseWheelListener(this);
