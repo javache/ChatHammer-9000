@@ -12,8 +12,10 @@ public class LiteTextAnalyzerTest {
      */
     @Test
     public void testGetSubject() {
-        TextAnalyzer analyzer =
-                new LiteTextAnalyzer(null, null, new Settings());
+        Settings settings = new Settings();
+        settings.setInt(LiteTextAnalyzerPreferencePane.MAX_SUBJECTS, 3);
+        settings.setInt(LiteTextAnalyzerPreferencePane.MAX_MESSAGES, 5);
+        TextAnalyzer analyzer = new LiteTextAnalyzer(null, null, settings);
         String[] messages = {
             "Mushroom Mushroom Mushroom",
             "Badger Badger",
