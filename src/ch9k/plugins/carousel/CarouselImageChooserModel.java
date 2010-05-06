@@ -77,7 +77,7 @@ public class CarouselImageChooserModel
         this.model = model;
         this.images = new ProvidedImage[NUM_IMAGES];
         imageSet = new HashSet<ProvidedImage>();
-        nextSelection = 4; // TODO: make it 0
+        nextSelection = 0;
         currentSelection = 0.0;
         previousSelection = 0.0;
 
@@ -178,6 +178,9 @@ public class CarouselImageChooserModel
     private synchronized void addImage(ProvidedImage image) {
         /* Return if we have the image already. */
         if(imageSet.contains(image)) return;
+
+        /* Reject foobar images. */
+        if(image.getImage() == null) return;
 
         /* We need to remove the old image from the set. */
         ProvidedImage old = images[0];
