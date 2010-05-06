@@ -15,6 +15,7 @@ import java.awt.Image;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.util.HashSet;
@@ -29,8 +30,8 @@ import java.awt.geom.AffineTransform;
 /**
  * Panel in which the user can select an image.
  */
-public class CarouselImageChooserPanel
-        extends JPanel implements ChangeListener, MouseWheelListener {
+public class CarouselImageChooserPanel extends JPanel
+        implements ChangeListener, MouseWheelListener, MouseListener {
     /**
      * Number of images visible. MUST BE ODD.
      */
@@ -79,6 +80,7 @@ public class CarouselImageChooserPanel
 
         chooserModel.addChangeListener(this);
         addMouseWheelListener(this);
+        addMouseListener(this);
     }
 
     /**
@@ -108,9 +110,8 @@ public class CarouselImageChooserPanel
             return;
         }
 
-        Insets insets = getInsets();
-        double width = (double) getWidth() - insets.left - insets.right;
-        double height = (double) getHeight() - insets.top - insets.bottom;
+        double width = (double) getWidth();
+        double height = (double) getHeight();
 
         double imageMaxWidth = width / (double) NUM_IMAGES;
         double imageMaxHeight = height * 0.6;
@@ -132,8 +133,7 @@ public class CarouselImageChooserPanel
 
         /* Build a transformation for the image. */
         AffineTransform transform = new AffineTransform();
-        transform.translate(insets.left + (int) x,
-                insets.top + height * 0.7);
+        transform.translate((int) x, height * 0.7);
         transform.scale(imageWidth / (double) image.getWidth(null),
                 imageHeight / (double) image.getHeight(null));
         transform.translate(- (double) image.getWidth(null) * 0.5,
@@ -167,5 +167,43 @@ public class CarouselImageChooserPanel
         } else {
             chooserModel.setNextSelection(chooserModel.getNextSelection() - 1);
         }
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent event) {
+        double width = (double) getWidth();
+        double imageWidth = width / (double) NUM_IMAGES;
+
+        boolean found = false;
+
+        int i = 1;
+        while(i <= NUM_IMAGES && !found) {
+            if((double) event.getX() < (double) i * imageWidth) {
+                /* Determine the index of the next selection. Rely on the fact
+                 * that NUM_IMAGES is odd. */
+                int index = chooserModel.getNextSelection() +
+                        i - NUM_IMAGES / 2 - 1;
+                chooserModel.setNextSelection(index);
+                model.setProvidedImage(chooserModel.getProvidedImage(index));
+                found = true;
+            }
+            i++;
+        }
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent event) {
+    }
+
+    @Override
+    public void mouseExited(MouseEvent event) {
+    }
+
+    @Override
+    public void mousePressed(MouseEvent event) {
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent event) {
     }
 }

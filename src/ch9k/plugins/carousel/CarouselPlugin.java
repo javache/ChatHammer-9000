@@ -53,15 +53,6 @@ public class CarouselPlugin extends AbstractPlugin {
 
         FlickrImageProvider flickr = new FlickrImageProvider(conversation,
                 new Settings());
-        Thread.sleep(2000);
-        flickr.sendNewImageEvent("lolcat");
-        Thread.sleep(2000);
-        flickr.sendNewImageEvent("fire");
-        Thread.sleep(2000);
-        flickr.sendNewImageEvent("Bagger 288");
-        Thread.sleep(2000);
-        flickr.sendNewImageEvent("test");
-        Thread.sleep(2000);
         flickr.sendNewImageEvent("jailbait");
     }
 }
