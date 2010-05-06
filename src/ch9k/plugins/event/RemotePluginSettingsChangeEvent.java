@@ -28,6 +28,7 @@ public class RemotePluginSettingsChangeEvent extends ConversationEvent {
     public RemotePluginSettingsChangeEvent(Conversation conversation,
             String plugin, SettingsChangeEvent changeEvent) {
         super(conversation);
+        this.plugin = plugin;
         this.changeEvent = changeEvent;
     }
 
