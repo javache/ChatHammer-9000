@@ -174,6 +174,7 @@ public class ContactList extends AbstractListModel
                      * from friendrequests
                      */
                     contact.setOnline(true);
+                    contact.setStatus(onlineEvent.getStatus());
                     onlineHash.put(onlineEvent.getSource(), contact);
 
                     fireListChanged();

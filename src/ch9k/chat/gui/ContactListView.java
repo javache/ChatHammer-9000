@@ -12,6 +12,7 @@ import ch9k.core.ChatApplication;
 import ch9k.core.I18n;
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.FlowLayout;
 import java.awt.Frame;
 import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
@@ -93,8 +94,9 @@ public class ContactListView extends JPanel {
         private StatusIcon icon;
 
         public ContactListCellRenderer() {
+            super(new FlowLayout(FlowLayout.LEFT));
             setOpaque(true);
-            setBorder(BorderFactory.createEmptyBorder(5, 12, 5, 0));
+            setBorder(BorderFactory.createEmptyBorder(3, 12, 3, 0));
 
             username = new JLabel();
             icon = new StatusIcon(13, true);
@@ -105,6 +107,7 @@ public class ContactListView extends JPanel {
             status = new JLabel();
             status.setFont(getFont().deriveFont(12f));
             status.setForeground(SystemColor.textInactiveText);
+            status.setBorder(BorderFactory.createEmptyBorder(1, 3, 0, 0));
             add(status);
         }
 
