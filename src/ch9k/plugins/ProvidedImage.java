@@ -3,8 +3,10 @@ package ch9k.plugins;
 import ch9k.core.Model;
 import ch9k.eventpool.WarningEvent;
 import java.awt.Image;
+import javax.imageio.ImageIO;
 import java.io.File;
 import java.io.Serializable;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import javax.swing.ImageIcon;
@@ -24,11 +26,6 @@ public class ProvidedImage extends Model implements Serializable {
     private transient Image image;
 
     /**
-     * If the image has started loading.
-     */
-    private transient boolean loading;
-
-    /**
      * Create a new image.
      * @param url URL for the image.
      */
@@ -36,9 +33,11 @@ public class ProvidedImage extends Model implements Serializable {
         try {
             /* Create an image, and send it using an event. */
             this.url = new URL(url);
-            image = null;
-            loading = false;
+            image = ImageIO.read(this.url);
         } catch (MalformedURLException exception) {
+            WarningEvent.raise(this,
+                "Could not get image " + url + ": " + exception);
+        } catch (IOException exception) {
             WarningEvent.raise(this,
                 "Could not get image " + url + ": " + exception);
         }
@@ -56,23 +55,7 @@ public class ProvidedImage extends Model implements Serializable {
      * Get the actual image.
      * @return The actual image.
      */
-    public synchronized Image getImage() {
-        /* Time to load the image. */
-        if(!loading) {
-            loading = true;
-            Runnable runnable = new Runnable() {
-                @Override
-                public void run() {
-                    ImageIcon tmp = new ImageIcon(url);
-                    image = tmp.getImage();
-                    fireStateChanged();
-                }
-            };
-
-            Thread thread = new Thread(runnable);
-            thread.start();
-        }
-
+    public Image getImage() {
         return image;
     }
 

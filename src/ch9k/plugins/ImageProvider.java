@@ -53,12 +53,17 @@ public abstract class ImageProvider extends AbstractPluginInstance
         }
         
         /* Load the actual images. */
-        for (String url: urls) {
-            /* Create an image, and send it using an event. */
-            ProvidedImage image = new ProvidedImage(url);
-            NewProvidedImageEvent event =
-                    new NewProvidedImageEvent(getConversation(), image);
-            EventPool.getAppPool().raiseNetworkEvent(event);
+        for (final String url: urls) {
+            /* Send the new image event. */
+            new Thread(new Runnable() {
+                public void run() {
+                    /* Create an image, and send it using an event. */
+                    ProvidedImage image = new ProvidedImage(url);
+                    NewProvidedImageEvent event =
+                            new NewProvidedImageEvent(getConversation(), image);
+                    EventPool.getAppPool().raiseNetworkEvent(event);
+                }
+            }).start();
         }
     }
 
@@ -75,7 +80,7 @@ public abstract class ImageProvider extends AbstractPluginInstance
         ConversationSubject subject = event.getConversationSubject();
         String[] subjects = subject.getSubjects();
 
-        StringBuilder text = new StringBuilder();
+        final StringBuilder text = new StringBuilder();
         if(subjects.length > 0) {
             text.append(subjects[0]);
         }
@@ -84,7 +89,11 @@ public abstract class ImageProvider extends AbstractPluginInstance
         }
 
         /* Send the new image event. */
-        sendNewImageEvent(text.toString());
+        new Thread(new Runnable() {
+            public void run() {
+                sendNewImageEvent(text.toString());
+            }
+        }).start();
     }
 
     /**

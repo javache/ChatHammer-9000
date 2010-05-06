@@ -11,14 +11,18 @@ import ch9k.plugins.event.NewProvidedImageEvent;
 import java.util.HashSet;
 import java.util.Set;
 import java.awt.Image;
+import java.awt.image.ImageObserver;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.Timer;
+import javax.swing.event.ChangeListener;
+import javax.swing.event.ChangeEvent;
 
 /**
  * Class representing the image chooser data.
  */
-public class CarouselImageChooserModel extends Model implements EventListener {
+public class CarouselImageChooserModel
+        extends Model implements EventListener, ChangeListener {
     /**
      * The selection model.
      */
@@ -71,9 +75,9 @@ public class CarouselImageChooserModel extends Model implements EventListener {
      */
     public CarouselImageChooserModel(CarouselImageModel model) {
         this.model = model;
-        this.images = new ProvidedImage[NUM_IMAGES * 2];
+        this.images = new ProvidedImage[NUM_IMAGES];
         imageSet = new HashSet<ProvidedImage>();
-        nextSelection = 0;
+        nextSelection = 4; // TODO: make it 0
         currentSelection = 0.0;
         previousSelection = 0.0;
 
@@ -81,10 +85,10 @@ public class CarouselImageChooserModel extends Model implements EventListener {
         timer = new Timer(50, new ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 ticks++;
-                double diff = (double) currentSelection - previousSelection;
+                double diff = (double) nextSelection - previousSelection;
                 currentSelection = previousSelection +
-                        ((double) ticks * 0.1) * diff;
-                if(ticks >= 10) {
+                        (double) ticks * diff / 20.0;
+                if(ticks >= 20) {
                     currentSelection = (double) nextSelection;
                     timer.stop();
                 }
@@ -113,7 +117,6 @@ public class CarouselImageChooserModel extends Model implements EventListener {
      * @return The requested image.
      */
     public ProvidedImage getProvidedImage(int index) {
-        index += NUM_IMAGES;
         if(index < 0 || index >= NUM_IMAGES) {
             return null;
         } else {
@@ -140,12 +143,13 @@ public class CarouselImageChooserModel extends Model implements EventListener {
      * @param nextSelection The next selection.
      */
     public void setNextSelection(int nextSelection) {
-        if(this.nextSelection != nextSelection) {
+        if(this.nextSelection != nextSelection &&
+                nextSelection >= 0 && nextSelection < images.length) {
             previousSelection = currentSelection;
-            currentSelection = (double) this.nextSelection;
             this.nextSelection = nextSelection;
 
             /* Start timer for animation. */
+            timer.stop();
             ticks = 0;
             timer.start();
         }
@@ -171,24 +175,59 @@ public class CarouselImageChooserModel extends Model implements EventListener {
     public void handleEvent(Event e) {
         final NewProvidedImageEvent event = (NewProvidedImageEvent) e;
 
+        for(int i = 0; i < images.length; i++) {
+            if(images[i] == null) {
+                System.out.print(0);
+            } else {
+                System.out.print(1);
+            }
+        }
+        System.out.println();
+
         /* Return if we have the image already. */
         ProvidedImage image = event.getProvidedImage();
         if(imageSet.contains(image)) return;
 
+        /* Return if the image was badly loaded. */
+        if(image.getImage() == null) return;
+
         /* We need to remove the old image from the set. */
         ProvidedImage old = images[0];
-        if(old != null) imageSet.remove(old);
-
-        /* Scroll the images. */
-        for(int i = 0; i + 1 < images.length; i++) {
-            images[i] = images[i + 1];
+        if(old != null) {
+            imageSet.remove(old);
+            old.removeChangeListener(this);
         }
 
-        /* Set the new image. */
-        images[images.length - 1] = image;
+        /* Scroll for a position to insert the new image. */
+        int index = NUM_IMAGES;
+        while(index < images.length && images[index] != null) {
+            index++;
+        }
+
+        /* We need to scroll and set the image at the end. */
+        if(index >= images.length) {
+            /* Scroll the images. */
+            for(int i = 0; i + 1< images.length; i++) {
+                images[i] = images[i + 1];
+            }
+            images[images.length - 1] = image;
+        /* We have some space to insert the image. */
+        } else {
+            images[index] = image;
+        }
+
         imageSet.add(image);
+        image.addChangeListener(this);
 
         /* Update positions. */
+        nextSelection--;
+        previousSelection -= 1;
+        currentSelection -= 1;
         setNextSelection(nextSelection + 1);
+    }
+
+    @Override
+    public void stateChanged(ChangeEvent event) {
+        fireStateChanged();
     }
 }
