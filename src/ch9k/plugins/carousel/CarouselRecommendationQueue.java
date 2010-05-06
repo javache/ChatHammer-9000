@@ -25,7 +25,7 @@ public class CarouselRecommendationQueue extends Model {
      * Push a ProvidedImage to the queue.
      * @param image Image to add to the queue.
      */
-    public void push(ProvidedImage image) {
+    public synchronized void push(ProvidedImage image) {
         if(image != null) {
             queue.offer(image);
             fireStateChanged();
@@ -36,7 +36,7 @@ public class CarouselRecommendationQueue extends Model {
      * Pop a ProvidedImage of the queue.
      * @return Next image, or none if empty.
      */
-    public ProvidedImage pop() {
+    public synchronized ProvidedImage pop() {
         if(queue.isEmpty()) {
             return null;
         } else {

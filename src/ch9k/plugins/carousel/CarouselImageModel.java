@@ -38,8 +38,8 @@ public class CarouselImageModel extends Model {
      * @param image New image to set as selection.
      */
     public void setProvidedImage(ProvidedImage image) {
-        if(this.image == null && image != null ||
-                this.image != null && !this.image.equals(image)) {
+        if(image != null && (this.image == null ||
+                !this.image.equals(image))) {
             this.image = image;
             recommended = false;
             fireStateChanged();

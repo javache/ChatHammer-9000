@@ -77,7 +77,7 @@ public class CarouselImageChooserModel
         this.model = model;
         this.images = new ProvidedImage[NUM_IMAGES];
         imageSet = new HashSet<ProvidedImage>();
-        nextSelection = 4; // TODO: make it 0
+        nextSelection = 0;
         currentSelection = 0.0;
         previousSelection = 0.0;
 
@@ -171,24 +171,15 @@ public class CarouselImageChooserModel
         return currentSelection;
     }
 
-    @Override
-    public void handleEvent(Event e) {
-        final NewProvidedImageEvent event = (NewProvidedImageEvent) e;
-
-        for(int i = 0; i < images.length; i++) {
-            if(images[i] == null) {
-                System.out.print(0);
-            } else {
-                System.out.print(1);
-            }
-        }
-        System.out.println();
-
+    /**
+     * Add a new provided image.
+     * @param image Image to add.
+     */
+    private synchronized void addImage(ProvidedImage image) {
         /* Return if we have the image already. */
-        ProvidedImage image = event.getProvidedImage();
         if(imageSet.contains(image)) return;
 
-        /* Return if the image was badly loaded. */
+        /* Reject foobar images. */
         if(image.getImage() == null) return;
 
         /* We need to remove the old image from the set. */
@@ -224,6 +215,18 @@ public class CarouselImageChooserModel
         previousSelection -= 1;
         currentSelection -= 1;
         setNextSelection(nextSelection + 1);
+    }
+
+    @Override
+    public void handleEvent(Event e) {
+        NewProvidedImageEvent event = (NewProvidedImageEvent) e;
+        final ProvidedImage image = event.getProvidedImage();
+        new Thread(new Runnable() {
+            public void run() {
+                image.ensureLoaded();
+                addImage(image);
+            }
+        }).start();
     }
 
     @Override
