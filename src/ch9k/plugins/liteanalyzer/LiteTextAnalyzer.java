@@ -2,8 +2,8 @@ package ch9k.plugins.liteanalyzer;
 
 import ch9k.chat.Conversation;
 import ch9k.core.settings.Settings;
-import ch9k.plugins.TextAnalyzer;
 import ch9k.plugins.Plugin;
+import ch9k.plugins.TextAnalyzer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;

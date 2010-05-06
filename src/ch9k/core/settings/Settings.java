@@ -5,8 +5,8 @@ import ch9k.configuration.PersistentDataObject;
 import java.awt.EventQueue;
 import java.io.Serializable;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Map;
 import javax.swing.event.EventListenerList;
 import org.jdom.Element;
 

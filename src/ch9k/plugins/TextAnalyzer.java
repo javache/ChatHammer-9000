@@ -1,8 +1,6 @@
 package ch9k.plugins;
 
 import ch9k.chat.ChatMessage;
-import ch9k.plugins.event.RemotePluginSettingsChangeEvent;
-import ch9k.plugins.Plugin;
 import ch9k.chat.Conversation;
 import ch9k.chat.ConversationSubject;
 import ch9k.chat.event.ConversationEventFilter;
@@ -13,6 +11,7 @@ import ch9k.eventpool.Event;
 import ch9k.eventpool.EventFilter;
 import ch9k.eventpool.EventListener;
 import ch9k.eventpool.EventPool;
+import ch9k.plugins.Plugin;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;

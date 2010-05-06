@@ -3,13 +3,12 @@ package ch9k.plugins;
 import ch9k.core.Model;
 import ch9k.eventpool.WarningEvent;
 import java.awt.Image;
-import javax.imageio.ImageIO;
 import java.io.File;
-import java.io.Serializable;
 import java.io.IOException;
+import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URL;
-import javax.swing.ImageIcon;
+import javax.imageio.ImageIO;
 
 /**
  * Image class for images provided by an ImageProvider.

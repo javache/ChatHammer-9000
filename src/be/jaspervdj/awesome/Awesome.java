@@ -10,8 +10,8 @@ import ch9k.eventpool.Event;
 import ch9k.eventpool.EventFilter;
 import ch9k.eventpool.EventListener;
 import ch9k.eventpool.EventPool;
-import ch9k.plugins.Plugin;
 import ch9k.plugins.AbstractPluginInstance;
+import ch9k.plugins.Plugin;
 import java.awt.Container;
 import javax.swing.JLabel;
 

@@ -5,10 +5,9 @@ import ch9k.chat.event.ConversationEventFilter;
 import ch9k.core.settings.Settings;
 import ch9k.core.settings.SettingsChangeEvent;
 import ch9k.eventpool.Event;
-import ch9k.eventpool.NetworkEvent;
-import ch9k.eventpool.EventPool;
-import ch9k.eventpool.EventListener;
 import ch9k.eventpool.EventFilter;
+import ch9k.eventpool.EventListener;
+import ch9k.eventpool.EventPool;
 import ch9k.plugins.event.RemotePluginSettingsChangeEvent;
 
 /**

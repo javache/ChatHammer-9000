@@ -3,8 +3,8 @@ package ch9k.plugins.carousel;
 import ch9k.chat.Conversation;
 import ch9k.core.settings.Settings;
 import ch9k.plugins.AbstractPlugin;
-import ch9k.plugins.Plugin;
 import ch9k.plugins.AbstractPluginInstance;
+import ch9k.plugins.Plugin;
 import javax.swing.JPanel;
 
 import javax.swing.JFrame;

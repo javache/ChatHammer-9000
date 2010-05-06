@@ -1,25 +1,19 @@
 package ch9k.plugins.carousel;
 
-import ch9k.chat.Contact;
 import ch9k.chat.Conversation;
 import ch9k.chat.event.ConversationEventFilter;
+import ch9k.chat.event.ReleasePluginContainerEvent;
 import ch9k.chat.event.RequestPluginContainerEvent;
 import ch9k.chat.event.RequestedPluginContainerEvent;
-import ch9k.chat.event.ReleasePluginContainerEvent;
-import ch9k.core.settings.Settings;
 import ch9k.core.I18n;
+import ch9k.core.settings.Settings;
 import ch9k.eventpool.Event;
 import ch9k.eventpool.EventFilter;
-import ch9k.eventpool.EventListener;
-import ch9k.plugins.event.RemotePluginSettingsChangeEvent;
 import ch9k.eventpool.EventPool;
 import ch9k.plugins.AbstractPluginInstance;
 import ch9k.plugins.Plugin;
-import ch9k.plugins.flickr.FlickrImageProviderPlugin;
-import java.awt.GridLayout;
 import java.awt.Container;
-import java.net.InetAddress;
-import javax.swing.JFrame;
+import java.awt.GridLayout;
 
 /**
  * Plugin for a standard image carousel.

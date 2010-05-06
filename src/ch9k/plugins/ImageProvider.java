@@ -4,13 +4,11 @@ import ch9k.chat.Conversation;
 import ch9k.chat.ConversationSubject;
 import ch9k.chat.event.ConversationEventFilter;
 import ch9k.chat.event.NewConversationSubjectEvent;
-import ch9k.plugins.event.RemotePluginSettingsChangeEvent;
-import ch9k.plugins.Plugin;
 import ch9k.core.settings.Settings;
 import ch9k.eventpool.Event;
 import ch9k.eventpool.EventFilter;
-import ch9k.eventpool.EventListener;
 import ch9k.eventpool.EventPool;
+import ch9k.plugins.Plugin;
 import ch9k.plugins.event.NewProvidedImageEvent;
 
 /**

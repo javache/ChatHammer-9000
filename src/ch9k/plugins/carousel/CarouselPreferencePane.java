@@ -4,13 +4,11 @@ import ch9k.core.I18n;
 import ch9k.core.settings.Settings;
 import ch9k.core.settings.SettingsChangeEvent;
 import ch9k.core.settings.SettingsChangeListener;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
+import javax.swing.GroupLayout;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
-import javax.swing.JPanel;
-import javax.swing.GroupLayout;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 

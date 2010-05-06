@@ -1,26 +1,25 @@
 package ch9k.plugins.carousel;
 
 import ch9k.chat.event.ConversationEventFilter;
+import ch9k.core.Model;
+import ch9k.core.settings.Settings;
 import ch9k.core.settings.SettingsChangeEvent;
 import ch9k.core.settings.SettingsChangeListener;
 import ch9k.core.settings.SettingsChangeListener;
-import ch9k.core.Model;
-import ch9k.core.settings.Settings;
 import ch9k.eventpool.Event;
 import ch9k.eventpool.EventFilter;
 import ch9k.eventpool.EventListener;
 import ch9k.eventpool.EventPool;
 import ch9k.plugins.ProvidedImage;
 import ch9k.plugins.event.NewProvidedImageEvent;
+import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.HashSet;
 import java.util.Set;
-import java.awt.Image;
-import java.awt.image.ImageObserver;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
 import javax.swing.Timer;
-import javax.swing.event.ChangeListener;
 import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 /**
  * Class representing the image chooser data.

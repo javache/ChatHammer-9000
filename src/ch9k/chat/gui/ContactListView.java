@@ -1,6 +1,5 @@
 package ch9k.chat.gui;
 
-import ch9k.chat.gui.components.StatusIcon;
 import ch9k.chat.AddContactController;
 import ch9k.chat.BlockedContactFilter;
 import ch9k.chat.Contact;
@@ -8,6 +7,7 @@ import ch9k.chat.ContactFilter;
 import ch9k.chat.ContactList;
 import ch9k.chat.FilteredContactList;
 import ch9k.chat.IgnoredContactFilter;
+import ch9k.chat.gui.components.StatusIcon;
 import ch9k.core.ChatApplication;
 import ch9k.core.I18n;
 import java.awt.BorderLayout;

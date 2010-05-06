@@ -1,6 +1,8 @@
 package ch9k.plugins;
 
 import ch9k.chat.Conversation;
+import ch9k.configuration.Persistable;
+import ch9k.configuration.PersistentDataObject;
 import ch9k.core.Model;
 import ch9k.core.settings.Settings;
 import ch9k.eventpool.Event;
@@ -11,8 +13,6 @@ import ch9k.plugins.event.PluginChangeEvent;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.log4j.Logger;
-import ch9k.configuration.Persistable;
-import ch9k.configuration.PersistentDataObject;
 import org.jdom.Element;
 
 /**

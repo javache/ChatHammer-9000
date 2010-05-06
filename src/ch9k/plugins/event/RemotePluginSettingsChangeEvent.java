@@ -2,7 +2,6 @@ package ch9k.plugins.event;
 
 import ch9k.chat.Conversation;
 import ch9k.chat.event.ConversationEvent;
-import ch9k.core.settings.Settings;
 import ch9k.core.settings.SettingsChangeEvent;
 
 /**

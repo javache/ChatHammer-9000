@@ -1,11 +1,11 @@
 package ch9k.plugins.flickr;
 
 import ch9k.chat.Conversation;
+import ch9k.core.settings.Settings;
 import ch9k.eventpool.WarningEvent;
 import ch9k.plugins.ImageProvider;
 import ch9k.plugins.ImageProviderPreferencePane;
 import ch9k.plugins.Plugin;
-import ch9k.core.settings.Settings;
 import com.aetrion.flickr.Flickr;
 import com.aetrion.flickr.FlickrException;
 import com.aetrion.flickr.photos.Photo;

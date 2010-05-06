@@ -1,26 +1,25 @@
 package ch9k.chat.gui;
 
-import ch9k.chat.gui.components.MessageEditor;
 import ch9k.chat.Conversation;
 import ch9k.chat.event.CloseConversationEvent;
 import ch9k.chat.event.ConversationEventFilter;
+import ch9k.chat.event.ReleasePluginContainerEvent;
 import ch9k.chat.event.RequestPluginContainerEvent;
 import ch9k.chat.event.RequestedPluginContainerEvent;
-import ch9k.chat.event.ReleasePluginContainerEvent;
+import ch9k.chat.gui.components.MessageEditor;
 import ch9k.core.gui.WindowMenu;
 import ch9k.eventpool.Event;
+import ch9k.eventpool.EventFilter;
 import ch9k.eventpool.EventListener;
 import ch9k.eventpool.EventPool;
-import ch9k.eventpool.EventFilter;
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import javax.swing.JFrame;
+import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
-import javax.swing.JMenuBar;
 import javax.swing.JTabbedPane;
 
 /**
