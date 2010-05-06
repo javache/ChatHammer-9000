@@ -1,7 +1,11 @@
 package ch9k.plugins.carousel;
 
 import ch9k.chat.event.ConversationEventFilter;
+import ch9k.core.settings.SettingsChangeEvent;
+import ch9k.core.settings.SettingsChangeListener;
+import ch9k.core.settings.SettingsChangeListener;
 import ch9k.core.Model;
+import ch9k.core.settings.Settings;
 import ch9k.eventpool.Event;
 import ch9k.eventpool.EventFilter;
 import ch9k.eventpool.EventListener;
@@ -21,8 +25,8 @@ import javax.swing.event.ChangeEvent;
 /**
  * Class representing the image chooser data.
  */
-public class CarouselImageChooserModel
-        extends Model implements EventListener, ChangeListener {
+public class CarouselImageChooserModel extends Model
+        implements EventListener, ChangeListener, SettingsChangeListener {
     /**
      * The selection model.
      */
@@ -72,8 +76,11 @@ public class CarouselImageChooserModel
 
     /**
      * Constructor.
+     * @param settins The plugin settings.
+     * @param model The plugin selection model.
      */
-    public CarouselImageChooserModel(CarouselImageModel model) {
+    public CarouselImageChooserModel(Settings settings,
+            CarouselImageModel model) {
         this.model = model;
         this.images = new ProvidedImage[NUM_IMAGES];
         imageSet = new HashSet<ProvidedImage>();
@@ -102,6 +109,9 @@ public class CarouselImageChooserModel
         EventFilter filter = new ConversationEventFilter(
                 NewProvidedImageEvent.class, model.getConversation());
         EventPool.getAppPool().addListener(this, filter);
+
+        /* Listen to settings changes. */
+        settings.addSettingsListener(this);
     }
 
     /**
@@ -232,5 +242,11 @@ public class CarouselImageChooserModel
     @Override
     public void stateChanged(ChangeEvent event) {
         fireStateChanged();
+    }
+
+    @Override
+    public void settingsChanged(SettingsChangeEvent changeEvent) {
+        System.out.println("Settings changed, images: " +
+                Integer.parseInt(changeEvent.getValue()));
     }
 }

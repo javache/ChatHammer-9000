@@ -100,7 +100,7 @@ public class Carousel extends AbstractPluginInstance {
 
             /* Add our carousel to it. */
             model = new CarouselImageModel(getConversation());
-            panel = new CarouselPanel(model);
+            panel = new CarouselPanel(getSettings(), model);
             container.add(panel);
 
             /* Redraw the container. */

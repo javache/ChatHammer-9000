@@ -1,6 +1,7 @@
 package ch9k.plugins.carousel;
 
 import ch9k.chat.event.ConversationEventFilter;
+import ch9k.core.settings.Settings;
 import ch9k.eventpool.Event;
 import ch9k.eventpool.EventFilter;
 import ch9k.eventpool.EventListener;
@@ -69,12 +70,14 @@ public class CarouselImageChooserPanel extends JPanel
 
     /**
      * Constructor.
+     * @param settings Settings of the plugin.
      * @param model The selection model of the plugin.
      */
-    public CarouselImageChooserPanel(CarouselImageModel model) {
+    public CarouselImageChooserPanel(Settings settings,
+            CarouselImageModel model) {
         super();
         this.model = model;
-        this.chooserModel = new CarouselImageChooserModel(model); 
+        this.chooserModel = new CarouselImageChooserModel(settings, model); 
 
         setBackground(new Color(50, 50, 50));
         setPreferredSize(new Dimension(0, 140));

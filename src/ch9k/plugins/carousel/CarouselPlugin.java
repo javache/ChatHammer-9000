@@ -27,12 +27,14 @@ public class CarouselPlugin extends AbstractPlugin {
 
     @Override
     protected JPanel createPreferencePane(Settings settings) {
-        return null;
+        return new CarouselPreferencePane(settings);
     }
 
     @Override
     protected Settings createDefaultSettings() {
-        return new Settings();
+        Settings settings = new Settings();
+        settings.setInt(CarouselPreferencePane.MAX_IMAGES, 10);
+        return settings;
     }
 
     public static void main(String[] args) throws Exception {
