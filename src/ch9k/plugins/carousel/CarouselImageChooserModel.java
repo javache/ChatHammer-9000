@@ -264,8 +264,6 @@ public class CarouselImageChooserModel extends Model
 
     @Override
     public void settingsChanged(SettingsChangeEvent changeEvent) {
-        System.out.println("Settings changed, images: " +
-                Integer.parseInt(changeEvent.getValue()));
         resizeImagesArray(Integer.parseInt(changeEvent.getValue()));
     }
 }

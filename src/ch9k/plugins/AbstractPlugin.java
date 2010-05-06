@@ -125,7 +125,6 @@ public abstract class AbstractPlugin
                 NetworkEvent event = new RemotePluginSettingsChangeEvent(
                         conversation, this.getClass().getName(), changeEvent);
                 EventPool.getAppPool().raiseNetworkEvent(event);
-                System.out.println("Sending change event to conversation.");
             }
         }
     }
