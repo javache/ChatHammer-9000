@@ -10,6 +10,7 @@ import javax.swing.JTextField;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.util.Set;
@@ -93,6 +94,9 @@ public class PluginPreferencePane
             .addComponent(pluginListLabel)
             .addComponent(pluginListScrollPane)
             .addComponent(removePluginButton));
+
+        layout.linkSize(SwingConstants.HORIZONTAL,
+                installPluginButton, removePluginButton);
 
         setLayout(layout);
 
