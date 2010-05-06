@@ -254,6 +254,19 @@ public class PluginManager extends Model implements EventListener, Persistable {
     }
 
     @Override
-    public void load(PersistentDataObject object) {
+    public void load(PersistentDataObject pdo) {
+        for(Object object : pdo.getElement().getChildren()) {
+            Element child = (Element) object;
+
+            /* Find the name of the plugin and get the corresponding plugin. */
+            String name = child.getAttributeValue("plugin");
+            Plugin plugin = plugins.get(name);
+
+            if(plugin != null) {
+                /* load the plugin settings from the XML. */
+                Settings settings = plugin.getSettings();
+                settings.load(new PersistentDataObject(child));
+            }
+        }
     }
 }

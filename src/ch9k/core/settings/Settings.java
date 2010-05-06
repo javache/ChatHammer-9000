@@ -209,7 +209,7 @@ public class Settings implements Serializable, Persistable {
         //put all the settings back in the map
          for (Object obj : object.getElement().getChildren()) {
             Element child = (Element) obj;
-            settings.put(child.getName(), child.getText());
+            set(child.getName(), child.getText());
         }
     }
 }
