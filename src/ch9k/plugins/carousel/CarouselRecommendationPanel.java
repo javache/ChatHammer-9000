@@ -126,7 +126,7 @@ public class CarouselRecommendationPanel
                 image.ensureLoaded();
                 queue.push(image);
             }
-        });
+        }).start();
     }
 
     /**
