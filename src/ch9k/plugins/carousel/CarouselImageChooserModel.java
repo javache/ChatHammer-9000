@@ -33,11 +33,6 @@ public class CarouselImageChooserModel extends Model
     private CarouselImageModel model;
 
     /**
-     * Max number of images visible.
-     */
-    private static final int NUM_IMAGES = 10;
-
-    /**
      * Array to store the images.
      */
     private ProvidedImage[] images;
@@ -82,7 +77,8 @@ public class CarouselImageChooserModel extends Model
     public CarouselImageChooserModel(Settings settings,
             CarouselImageModel model) {
         this.model = model;
-        this.images = new ProvidedImage[NUM_IMAGES];
+        this.images = new ProvidedImage[
+                settings.getInt(CarouselPreferencePane.MAX_IMAGES)];
         imageSet = new HashSet<ProvidedImage>();
         nextSelection = 0;
         currentSelection = 0.0;
@@ -127,7 +123,7 @@ public class CarouselImageChooserModel extends Model
      * @return The requested image.
      */
     public ProvidedImage getProvidedImage(int index) {
-        if(index < 0 || index >= NUM_IMAGES) {
+        if(index < 0 || index >= images.length) {
             return null;
         } else {
             return images[index];
@@ -185,46 +181,68 @@ public class CarouselImageChooserModel extends Model
      * Add a new provided image.
      * @param image Image to add.
      */
-    private synchronized void addImage(ProvidedImage image) {
-        /* Return if we have the image already. */
-        if(imageSet.contains(image)) return;
+    private void addImage(ProvidedImage image) {
+        synchronized(this) {
+            /* Return if we have the image already. */
+            if(imageSet.contains(image)) return;
 
-        /* Reject foobar images. */
-        if(image.getImage() == null) return;
+            /* Reject foobar images. */
+            if(image.getImage() == null) return;
 
-        /* We need to remove the old image from the set. */
-        ProvidedImage old = images[0];
-        if(old != null) {
-            imageSet.remove(old);
-            old.removeChangeListener(this);
-        }
-
-        /* Scroll for a position to insert the new image. */
-        int index = NUM_IMAGES;
-        while(index < images.length && images[index] != null) {
-            index++;
-        }
-
-        /* We need to scroll and set the image at the end. */
-        if(index >= images.length) {
-            /* Scroll the images. */
-            for(int i = 0; i + 1< images.length; i++) {
-                images[i] = images[i + 1];
+            /* We need to remove the old image from the set. */
+            ProvidedImage old = images[0];
+            if(old != null) {
+                imageSet.remove(old);
+                old.removeChangeListener(this);
             }
-            images[images.length - 1] = image;
-        /* We have some space to insert the image. */
-        } else {
-            images[index] = image;
+
+            /* Scroll for a position to insert the new image. */
+            int index = 0;
+            while(index < images.length && images[index] != null) {
+                index++;
+            }
+
+            /* We need to scroll and set the image at the end. */
+            if(index >= images.length) {
+                /* Scroll the images. */
+                for(int i = 0; i + 1< images.length; i++) {
+                    images[i] = images[i + 1];
+                }
+                images[images.length - 1] = image;
+            /* We have some space to insert the image. */
+            } else {
+                images[index] = image;
+            }
+
+            imageSet.add(image);
+            image.addChangeListener(this);
+
+            /* Update positions. */
+            nextSelection--;
+            previousSelection -= 1;
+            currentSelection -= 1;
+            setNextSelection(nextSelection + 1);
         }
+    }
 
-        imageSet.add(image);
-        image.addChangeListener(this);
+    /**
+     * Resize the images array.
+     * @param size New size.
+     */
+    private void resizeImagesArray(int size) {
+        synchronized(this) {
+            ProvidedImage[] old = images;
+            images = new ProvidedImage[size];
+            for(int i = 0; i < images.length; i++) {
+                images[i] = old[i];
+            }
 
-        /* Update positions. */
-        nextSelection--;
-        previousSelection -= 1;
-        currentSelection -= 1;
-        setNextSelection(nextSelection + 1);
+            if(nextSelection >= size) {
+                setNextSelection(size - 1);
+            } else {
+                fireStateChanged();
+            }
+        }
     }
 
     @Override
@@ -248,5 +266,6 @@ public class CarouselImageChooserModel extends Model
     public void settingsChanged(SettingsChangeEvent changeEvent) {
         System.out.println("Settings changed, images: " +
                 Integer.parseInt(changeEvent.getValue()));
+        resizeImagesArray(Integer.parseInt(changeEvent.getValue()));
     }
 }

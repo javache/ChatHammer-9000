@@ -90,7 +90,6 @@ public abstract class AbstractPluginInstance implements EventListener {
             /* Propogate the changes. */
             SettingsChangeEvent changeEvent = event.getChangeEvent();
             settings.set(changeEvent.getKey(), changeEvent.getValue());
-            System.out.println("Adapted local settings.");
         }
     }
 }
