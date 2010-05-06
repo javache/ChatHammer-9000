@@ -42,6 +42,15 @@ public class Settings implements Serializable, Persistable {
     }
 
     /**
+     * Make sure that a listener list is present.
+     */
+    private void ensureListenerList() {
+        if(listenerList == null) {
+            listenerList = new EventListenerList();
+        }
+    }
+
+    /**
      * Construct from PDO
      * @param object
      */
@@ -134,6 +143,7 @@ public class Settings implements Serializable, Persistable {
      * @param listener SettingsChangeListener to add.
      */
     public void addSettingsListener(SettingsChangeListener listener) {
+        ensureListenerList();
         listenerList.add(SettingsChangeListener.class, listener);
     }
 
@@ -142,6 +152,7 @@ public class Settings implements Serializable, Persistable {
      * @param listener Listener to remove.
      */
     public void removeSettingsListener(SettingsChangeListener listener) {
+        ensureListenerList();
         listenerList.remove(SettingsChangeListener.class, listener);
     }
 
@@ -169,6 +180,7 @@ public class Settings implements Serializable, Persistable {
      * @param event The event to send.
      */
     private void settingsChange(SettingsChangeEvent event) {
+        ensureListenerList();
         Object[] listeners = listenerList.getListenerList();
         for (int i = listeners.length - 2; i >= 0; i -= 2) {
             if(listeners[i] == SettingsChangeListener.class) {
