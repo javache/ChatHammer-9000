@@ -6,9 +6,6 @@ import ch9k.core.Account;
 import ch9k.core.ChatApplication;
 import ch9k.core.I18n;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.GroupLayout;
@@ -40,17 +37,6 @@ public class AccountPanel extends JPanel {
         accountLabel.setBorder(BorderFactory.createEmptyBorder(5, 3, 5, 0));
 
         statusField = new StatusField();
-        statusField.addFocusListener(new FocusAdapter() {
-            public void focusLost(FocusEvent e) {
-                updateStatus();
-            }
-        });
-        statusField.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                updateStatus();
-            }
-        });
-
         String logoffButtonText = I18n.get("ch9k.core", "log_off");
         logoffButton = new JButton(new AbstractAction(logoffButtonText) {
             public void actionPerformed(ActionEvent e) {
@@ -87,10 +73,5 @@ public class AccountPanel extends JPanel {
             .addComponent(statusField)
             .addContainerGap()
         );
-    }
-
-    public void updateStatus() {
-        Account account = ChatApplication.getInstance().getAccount();
-        account.setStatus(statusField.getText());
     }
 }

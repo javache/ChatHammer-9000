@@ -202,7 +202,7 @@ public class ContactList extends AbstractListModel
             ContactStatusEvent statusEvent = (ContactStatusEvent)event;
             Contact contact = statusEvent.getContact();
             /* all this has to be true, otherwise we just have to ignore */
-            if(contact != null) {
+            if(contact != null && statusEvent.isExternal()) {
                 contact.setStatus(statusEvent.getNewStatus());
             }
         }
