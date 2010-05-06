@@ -233,7 +233,7 @@ public class CarouselImageChooserModel extends Model
         synchronized(this) {
             ProvidedImage[] old = images;
             images = new ProvidedImage[size];
-            for(int i = 0; i < images.length; i++) {
+            for(int i = 0; i < images.length && i < old.length; i++) {
                 images[i] = old[i];
             }
 
