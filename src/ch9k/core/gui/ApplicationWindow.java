@@ -83,7 +83,7 @@ public class ApplicationWindow extends JFrame {
     public void initApplicationView() {
         prefFrame = new PreferencesFrame();
         EventPool.getAppPool().raiseEvent(new PreferencePaneEvent(
-                I18n.get("ch9k.core", "preferences_title"),
+                I18n.get("ch9k.core", "proxy_title"),
                 new ProxyPrefPane(ChatApplication.getInstance().getSettings()))
         );
 
