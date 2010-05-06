@@ -69,7 +69,7 @@ public class ConversationManager implements Iterable<Conversation> {
         // send a system event
         NewChatMessageEvent systemEvent = new NewChatMessageEvent(
                 conversation, new ChatMessage("info", I18n.get("ch9k.chat",
-                    "contact_closed_conversation")), true);
+                    "contact_closed_conversation"), true));
         EventPool.getAppPool().raiseEvent(systemEvent);
         
         // close the conversation

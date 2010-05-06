@@ -14,6 +14,7 @@ public class ChatMessage implements Comparable<ChatMessage>, Serializable{
     private String text;
     private String author;
     private Date time;
+    private boolean systemMessage;
 
     /**
      * Filter to strip out HTML.
@@ -24,11 +25,17 @@ public class ChatMessage implements Comparable<ChatMessage>, Serializable{
      * Constructor.
      * @param author The username of the person who typed this ChatMessage.
      * @param text The actual text.
+     * @param systemMessage
      */
-    public ChatMessage(String author, String text) {
+    public ChatMessage(String author, String text, boolean systemMessage) {
         this.time = new Date();
         this.text = text;
         this.author = author;
+        this.systemMessage = systemMessage;
+    }
+
+    public ChatMessage(String author, String text) {
+        this(author, text, false);
     }
 
     /**
@@ -62,6 +69,13 @@ public class ChatMessage implements Comparable<ChatMessage>, Serializable{
      */
     public Date getTime() {
         return time;
+    }
+
+    /**
+     * Check if this is a system message
+     */
+    public boolean isSystemMessage() {
+        return systemMessage;
     }
 
     /**

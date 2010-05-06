@@ -38,8 +38,10 @@ public class AboutDialog extends JDialog {
     public void dispose() {
         super.dispose();
 
-        player.stop();
-        player.close();
+        if(player != null) {
+            player.stop();
+            player.close();
+        }
     }
 
     private void initComponents() {

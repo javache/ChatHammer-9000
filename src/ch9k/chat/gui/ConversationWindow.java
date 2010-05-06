@@ -13,6 +13,7 @@ import ch9k.eventpool.EventListener;
 import ch9k.eventpool.EventPool;
 import ch9k.eventpool.EventFilter;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -121,7 +122,7 @@ public class ConversationWindow extends JFrame implements EventListener {
     @Override
     public void handleEvent(Event e) {
         if(e instanceof RequestPluginContainerEvent) {
-            RequestPluginContainerEvent event = (RequestPluginContainerEvent) e;
+            RequestPluginContainerEvent event = (RequestPluginContainerEvent)e;
             JPanel newTab = new JPanel();
             pluginPane.add(event.getTitle(), newTab);
             EventPool.getAppPool().raiseEvent(new RequestedPluginContainerEvent(
@@ -129,7 +130,7 @@ public class ConversationWindow extends JFrame implements EventListener {
         }
 
         if(e instanceof ReleasePluginContainerEvent) {
-            ReleasePluginContainerEvent event = (ReleasePluginContainerEvent) e;
+            ReleasePluginContainerEvent event = (ReleasePluginContainerEvent)e;
             pluginPane.remove(event.getPluginContainer());
         }
 

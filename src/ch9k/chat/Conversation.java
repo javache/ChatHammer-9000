@@ -145,7 +145,7 @@ public class Conversation implements EventListener {
      * @param chatMessage
      */
     private void addMessage(ChatMessage chatMessage) {
-        if(!isClosed()) {
+        if(!isClosed() || chatMessage.isSystemMessage()) {
             messages.addElement(chatMessage);
         }
     }
