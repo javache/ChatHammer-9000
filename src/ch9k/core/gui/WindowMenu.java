@@ -45,8 +45,10 @@ public class WindowMenu extends JMenu implements WindowListener, EventListener {
                     conversation.getWindow());
         }
 
-        EventPool.getAppPool().addListener(this,
+        EventPool pool = EventPool.getAppPool();
+        pool.addListener(this,
                 new EventFilter(NewConversationEvent.class));
+
     }
 
     private void addWindow(String title, JFrame window) {
@@ -60,25 +62,28 @@ public class WindowMenu extends JMenu implements WindowListener, EventListener {
     public void windowClosed(WindowEvent e) {
         ShowWindowItem menuItem = menuMap.get(e.getWindow());
 
-        for(Component c : getComponents()) {
+        Component[] components = getMenuComponents();
+        for(Component c : components) {
             JMenuItem component = (JMenuItem)c;
             if(menuItem.equals(component)) {
                 remove(component);
             }
         }
+        menuMap.remove(e.getWindow());
     }
 
     @Override
     public void handleEvent(Event event) {
-        NewConversationEvent conversationEvent = (NewConversationEvent)event;
-        Conversation conversation = conversationEvent.getConversation();
+        if(event instanceof NewConversationEvent) {
+            NewConversationEvent conversationEvent = (NewConversationEvent)event;
+            Conversation conversation = conversationEvent.getConversation();
 
-        if(conversation == null || conversation.getContact() == null ||
-                menuMap.containsKey(conversation.getWindow())) {
-            return;
+            if(!(conversation == null || conversation.getContact() == null ||
+                    menuMap.containsKey(conversation.getWindow()))) {
+                addWindow(conversation.getContact().getUsername(),
+                        conversation.getWindow());
+            }           
         }
-
-        addWindow(conversation.getContact().getUsername(), conversation.getWindow());
     }
 
     public void windowClosing(WindowEvent e) {}
@@ -99,6 +104,7 @@ public class WindowMenu extends JMenu implements WindowListener, EventListener {
             addActionListener(this);
         }
 
+        @Override
         public void actionPerformed(ActionEvent e) {
             window.toFront();
             setSelected(window.equals(ownerWindow));
