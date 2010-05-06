@@ -85,6 +85,14 @@ public class Storage {
             child.setAttribute("class", entry.getValue().getClass().getName());
             root.addContent(child);
         }
+
+        for (Entry<String,PersistentDataObject> pdo : xmlMap.entrySet()) {
+            if(!storage.containsKey(pdo.getKey())){
+                Element child = pdo.getValue().getElement();
+                child.detach();
+                root.addContent(child);
+            }
+        }
         
         try {
             // Open the right file
