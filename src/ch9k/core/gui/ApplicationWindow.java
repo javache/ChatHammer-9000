@@ -61,7 +61,9 @@ public class ApplicationWindow extends JFrame {
     @Override
     public void dispose() {
         super.dispose();
-        prefFrame.dispose();
+        if(prefFrame != null) {
+            prefFrame.dispose();
+        }
     }
 
     private void initSettings() {
