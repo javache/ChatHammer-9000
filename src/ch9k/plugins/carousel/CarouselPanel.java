@@ -1,5 +1,6 @@
 package ch9k.plugins.carousel;
 
+import ch9k.core.settings.Settings;
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import javax.swing.JPanel;
@@ -30,9 +31,10 @@ public class CarouselPanel extends JPanel {
 
     /**
      * Constructor.
+     * @param settings Settings of the plugin.
      * @param model The selection model of the plugin.
      */
-    public CarouselPanel(CarouselImageModel model) {
+    public CarouselPanel(Settings settings, CarouselImageModel model) {
         super(new BorderLayout());
         this.model = model;
 
@@ -42,7 +44,7 @@ public class CarouselPanel extends JPanel {
         imagePanel = new CarouselImagePanel(model);
         add(imagePanel, BorderLayout.CENTER);
 
-        imageChooserPanel = new CarouselImageChooserPanel(model);
+        imageChooserPanel = new CarouselImageChooserPanel(settings, model);
         add(imageChooserPanel, BorderLayout.SOUTH);
     }
 

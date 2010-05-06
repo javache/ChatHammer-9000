@@ -4,6 +4,7 @@ import ch9k.chat.Conversation;
 import ch9k.core.settings.Settings;
 import ch9k.eventpool.WarningEvent;
 import ch9k.plugins.ImageProvider;
+import ch9k.plugins.Plugin;
 import ch9k.plugins.ImageProviderPreferencePane;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -43,11 +44,13 @@ public class GoogleImageProvider extends ImageProvider {
 
     /**
      * Constructor.
+     * @param plugin The corresponding plugin.
      * @param conversation The relevant conversation.
      * @param settings Local settings for the plugin.
      */
-    public GoogleImageProvider(Conversation conversation, Settings settings) {
-        super(conversation, settings);
+    public GoogleImageProvider(Plugin plugin,
+            Conversation conversation, Settings settings) {
+        super(plugin, conversation, settings);
     }
 
     @Override

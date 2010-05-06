@@ -4,6 +4,7 @@ import ch9k.chat.Conversation;
 import ch9k.eventpool.WarningEvent;
 import ch9k.plugins.ImageProvider;
 import ch9k.plugins.ImageProviderPreferencePane;
+import ch9k.plugins.Plugin;
 import ch9k.core.settings.Settings;
 import com.aetrion.flickr.Flickr;
 import com.aetrion.flickr.FlickrException;
@@ -38,11 +39,13 @@ public class FlickrImageProvider extends ImageProvider {
 
     /**
      * Constructor.
+     * @param plugin Corresponding plugin.
      * @param conversation Conversation to provide images for.
      * @param settings Local plugin instance settings.
      */
-    public FlickrImageProvider(Conversation conversation, Settings settings) {
-        super(conversation, settings);
+    public FlickrImageProvider(Plugin plugin,
+            Conversation conversation, Settings settings) {
+        super(plugin, conversation, settings);
         flickr = new Flickr(API_KEY);
     }
 

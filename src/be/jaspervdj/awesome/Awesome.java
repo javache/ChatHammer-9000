@@ -10,6 +10,7 @@ import ch9k.eventpool.Event;
 import ch9k.eventpool.EventFilter;
 import ch9k.eventpool.EventListener;
 import ch9k.eventpool.EventPool;
+import ch9k.plugins.Plugin;
 import ch9k.plugins.AbstractPluginInstance;
 import java.awt.Container;
 import javax.swing.JLabel;
@@ -25,11 +26,13 @@ public class Awesome extends AbstractPluginInstance implements EventListener {
 
     /**
      * Constructor.
+     * @param plugin Corresponding plugin.
      * @param conversation Conversation to display carousel for.
      * @param settings Local plugin instance settings.
      */
-    public Awesome(Conversation conversation, Settings settings) {
-        super(conversation, settings);
+    public Awesome(Plugin plugin,
+            Conversation conversation, Settings settings) {
+        super(plugin, conversation, settings);
         /* We will asynchronously receive a container later. */
         this.container = null;
     }

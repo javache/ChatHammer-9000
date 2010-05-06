@@ -11,8 +11,10 @@ import ch9k.core.I18n;
 import ch9k.eventpool.Event;
 import ch9k.eventpool.EventFilter;
 import ch9k.eventpool.EventListener;
+import ch9k.plugins.event.RemotePluginSettingsChangeEvent;
 import ch9k.eventpool.EventPool;
 import ch9k.plugins.AbstractPluginInstance;
+import ch9k.plugins.Plugin;
 import ch9k.plugins.flickr.FlickrImageProviderPlugin;
 import java.awt.GridLayout;
 import java.awt.Container;
@@ -22,7 +24,7 @@ import javax.swing.JFrame;
 /**
  * Plugin for a standard image carousel.
  */
-public class Carousel extends AbstractPluginInstance implements EventListener {
+public class Carousel extends AbstractPluginInstance {
     /**
      * The container that we get from the system.
      */
@@ -40,11 +42,13 @@ public class Carousel extends AbstractPluginInstance implements EventListener {
 
     /**
      * Constructor.
+     * @param plugin Corresponding plugin.
      * @param conversation Conversation to display carousel for.
      * @param settings Local plugin instance settings.
      */
-    public Carousel(Conversation conversation, Settings settings) {
-        super(conversation, settings);
+    public Carousel(Plugin plugin,
+            Conversation conversation, Settings settings) {
+        super(plugin, conversation, settings);
         /* We will asynchronously receive a container later. */
         this.container = null;
     }
@@ -79,24 +83,28 @@ public class Carousel extends AbstractPluginInstance implements EventListener {
 
     @Override
     public void handleEvent(Event e) {
-        RequestedPluginContainerEvent event = (RequestedPluginContainerEvent) e;
+        super.handleEvent(e);
+        if(e instanceof RequestedPluginContainerEvent) {
+            RequestedPluginContainerEvent event =
+                    (RequestedPluginContainerEvent) e;
 
-        /* We only need one panel. */
-        if(container != null) return;
+            /* We only need one panel. */
+            if(container != null) return;
 
-        /* Okay, we have a panel now, start using it. */
-        container = event.getPluginContainer();
+            /* Okay, we have a panel now, start using it. */
+            container = event.getPluginContainer();
 
-        /* Clear the container and set a new layout. */
-        container.removeAll();
-        container.setLayout(new GridLayout(1, 1));
+            /* Clear the container and set a new layout. */
+            container.removeAll();
+            container.setLayout(new GridLayout(1, 1));
 
-        /* Add our carousel to it. */
-        model = new CarouselImageModel(getConversation());
-        panel = new CarouselPanel(model);
-        container.add(panel);
+            /* Add our carousel to it. */
+            model = new CarouselImageModel(getConversation());
+            panel = new CarouselPanel(getSettings(), model);
+            container.add(panel);
 
-        /* Redraw the container. */
-        container.validate();
+            /* Redraw the container. */
+            container.validate();
+        }
     }
 }

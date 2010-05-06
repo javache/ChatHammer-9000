@@ -1,7 +1,11 @@
 package ch9k.plugins.carousel;
 
 import ch9k.chat.event.ConversationEventFilter;
+import ch9k.core.settings.SettingsChangeEvent;
+import ch9k.core.settings.SettingsChangeListener;
+import ch9k.core.settings.SettingsChangeListener;
 import ch9k.core.Model;
+import ch9k.core.settings.Settings;
 import ch9k.eventpool.Event;
 import ch9k.eventpool.EventFilter;
 import ch9k.eventpool.EventListener;
@@ -21,17 +25,12 @@ import javax.swing.event.ChangeEvent;
 /**
  * Class representing the image chooser data.
  */
-public class CarouselImageChooserModel
-        extends Model implements EventListener, ChangeListener {
+public class CarouselImageChooserModel extends Model
+        implements EventListener, ChangeListener, SettingsChangeListener {
     /**
      * The selection model.
      */
     private CarouselImageModel model;
-
-    /**
-     * Max number of images visible.
-     */
-    private static final int NUM_IMAGES = 10;
 
     /**
      * Array to store the images.
@@ -72,10 +71,14 @@ public class CarouselImageChooserModel
 
     /**
      * Constructor.
+     * @param settins The plugin settings.
+     * @param model The plugin selection model.
      */
-    public CarouselImageChooserModel(CarouselImageModel model) {
+    public CarouselImageChooserModel(Settings settings,
+            CarouselImageModel model) {
         this.model = model;
-        this.images = new ProvidedImage[NUM_IMAGES];
+        this.images = new ProvidedImage[
+                settings.getInt(CarouselPreferencePane.MAX_IMAGES)];
         imageSet = new HashSet<ProvidedImage>();
         nextSelection = 0;
         currentSelection = 0.0;
@@ -102,6 +105,9 @@ public class CarouselImageChooserModel
         EventFilter filter = new ConversationEventFilter(
                 NewProvidedImageEvent.class, model.getConversation());
         EventPool.getAppPool().addListener(this, filter);
+
+        /* Listen to settings changes. */
+        settings.addSettingsListener(this);
     }
 
     /**
@@ -117,7 +123,7 @@ public class CarouselImageChooserModel
      * @return The requested image.
      */
     public ProvidedImage getProvidedImage(int index) {
-        if(index < 0 || index >= NUM_IMAGES) {
+        if(index < 0 || index >= images.length) {
             return null;
         } else {
             return images[index];
@@ -175,46 +181,68 @@ public class CarouselImageChooserModel
      * Add a new provided image.
      * @param image Image to add.
      */
-    private synchronized void addImage(ProvidedImage image) {
-        /* Return if we have the image already. */
-        if(imageSet.contains(image)) return;
+    private void addImage(ProvidedImage image) {
+        synchronized(this) {
+            /* Return if we have the image already. */
+            if(imageSet.contains(image)) return;
 
-        /* Reject foobar images. */
-        if(image.getImage() == null) return;
+            /* Reject foobar images. */
+            if(image.getImage() == null) return;
 
-        /* We need to remove the old image from the set. */
-        ProvidedImage old = images[0];
-        if(old != null) {
-            imageSet.remove(old);
-            old.removeChangeListener(this);
-        }
-
-        /* Scroll for a position to insert the new image. */
-        int index = NUM_IMAGES;
-        while(index < images.length && images[index] != null) {
-            index++;
-        }
-
-        /* We need to scroll and set the image at the end. */
-        if(index >= images.length) {
-            /* Scroll the images. */
-            for(int i = 0; i + 1< images.length; i++) {
-                images[i] = images[i + 1];
+            /* We need to remove the old image from the set. */
+            ProvidedImage old = images[0];
+            if(old != null) {
+                imageSet.remove(old);
+                old.removeChangeListener(this);
             }
-            images[images.length - 1] = image;
-        /* We have some space to insert the image. */
-        } else {
-            images[index] = image;
+
+            /* Scroll for a position to insert the new image. */
+            int index = 0;
+            while(index < images.length && images[index] != null) {
+                index++;
+            }
+
+            /* We need to scroll and set the image at the end. */
+            if(index >= images.length) {
+                /* Scroll the images. */
+                for(int i = 0; i + 1< images.length; i++) {
+                    images[i] = images[i + 1];
+                }
+                images[images.length - 1] = image;
+            /* We have some space to insert the image. */
+            } else {
+                images[index] = image;
+            }
+
+            imageSet.add(image);
+            image.addChangeListener(this);
+
+            /* Update positions. */
+            nextSelection--;
+            previousSelection -= 1;
+            currentSelection -= 1;
+            setNextSelection(nextSelection + 1);
         }
+    }
 
-        imageSet.add(image);
-        image.addChangeListener(this);
+    /**
+     * Resize the images array.
+     * @param size New size.
+     */
+    private void resizeImagesArray(int size) {
+        synchronized(this) {
+            ProvidedImage[] old = images;
+            images = new ProvidedImage[size];
+            for(int i = 0; i < images.length && i < old.length; i++) {
+                images[i] = old[i];
+            }
 
-        /* Update positions. */
-        nextSelection--;
-        previousSelection -= 1;
-        currentSelection -= 1;
-        setNextSelection(nextSelection + 1);
+            if(nextSelection >= size) {
+                setNextSelection(size - 1);
+            } else {
+                fireStateChanged();
+            }
+        }
     }
 
     @Override
@@ -232,5 +260,10 @@ public class CarouselImageChooserModel
     @Override
     public void stateChanged(ChangeEvent event) {
         fireStateChanged();
+    }
+
+    @Override
+    public void settingsChanged(SettingsChangeEvent changeEvent) {
+        resizeImagesArray(Integer.parseInt(changeEvent.getValue()));
     }
 }

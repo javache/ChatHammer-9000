@@ -4,16 +4,23 @@ import ch9k.chat.Conversation;
 import ch9k.core.settings.Settings;
 import ch9k.core.settings.event.PreferencePaneEvent;
 import ch9k.eventpool.Event;
+import ch9k.eventpool.NetworkEvent;
 import ch9k.eventpool.EventPool;
+import ch9k.eventpool.EventListener;
 import java.util.HashMap;
 import java.util.Map;
 import javax.swing.JPanel;
+import ch9k.core.settings.SettingsChangeEvent;
+import ch9k.core.settings.SettingsChangeListener;
+import ch9k.core.settings.SettingsChangeListener;
+import ch9k.plugins.event.RemotePluginSettingsChangeEvent;
 
 /**
  * Class implementing Plugin for convenience reasons.
  * @author Jasper Van der Jeugt
  */
-public abstract class AbstractPlugin implements Plugin {
+public abstract class AbstractPlugin
+        implements Plugin, SettingsChangeListener {
     /**
      * Map of active plugins instances.
      */
@@ -38,6 +45,9 @@ public abstract class AbstractPlugin implements Plugin {
                     getPrettyName(), preferencePane);
             EventPool.getAppPool().raiseEvent(event);
         }
+
+        /* We want to be notified of new local events. */
+        settings.addSettingsListener(this);
     }
 
     /**
@@ -50,12 +60,13 @@ public abstract class AbstractPlugin implements Plugin {
 
     /**
      * Abstract factory method creating the actual plugin.
+     * @param plugin Reference to the plugin.
      * @param conversation Conversation to create the plugin instance for.
      * @param settings Settings to use for the instance.
      * @return A plugin instance.
      */
-    protected abstract AbstractPluginInstance
-            createPluginInstance(Conversation conversation, Settings settings);
+    protected abstract AbstractPluginInstance createPluginInstance(
+            Plugin plugin, Conversation conversation, Settings settings);
 
     /**
      * Create a preference pane. Can return null -- in this case, the plugin
@@ -80,7 +91,7 @@ public abstract class AbstractPlugin implements Plugin {
     public void enablePlugin(Conversation conversation, Settings settings) {
         /* Create a new instance, store it, and enable it. */
         AbstractPluginInstance instance =
-                createPluginInstance(conversation, settings);
+                createPluginInstance(this, conversation, settings);
         instances.put(conversation, instance);
         instance.enablePluginInstance();
     }
@@ -102,5 +113,19 @@ public abstract class AbstractPlugin implements Plugin {
     @Override
     public Settings getSettings() {
         return settings;
+    }
+
+    @Override
+    public void settingsChanged(SettingsChangeEvent changeEvent) {
+        /* The local settings changed. This change needs to be propagated to
+         * all remote clients. */
+        for(Conversation conversation: instances.keySet()) {
+            /* Only propagate the settings if we started the conversation. */
+            if(conversation.isInitiatedByMe()) {
+                NetworkEvent event = new RemotePluginSettingsChangeEvent(
+                        conversation, this.getClass().getName(), changeEvent);
+                EventPool.getAppPool().raiseNetworkEvent(event);
+            }
+        }
     }
 }

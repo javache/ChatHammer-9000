@@ -92,11 +92,13 @@ public class LiteTextAnalyzerPreferencePane
 
     @Override
     public void settingsChanged(SettingsChangeEvent event) {
-        /*
-        if(SAFE_SEARCH.equals(event.getKey())) {
-            safeSearchCheckBox.setSelected(settings.getBoolean(SAFE_SEARCH));
+        if(MAX_SUBJECTS.equals(event.getKey())) {
+            maxSubjectsSpinner.setValue(settings.getInt(MAX_SUBJECTS));
         }
-        */
+
+        if(MAX_MESSAGES.equals(event.getKey())) {
+            maxMessagesSpinner.setValue(settings.getInt(MAX_MESSAGES));
+        }
     }
 
     @Override
