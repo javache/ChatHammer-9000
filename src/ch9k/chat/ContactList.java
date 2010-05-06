@@ -105,7 +105,7 @@ public class ContactList extends AbstractListModel
         pool.addListener(listeners.get(1),
                 new EventFilter(ContactOfflineEvent.class));
 
-        listeners.add(new ContactRequestListener());
+        listeners.add(new ContactStatusListener());
         pool.addListener(listeners.get(2),
                 new EventFilter(ContactStatusEvent.class));
 
@@ -195,8 +195,20 @@ public class ContactList extends AbstractListModel
         }
     }
 
-    private class UserDisconnectedListener implements EventListener {
+    private class ContactStatusListener implements EventListener {
+        @Override
+        public void handleEvent(Event event) {
+            ContactStatusEvent statusEvent = (ContactStatusEvent)event;
+            Contact contact = statusEvent.getContact();
+            /* all this has to be true, otherwise we just have to ignore */
+            if(contact != null) {
+                contact.setStatus(statusEvent.getNewStatus());
+            }
+        }
+    }
 
+
+    private class UserDisconnectedListener implements EventListener {
         @Override
         public void handleEvent(Event ev) {
             UserDisconnectedEvent event = (UserDisconnectedEvent)ev;
@@ -207,7 +219,6 @@ public class ContactList extends AbstractListModel
                 EventPool.getAppPool().raiseEvent(contactOfflineEvent);
             }
         }
-        
     }
 
     private class ContactRequestListener implements EventListener {
