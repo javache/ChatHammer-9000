@@ -45,11 +45,6 @@ public class CarouselRecommendationPanel
     private JButton viewButton;
 
     /**
-     * Label containing some help text.
-     */
-    private JLabel label;
-
-    /**
      * Constructor.
      * @param model Model for the selected image.
      */
@@ -63,7 +58,7 @@ public class CarouselRecommendationPanel
         recommendButton = new JButton(new CarouselRecommendAction(model));
 
         viewButton = new JButton(
-                I18n.get("ch9k.plugins.carousel", "view_recommendation"));
+                I18n.get("ch9k.plugins.carousel", "no_recommendations"));
         viewButton.setEnabled(false);
         viewButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent event) {
@@ -71,15 +66,12 @@ public class CarouselRecommendationPanel
             }
         });
 
-        label = new JLabel();
-
         /* Horizontal group. */
         layout.setHorizontalGroup(
             layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(recommendButton)
                 .addComponent(viewButton)
-                .addComponent(label)
                 .addContainerGap()
         );
 
@@ -89,8 +81,7 @@ public class CarouselRecommendationPanel
             .addGroup(
                 layout.createParallelGroup(GroupLayout.Alignment.CENTER)
                     .addComponent(recommendButton)
-                    .addComponent(viewButton)
-                    .addComponent(label))
+                    .addComponent(viewButton))
             .addContainerGap());
 
         setLayout(layout);
@@ -140,21 +131,21 @@ public class CarouselRecommendationPanel
     }
 
     /**
-     * Update the text label.
+     * Update the text view.
      */
     private void update() {
         int size = queue.size();
 
         if(size == 0) {
-            label.setText(
+            viewButton.setText(
                 I18n.get("ch9k.plugins.carousel", "no_recommendations"));
             viewButton.setEnabled(false);
         } else if(size == 1) {
-            label.setText(
+            viewButton.setText(
                 I18n.get("ch9k.plugins.carousel", "one_recommendation"));
             viewButton.setEnabled(true);
         } else {
-            label.setText(
+            viewButton.setText(
                 I18n.get("ch9k.plugins.carousel", "n_recommendations", size));
             viewButton.setEnabled(true);
         }
