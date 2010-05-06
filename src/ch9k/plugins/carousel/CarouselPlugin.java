@@ -43,7 +43,7 @@ public class CarouselPlugin extends AbstractPlugin {
                 InetAddress.getByName("google.be"));
         Conversation conversation = new Conversation(contact, true);
         CarouselPlugin plugin = new CarouselPlugin();
-        plugin.enablePlugin(conversation, new Settings());
+        plugin.enablePlugin(conversation, plugin.createDefaultSettings());
 
         //plugin.onReceivePanel(frame.getContentPane());
         Event event = new RequestedPluginContainerEvent(conversation,

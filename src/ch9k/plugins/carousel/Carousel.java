@@ -74,11 +74,13 @@ public class Carousel extends AbstractPluginInstance {
         panel.disablePlugin();
 
         /* Release the container request a panel for this plugin. */
-        Event event =
-                new ReleasePluginContainerEvent(getConversation(), container);
-        EventPool.getAppPool().raiseEvent(event);
-        container.removeAll();
-        container = null;
+        if(container != null) {
+            Event event = new ReleasePluginContainerEvent(
+                    getConversation(), container);
+            EventPool.getAppPool().raiseEvent(event);
+            container.removeAll();
+            container = null;
+        }
     }
 
     @Override
