@@ -32,14 +32,13 @@ public class Settings implements Serializable, Persistable {
     /**
      * Registered listeners.
      */
-    private transient EventListenerList listenerList;
+    private transient EventListenerList listenerList = new EventListenerList();
 
     /**
      * Constructor.
      */
     public Settings() {
         settings = new HashMap<String, String>();
-        listenerList = new EventListenerList();
     }
 
     /**
