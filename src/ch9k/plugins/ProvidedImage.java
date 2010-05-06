@@ -33,13 +33,23 @@ public class ProvidedImage extends Model implements Serializable {
         try {
             /* Create an image, and send it using an event. */
             this.url = new URL(url);
-            image = ImageIO.read(this.url);
         } catch (MalformedURLException exception) {
             WarningEvent.raise(this,
                 "Could not get image " + url + ": " + exception);
-        } catch (IOException exception) {
-            WarningEvent.raise(this,
-                "Could not get image " + url + ": " + exception);
+        }
+    }
+
+    /**
+     * Make sure that image is loaded.
+     */
+    public synchronized void ensureLoaded() {
+        if(image == null) {
+            try {
+                image = ImageIO.read(this.url);
+            } catch (IOException exception) {
+                WarningEvent.raise(this,
+                    "Could not get image " + url + ": " + exception);
+            }
         }
     }
 
