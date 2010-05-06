@@ -60,16 +60,10 @@ public class WindowMenu extends JMenu implements WindowListener, EventListener {
 
     @Override
     public void windowClosed(WindowEvent e) {
-        ShowWindowItem menuItem = menuMap.get(e.getWindow());
-
-        Component[] components = getMenuComponents();
-        for(Component c : components) {
-            JMenuItem component = (JMenuItem)c;
-            if(menuItem.equals(component)) {
-                remove(component);
-            }
-        }
-        menuMap.remove(e.getWindow());
+        Window window = e.getWindow();
+        ShowWindowItem menuItem = menuMap.get(window);
+        remove(menuItem);
+        menuMap.remove(window);
     }
 
     @Override
