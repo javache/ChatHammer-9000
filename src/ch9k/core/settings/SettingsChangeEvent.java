@@ -9,7 +9,7 @@ public class SettingsChangeEvent implements Serializable {
     /**
      * Source of the event.
      */
-    private Settings source;
+    private transient Settings source;
 
     /**
      * Key that was changed.
