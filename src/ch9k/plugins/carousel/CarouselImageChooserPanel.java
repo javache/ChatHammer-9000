@@ -112,8 +112,7 @@ public class CarouselImageChooserPanel
         double width = (double) getWidth() - insets.left - insets.right;
         double height = (double) getHeight() - insets.top - insets.bottom;
 
-        double imageMaxWidth = (width - (double) NUM_IMAGES * 2.0 * SPACING) /
-                (double) NUM_IMAGES;
+        double imageMaxWidth = width / (double) NUM_IMAGES;
         double imageMaxHeight = height * 0.6;
         double x = imageMaxWidth * ((double) index + offset + 0.5);
 
