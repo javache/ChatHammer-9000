@@ -1,7 +1,6 @@
 package ch9k.core.event;
 
 import ch9k.core.ChatApplication;
-import ch9k.core.ChatApplication;
 import ch9k.eventpool.Event;
 
 /**

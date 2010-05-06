@@ -3,13 +3,15 @@ package ch9k.chat;
 import ch9k.chat.event.ContactOfflineEvent;
 import ch9k.chat.event.ContactOnlineEvent;
 import ch9k.chat.event.ContactRequestEvent;
+import ch9k.chat.event.ContactStatusEvent;
 import ch9k.configuration.Persistable;
 import ch9k.configuration.PersistentDataObject;
 import ch9k.core.Account;
 import ch9k.core.I18n;
 import ch9k.core.event.AccountEvent;
-import ch9k.core.event.AccountLogoffEvent;
 import ch9k.core.event.AccountLoginEvent;
+import ch9k.core.event.AccountLogoffEvent;
+import ch9k.core.event.AccountStatusEvent;
 import ch9k.eventpool.Event;
 import ch9k.eventpool.EventFilter;
 import ch9k.eventpool.EventListener;
@@ -105,17 +107,20 @@ public class ContactList extends AbstractListModel
 
         listeners.add(new ContactRequestListener());
         pool.addListener(listeners.get(2),
+                new EventFilter(ContactStatusEvent.class));
+
+        listeners.add(new ContactRequestListener());
+        pool.addListener(listeners.get(3),
                 new EventFilter(ContactRequestEvent.class));
 
         listeners.add(new UserDisconnectedListener());
-        pool.addListener(listeners.get(3),
+        pool.addListener(listeners.get(4),
                 new EventFilter(UserDisconnectedEvent.class));
 
         if(!Connection.TRUST_TCP) {
             new PingContactThread().start();
             shouldPing = true;
         }
-
     }
 
     @Override
@@ -123,6 +128,7 @@ public class ContactList extends AbstractListModel
         if(event instanceof AccountLoginEvent) {
             broadcastOnline();
         }
+
         if(event instanceof AccountLogoffEvent) {
             shouldPing = false;
             broadcastOffline();
@@ -132,6 +138,15 @@ public class ContactList extends AbstractListModel
                 pool.removeListener(listener);
             }
             pool.removeListener(this);
+        }
+
+        if(event instanceof AccountStatusEvent) {
+            AccountStatusEvent accountEvent = (AccountStatusEvent)event;
+            EventPool pool = EventPool.getAppPool();
+            for(Contact contact : onlineHash.values()) {
+                pool.raiseNetworkEvent(new ContactStatusEvent(contact,
+                        accountEvent.getStatus()));
+            }
         }
     }
     

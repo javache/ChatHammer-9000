@@ -3,6 +3,8 @@ package ch9k.core;
 import ch9k.chat.ContactList;
 import ch9k.configuration.Persistable;
 import ch9k.configuration.PersistentDataObject;
+import ch9k.core.event.AccountStatusEvent;
+import ch9k.eventpool.EventPool;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -100,7 +102,10 @@ public class Account implements Persistable {
      * @param status The new status
      */
     public void setStatus(String status) {
-        this.status = status;
+        if(!this.status.equals(status)) {
+            this.status = status;
+            EventPool.getAppPool().raiseEvent(new AccountStatusEvent(status));
+        }
     }
 
     /**

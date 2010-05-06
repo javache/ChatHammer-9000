@@ -5,5 +5,5 @@ package ch9k.core.event;
  * @author Pieter De Baets
  */
 public class AccountLoginEvent extends AccountEvent {
-    
+
 }
