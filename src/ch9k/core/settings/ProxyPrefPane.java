@@ -1,10 +1,8 @@
 package ch9k.core.settings;
 
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.GroupLayout;
-import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -50,7 +48,7 @@ public class ProxyPrefPane extends JPanel {
         });
 
         if(settings.get("proxyport") != null && !settings.get("proxyport").isEmpty()) {
-            proxyField.setText(settings.get("proxyport"));
+            proxyPortField.setText(settings.get("proxyport"));
         }
 
 
