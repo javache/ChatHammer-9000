@@ -4,6 +4,7 @@ import ch9k.chat.Conversation;
 import ch9k.chat.ConversationSubject;
 import ch9k.chat.event.ConversationEventFilter;
 import ch9k.chat.event.NewConversationSubjectEvent;
+import ch9k.plugins.event.RemotePluginSettingsChangeEvent;
 import ch9k.core.settings.Settings;
 import ch9k.eventpool.Event;
 import ch9k.eventpool.EventFilter;
@@ -15,8 +16,7 @@ import ch9k.plugins.event.NewProvidedImageEvent;
  * Class abstracting image providing.
  * @author Jasper Van der Jeugt
  */
-public abstract class ImageProvider extends AbstractPluginInstance
-        implements EventListener {
+public abstract class ImageProvider extends AbstractPluginInstance {
     /**
      * Constructor.
      * @param conversation Conversation to provide images for.
@@ -69,31 +69,34 @@ public abstract class ImageProvider extends AbstractPluginInstance
 
     @Override
     public void handleEvent(Event e) {
-        NewConversationSubjectEvent event = (NewConversationSubjectEvent) e;
+        super.handleEvent(e);
+        if(e instanceof NewConversationSubjectEvent) {
+            NewConversationSubjectEvent event = (NewConversationSubjectEvent) e;
 
-        /* Only the one who initted the conversation should send images. */
-        if(!getConversation().isInitiatedByMe()) {
-            return;
-        }
-
-        /* Construct a new text to search for by appending subjects. */
-        ConversationSubject subject = event.getConversationSubject();
-        String[] subjects = subject.getSubjects();
-
-        final StringBuilder text = new StringBuilder();
-        if(subjects.length > 0) {
-            text.append(subjects[0]);
-        }
-        for(int i = 1; i < subjects.length; i++) {
-            text.append(" ").append(subjects[i]);
-        }
-
-        /* Send the new image event. */
-        new Thread(new Runnable() {
-            public void run() {
-                sendNewImageEvent(text.toString());
+            /* Only the one who initted the conversation should send images. */
+            if(!getConversation().isInitiatedByMe()) {
+                return;
             }
-        }).start();
+
+            /* Construct a new text to search for by appending subjects. */
+            ConversationSubject subject = event.getConversationSubject();
+            String[] subjects = subject.getSubjects();
+
+            final StringBuilder text = new StringBuilder();
+            if(subjects.length > 0) {
+                text.append(subjects[0]);
+            }
+            for(int i = 1; i < subjects.length; i++) {
+                text.append(" ").append(subjects[i]);
+            }
+
+            /* Send the new image event. */
+            new Thread(new Runnable() {
+                public void run() {
+                    sendNewImageEvent(text.toString());
+                }
+            }).start();
+        }
     }
 
     /**

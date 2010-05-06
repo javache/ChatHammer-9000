@@ -4,16 +4,23 @@ import ch9k.chat.Conversation;
 import ch9k.core.settings.Settings;
 import ch9k.core.settings.event.PreferencePaneEvent;
 import ch9k.eventpool.Event;
+import ch9k.eventpool.NetworkEvent;
 import ch9k.eventpool.EventPool;
+import ch9k.eventpool.EventListener;
 import java.util.HashMap;
 import java.util.Map;
 import javax.swing.JPanel;
+import ch9k.core.settings.SettingsChangeEvent;
+import ch9k.core.settings.SettingsChangeListener;
+import ch9k.core.settings.SettingsChangeListener;
+import ch9k.plugins.event.RemotePluginSettingsChangeEvent;
 
 /**
  * Class implementing Plugin for convenience reasons.
  * @author Jasper Van der Jeugt
  */
-public abstract class AbstractPlugin implements Plugin {
+public abstract class AbstractPlugin
+        implements Plugin, SettingsChangeListener {
     /**
      * Map of active plugins instances.
      */
@@ -38,6 +45,9 @@ public abstract class AbstractPlugin implements Plugin {
                     getPrettyName(), preferencePane);
             EventPool.getAppPool().raiseEvent(event);
         }
+
+        /* We want to be notified of new local events. */
+        settings.addSettingsListener(this);
     }
 
     /**
@@ -102,5 +112,20 @@ public abstract class AbstractPlugin implements Plugin {
     @Override
     public Settings getSettings() {
         return settings;
+    }
+
+    @Override
+    public void settingsChanged(SettingsChangeEvent changeEvent) {
+        /* The local settings changed. This change needs to be propagated to
+         * all remote clients. */
+        for(Conversation conversation: instances.keySet()) {
+            /* Only propagate the settings if we started the conversation. */
+            if(conversation.isInitiatedByMe()) {
+                NetworkEvent event = new RemotePluginSettingsChangeEvent(
+                        conversation, changeEvent);
+                EventPool.getAppPool().raiseNetworkEvent(event);
+                System.out.println("Sending change event to conversation.");
+            }
+        }
     }
 }

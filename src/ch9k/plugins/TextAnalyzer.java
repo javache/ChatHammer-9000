@@ -1,6 +1,7 @@
 package ch9k.plugins;
 
 import ch9k.chat.ChatMessage;
+import ch9k.plugins.event.RemotePluginSettingsChangeEvent;
 import ch9k.chat.Conversation;
 import ch9k.chat.ConversationSubject;
 import ch9k.chat.event.ConversationEventFilter;
@@ -95,31 +96,34 @@ public abstract class TextAnalyzer extends AbstractPluginInstance
 
     @Override
     public void handleEvent(Event e) {
-        NewChatMessageEvent event = (NewChatMessageEvent) e;
+        super.handleEvent(e);
+        if(e instanceof NewChatMessageEvent) {
+            NewChatMessageEvent event = (NewChatMessageEvent) e;
 
-        /* Only the one who initted the conversation should send subjects. */
-        if(!getConversation().isInitiatedByMe()) {
-            return;
+            /* The one who started the conversation should send subjects. */
+            if(!getConversation().isInitiatedByMe()) {
+                return;
+            }
+
+            /* Get the raw text from the messages. */
+            ChatMessage[] chatMessages =
+                    getConversation().getMessages(getMaxNumberOfMessages());
+            System.out.println("Messages: " + getMaxNumberOfMessages());
+            String[] messages = new String[chatMessages.length];
+            for(int i = 0; i < messages.length; i++) {
+                messages[i] = chatMessages[i].getRawText();
+            }
+
+            /* Create a new subject. */
+            String[] result = getSubjects(messages);
+            ConversationSubject subject = new ConversationSubject(result);
+            System.out.println("Subjects: " + result.length);
+
+            /* Throw the new event. */ 
+            NewConversationSubjectEvent subjectEvent =
+                    new NewConversationSubjectEvent(getConversation(), subject);
+            EventPool.getAppPool().raiseNetworkEvent(subjectEvent);
         }
-
-        /* Get the raw text from the messages. */
-        ChatMessage[] chatMessages =
-                getConversation().getMessages(getMaxNumberOfMessages());
-        System.out.println("Messages: " + getMaxNumberOfMessages());
-        String[] messages = new String[chatMessages.length];
-        for(int i = 0; i < messages.length; i++) {
-            messages[i] = chatMessages[i].getRawText();
-        }
-
-        /* Create a new subject. */
-        String[] result = getSubjects(messages);
-        ConversationSubject subject = new ConversationSubject(result);
-        System.out.println("Subjects: " + result.length);
-
-        /* Throw the new event. */ 
-        NewConversationSubjectEvent subjectEvent =
-                new NewConversationSubjectEvent(getConversation(), subject);
-        EventPool.getAppPool().raiseNetworkEvent(subjectEvent);
     }
 
     /**
