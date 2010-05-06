@@ -13,6 +13,7 @@ public class FlickrImageProviderTest {
     @Test
     public void testGetImageUrls() throws MalformedURLException {
         ImageProviderTester tester = new ImageProviderTester();
-        tester.testGetImageUrls(new FlickrImageProvider(null, new Settings()));
+        tester.testGetImageUrls(
+                new FlickrImageProvider(null, null, new Settings()));
     }
 }
