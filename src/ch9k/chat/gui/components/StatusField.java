@@ -1,5 +1,6 @@
 package ch9k.chat.gui.components;
 
+import ch9k.core.ChatApplication;
 import ch9k.core.I18n;
 import java.awt.SystemColor;
 import java.awt.event.FocusEvent;
@@ -18,6 +19,8 @@ public class StatusField extends JTextField implements FocusListener {
     public StatusField() {
         super(DEFAULT_TEXT);
         setForeground(SystemColor.textInactiveText);
+        setFont(getFont().deriveFont(12f));
+        setText(ChatApplication.getInstance().getAccount().getStatus());
 
         // add listener so we can clear text on focus
         addFocusListener(this);

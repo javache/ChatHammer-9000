@@ -13,6 +13,7 @@ import ch9k.core.I18n;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Frame;
+import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -86,16 +87,25 @@ public class ContactListView extends JPanel {
     /**
      * Renders a contact
      */
-    public class ContactListCellRenderer extends JLabel implements ListCellRenderer {
+    public class ContactListCellRenderer extends JPanel implements ListCellRenderer {
+        private JLabel username;
+        private JLabel status;
         private StatusIcon icon;
 
         public ContactListCellRenderer() {
             setOpaque(true);
-
-            icon = new StatusIcon(13, true);
-            setIcon(icon);
-            setFont(getFont().deriveFont(13f));
             setBorder(BorderFactory.createEmptyBorder(5, 12, 5, 0));
+
+            username = new JLabel();
+            icon = new StatusIcon(13, true);
+            username.setIcon(icon);
+            username.setFont(getFont().deriveFont(13f));
+            add(username);
+
+            status = new JLabel();
+            status.setFont(getFont().deriveFont(12f));
+            status.setForeground(SystemColor.textInactiveText);
+            add(status);
         }
 
         @Override
@@ -103,7 +113,8 @@ public class ContactListView extends JPanel {
                 int index, boolean isSelected, boolean cellHasFocus) {
             Contact contact = (Contact) object;
 
-            setText(contact.getUsername());
+            username.setText(contact.getUsername());
+            status.setText(contact.getStatus());
             icon.setOnline(contact.isOnline());
 
             if (isSelected) {
