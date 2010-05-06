@@ -85,7 +85,7 @@ public abstract class AbstractPluginInstance implements EventListener {
                     (RemotePluginSettingsChangeEvent) e;
 
             /* Check that we're dealing with the correct plugin. */
-            if(event.getPlugin() != plugin.getClass().getName()) return;
+            if(!event.getPlugin().equals(plugin.getClass().getName())) return;
 
             /* Propogate the changes. */
             SettingsChangeEvent changeEvent = event.getChangeEvent();
