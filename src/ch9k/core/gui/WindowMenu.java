@@ -10,7 +10,6 @@ import ch9k.eventpool.Event;
 import ch9k.eventpool.EventFilter;
 import ch9k.eventpool.EventListener;
 import ch9k.eventpool.EventPool;
-import java.awt.Component;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -21,7 +20,6 @@ import java.util.Map;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
-import javax.swing.JMenuItem;
 
 /**
  * Menu to switch between different windows
@@ -45,8 +43,7 @@ public class WindowMenu extends JMenu implements WindowListener, EventListener {
                     conversation.getWindow());
         }
 
-        EventPool pool = EventPool.getAppPool();
-        pool.addListener(this,
+        EventPool.getAppPool().addListener(this,
                 new EventFilter(NewConversationEvent.class));
 
     }
@@ -60,23 +57,20 @@ public class WindowMenu extends JMenu implements WindowListener, EventListener {
 
     @Override
     public void windowClosed(WindowEvent e) {
-        Window window = e.getWindow();
-        ShowWindowItem menuItem = menuMap.get(window);
+        ShowWindowItem menuItem = menuMap.get(e.getWindow());
         remove(menuItem);
-        menuMap.remove(window);
+        menuMap.remove(e.getWindow());
     }
 
     @Override
     public void handleEvent(Event event) {
-        if(event instanceof NewConversationEvent) {
-            NewConversationEvent conversationEvent = (NewConversationEvent)event;
-            Conversation conversation = conversationEvent.getConversation();
+        NewConversationEvent conversationEvent = (NewConversationEvent)event;
+        Conversation conversation = conversationEvent.getConversation();
 
-            if(!(conversation == null || conversation.getContact() == null ||
-                    menuMap.containsKey(conversation.getWindow()))) {
-                addWindow(conversation.getContact().getUsername(),
-                        conversation.getWindow());
-            }           
+        if(conversation != null && conversation.getContact() != null &&
+                !menuMap.containsKey(conversation.getWindow())) {
+            addWindow(conversation.getContact().getUsername(),
+                    conversation.getWindow());
         }
     }
 
