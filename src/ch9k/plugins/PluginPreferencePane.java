@@ -87,7 +87,8 @@ public class PluginPreferencePane
         layout.setVerticalGroup(layout.createSequentialGroup()
             .addComponent(urlLabel)
             .addGroup(layout.createParallelGroup()
-                .addComponent(urlField)
+                .addComponent(urlField, GroupLayout.PREFERRED_SIZE,
+                        GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                 .addComponent(browseButton))
             .addComponent(installPluginButton)
             .addGap(20)
@@ -97,6 +98,8 @@ public class PluginPreferencePane
 
         layout.linkSize(SwingConstants.HORIZONTAL,
                 installPluginButton, removePluginButton);
+        layout.linkSize(SwingConstants.VERTICAL,
+                urlField, browseButton);
 
         setLayout(layout);
 
