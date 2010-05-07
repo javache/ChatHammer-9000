@@ -74,11 +74,11 @@ public class LiteTextAnalyzerPreferencePane
                 .addComponent(maxMessagesSpinner)));
 
         layout.setVerticalGroup(layout.createSequentialGroup()
-            .addGroup(layout.createParallelGroup()
+            .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                 .addComponent(maxSubjectsLabel)
                 .addComponent(maxSubjectsSpinner, GroupLayout.PREFERRED_SIZE,
                         GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-            .addGroup(layout.createParallelGroup()
+            .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                 .addComponent(maxMessagesLabel)
                 .addComponent(maxMessagesSpinner, GroupLayout.PREFERRED_SIZE,
                         GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)));

@@ -64,23 +64,24 @@ public class ProxyPrefPane extends JPanel {
         JLabel proxyLabel = new JLabel("Proxy: ");
         JLabel portLabel = new JLabel("Port: ");
         GroupLayout layout = new GroupLayout(this);
-        layout.setVerticalGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup()
-                    .addComponent(proxyLabel)
-                    .addComponent(proxyField)
-                ).addGroup(layout.createParallelGroup()
-                    .addComponent(portLabel)
-                    .addComponent(proxyPortField))
-                );
 
         layout.setHorizontalGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup()
-                    .addComponent(proxyLabel)
-                    .addComponent(portLabel)
-                ).addGroup(layout.createParallelGroup()
-                    .addComponent(proxyField)
-                    .addComponent(proxyPortField))
-                );
+            .addGroup(layout.createParallelGroup()
+                .addComponent(proxyLabel)
+                .addComponent(portLabel))
+            .addGroup(layout.createParallelGroup()
+                .addComponent(proxyField)
+                .addComponent(proxyPortField)));
+
+        layout.setVerticalGroup(layout.createSequentialGroup()
+            .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                .addComponent(proxyLabel)
+                .addComponent(proxyField, GroupLayout.PREFERRED_SIZE,
+                        GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+            .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                .addComponent(portLabel)
+                .addComponent(proxyPortField, GroupLayout.PREFERRED_SIZE,
+                        GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)));
 
         setLayout(layout);
 

@@ -57,7 +57,7 @@ public class CarouselPreferencePane
                 .addComponent(maxImagesSpinner)));
 
         layout.setVerticalGroup(layout.createSequentialGroup()
-            .addGroup(layout.createParallelGroup()
+            .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                 .addComponent(maxImagesLabel)
                 .addComponent(maxImagesSpinner, GroupLayout.PREFERRED_SIZE,
                         GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)));
