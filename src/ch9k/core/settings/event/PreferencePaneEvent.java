@@ -9,17 +9,19 @@ import javax.swing.JPanel;
  */
 public class PreferencePaneEvent extends Event {
     private String title;
+
     private JPanel panel;
-    boolean paneActive;
+
+    boolean shouldAdd;
 
     public PreferencePaneEvent(String title, JPanel panel) {
-        this(title, panel, true); 
+        this(title, panel, true);
     }
 
     public PreferencePaneEvent(String title, JPanel panel, boolean paneActive) {
         this.title = title;
         this.panel = panel;
-        this.paneActive = paneActive;
+        this.shouldAdd = paneActive;
     }
 
     @Override
@@ -35,7 +37,7 @@ public class PreferencePaneEvent extends Event {
         return panel;
     }
 
-    public boolean isPaneActive() {
-        return paneActive;
+    public boolean shouldAdd() {
+        return shouldAdd;
     }
 }

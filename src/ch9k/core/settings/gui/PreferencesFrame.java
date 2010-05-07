@@ -74,7 +74,7 @@ public class PreferencesFrame extends JFrame implements EventListener {
     public void handleEvent(Event ev) {
         PreferencePaneEvent event = (PreferencePaneEvent)ev;
 
-        if(event.isPaneActive()) {
+        if(event.shouldAdd()) {
             listModel.addElement(event.getTitle());
             event.getPanel().setBorder(BorderFactory.createTitledBorder(event.getTitle()));
             prefPane.add(event.getPanel(), event.getTitle());
