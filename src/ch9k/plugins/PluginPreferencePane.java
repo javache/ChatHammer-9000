@@ -4,14 +4,12 @@ import ch9k.core.I18n;
 import javax.swing.GroupLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JSpinner;
 import javax.swing.JButton;
 import javax.swing.JTextField;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
-import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -25,6 +23,7 @@ import java.awt.event.ActionListener;
 import java.net.URL;
 import java.net.MalformedURLException;
 import java.io.File;
+import javax.swing.filechooser.FileFilter;
 
 /**
  * Preference pane for the plugins.
@@ -154,6 +153,14 @@ public class PluginPreferencePane
         browseButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 final JFileChooser chooser = new JFileChooser();
+                chooser.setFileFilter(new FileFilter(){
+                    public boolean accept(File f) {
+                        return f.getPath().toLowerCase().endsWith(".jar") || f.isDirectory();
+                    }
+                    public String getDescription() {
+                        return "jar files";
+                    }
+                });
                 int result = chooser.showOpenDialog(PluginPreferencePane.this);
                 if(result == JFileChooser.APPROVE_OPTION) {
                     File file = chooser.getSelectedFile();
