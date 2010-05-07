@@ -6,6 +6,7 @@ import ch9k.eventpool.EventFilter;
 import ch9k.eventpool.EventListener;
 import ch9k.eventpool.EventPool;
 import java.awt.CardLayout;
+import java.awt.EventQueue;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
 import javax.swing.GroupLayout;
@@ -81,12 +82,13 @@ public class PreferencesFrame extends JFrame implements EventListener {
             listModel.removeElement(event.getTitle());
             prefPane.remove(event.getPanel());
         }
+        EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                pack();
+                repaint();
+            }
+        });
 
-        pack();
-        repaint();
     }
 
-    public void close() {
-        
-    }
 }
