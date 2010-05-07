@@ -3,7 +3,6 @@ package ch9k.plugins;
 import java.io.File;
 import ch9k.chat.Conversation;
 import ch9k.core.ChatApplication;
-import ch9k.chat.ConversationManager;
 import ch9k.configuration.Persistable;
 import ch9k.configuration.PersistentDataObject;
 import ch9k.core.Model;
@@ -16,6 +15,7 @@ import ch9k.core.settings.event.PreferencePaneEvent;
 import ch9k.plugins.event.PluginChangeEvent;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
 import org.apache.log4j.Logger;
 import org.jdom.Element;
 import javax.swing.JPanel;
@@ -118,6 +118,14 @@ public class PluginManager extends Model implements EventListener, Persistable {
                 pluginClass = Class.forName(name);
             } catch (ClassNotFoundException e) {
                 /* Should not happen, because we registered it earlier. */
+                logger.warn("Class not found: " + name);
+                return;
+            }
+        /* This error will happen when we still have this in memory */
+        } catch (LinkageError e) {
+            try {
+                pluginClass = Class.forName(name);
+            } catch(ClassNotFoundException ex) {
                 logger.warn("Class not found: " + name);
                 return;
             }
