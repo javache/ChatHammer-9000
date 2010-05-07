@@ -1,5 +1,6 @@
 package ch9k.core.gui;
 
+import ch9k.core.ChatApplication;
 import ch9k.core.I18n;
 import ch9k.core.LoginController;
 import ch9k.core.RegistrationController;
@@ -8,10 +9,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.net.URL;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.GroupLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -66,8 +69,14 @@ public class LoginPanel extends JPanel {
     }
 
     private void initComponents() {
-        titleLabel = new JLabel("<html><b>ChatHammer</b> 9000");
-        titleLabel.setFont(titleLabel.getFont().deriveFont(18f));
+        URL imgURL = ChatApplication.class.getResource("/ch9k/core/logonLogo.png");
+        if(imgURL != null) {
+            ImageIcon logo = new ImageIcon(imgURL, "ChatHammer 9000");
+            titleLabel = new JLabel(logo);
+        } else {
+            titleLabel = new JLabel("<html><b>ChatHammer</b> 9000");
+            titleLabel.setFont(titleLabel.getFont().deriveFont(18f));
+        }
         titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
         usernameLabel = new JLabel(I18n.get("ch9k.core", "username"));
@@ -126,7 +135,7 @@ public class LoginPanel extends JPanel {
         );
         
         layout.setVerticalGroup(layout.createSequentialGroup()
-            .addContainerGap(50, 100)
+            .addContainerGap(5, 10)
             .addComponent(titleLabel)
             .addGap(18)
             .addComponent(errorMessage)
