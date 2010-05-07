@@ -9,11 +9,22 @@ import javax.swing.JButton;
 import javax.swing.JTextField;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.event.DocumentListener;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.event.ListSelectionEvent;
 import java.util.Set;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.net.URL;
+import java.net.MalformedURLException;
+import java.io.File;
 
 /**
  * Preference pane for the plugins.
@@ -23,7 +34,7 @@ public class PluginPreferencePane
     /**
      * The plugin manager.
      */
-    private PluginManager manager;
+    private final PluginManager manager;
 
     /**
      * Input field for url.
@@ -54,7 +65,7 @@ public class PluginPreferencePane
      * Constructor.
      * @param settings Settings to manipulate.
      */
-    public PluginPreferencePane(PluginManager manager) {
+    public PluginPreferencePane(final PluginManager manager) {
         this.manager = manager;
         GroupLayout layout = new GroupLayout(this);
 
@@ -103,9 +114,84 @@ public class PluginPreferencePane
 
         setLayout(layout);
 
+        /* React on changes in the url field. */
+        urlField.getDocument().addDocumentListener(new DocumentListener() {
+            public void changedUpdate(DocumentEvent e) {
+                updateInstallPluginButton();
+            }
+
+            public void insertUpdate(DocumentEvent e) {
+                updateInstallPluginButton();
+            }
+
+            public void removeUpdate(DocumentEvent e) {
+                updateInstallPluginButton();
+            }
+        });
+
+        /* Install a plugin when the plugin button is clicked. */
+        installPluginButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent event) {
+                JOptionPane.showMessageDialog(PluginPreferencePane.this,
+                        I18n.get("ch9k.plugins", "plugin_will_install"));
+                String text = urlField.getText();
+                try {
+                    final URL url = new URL(text);
+                    new Thread(new Runnable() {
+                        public void run() {
+                            manager.getPluginInstaller().installPlugin(url);
+                        }
+                    }).start();
+                    urlField.setText("");
+                } catch(MalformedURLException exception) {
+                    /* Should not happen, because then the button would not be
+                     * enabled. */
+                }
+            }
+        });
+
+        /* Allow the user to select a file. */
+        browseButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent event) {
+                final JFileChooser chooser = new JFileChooser();
+                int result = chooser.showOpenDialog(PluginPreferencePane.this);
+                if(result == JFileChooser.APPROVE_OPTION) {
+                    File file = chooser.getSelectedFile();
+                    try {
+                        urlField.setText(file.toURI().toURL().toString());
+                    } catch(MalformedURLException exception) {
+                        /* Should not happen, because a selected file is always
+                         * valid. */
+                    }
+                }
+            }
+        });
+
+        /* Listen to changes in the plugin list selection. */
+        pluginList.addListSelectionListener(new ListSelectionListener() {
+            public void valueChanged(ListSelectionEvent event) {
+                updateRemovePluginButton();
+            }
+        });
+
+        updateInstallPluginButton();
         updatePluginList();
+        updateRemovePluginButton();
 
         manager.addChangeListener(this);
+    }
+
+    /**
+     * Update the install plugin button.
+     */
+    private void updateInstallPluginButton() {
+        String text = urlField.getText();
+        try {
+            URL url = new URL(text);
+            installPluginButton.setEnabled(true);
+        } catch(MalformedURLException exception) {
+            installPluginButton.setEnabled(false);
+        }
     }
 
     /**
@@ -114,6 +200,19 @@ public class PluginPreferencePane
     private void updatePluginList() {
         Set<String> names = manager.getPrettyNames().keySet();
         pluginList.setListData(names.toArray());
+    }
+
+    /**
+     * Update the remove plugin button.
+     */
+    private void updateRemovePluginButton() {
+        Object selection = pluginList.getSelectedValue();
+        if(selection != null && selection instanceof String) {
+            String name = (String) selection;
+            String plugin = manager.getPrettyNames().get(name);
+            removePluginButton.setEnabled(
+                    manager.getPluginFileName(plugin) != null);
+        }
     }
 
     @Override

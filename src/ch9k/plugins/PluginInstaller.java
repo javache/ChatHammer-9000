@@ -124,7 +124,7 @@ public class PluginInstaller extends URLClassLoader {
 
         /* Register the plugin class. */
         logger.info("Plugin found: " + pluginName);
-        pluginManager.addAvailablePlugin(pluginName);
+        pluginManager.addAvailablePlugin(pluginName, file.getAbsolutePath());
     }
 
     /**
@@ -141,7 +141,7 @@ public class PluginInstaller extends URLClassLoader {
      * Install a plugin from an URL.
      * @param url URL pointing to a plugin jar.
      */
-    public void installPlugin(URL url) {
+    public synchronized void installPlugin(URL url) {
         logger.info("Installing plugin: " + url);
         try {
             /* We take the filename of the url and store the plugin there. */

@@ -34,6 +34,11 @@ public class PluginManager extends Model implements EventListener, Persistable {
     private Map<String, Plugin> plugins;
 
     /**
+     * We keep the filename for every plugin as well.
+     */
+    private Map<String, String> fileNames;
+
+    /**
      * A plugin installer.
      */
     private PluginInstaller installer;
@@ -43,14 +48,17 @@ public class PluginManager extends Model implements EventListener, Persistable {
      */
     public PluginManager() {
         plugins = new HashMap<String, Plugin>();
+        fileNames = new HashMap<String, String>();
         installer = new PluginInstaller(this);
         installer.loadInstalledPlugins();
 
         /* Some plugins are always available, because they ship with the
          * application. */
-        addAvailablePlugin("ch9k.plugins.carousel.CarouselPlugin");
-        addAvailablePlugin("ch9k.plugins.flickr.FlickrImageProviderPlugin");
-        addAvailablePlugin("ch9k.plugins.liteanalyzer.LiteTextAnalyzerPlugin");
+        addAvailablePlugin("ch9k.plugins.carousel.CarouselPlugin", null);
+        addAvailablePlugin(
+                "ch9k.plugins.flickr.FlickrImageProviderPlugin", null);
+        addAvailablePlugin(
+                "ch9k.plugins.liteanalyzer.LiteTextAnalyzerPlugin", null);
 
         /* Register as listener. We will listen to remote enable/disable plugin
          * events, so we can synchronize with the plugin manager on the other
@@ -91,8 +99,9 @@ public class PluginManager extends Model implements EventListener, Persistable {
     /**
      * Add an available plugin to the list.
      * @param name Class name of the plugin to add.
+     * @param fileName Filename of the plugin.
      */
-    public synchronized void addAvailablePlugin(String name) {
+    public synchronized void addAvailablePlugin(String name, String fileName) {
         /* Check that we don't have it already. */
         if(plugins.get(name) != null) return;
 
@@ -124,6 +133,9 @@ public class PluginManager extends Model implements EventListener, Persistable {
         }
 
         plugins.put(name, plugin);
+        if(fileName != null) {
+            fileNames.put(name, fileName);
+        }
         fireStateChanged();
     }
 
@@ -218,6 +230,16 @@ public class PluginManager extends Model implements EventListener, Persistable {
     }
 
     /**
+     * Get the file name for a given plugin. This function will return null if
+     * the plugin was not loaded from a file.
+     * @param name Name of the plugin to find the file for.
+     * @return The file name of the plugin file.
+     */
+    public String getPluginFileName(String name) {
+        return fileNames.get(name);
+    }
+
+    /**
      * Access the plugin installer.
      * @return The plugin installer.
      */
@@ -260,7 +282,6 @@ public class PluginManager extends Model implements EventListener, Persistable {
                 /* Add it as a child. */
                 pluginManager.addContent(element);
             }
-
         }
 
         return new PersistentDataObject(pluginManager);
