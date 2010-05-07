@@ -118,6 +118,10 @@ public class ApplicationWindow extends JFrame {
         repaint();
     }
 
+    public void clearMenu(){
+        setJMenuBar(null);
+    }
+
     private void initMenu() {
         menuBar = new JMenuBar();
         setJMenuBar(menuBar);

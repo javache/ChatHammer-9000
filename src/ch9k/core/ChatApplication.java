@@ -114,8 +114,8 @@ public class ChatApplication implements EventListener {
     public void logoff(boolean showLogin) {
         configuration.save();
         EventPool.getAppPool().raiseEvent(new AccountLogoffEvent());
-
         if(showLogin) {
+            appWindow.clearMenu();
             new Thread(new Runnable() {
                 public void run() {
                     start(null);
