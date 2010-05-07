@@ -1,21 +1,16 @@
 
 package ch9k.core.gui;
 
-import ch9k.chat.Conversation;
-import ch9k.chat.ConversationManager;
-import ch9k.chat.event.NewConversationEvent;
 import ch9k.core.ChatApplication;
 import ch9k.core.I18n;
-import ch9k.eventpool.Event;
-import ch9k.eventpool.EventFilter;
-import ch9k.eventpool.EventListener;
-import ch9k.eventpool.EventPool;
+import ch9k.core.WindowManager;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
+import java.awt.event.WindowStateListener;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFrame;
@@ -23,68 +18,60 @@ import javax.swing.JMenu;
 
 /**
  * Menu to switch between different windows
- * @author Pieter De Baets
  */
-public class WindowMenu extends JMenu implements WindowListener, EventListener {
+public class WindowMenu extends JMenu implements WindowStateListener{
     private Map<Window,ShowWindowItem> menuMap;
-    private ConversationManager conversationManager;
     private JFrame ownerWindow;
+    private WindowManager windowManager;
 
     public WindowMenu(JFrame ownerWindow) {
         super(I18n.get("ch9k.core", "window"));
 
-        menuMap = new HashMap<Window,ShowWindowItem>();
-        conversationManager = ChatApplication.getInstance().getConversationManager();
         this.ownerWindow = ownerWindow;
+        menuMap = new HashMap<Window, ShowWindowItem>();
 
-        addWindow("ChatHammer 9000", ChatApplication.getInstance().getWindow());
-        for(Conversation conversation : conversationManager) {
-            addWindow(conversation.getContact().getUsername(),
-                    conversation.getWindow());
-        }
+        windowManager =  ChatApplication.getInstance().getWindowManager();
+        windowManager.addListener(this);
 
-        EventPool.getAppPool().addListener(this,
-                new EventFilter(NewConversationEvent.class));
-
-    }
-
-    private void addWindow(String title, JFrame window) {
-        ShowWindowItem menuItem = new ShowWindowItem(title, window);
-        menuMap.put(window, menuItem);
-        window.addWindowListener(this);
-        add(menuItem);
-    }
-
-    @Override
-    public void windowClosed(WindowEvent e) {
-        ShowWindowItem menuItem = menuMap.get(e.getWindow());
-        remove(menuItem);
-        menuMap.remove(e.getWindow());
-    }
-
-    @Override
-    public void handleEvent(Event event) {
-        NewConversationEvent conversationEvent = (NewConversationEvent)event;
-        Conversation conversation = conversationEvent.getConversation();
-
-        if(conversation != null && conversation.getContact() != null &&
-                !menuMap.containsKey(conversation.getWindow())) {
-            addWindow(conversation.getContact().getUsername(),
-                    conversation.getWindow());
+        List<Window> windows = windowManager.getOpenedWindows();
+        for(Window w : windows) {
+            addWindow(w);
         }
     }
 
-    public void windowClosing(WindowEvent e) {}
-    public void windowIconified(WindowEvent e) {}
-    public void windowDeiconified(WindowEvent e) {}
-    public void windowActivated(WindowEvent e) {}
-    public void windowDeactivated(WindowEvent e) {}
-    public void windowOpened(WindowEvent e) {}
+    private void addWindow(Window w) {
+        ShowWindowItem menuItem = new ShowWindowItem(w.getName(), w);
+        if(!menuMap.containsKey(w)) {
+            menuMap.put(w, menuItem);
+            add(menuItem);
+        }
+    }
+    
+    private void removeWindow(Window w) {
+        ShowWindowItem menuItem = menuMap.remove(w);
+        if( menuItem != null) {
+            remove(menuItem);
+        }
+    }
+
+    @Override
+    public void windowStateChanged(WindowEvent e) {
+        if(e.getID() == WindowEvent.WINDOW_OPENED) {
+            addWindow(e.getWindow());
+        }
+
+        if(e.getID() == WindowEvent.WINDOW_CLOSED) {
+            if(e.getWindow() == ownerWindow) {
+                windowManager.removeListener(this);
+            }
+            removeWindow(e.getWindow());
+        }
+    }
 
     private class ShowWindowItem extends JCheckBoxMenuItem implements ActionListener {
-        private JFrame window;
+        private Window window;
 
-        public ShowWindowItem(String title, JFrame window) {
+        public ShowWindowItem(String title, Window window) {
             super(title);
             this.window = window;
 

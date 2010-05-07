@@ -35,6 +35,7 @@ public class ChatApplication implements EventListener {
     private ApplicationWindow appWindow;
     private Configuration configuration;
     private ConversationManager conversationManager;
+    private WindowManager windowManager;
 
     public static void main(String[] args) {
         ChatApplication app = ChatApplication.getInstance();
@@ -43,7 +44,9 @@ public class ChatApplication implements EventListener {
 
     private ChatApplication() {
         conversationManager = new ConversationManager();
+        windowManager = new WindowManager();
         appWindow = new ApplicationWindow();
+        windowManager.registerWindow(appWindow);
         
         Runtime.getRuntime().addShutdownHook(new Thread("Shutdown-handler") {
             public void run() {
@@ -157,6 +160,10 @@ public class ChatApplication implements EventListener {
         } else {
             return null;
         }
+    }
+
+    public WindowManager getWindowManager() {
+        return windowManager;
     }
 
     /**
