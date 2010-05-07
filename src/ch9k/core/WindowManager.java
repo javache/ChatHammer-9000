@@ -22,7 +22,6 @@ public class WindowManager extends WindowAdapter {
     }
 
     public void registerWindow(Window w) {
-        System.out.println("register " + w.getName());
         w.addWindowListener(this);
     }
 
@@ -50,7 +49,6 @@ public class WindowManager extends WindowAdapter {
     @Override
     public void windowClosed(WindowEvent e) {
         Window w = e.getWindow();
-        System.out.println("closed event: " + w.getName());
         openedWindows.remove(w);
         for(int i = 0; i < listeners.size(); i++) {
             listeners.get(i).windowStateChanged(e);
