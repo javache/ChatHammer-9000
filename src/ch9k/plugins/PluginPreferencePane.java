@@ -233,6 +233,8 @@ public class PluginPreferencePane
             String plugin = manager.getPrettyNames().get(name);
             removePluginButton.setEnabled(
                     manager.getPluginFileName(plugin) != null);
+        } else {
+            removePluginButton.setEnabled(false);
         }
     }
 
