@@ -169,6 +169,8 @@ public class PluginManager extends Model implements EventListener, Persistable {
             file.delete();
         }
 
+        plugin.softRemove();
+
         fireStateChanged();
     }
 
