@@ -92,6 +92,9 @@ public class PluginMenu extends JMenu
             /* Only the user who initiated the conversation has the power to
              * enable and disable plugins. */
             item.setEnabled(conversation.isInitiatedByMe());
+
+            /* Set the item state. */
+            item.setState(manager.isEnabled(plugin, conversation));
         }
     }
 
