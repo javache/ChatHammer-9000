@@ -250,13 +250,17 @@ public class PluginManager extends Model implements EventListener, Persistable {
         for(String name: plugins.keySet()) {
             Plugin plugin = plugins.get(name);
             /* Persist only the settings. */
-            PersistentDataObject pdo = plugin.getSettings().persist();
-            /* Get the element. */
-            Element element = pdo.getElement();
-            /* Set the correct name. */
-            element.setAttribute("plugin", name);
-            /* Add it as a child. */
-            pluginManager.addContent(element);
+            Settings settings = plugin.getSettings();
+            if(settings != null) {
+                PersistentDataObject pdo = settings.persist();
+                /* Get the element. */
+                Element element = pdo.getElement();
+                /* Set the correct name. */
+                element.setAttribute("plugin", name);
+                /* Add it as a child. */
+                pluginManager.addContent(element);
+            }
+
         }
 
         return new PersistentDataObject(pluginManager);
