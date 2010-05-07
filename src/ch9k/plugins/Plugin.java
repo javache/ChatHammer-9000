@@ -28,6 +28,11 @@ public interface Plugin {
     void disablePlugin(Conversation conversation);
 
     /**
+     * Soft remove (disable) a plugin.
+     */
+    public void softRemove();
+
+    /**
      * Get a pretty name for the plugin.
      * @return A human-readable name.
      */

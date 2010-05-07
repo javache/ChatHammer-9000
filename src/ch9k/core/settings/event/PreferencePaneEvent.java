@@ -5,17 +5,21 @@ import javax.swing.JPanel;
 
 /**
  *
- * @author toon
+ * @author toon "fuck comments" willems
  */
 public class PreferencePaneEvent extends Event {
-
     private String title;
-
     private JPanel panel;
+    boolean paneActive;
 
     public PreferencePaneEvent(String title, JPanel panel) {
+        this(title, panel, true); 
+    }
+
+    public PreferencePaneEvent(String title, JPanel panel, boolean paneActive) {
         this.title = title;
         this.panel = panel;
+        this.paneActive = paneActive;
     }
 
     @Override
@@ -31,5 +35,7 @@ public class PreferencePaneEvent extends Event {
         return panel;
     }
 
-
+    public boolean isPaneActive() {
+        return paneActive;
+    }
 }

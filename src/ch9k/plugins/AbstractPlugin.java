@@ -31,6 +31,11 @@ public abstract class AbstractPlugin
     private Settings settings;
 
     /**
+     * The preference pane.
+     */
+    private transient JPanel preferencePane;
+
+    /**
      * Constructor.
      */
     public AbstractPlugin() {
@@ -38,7 +43,7 @@ public abstract class AbstractPlugin
         settings = createDefaultSettings();
 
         /* Throw our preference pane if the plugin needs one. */
-        JPanel preferencePane = createPreferencePane(getSettings());
+        preferencePane = createPreferencePane(getSettings());
         if(preferencePane != null) {
             Event event = new PreferencePaneEvent(
                     getPrettyName(), preferencePane);
@@ -101,6 +106,14 @@ public abstract class AbstractPlugin
         AbstractPluginInstance instance = instances.get(conversation);
         instances.remove(conversation);
         instance.disablePluginInstance();
+    }
+
+    @Override
+    public void softRemove() {
+        /* Remove the preference pane. */
+        Event event = new PreferencePaneEvent(
+                getPrettyName(), preferencePane, false);
+        EventPool.getAppPool().raiseEvent(event);
     }
 
     @Override

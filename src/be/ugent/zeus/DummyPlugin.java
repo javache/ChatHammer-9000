@@ -23,6 +23,10 @@ public class DummyPlugin implements Plugin {
     }
 
     @Override
+    public void softRemove() {
+    }
+
+    @Override
     public String getPrettyName() {
         return "DummyPlugin";
     }
