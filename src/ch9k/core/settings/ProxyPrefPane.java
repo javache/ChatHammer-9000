@@ -65,6 +65,9 @@ public class ProxyPrefPane extends JPanel {
         JLabel portLabel = new JLabel("Port: ");
         GroupLayout layout = new GroupLayout(this);
 
+        layout.setAutoCreateGaps(true);
+        layout.setAutoCreateContainerGaps(true);
+
         layout.setHorizontalGroup(layout.createSequentialGroup()
             .addGroup(layout.createParallelGroup()
                 .addComponent(proxyLabel)
