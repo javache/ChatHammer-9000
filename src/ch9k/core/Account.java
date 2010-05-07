@@ -53,6 +53,7 @@ public class Account implements Persistable {
         this.username = username;
         this.passwordHash = hash(password);
         contactList = new ContactList(this);
+        status = "";
     }
 
     /**
