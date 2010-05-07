@@ -135,9 +135,9 @@ public class LoginPanel extends JPanel {
         );
         
         layout.setVerticalGroup(layout.createSequentialGroup()
-            .addContainerGap(5, 20)
+            .addContainerGap(15, 30)
             .addComponent(titleLabel)
-            .addGap(18)
+            .addGap(20)
             .addComponent(errorMessage)
             .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
             .addGroup(layout.createParallelGroup(Alignment.BASELINE)

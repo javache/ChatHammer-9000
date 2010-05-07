@@ -53,7 +53,7 @@ public class ApplicationWindow extends JFrame {
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 
         setPreferredSize(new Dimension(300, 520));
-        setMinimumSize(new Dimension(300, 200));
+        setMinimumSize(new Dimension(300, 320));
         setSize(getPreferredSize());
         setLocationByPlatform(true);
 
