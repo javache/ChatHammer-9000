@@ -1,6 +1,9 @@
 package ch9k.plugins;
 
+import java.io.File;
 import ch9k.chat.Conversation;
+import ch9k.core.ChatApplication;
+import ch9k.chat.ConversationManager;
 import ch9k.configuration.Persistable;
 import ch9k.configuration.PersistentDataObject;
 import ch9k.core.Model;
@@ -136,6 +139,36 @@ public class PluginManager extends Model implements EventListener, Persistable {
         if(fileName != null) {
             fileNames.put(name, fileName);
         }
+        fireStateChanged();
+    }
+
+    /**
+     * Soft remove a plugin.
+     * @param name Name of the plugin to soft-remove.
+     */
+    public void softRemovePlugin(String name) {
+        /* Obtain the plugin. */
+        Plugin plugin = plugins.get(name);
+        if(plugin == null) {
+            return;
+        }
+
+        /* Disable the plugin for every conversation. */
+        for(Conversation conversation:
+                ChatApplication.getInstance().getConversationManager()) {
+            disablePlugin(name, conversation);
+        }
+
+        /* Remove the plugin from the lists. */
+        plugins.remove(name);
+
+        /* Actually remove the file. */
+        String fileName = fileNames.get(name);
+        if(fileName != null) {
+            File file = new File(fileName);
+            file.delete();
+        }
+
         fireStateChanged();
     }
 

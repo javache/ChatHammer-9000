@@ -174,6 +174,20 @@ public class PluginPreferencePane
             }
         });
 
+        /* Remove a plugin. */
+        removePluginButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent event) {
+                Object selection = pluginList.getSelectedValue();
+                if(selection != null && selection instanceof String) {
+                    String name = (String) selection;
+                    String plugin = manager.getPrettyNames().get(name);
+                    manager.softRemovePlugin(plugin);
+                }
+
+                updateRemovePluginButton();
+            }
+        });
+
         updateInstallPluginButton();
         updatePluginList();
         updateRemovePluginButton();
