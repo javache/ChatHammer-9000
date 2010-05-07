@@ -3,6 +3,7 @@ package ch9k.core.gui;
 import ch9k.chat.gui.ContactListView;
 import ch9k.core.ChatApplication;
 import ch9k.core.I18n;
+import ch9k.core.WindowManager;
 import ch9k.core.settings.ProxyPrefPane;
 import ch9k.core.settings.event.PreferencePaneEvent;
 import ch9k.core.settings.gui.PreferencesFrame;
@@ -47,6 +48,7 @@ public class ApplicationWindow extends JFrame {
      */
     public ApplicationWindow() {
         super("ChatHammer 9000");
+        setName("ChatHammer 9000");
         // @TODO: check how this works out on mac (where windows can be 'hidden')
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -83,6 +85,9 @@ public class ApplicationWindow extends JFrame {
      */
     public void initApplicationView() {
         prefFrame = new PreferencesFrame();
+
+        WindowManager wim = ChatApplication.getInstance().getWindowManager();
+        wim.registerWindow(prefFrame);
         EventPool.getAppPool().raiseEvent(new PreferencePaneEvent(
                 I18n.get("ch9k.core", "proxy_title"),
                 new ProxyPrefPane(ChatApplication.getInstance().getSettings()))

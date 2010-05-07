@@ -28,6 +28,7 @@ public class PreferencesFrame extends JFrame implements EventListener {
 
     public PreferencesFrame() {
         super("Preferences");
+        setName("Preferences");
 
         EventPool.getAppPool().addListener(this, new EventFilter(PreferencePaneEvent.class));
 

@@ -3,6 +3,7 @@ package ch9k.chat;
 import ch9k.chat.event.ConversationEventFilter;
 import ch9k.chat.event.NewChatMessageEvent;
 import ch9k.chat.gui.ConversationWindow;
+import ch9k.core.ChatApplication;
 import ch9k.core.event.AccountLogoffEvent;
 import ch9k.eventpool.Event;
 import ch9k.eventpool.EventFilter;
@@ -40,6 +41,7 @@ public class Conversation implements EventListener {
 
         // create a new window
         window = new ConversationWindow(Conversation.this);
+        ChatApplication.getInstance().getWindowManager().registerWindow(window);
         EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {

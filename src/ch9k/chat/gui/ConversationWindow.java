@@ -60,6 +60,7 @@ public class ConversationWindow extends JFrame implements EventListener {
     public ConversationWindow(Conversation conversation) {
         super(conversation.getContact().getUsername() + " @ " + conversation.getContact().getIp().getCanonicalHostName());
         this.conversation = conversation;
+        setName(conversation.getContact().getUsername());
     }
 
     public void init() {
