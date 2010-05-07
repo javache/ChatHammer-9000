@@ -6,6 +6,7 @@ import ch9k.eventpool.EventFilter;
 import ch9k.eventpool.EventListener;
 import ch9k.eventpool.EventPool;
 import java.awt.CardLayout;
+import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
 import javax.swing.GroupLayout;
 import javax.swing.JFrame;
@@ -74,6 +75,7 @@ public class PreferencesFrame extends JFrame implements EventListener {
 
         if(event.isPaneActive()) {
             listModel.addElement(event.getTitle());
+            event.getPanel().setBorder(BorderFactory.createTitledBorder(event.getTitle()));
             prefPane.add(event.getPanel(), event.getTitle());
         } else {
             listModel.removeElement(event.getTitle());
