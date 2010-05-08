@@ -231,7 +231,7 @@ public class ContactList extends AbstractListModel
                     public void run() {
                         /* first we see if we already have the contact in our list */
                         Contact contact = getContact(event.getSource(), event.getRequester());
-                        if (contact != null && contact.isIgnored()) {
+                        if (contact != null) {
                             /* we return because we already declined this request */
                             return;
                         }
