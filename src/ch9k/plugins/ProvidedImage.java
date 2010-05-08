@@ -1,6 +1,5 @@
 package ch9k.plugins;
 
-import ch9k.core.Model;
 import ch9k.eventpool.WarningEvent;
 import java.awt.Image;
 import java.io.File;
@@ -13,7 +12,7 @@ import javax.imageio.ImageIO;
 /**
  * Image class for images provided by an ImageProvider.
  */
-public class ProvidedImage extends Model implements Serializable {
+public class ProvidedImage implements Serializable {
     /**
      * URL the image was loaded from. Very suited as unique identifier.
      */

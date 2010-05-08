@@ -72,7 +72,7 @@ public class PreferencesFrame extends JFrame implements EventListener {
 
     @Override
     public void handleEvent(Event ev) {
-        PreferencePaneEvent event = (PreferencePaneEvent)ev;
+        PreferencePaneEvent event = (PreferencePaneEvent) ev;
 
         if(event.shouldAdd()) {
             listModel.addElement(event.getTitle());

@@ -18,23 +18,28 @@ import java.awt.event.ActionListener;
 import java.util.HashSet;
 import java.util.Set;
 import javax.swing.Timer;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
+import java.util.List;
+import java.util.ArrayList;
 
 /**
  * Class representing the image chooser data.
  */
 public class CarouselImageChooserModel extends Model
-        implements EventListener, ChangeListener, SettingsChangeListener {
+        implements EventListener, SettingsChangeListener {
     /**
      * The selection model.
      */
     private CarouselImageModel model;
 
     /**
-     * Array to store the images.
+     * The plugin settings.
      */
-    private ProvidedImage[] images;
+    private Settings settings;
+
+    /**
+     * List to store the images.
+     */
+    private List<ProvidedImage> images;
 
     /**
      * We keep a set of images currently in the carousel, so we don't
@@ -76,8 +81,8 @@ public class CarouselImageChooserModel extends Model
     public CarouselImageChooserModel(Settings settings,
             CarouselImageModel model) {
         this.model = model;
-        this.images = new ProvidedImage[
-                settings.getInt(CarouselPreferencePane.MAX_IMAGES)];
+        this.settings = settings;
+        this.images = new ArrayList<ProvidedImage>();
         imageSet = new HashSet<ProvidedImage>();
         nextSelection = 0;
         currentSelection = 0.0;
@@ -122,10 +127,10 @@ public class CarouselImageChooserModel extends Model
      * @return The requested image.
      */
     public ProvidedImage getProvidedImage(int index) {
-        if(index < 0 || index >= images.length) {
+        if(index < 0 || index >= images.size()) {
             return null;
         } else {
-            return images[index];
+            return images.get(index);
         }
     }
 
@@ -149,7 +154,7 @@ public class CarouselImageChooserModel extends Model
      */
     public void setNextSelection(int nextSelection) {
         if(this.nextSelection != nextSelection &&
-                nextSelection >= 0 && nextSelection < images.length) {
+                nextSelection >= 0 && nextSelection < images.size()) {
             previousSelection = currentSelection;
             this.nextSelection = nextSelection;
 
@@ -188,39 +193,21 @@ public class CarouselImageChooserModel extends Model
             /* Reject foobar images. */
             if(image.getImage() == null) return;
 
-            /* We need to remove the old image from the set. */
-            ProvidedImage old = images[0];
-            if(old != null) {
+            /* If we already have enough images, we need to remove the old image
+             * from the set. */
+            if(images.size() >=
+                    settings.getInt(CarouselPreferencePane.MAX_IMAGES)) {
+                ProvidedImage old = images.get(0);
                 imageSet.remove(old);
-                old.removeChangeListener(this);
+                images.remove(0);
             }
 
-            /* Scroll for a position to insert the new image. */
-            int index = 0;
-            while(index < images.length && images[index] != null) {
-                index++;
-            }
-
-            /* We need to scroll and set the image at the end. */
-            if(index >= images.length) {
-                /* Scroll the images. */
-                for(int i = 0; i + 1< images.length; i++) {
-                    images[i] = images[i + 1];
-                }
-                images[images.length - 1] = image;
-            /* We have some space to insert the image. */
-            } else {
-                images[index] = image;
-            }
-
+            /* Insert the new image. */
+            images.add(image);
             imageSet.add(image);
-            image.addChangeListener(this);
 
             /* Update positions. */
-            nextSelection--;
-            previousSelection -= 1;
-            currentSelection -= 1;
-            setNextSelection(nextSelection + 1);
+            fireStateChanged();
         }
     }
 
@@ -230,10 +217,10 @@ public class CarouselImageChooserModel extends Model
      */
     private void resizeImagesArray(int size) {
         synchronized(this) {
-            ProvidedImage[] old = images;
-            images = new ProvidedImage[size];
-            for(int i = 0; i < images.length && i < old.length; i++) {
-                images[i] = old[i];
+            List<ProvidedImage> old = images;
+            images = new ArrayList<ProvidedImage>();
+            for(int i = 0; i < size && i < old.size(); i++) {
+                images.add(old.get(i));
             }
 
             if(nextSelection >= size) {
@@ -254,11 +241,6 @@ public class CarouselImageChooserModel extends Model
                 addImage(image);
             }
         }).start();
-    }
-
-    @Override
-    public void stateChanged(ChangeEvent event) {
-        fireStateChanged();
     }
 
     @Override
