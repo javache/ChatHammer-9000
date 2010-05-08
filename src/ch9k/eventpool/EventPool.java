@@ -89,16 +89,17 @@ public class EventPool {
 
     /**
      * remove an EventListener
-     * @param listener
+     * @param toRemove
      */
-    public void removeListener(EventListener listener) {
-        int i = 0;
-        while(i < listeners.size() && listener != listeners.get(i).listener){
-            i++;
+    public void removeListener(EventListener toRemove) {
+        List<FilteredListener> newListeners = new ArrayList<FilteredListener>();
+        for(FilteredListener filtered: listeners) {
+            if(filtered.listener != toRemove) {
+                newListeners.add(filtered);
+            }
         }
-        if(i < listeners.size()) {
-            listeners.remove(i);
-        }
+
+        listeners = newListeners;
     }
 
     /**

@@ -13,6 +13,7 @@ import ch9k.eventpool.EventListener;
 import ch9k.eventpool.EventPool;
 import ch9k.core.settings.event.PreferencePaneEvent;
 import ch9k.plugins.event.PluginChangeEvent;
+import ch9k.chat.event.CloseConversationEvent;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -67,6 +68,11 @@ public class PluginManager extends Model implements EventListener, Persistable {
          * events, so we can synchronize with the plugin manager on the other
          * side. */
         EventFilter filter = new EventFilter(PluginChangeEvent.class);
+        EventPool.getAppPool().addListener(this, filter);
+
+        /* We want to listen to closing conversations. If the user closes a
+         * conversation, we want to disable all it's plugins. */
+        filter = new EventFilter(CloseConversationEvent.class);
         EventPool.getAppPool().addListener(this, filter);
 
         /* Throw our preference pane so the user can install more plugins */
@@ -292,19 +298,32 @@ public class PluginManager extends Model implements EventListener, Persistable {
 
     @Override
     public void handleEvent(Event e) {
-        PluginChangeEvent event = (PluginChangeEvent) e;
-        /* A plugin was enabled. */
-        if(event.isPluginEnabled()) {
-            /* If the event was external, enable the plugin here as well. */
-            if(event.isExternal()) {
-                enable(event.getPlugin(), event.getConversation(),
-                        event.getSettings());
+        /* A PluginChangeEvent. */
+        if(e instanceof PluginChangeEvent) {
+            PluginChangeEvent event = (PluginChangeEvent) e;
+            /* A plugin was enabled. */
+            if(event.isPluginEnabled()) {
+                /* If the event was external, enable the plugin here as well. */
+                if(event.isExternal()) {
+                    enable(event.getPlugin(), event.getConversation(),
+                            event.getSettings());
+                }
+            /* A plugin was disabled. */
+            } else {
+                /* If the event was external, disable the plugin here as well. */
+                if(event.isExternal()) {
+                    disable(event.getPlugin(), event.getConversation());
+                }
             }
-        /* A plugin was disabled. */
-        } else {
-            /* If the event was external, disable the plugin here as well. */
-            if(event.isExternal()) {
-                disable(event.getPlugin(), event.getConversation());
+        }
+
+        /* A CloseConversationEvent. */
+        if(e instanceof CloseConversationEvent) {
+            CloseConversationEvent event = (CloseConversationEvent) e;
+
+            /* Disable every possible plugin for the conversation. */
+            for(String name: plugins.keySet()) {
+                disablePlugin(name, event.getConversation());
             }
         }
     }
