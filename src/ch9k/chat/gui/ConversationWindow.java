@@ -75,8 +75,10 @@ public class ConversationWindow extends JFrame implements EventListener {
         addWindowListener(new WindowAdapter() {
             public void windowClosed(WindowEvent e) {
                 if(!conversation.isClosed()) {
+                    EventPool.getAppPool().removeListener(
+                            ConversationWindow.this);
                     EventPool.getAppPool().raiseNetworkEvent(
-                        new CloseConversationEvent(conversation));
+                            new CloseConversationEvent(conversation));
                 }
             }
         });
@@ -121,7 +123,7 @@ public class ConversationWindow extends JFrame implements EventListener {
     @Override
     public void handleEvent(Event e) {
         if(e instanceof RequestPluginContainerEvent) {
-            RequestPluginContainerEvent event = (RequestPluginContainerEvent)e;
+            RequestPluginContainerEvent event = (RequestPluginContainerEvent) e;
             JPanel newTab = new JPanel();
             pluginPane.add(event.getTitle(), newTab);
             EventPool.getAppPool().raiseEvent(new RequestedPluginContainerEvent(
