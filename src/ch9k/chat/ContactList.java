@@ -229,13 +229,19 @@ public class ContactList extends AbstractListModel
             if(event.isExternal() && event.getUsername().equalsIgnoreCase(account.getUsername())) {
                 EventQueue.invokeLater(new Runnable() {
                     public void run() {
+                        /* first we see if we already have the contact in our list */
+                        Contact contact = getContact(event.getSource(), event.getRequester());
+                        if (contact != null && contact.isIgnored()) {
+                            /* we return because we already declined this request */
+                            return;
+                        }
                         // WTF is this doing here
                         // last time I checked ContactList wasn't a view.
                         String text = I18n.get("ch9k.chat", "add_friend", event.getRequester());
                         int confirmation = JOptionPane.showConfirmDialog(
                                 null, text, I18n.get("ch9k.chat", "add_friend_title"), JOptionPane.YES_NO_OPTION);
 
-                        Contact contact = new Contact(event.getRequester(), event.getSource());
+                        contact = new Contact(event.getRequester(), event.getSource());
                         if (confirmation != JOptionPane.YES_OPTION) {
                             contact.setIgnored();
                         }
@@ -272,7 +278,7 @@ public class ContactList extends AbstractListModel
         if (contact.isRequested()) {
             EventPool.getAppPool().raiseNetworkEvent(new ContactRequestEvent(
                     contact.getIp(), contact.getUsername(), account.getUsername()));
-        } else {
+        } else if(!contact.isIgnored()) {
             EventPool.getAppPool().raiseNetworkEvent(new ContactOnlineEvent(contact, true));
         }
     }
