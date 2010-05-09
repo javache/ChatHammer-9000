@@ -48,6 +48,11 @@ public class TextAnalyzerPreferencePane
     private final JSpinner maxMessagesSpinner;
 
     /**
+     * TRIGGER_INTERVAL spinner.
+     */
+    private final JSpinner triggerIntervalSpinner;
+
+    /**
      * Constructor.
      * @param settings Settings to manipulate.
      */
@@ -60,23 +65,27 @@ public class TextAnalyzerPreferencePane
         layout.setAutoCreateContainerGaps(true);
 
         JLabel maxSubjectsLabel = new JLabel(
-                I18n.get("ch9k.plugins.liteanalyzer", "max_subjects"));
+                I18n.get("ch9k.plugins", "max_subjects"));
         JLabel maxMessagesLabel = new JLabel(
-                I18n.get("ch9k.plugins.liteanalyzer", "max_messages"));
+                I18n.get("ch9k.plugins", "max_messages"));
+        JLabel triggerIntervalLabel = new JLabel(
+                I18n.get("ch9k.plugins", "trigger_interval"));
         maxSubjectsSpinner = new JSpinner(new SpinnerNumberModel(
-                settings.getInt(MAX_SUBJECTS),
-                1, 5, 1));
+                settings.getInt(MAX_SUBJECTS), 1, 5, 1));
         maxMessagesSpinner = new JSpinner(new SpinnerNumberModel(
-                settings.getInt(MAX_MESSAGES),
-                1, 30, 1));
+                settings.getInt(MAX_MESSAGES), 1, 30, 1));
+        triggerIntervalSpinner = new JSpinner(new SpinnerNumberModel(
+                settings.getInt(TRIGGER_INTERVAL), 5, 80, 5));
 
         layout.setHorizontalGroup(layout.createSequentialGroup()
             .addGroup(layout.createParallelGroup()
                 .addComponent(maxSubjectsLabel)
-                .addComponent(maxMessagesLabel))
+                .addComponent(maxMessagesLabel)
+                .addComponent(triggerIntervalLabel))
             .addGroup(layout.createParallelGroup()
                 .addComponent(maxSubjectsSpinner)
-                .addComponent(maxMessagesSpinner)));
+                .addComponent(maxMessagesSpinner)
+                .addComponent(triggerIntervalSpinner)));
 
         layout.setVerticalGroup(layout.createSequentialGroup()
             .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
@@ -86,12 +95,18 @@ public class TextAnalyzerPreferencePane
             .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                 .addComponent(maxMessagesLabel)
                 .addComponent(maxMessagesSpinner, GroupLayout.PREFERRED_SIZE,
-                        GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)));
+                        GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+            .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                .addComponent(triggerIntervalLabel)
+                .addComponent(triggerIntervalSpinner,
+                        GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+                        GroupLayout.PREFERRED_SIZE)));
 
         setLayout(layout);
 
         maxSubjectsSpinner.addChangeListener(this);
         maxMessagesSpinner.addChangeListener(this);
+        triggerIntervalSpinner.addChangeListener(this);
         settings.addSettingsListener(this);
     }
 
@@ -103,6 +118,10 @@ public class TextAnalyzerPreferencePane
 
         if(MAX_MESSAGES.equals(event.getKey())) {
             maxMessagesSpinner.setValue(settings.getInt(MAX_MESSAGES));
+        }
+
+        if(TRIGGER_INTERVAL.equals(event.getKey())) {
+            triggerIntervalSpinner.setValue(settings.getInt(TRIGGER_INTERVAL));
         }
     }
 
@@ -116,6 +135,11 @@ public class TextAnalyzerPreferencePane
         if(event.getSource() == maxMessagesSpinner) {
             settings.setInt(MAX_MESSAGES,
                     (Integer) maxMessagesSpinner.getValue());
+        }
+
+        if(event.getSource() == triggerIntervalSpinner) {
+            settings.setInt(TRIGGER_INTERVAL,
+                    (Integer) triggerIntervalSpinner.getValue());
         }
     }
 }
