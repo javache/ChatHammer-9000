@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.List;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.regex.Matcher;
@@ -117,16 +118,27 @@ public abstract class TextAnalyzer extends AbstractPluginInstance
         }
 
         /* Get the raw text from the messages. */
-        ChatMessage[] chatMessages =
-                getConversation().getMessages(getMaxNumberOfMessages());
+        ChatMessage[] chatMessages = getConversation().getMessages(
+                getSettings().getInt(TextAnalyzerPreferencePane.MAX_MESSAGES));
         String[] messages = new String[chatMessages.length];
         for(int i = 0; i < messages.length; i++) {
             messages[i] = chatMessages[i].getRawText();
         }
 
-        /* Create a new subject. */
-        String[] result = getSubjects(messages);
-        ConversationSubject subject = new ConversationSubject(result);
+        /* Get the result from the actual implementation. */
+        List<String> result = getSubjects(messages);
+
+        /* Trim the result to meet the preferences on MAX_SUBJECTS. */
+        int maxSubjects = getSettings().getInt(
+                TextAnalyzerPreferencePane.MAX_SUBJECTS);
+        int numSubjects = result.size() > maxSubjects ?
+                maxSubjects : result.size();
+        String[] subjects = new String[numSubjects];
+        for(int i = 0; i < numSubjects; i++) {
+            subjects[i] = result.get(i);
+        }
+
+        ConversationSubject subject = new ConversationSubject(subjects);
 
         /* Throw the new event. */ 
         NewConversationSubjectEvent subjectEvent =
@@ -154,17 +166,11 @@ public abstract class TextAnalyzer extends AbstractPluginInstance
     }
 
     /**
-     * Get the max number of messages to take from the conversation.
-     * @return The max number of messages to take.
-     */
-    public abstract int getMaxNumberOfMessages();
-
-    /**
      * Get the conversation subject as strings.
      * @param messages The different messages in the conversation.
      * @return Strings representing conversation subjects.
      */
-    public abstract String[] getSubjects(String[] messages);
+    public abstract List<String> getSubjects(String[] messages);
 
     /**
      * Build a frequency map of words in the conversation.

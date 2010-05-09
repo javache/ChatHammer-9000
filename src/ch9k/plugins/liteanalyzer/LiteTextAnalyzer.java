@@ -26,13 +26,7 @@ public class LiteTextAnalyzer extends TextAnalyzer {
     }
 
     @Override
-    public int getMaxNumberOfMessages() {
-        return getSettings().getInt(
-                TextAnalyzerPreferencePane.MAX_MESSAGES);
-    }
-
-    @Override
-    public String[] getSubjects(String[] messages) {
+    public List<String> getSubjects(String[] messages) {
         /* Create a frequency map. */
         Map<String, Integer> frequencies = getFrequencyMap(messages);
 
@@ -43,17 +37,13 @@ public class LiteTextAnalyzer extends TextAnalyzer {
         }
         Collections.sort(list);
 
-        /* Take the MAX_SUBJECTS most important subjects. */
-        int maxSubjects = getSettings().getInt(
-                TextAnalyzerPreferencePane.MAX_SUBJECTS);
-        int numSubjects = list.size() > maxSubjects ?
-                maxSubjects : list.size();
-        String[] subject = new String[numSubjects];
-        for(int i = 0; i < numSubjects; i++) {
-            subject[i] = list.get(i).getSubject();
+        /* Create a list with the result. */
+        List<String> result = new ArrayList<String>();
+        for(Subject subject: list) {
+            result.add(subject.getSubject());
         }
 
-        return subject;
+        return result;
     }
 
     /**
