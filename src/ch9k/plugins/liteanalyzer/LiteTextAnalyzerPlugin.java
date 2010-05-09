@@ -29,6 +29,7 @@ public class LiteTextAnalyzerPlugin extends AbstractPlugin {
         Settings settings = new Settings();
         settings.setInt(TextAnalyzerPreferencePane.MAX_SUBJECTS, 3);
         settings.setInt(TextAnalyzerPreferencePane.MAX_MESSAGES, 5);
+        settings.setInt(TextAnalyzerPreferencePane.TRIGGER_INTERVAL, 10);
         return settings;
     }
 }

@@ -28,6 +28,11 @@ public class TextAnalyzerPreferencePane
     public static final String MAX_MESSAGES = "maxMessages";
 
     /**
+     * Trigger interval, in seconds.
+     */
+    public static final String TRIGGER_INTERVAL = "triggerInterval";
+
+    /**
      * Settings to manipulate.
      */
     private final Settings settings;

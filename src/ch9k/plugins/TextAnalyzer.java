@@ -7,6 +7,8 @@ import ch9k.chat.event.ConversationEventFilter;
 import ch9k.chat.event.NewChatMessageEvent;
 import ch9k.chat.event.NewConversationSubjectEvent;
 import ch9k.core.settings.Settings;
+import ch9k.core.settings.SettingsChangeListener;
+import ch9k.core.settings.SettingsChangeEvent;
 import ch9k.eventpool.Event;
 import ch9k.eventpool.EventFilter;
 import ch9k.eventpool.EventListener;
@@ -21,14 +23,17 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 import org.apache.log4j.Logger;
+import javax.swing.Timer;
 
 /**
  * Abstract TextAnalyzer class.
  * @author Jasper Van der Jeugt
  */
 public abstract class TextAnalyzer extends AbstractPluginInstance
-        implements EventListener {
+        implements SettingsChangeListener {
     /**
      * I accidentaly your logger
      */
@@ -43,6 +48,11 @@ public abstract class TextAnalyzer extends AbstractPluginInstance
      * Set of words to be ignored.
      */
     private static Set<String> noiseWords;
+
+    /**
+     * Timer to trigger event spamming.
+     */
+    private final Timer timer;
 
     /* Statically parse the list of words to be ignored. */
     static {
@@ -82,49 +92,66 @@ public abstract class TextAnalyzer extends AbstractPluginInstance
     public TextAnalyzer(Plugin plugin,
             Conversation conversation, Settings settings) {
         super(plugin, conversation, settings);
+
+        /* Create a timer to spam subject events. */
+        int msDelay = settings.getInt(
+                TextAnalyzerPreferencePane.TRIGGER_INTERVAL);
+        timer = new Timer(1000 * msDelay, new ActionListener() {
+            public void actionPerformed(ActionEvent event) {
+                triggerNewSubject();
+            }
+        });
+
+        /* We want to listen to the settings, because we need to adjust our
+         * timer if the trigger interval changes. */
+        settings.addSettingsListener(this);
+    }
+
+    /**
+     * Trigger new subject event.
+     */
+    private void triggerNewSubject() {
+        /* The one who started the conversation should send subjects. */
+        if(!getConversation().isInitiatedByMe()) {
+            return;
+        }
+
+        /* Get the raw text from the messages. */
+        ChatMessage[] chatMessages =
+                getConversation().getMessages(getMaxNumberOfMessages());
+        System.out.println("Messages: " + getMaxNumberOfMessages());
+        String[] messages = new String[chatMessages.length];
+        for(int i = 0; i < messages.length; i++) {
+            messages[i] = chatMessages[i].getRawText();
+        }
+
+        /* Create a new subject. */
+        String[] result = getSubjects(messages);
+        ConversationSubject subject = new ConversationSubject(result);
+        System.out.println("Subjects: " + result.length);
+
+        /* Throw the new event. */ 
+        NewConversationSubjectEvent subjectEvent =
+                new NewConversationSubjectEvent(getConversation(), subject);
+        EventPool.getAppPool().raiseNetworkEvent(subjectEvent);
     }
 
     @Override
     public void enablePluginInstance() {
-        EventFilter filter = new ConversationEventFilter(
-                NewChatMessageEvent.class, getConversation());
-        EventPool.getAppPool().addListener(this, filter);
+        timer.start();
     }
 
     @Override
     public void disablePluginInstance() {
-        EventPool.getAppPool().removeListener(this);
+        timer.stop();
     }
 
     @Override
-    public void handleEvent(Event e) {
-        super.handleEvent(e);
-        if(e instanceof NewChatMessageEvent) {
-            NewChatMessageEvent event = (NewChatMessageEvent) e;
-
-            /* The one who started the conversation should send subjects. */
-            if(!getConversation().isInitiatedByMe()) {
-                return;
-            }
-
-            /* Get the raw text from the messages. */
-            ChatMessage[] chatMessages =
-                    getConversation().getMessages(getMaxNumberOfMessages());
-            System.out.println("Messages: " + getMaxNumberOfMessages());
-            String[] messages = new String[chatMessages.length];
-            for(int i = 0; i < messages.length; i++) {
-                messages[i] = chatMessages[i].getRawText();
-            }
-
-            /* Create a new subject. */
-            String[] result = getSubjects(messages);
-            ConversationSubject subject = new ConversationSubject(result);
-            System.out.println("Subjects: " + result.length);
-
-            /* Throw the new event. */ 
-            NewConversationSubjectEvent subjectEvent =
-                    new NewConversationSubjectEvent(getConversation(), subject);
-            EventPool.getAppPool().raiseNetworkEvent(subjectEvent);
+    public void settingsChanged(SettingsChangeEvent event) {
+        if(event.getKey() == TextAnalyzerPreferencePane.TRIGGER_INTERVAL) {
+            int msDelay = getSettings().getInt(
+                    TextAnalyzerPreferencePane.TRIGGER_INTERVAL);
+            timer.setDelay(1000 * msDelay);
         }
     }
 
