@@ -29,5 +29,12 @@ public class PluginManagerTest {
         /* The plugin class should now be available. */
         String expectedPlugin = "DummyPlugin";
         assertTrue(manager.getPrettyNames().keySet().contains(expectedPlugin));
+        String fullName = manager.getPrettyNames().get(expectedPlugin);
+        assertEquals("be.ugent.zeus.DummyPlugin", fullName);
+
+        /* Now, we will remove the plugin. We should then no longer have it
+         * available. */
+        manager.softRemovePlugin(fullName);
+        assertFalse(manager.getPrettyNames().keySet().contains(expectedPlugin));
     }
 }
