@@ -4,6 +4,7 @@ import ch9k.chat.Conversation;
 import ch9k.core.settings.Settings;
 import ch9k.plugins.AbstractPlugin;
 import ch9k.plugins.AbstractPluginInstance;
+import ch9k.plugins.TextAnalyzerPreferencePane;
 import ch9k.plugins.Plugin;
 import javax.swing.JPanel;
 
@@ -20,14 +21,15 @@ public class LiteTextAnalyzerPlugin extends AbstractPlugin {
 
     @Override
     protected JPanel createPreferencePane(Settings settings) {
-        return new LiteTextAnalyzerPreferencePane(settings);
+        return new TextAnalyzerPreferencePane(settings);
     }
 
     @Override
     protected Settings createDefaultSettings() {
         Settings settings = new Settings();
-        settings.setInt(LiteTextAnalyzerPreferencePane.MAX_SUBJECTS, 3);
-        settings.setInt(LiteTextAnalyzerPreferencePane.MAX_MESSAGES, 5);
+        settings.setInt(TextAnalyzerPreferencePane.MAX_SUBJECTS, 3);
+        settings.setInt(TextAnalyzerPreferencePane.MAX_MESSAGES, 5);
+        settings.setInt(TextAnalyzerPreferencePane.TRIGGER_INTERVAL, 20);
         return settings;
     }
 }
