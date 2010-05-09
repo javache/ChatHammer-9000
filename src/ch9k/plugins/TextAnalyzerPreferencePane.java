@@ -1,4 +1,4 @@
-package ch9k.plugins.liteanalyzer;
+package ch9k.plugins;
 
 import ch9k.core.I18n;
 import ch9k.core.settings.Settings;
@@ -15,7 +15,7 @@ import javax.swing.event.ChangeListener;
 /**
  * Preference pane for a LiteTextAnalyzer.
  */
-public class LiteTextAnalyzerPreferencePane
+public class TextAnalyzerPreferencePane
         extends JPanel implements SettingsChangeListener, ChangeListener {
     /**
      * Maximum number of subjects to search.
@@ -46,7 +46,7 @@ public class LiteTextAnalyzerPreferencePane
      * Constructor.
      * @param settings Settings to manipulate.
      */
-    public LiteTextAnalyzerPreferencePane(final Settings settings) {
+    public TextAnalyzerPreferencePane(final Settings settings) {
         this.settings = settings;
 
         GroupLayout layout = new GroupLayout(this);

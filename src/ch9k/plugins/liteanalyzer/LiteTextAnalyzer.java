@@ -4,6 +4,7 @@ import ch9k.chat.Conversation;
 import ch9k.core.settings.Settings;
 import ch9k.plugins.Plugin;
 import ch9k.plugins.TextAnalyzer;
+import ch9k.plugins.TextAnalyzerPreferencePane;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -27,7 +28,7 @@ public class LiteTextAnalyzer extends TextAnalyzer {
     @Override
     public int getMaxNumberOfMessages() {
         return getSettings().getInt(
-                LiteTextAnalyzerPreferencePane.MAX_MESSAGES);
+                TextAnalyzerPreferencePane.MAX_MESSAGES);
     }
 
     @Override
@@ -44,7 +45,7 @@ public class LiteTextAnalyzer extends TextAnalyzer {
 
         /* Take the MAX_SUBJECTS most important subjects. */
         int maxSubjects = getSettings().getInt(
-                LiteTextAnalyzerPreferencePane.MAX_SUBJECTS);
+                TextAnalyzerPreferencePane.MAX_SUBJECTS);
         int numSubjects = list.size() > maxSubjects ?
                 maxSubjects : list.size();
         String[] subject = new String[numSubjects];
