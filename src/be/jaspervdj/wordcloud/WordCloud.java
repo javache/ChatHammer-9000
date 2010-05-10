@@ -5,6 +5,7 @@ import ch9k.chat.event.ConversationEventFilter;
 import ch9k.chat.event.ReleasePluginContainerEvent;
 import ch9k.chat.event.RequestPluginContainerEvent;
 import ch9k.chat.event.RequestedPluginContainerEvent;
+import ch9k.chat.event.NewConversationSubjectEvent;
 import ch9k.core.settings.Settings;
 import ch9k.eventpool.Event;
 import ch9k.eventpool.EventFilter;
@@ -23,6 +24,11 @@ public class WordCloud extends AbstractPluginInstance implements EventListener {
      * The container that we get from the system.
      */
     private Container container;
+
+    /**
+     * The word cloud panel.
+     */
+    private WordCloudPanel panel;
 
     /**
      * Constructor.
@@ -56,6 +62,11 @@ public class WordCloud extends AbstractPluginInstance implements EventListener {
         /* Disable the plugin. */
         EventPool.getAppPool().removeListener(this);
 
+        /* Stop the panel from listening. */
+        if(panel != null) {
+            EventPool.getAppPool().removeListener(panel);
+        }
+
         /* Release the container request a panel for this plugin. */
         Event event =
                 new ReleasePluginContainerEvent(getConversation(), container);
@@ -74,9 +85,11 @@ public class WordCloud extends AbstractPluginInstance implements EventListener {
         /* Okay, we have a panel now, start using it. */
         container = event.getPluginContainer();
 
-        for(int i = 0; i < 50; i++) {
-            container.add(new JLabel("WordCloud"));
-        }
+        /* Create a panel and make it listen. */
+        panel = new WordCloudPanel();
+        EventFilter filter = new ConversationEventFilter(
+                NewConversationSubjectEvent.class, getConversation());
+        EventPool.getAppPool().addListener(panel, filter);
 
         container.validate();
         container.repaint();

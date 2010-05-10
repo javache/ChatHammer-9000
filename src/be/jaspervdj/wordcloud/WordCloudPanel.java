@@ -5,9 +5,15 @@ import java.awt.Graphics;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.geom.Rectangle2D;
-import java.util.List;
+import java.util.Queue;
 import java.util.LinkedList;
 import java.awt.Color;
+import ch9k.eventpool.Event;
+import ch9k.eventpool.EventFilter;
+import ch9k.eventpool.EventPool;
+import ch9k.eventpool.EventListener;
+import ch9k.chat.event.NewConversationSubjectEvent;
+import ch9k.chat.ConversationSubject;
 
 import javax.swing.JFrame;
 import java.net.InetAddress;
@@ -21,11 +27,16 @@ import java.awt.Dimension;
 /**
  * Panel to show a wordcloud.
  */
-public class WordCloudPanel extends JPanel {
+public class WordCloudPanel extends JPanel implements EventListener {
+    /**
+     * Maximum number of words.
+     */
+    private final static int MAX_WORDS = 50;
+
     /**
      * The words.
      */
-    private List<Word> words;
+    private Queue<Word> words;
 
     /**
      * Constructor.
@@ -35,9 +46,17 @@ public class WordCloudPanel extends JPanel {
         words = new LinkedList<Word>();
 
         setBackground(Color.BLACK);
+    }
 
-        for(int i = 0; i < 50; i++) {
-            words.add(new Word(i + " days"));
+    /**
+     * Add a word to the cloud.
+     * @param word Word to add.
+     */
+    private void addWord(Word word) {
+        if(words.size() >= MAX_WORDS) {
+            words.poll();
+            words.offer(word);
+            repaint();
         }
     }
 
@@ -75,6 +94,18 @@ public class WordCloudPanel extends JPanel {
         graphics.setColor(word.getColor());
 
         graphics.drawString(word.getText(), x, y);
+    }
+
+    @Override
+    public void handleEvent(Event e) {
+        if(e instanceof NewConversationSubjectEvent) {
+            NewConversationSubjectEvent event = (NewConversationSubjectEvent) e;
+            ConversationSubject subject = event.getConversationSubject();
+            String[] subjects = subject.getSubjects();
+            for(String word: subjects) {
+                addWord(new Word(word));
+            }
+        }
     }
 
     public static void main(String[] args) throws Exception {
