@@ -152,7 +152,7 @@ public class ConversationWindow extends JFrame implements EventListener {
             System.out.println("Close received.");
             SwingUtilities.invokeLater(new Runnable() {
                 public void run() {
-                    pluginMenu.setEnabled(false);
+                    getJMenuBar().remove(pluginMenu);
                     editor.setEnabled(false);
                     validate();
                     repaint();
