@@ -123,7 +123,7 @@ public class ConversationWindow extends JFrame implements EventListener {
 
     @Override
     public void handleEvent(Event e) {
-        if(e instanceof RequestPluginContainerEvent ||
+        if(e instanceof RequestPluginContainerEvent &&
                 !conversation.isClosed()) {
             RequestPluginContainerEvent event = (RequestPluginContainerEvent) e;
             JPanel newTab = new JPanel();
