@@ -2,6 +2,8 @@ package ch9k.eventpool;
 
 import ch9k.network.ConnectionManager;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -30,7 +32,7 @@ public class EventPool {
          private static final EventPool INSTANCE = new EventPool(true);
     }
 
-    private List<FilteredListener> listeners = new ArrayList<FilteredListener>();
+    private final List<FilteredListener> listeners = new LinkedList<FilteredListener>();
 
     private class FilteredListener {
         public EventFilter filter;
@@ -84,7 +86,9 @@ public class EventPool {
      * @param filter
      */
     public void addListener(EventListener listener, EventFilter filter) {
-        listeners.add(new FilteredListener(filter, listener));
+        synchronized(listeners) {
+            listeners.add(new FilteredListener(filter, listener));
+        }
     }
 
     /**
@@ -92,14 +96,15 @@ public class EventPool {
      * @param toRemove
      */
     public void removeListener(EventListener toRemove) {
-        List<FilteredListener> newListeners = new ArrayList<FilteredListener>();
-        for(FilteredListener filtered: listeners) {
-            if(filtered.listener != toRemove) {
-                newListeners.add(filtered);
+        synchronized(listeners) {
+            Iterator<FilteredListener> it = listeners.iterator();
+            while(it.hasNext()) {
+                FilteredListener filtered = it.next();
+                if(filtered == toRemove) {
+                    it.remove();
+                }
             }
         }
-
-        listeners = newListeners;
     }
 
     /**
@@ -122,12 +127,19 @@ public class EventPool {
     private void broadcastEvent(Event event) {
         logger.info("Broadcasting " + event.getClass().getName() + " to " + 
                 listeners.size() + " listener(s)");
-        for(int i = 0; i < listeners.size(); i++) {
-            FilteredListener pair = listeners.get(i);
-            try {
+
+        List<EventListener> toSend = new ArrayList<EventListener>();
+        synchronized(listeners) {
+            for(FilteredListener pair : listeners) {
                 if(pair.filter.accept(event)) {
-                    pair.listener.handleEvent(event);
+                    toSend.add(pair.listener);
                 }
+            }
+        }
+
+        for(int i = 0; i < toSend.size(); i++) {
+            try {
+                toSend.get(i).handleEvent(event);
             } catch(Exception ex) {
                 logger.error(ex.toString(), ex);
             }
@@ -155,6 +167,8 @@ public class EventPool {
      * To be used only for testing purposes
      */
     public void clearListeners() {
-        listeners.clear();
+        synchronized(listeners) {
+            listeners.clear();
+        }
     }
 }
