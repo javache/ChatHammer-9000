@@ -131,5 +131,6 @@ public class MessageEditor extends JPanel {
     public void setEnabled(boolean enabled) {
         super.setEnabled(enabled);
         sendButton.setEnabled(enabled);
+        editor.setEnabled(enabled);
     }
 }
