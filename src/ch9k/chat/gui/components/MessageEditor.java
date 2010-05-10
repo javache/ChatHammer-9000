@@ -20,6 +20,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
 /**
  *
@@ -72,24 +74,56 @@ public class MessageEditor extends JPanel {
             }
         });
 
+        /* We add a documentlistener that will disable the send button is no
+         * text is in the editor. */
+        editor.getDocument().addDocumentListener(new DocumentListener() {
+            public void changedUpdate(DocumentEvent e) {
+                updateSendButton();
+            }
+
+            public void insertUpdate(DocumentEvent e) {
+                updateSendButton();
+            }
+
+            public void removeUpdate(DocumentEvent e) {
+                updateSendButton();
+            }
+        });
+
         add(new FontPanel(editor), BorderLayout.NORTH);
 
         JPanel input = new JPanel(new BorderLayout());
         input.add(scrollPane, BorderLayout.CENTER);
         input.add(sendButton,BorderLayout.EAST);
         add(input, BorderLayout.CENTER);
+
+        updateSendButton();
     }
 
     public void send(){
         ChatMessage message = new ChatMessage(
                 ChatApplication.getInstance().getAccount().getUsername(),
                 editor.getText());
-        if(!message.getRawText().isEmpty()) {
-            EventPool.getAppPool().raiseNetworkEvent(new NewChatMessageEvent(conversation,message));
+        EventPool.getAppPool().raiseNetworkEvent(
+                new NewChatMessageEvent(conversation,message));
 
-            // reliably keeping the bold/italic/underline styles doesn't
-            // seem to work, so we just #care
-            editor.setText("");
+        // reliably keeping the bold/italic/underline styles doesn't
+        // seem to work, so we just #care
+        editor.setText("");
+    }
+
+    /**
+     * Update the send button. Action executed depends on current conversation
+     * and message editor state.
+     */
+    private void updateSendButton() {
+        ChatMessage message = new ChatMessage(
+                ChatApplication.getInstance().getAccount().getUsername(),
+                editor.getText());
+        if(conversation.isClosed()) {
+            sendButton.setEnabled(false);
+        } else {
+            sendButton.setEnabled(!message.getRawText().isEmpty());
         }
     }
 
