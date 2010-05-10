@@ -12,6 +12,7 @@ import ch9k.chat.gui.components.StatusIcon;
 import ch9k.core.ChatApplication;
 import ch9k.core.I18n;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.Frame;
@@ -22,6 +23,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
+import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JLabel;
@@ -44,7 +46,6 @@ public class ContactListView extends JPanel {
     private FilteredContactList contactList;
     
     public ContactListView() {
-        super(new BorderLayout());
         contacts = ChatApplication.getInstance().getAccount().getContactList();
 
         initComponents();
@@ -63,6 +64,9 @@ public class ContactListView extends JPanel {
     }
 
     private void initLayout() {
+        GroupLayout layout = new GroupLayout(this);
+        setLayout(layout);
+
         JPanel listContainer = new JPanel(new BorderLayout());
         listContainer.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
@@ -75,13 +79,26 @@ public class ContactListView extends JPanel {
         scrollPane.getViewport().setOpaque(false);
         scrollPane.setBorder(null);
         scrollPane.setBackground(getBackground());
-        add(scrollPane, BorderLayout.CENTER);
 
-        JPanel northContainer = new JPanel(new BorderLayout());
-        northContainer.add(searchField, BorderLayout.CENTER);
-        northContainer.add(addButton, BorderLayout.EAST);
-        northContainer.setBorder(BorderFactory.createEmptyBorder(5, 6, 5, 3));
-        add(northContainer, BorderLayout.NORTH);
+        layout.setHorizontalGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup()
+                    .addComponent(searchField)
+                    .addComponent(listContainer)
+                    .addComponent(addButton, GroupLayout.Alignment.TRAILING)
+                )
+                .addContainerGap()
+        );
+        layout.setVerticalGroup(layout.createSequentialGroup()
+                .addComponent(searchField, GroupLayout.PREFERRED_SIZE,
+                    GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+                .addGap(10)
+                .addComponent(listContainer)
+                .addGap(10)
+                .addComponent(addButton, GroupLayout.PREFERRED_SIZE,
+                    GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+                .addContainerGap()
+        );
     }
 
     public void initMenu(JMenu parentMenu) {
@@ -103,7 +120,7 @@ public class ContactListView extends JPanel {
         public ContactListCellRenderer() {
             super(new FlowLayout(FlowLayout.LEFT));
             setOpaque(true);
-            setBorder(BorderFactory.createEmptyBorder(3, 12, 3, 0));
+            setBorder(BorderFactory.createEmptyBorder(1, 5, 1, 0));
 
             username = new JLabel();
             icon = new StatusIcon(13, true);

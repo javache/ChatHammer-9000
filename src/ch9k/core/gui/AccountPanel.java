@@ -34,7 +34,6 @@ public class AccountPanel extends JPanel {
         accountLabel = new JLabel(account.getUsername());
         accountLabel.setFont(accountLabel.getFont().deriveFont(15f));
         accountLabel.setIcon(statusIcon);
-        accountLabel.setBorder(BorderFactory.createEmptyBorder(5, 3, 5, 0));
 
         statusField = new StatusField();
         String logoffButtonText = I18n.get("ch9k.core", "log_off");
@@ -47,31 +46,25 @@ public class AccountPanel extends JPanel {
 
     public void initLayout() {
         GroupLayout layout = new GroupLayout(this);
+        layout.setAutoCreateContainerGaps(true);
         setLayout(layout);
 
         layout.setHorizontalGroup(layout.createSequentialGroup()
-            .addContainerGap()
             .addGroup(layout.createParallelGroup()
                 .addComponent(accountLabel)
                 .addComponent(statusField, 140, 200, 400)
             )
             .addGap(5, 5, Short.MAX_VALUE)
             .addComponent(logoffButton)
-            .addContainerGap()
         );
 
         layout.setVerticalGroup(layout.createSequentialGroup()
-            .addContainerGap()
-            .addGroup(layout.createParallelGroup()
+            .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                 .addComponent(accountLabel)
-                .addGroup(layout.createSequentialGroup()
-                    .addGap(4)
-                    .addComponent(logoffButton)
-                )
+                .addComponent(logoffButton)
             )
             .addGap(4)
             .addComponent(statusField)
-            .addContainerGap()
         );
     }
 }

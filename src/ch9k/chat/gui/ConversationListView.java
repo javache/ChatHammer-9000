@@ -3,7 +3,6 @@ package ch9k.chat.gui;
 import ch9k.chat.ChatMessage;
 import ch9k.chat.Conversation;
 import ch9k.core.I18n;
-import java.awt.BorderLayout;
 import java.awt.Component;
 import java.util.Formatter;
 import javax.swing.GroupLayout;
