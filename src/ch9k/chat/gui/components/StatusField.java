@@ -23,7 +23,11 @@ public class StatusField extends JTextField implements FocusListener, ActionList
         super(DEFAULT_TEXT);
         setForeground(SystemColor.textInactiveText);
         setFont(getFont().deriveFont(12f));
-        setText(ChatApplication.getInstance().getAccount().getStatus());
+
+        String text = ChatApplication.getInstance().getAccount().getStatus();
+        if(!text.isEmpty()) {
+            setText(text);
+        }
 
         // add listener so we can clear text on focus
         addFocusListener(this);

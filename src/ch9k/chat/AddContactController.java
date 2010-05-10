@@ -52,7 +52,6 @@ public class AddContactController {
             hasErrors = true;
         }
 
-
         if(list.getContact(ip, username) != null) {
             view.setError(I18n.get("ch9k.chat", "error_contact_already_added"));
             hasErrors = true;
