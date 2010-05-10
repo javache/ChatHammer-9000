@@ -14,6 +14,7 @@ import ch9k.eventpool.EventPool;
 import ch9k.plugins.AbstractPluginInstance;
 import ch9k.plugins.Plugin;
 import java.awt.Container;
+import java.awt.GridLayout;
 import javax.swing.JLabel;
 
 /**
@@ -77,21 +78,27 @@ public class WordCloud extends AbstractPluginInstance implements EventListener {
 
     @Override
     public void handleEvent(Event e) {
-        RequestedPluginContainerEvent event = (RequestedPluginContainerEvent) e;
+        super.handleEvent(e);
+        if(e instanceof RequestedPluginContainerEvent) {
+            RequestedPluginContainerEvent event =
+                    (RequestedPluginContainerEvent) e;
 
-        /* We only need one panel. */
-        if(container != null) return;
+            /* We only need one panel. */
+            if(container != null) return;
 
-        /* Okay, we have a panel now, start using it. */
-        container = event.getPluginContainer();
+            /* Okay, we have a panel now, start using it. */
+            container = event.getPluginContainer();
 
-        /* Create a panel and make it listen. */
-        panel = new WordCloudPanel();
-        EventFilter filter = new ConversationEventFilter(
-                NewConversationSubjectEvent.class, getConversation());
-        EventPool.getAppPool().addListener(panel, filter);
+            /* Create a panel and make it listen. */
+            panel = new WordCloudPanel();
+            EventFilter filter = new ConversationEventFilter(
+                    NewConversationSubjectEvent.class, getConversation());
+            EventPool.getAppPool().addListener(panel, filter);
+            container.setLayout(new GridLayout(1, 1));
+            container.add(panel);
 
-        container.validate();
-        container.repaint();
+            container.validate();
+            container.repaint();
+        }
     }
 }

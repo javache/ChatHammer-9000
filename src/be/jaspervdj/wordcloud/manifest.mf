@@ -1,2 +1,2 @@
 Manifest-Version: 1.0
-Plugin-Class: be.jaspervdj.awesome.AwesomePlugin
+Plugin-Class: be.jaspervdj.wordcloud.WordCloudPlugin

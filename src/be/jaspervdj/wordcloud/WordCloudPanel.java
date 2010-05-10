@@ -55,9 +55,10 @@ public class WordCloudPanel extends JPanel implements EventListener {
     private void addWord(Word word) {
         if(words.size() >= MAX_WORDS) {
             words.poll();
-            words.offer(word);
-            repaint();
         }
+
+        words.offer(word);
+        repaint();
     }
 
     @Override
