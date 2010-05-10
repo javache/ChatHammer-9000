@@ -81,8 +81,10 @@ public class MessageEditor extends JPanel {
     }
 
     public void send(){
-        if(!editor.getText().trim().isEmpty()){
-            ChatMessage message = new ChatMessage(ChatApplication.getInstance().getAccount().getUsername(), editor.getText());
+        ChatMessage message = new ChatMessage(
+                ChatApplication.getInstance().getAccount().getUsername(),
+                editor.getText());
+        if(!message.getRawText().isEmpty()) {
             EventPool.getAppPool().raiseNetworkEvent(new NewChatMessageEvent(conversation,message));
 
             // reliably keeping the bold/italic/underline styles doesn't

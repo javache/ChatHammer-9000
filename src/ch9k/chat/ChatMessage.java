@@ -52,7 +52,7 @@ public class ChatMessage implements Comparable<ChatMessage>, Serializable{
      */
     public String getRawText() {
         Matcher matcher = htmlStripper.matcher(text);
-        return matcher.replaceAll("");
+        return matcher.replaceAll("").trim();
     }
 
     /**
