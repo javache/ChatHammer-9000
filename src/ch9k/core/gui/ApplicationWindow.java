@@ -143,6 +143,7 @@ public class ApplicationWindow extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 EventQueue.invokeLater(new Runnable() {
                     public void run() {
+                        ChatApplication.getInstance().logoff(false);
                         ApplicationWindow.this.dispose();
                     }
                 });

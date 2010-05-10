@@ -166,4 +166,9 @@ public class Storage {
         
         return workingDirectory;
     }
+
+    public static boolean exists(String username) {
+        File location = new File(getStorageDirectory(), username + ".xml");
+        return location.exists();
+    }
 }

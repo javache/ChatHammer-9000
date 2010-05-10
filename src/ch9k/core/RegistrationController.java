@@ -1,5 +1,6 @@
 package ch9k.core;
 
+import ch9k.configuration.Storage;
 import ch9k.core.gui.ApplicationWindow;
 import ch9k.core.gui.RegistrationPanel;
 import java.awt.Dimension;
@@ -74,9 +75,10 @@ public class RegistrationController {
             view.setError(I18n.get("ch9k.core", "error_username_too_short"));
         } else if(password.length() < 6) {
             view.setError(I18n.get("ch9k.core", "error_password_too_short"));
+        } else if(Storage.exists(username)) {
+            view.setError(I18n.get("ch9k.core", "error_account_exists"));
         } else {
             // perform registration
-            // todo: check if user already exists
             view.setError(null);
             loginController.register(username, password);
             return true;
