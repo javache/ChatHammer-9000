@@ -49,7 +49,7 @@ public class FilteredContactList extends AbstractListModel implements ListDataLi
         }
     }
 
-    private synchronized void updateMapping() {
+    public synchronized void updateMapping() {
         mapping.clear();
         
         for(Contact contact : contactList.getContacts()) {

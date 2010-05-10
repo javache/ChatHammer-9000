@@ -7,6 +7,7 @@ import ch9k.chat.ContactFilter;
 import ch9k.chat.ContactList;
 import ch9k.chat.FilteredContactList;
 import ch9k.chat.IgnoredContactFilter;
+import ch9k.chat.gui.components.SearchField;
 import ch9k.chat.gui.components.StatusIcon;
 import ch9k.core.ChatApplication;
 import ch9k.core.I18n;
@@ -39,6 +40,7 @@ public class ContactListView extends JPanel {
     private ContactList contacts;
     private JList list;
     private JButton addButton;
+    private SearchField searchField;
     private FilteredContactList contactList;
     
     public ContactListView() {
@@ -52,6 +54,7 @@ public class ContactListView extends JPanel {
     private void initComponents() {
         addButton = new JButton(new AddContactAction(this));
         contactList = new FilteredContactList(contacts);
+        searchField = new SearchField(contactList);
         
         list = new JList(contactList);
         list.setBackground(getBackground());
@@ -73,8 +76,12 @@ public class ContactListView extends JPanel {
         scrollPane.setBorder(null);
         scrollPane.setBackground(getBackground());
         add(scrollPane, BorderLayout.CENTER);
-        
-        add(addButton, BorderLayout.NORTH);
+
+        JPanel northContainer = new JPanel(new BorderLayout());
+        northContainer.add(searchField, BorderLayout.CENTER);
+        northContainer.add(addButton, BorderLayout.EAST);
+        northContainer.setBorder(BorderFactory.createEmptyBorder(5, 6, 5, 3));
+        add(northContainer, BorderLayout.NORTH);
     }
 
     public void initMenu(JMenu parentMenu) {
