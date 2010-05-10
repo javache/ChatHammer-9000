@@ -21,6 +21,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
+import javax.swing.SwingUtilities;
 
 /**
  * Shows a conversation
@@ -48,6 +49,11 @@ public class ConversationWindow extends JFrame implements EventListener {
     private ConversationListView conversationView;
 
     /**
+     * The plugin menu.
+     */
+    private PluginMenu pluginMenu;
+
+    /**
      * Inputbox for new chatmessages
      */
     private MessageEditor editor;
@@ -71,13 +77,16 @@ public class ConversationWindow extends JFrame implements EventListener {
         EventFilter releaseFilter = new ConversationEventFilter(
                 ReleasePluginContainerEvent.class, conversation);
         EventPool.getAppPool().addListener(this, releaseFilter);
+
+        EventFilter closeFilter = new ConversationEventFilter(
+                CloseConversationEvent.class, conversation);
+        EventPool.getAppPool().addListener(this, closeFilter);
         
         // listen for close-events
         addWindowListener(new WindowAdapter() {
             public void windowClosed(WindowEvent e) {
+                EventPool.getAppPool().removeListener(ConversationWindow.this);
                 if(!conversation.isClosed()) {
-                    EventPool.getAppPool().removeListener(
-                            ConversationWindow.this);
                     EventPool.getAppPool().raiseNetworkEvent(
                             new CloseConversationEvent(conversation));
                 }
@@ -89,7 +98,8 @@ public class ConversationWindow extends JFrame implements EventListener {
         // Add a menu bar, containing a menu in which different 
         // plugins can be selected
         JMenuBar menuBar = new JMenuBar();
-        menuBar.add(new PluginMenu(conversation));
+        pluginMenu = new PluginMenu(conversation);
+        menuBar.add(pluginMenu);
         menuBar.add(new WindowMenu(this));
         setJMenuBar(menuBar);
 
@@ -135,6 +145,19 @@ public class ConversationWindow extends JFrame implements EventListener {
         if(e instanceof ReleasePluginContainerEvent) {
             ReleasePluginContainerEvent event = (ReleasePluginContainerEvent)e;
             pluginPane.remove(event.getPluginContainer());
+        }
+
+        if(e instanceof CloseConversationEvent) {
+            CloseConversationEvent event = (CloseConversationEvent) e;
+            System.out.println("Close received.");
+            SwingUtilities.invokeLater(new Runnable() {
+                public void run() {
+                    pluginMenu.setEnabled(false);
+                    editor.setEnabled(false);
+                    validate();
+                    repaint();
+                }
+            });
         }
 
         pluginPane.revalidate();
