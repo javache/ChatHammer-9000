@@ -1,5 +1,6 @@
 package ch9k.plugins;
 
+import ch9k.eventpool.WarningEvent;
 import java.io.File;
 import ch9k.chat.Conversation;
 import ch9k.core.ChatApplication;
@@ -20,6 +21,7 @@ import java.util.logging.Level;
 import org.apache.log4j.Logger;
 import org.jdom.Element;
 import javax.swing.JPanel;
+import javax.swing.JOptionPane;
 import ch9k.core.I18n;
 
 /**
@@ -234,8 +236,15 @@ public class PluginManager extends Model implements EventListener, Persistable {
         /* Retrieve the plugin. */
         Plugin plugin = plugins.get(name);
 
+        /* Check that we have the plugin installed. */
+        if(plugin == null) {
+            JOptionPane.showMessageDialog(null, I18n.get("ch9k.plugins",
+                    "plugin_not_installed", name));
+            return false;
+        }
+
         /* Check that the plugin is not already enabled for the conversation. */
-        if(plugin == null || plugin.isEnabled(conversation)) {
+        if(plugin.isEnabled(conversation)) {
             return false;
         }
 
@@ -310,7 +319,8 @@ public class PluginManager extends Model implements EventListener, Persistable {
                 }
             /* A plugin was disabled. */
             } else {
-                /* If the event was external, disable the plugin here as well. */
+                /* If the event was external, disable the plugin here as
+                 * well. */
                 if(event.isExternal()) {
                     disable(event.getPlugin(), event.getConversation());
                 }
