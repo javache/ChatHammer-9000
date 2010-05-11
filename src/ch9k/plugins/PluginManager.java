@@ -2,8 +2,6 @@ package ch9k.plugins;
 
 import java.net.InetAddress;
 import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.File;
 import ch9k.chat.Conversation;
 import ch9k.core.ChatApplication;
@@ -89,6 +87,10 @@ public class PluginManager extends Model implements EventListener, Persistable {
         filter = new EventFilter(RequestPluginEvent.class);
         EventPool.getAppPool().addListener(this, filter);
 
+        /* We surely want to listen to these events,
+         * so we can install plugins */
+        filter = new EventFilter(RequestedPluginEvent.class);
+        EventPool.getAppPool().addListener(this, filter);
 
         /* Throw our preference pane so the user can install more plugins */
         JPanel preferencePane = new PluginPreferencePane(this);
