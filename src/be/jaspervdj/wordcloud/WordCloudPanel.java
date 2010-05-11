@@ -37,7 +37,7 @@ public class WordCloudPanel extends JPanel
      * Constructor.
      * @param settings The plugin settings.
      */
-    public WordCloudPanel(Settings settins) {
+    public WordCloudPanel(Settings settings) {
         super();
         this.settings = settings;
         words = new LinkedList<Word>();
