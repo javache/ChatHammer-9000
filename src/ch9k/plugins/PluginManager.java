@@ -14,6 +14,7 @@ import ch9k.eventpool.EventPool;
 import ch9k.core.settings.event.PreferencePaneEvent;
 import ch9k.plugins.event.PluginChangeEvent;
 import ch9k.chat.event.CloseConversationEvent;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.log4j.Logger;
@@ -22,6 +23,9 @@ import javax.swing.JPanel;
 import javax.swing.JOptionPane;
 import ch9k.core.I18n;
 import ch9k.plugins.event.RequestPluginEvent;
+import ch9k.plugins.event.RequestedPluginEvent;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 
 /**
  * A singleton to manage plugins.
@@ -357,6 +361,23 @@ public class PluginManager extends Model implements EventListener, Persistable {
 
             /* Send it */
             
+        }
+
+        /* A RequestedPluginEvent */
+        if(e instanceof RequestedPluginEvent) {
+            final RequestedPluginEvent event = (RequestedPluginEvent)e;
+
+            new Thread(new Runnable() {
+                public void run() {
+                    /* Convert the data to an InputStream */
+                    InputStream in = new ByteArrayInputStream(event.getData());
+                    try {
+                        installer.installPlugin(in, event.getFilename());
+                    } catch(IOException ex) {
+                        logger.warn("Could not install plugin");
+                    }
+                }
+            }).start();
         }
     }
 
