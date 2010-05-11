@@ -66,6 +66,7 @@ public class WordCloud extends AbstractPluginInstance implements EventListener {
         /* Stop the panel from listening. */
         if(panel != null) {
             EventPool.getAppPool().removeListener(panel);
+            getSettings().removeSettingsListener(panel);
         }
 
         /* Release the container request a panel for this plugin. */
@@ -90,10 +91,12 @@ public class WordCloud extends AbstractPluginInstance implements EventListener {
             container = event.getPluginContainer();
 
             /* Create a panel and make it listen. */
-            panel = new WordCloudPanel();
+            panel = new WordCloudPanel(getSettings());
             EventFilter filter = new ConversationEventFilter(
                     NewConversationSubjectEvent.class, getConversation());
             EventPool.getAppPool().addListener(panel, filter);
+            getSettings().addSettingsListener(panel);
+
             container.setLayout(new GridLayout(1, 1));
             container.add(panel);
 

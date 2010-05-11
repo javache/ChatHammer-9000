@@ -14,24 +14,19 @@ import ch9k.eventpool.EventPool;
 import ch9k.eventpool.EventListener;
 import ch9k.chat.event.NewConversationSubjectEvent;
 import ch9k.chat.ConversationSubject;
-
-import javax.swing.JFrame;
-import java.net.InetAddress;
-import ch9k.chat.Contact;
-import ch9k.eventpool.Event;
-import ch9k.eventpool.EventPool;
-import ch9k.chat.event.RequestedPluginContainerEvent;
-import ch9k.plugins.flickr.FlickrImageProvider;
-import java.awt.Dimension;
+import ch9k.core.settings.Settings;
+import ch9k.core.settings.SettingsChangeEvent;
+import ch9k.core.settings.SettingsChangeListener;
 
 /**
  * Panel to show a wordcloud.
  */
-public class WordCloudPanel extends JPanel implements EventListener {
+public class WordCloudPanel extends JPanel
+        implements EventListener, SettingsChangeListener {
     /**
-     * Maximum number of words.
+     * Plugin settings.
      */
-    private final static int MAX_WORDS = 50;
+    private Settings settings;
 
     /**
      * The words.
@@ -40,9 +35,11 @@ public class WordCloudPanel extends JPanel implements EventListener {
 
     /**
      * Constructor.
+     * @param settings The plugin settings.
      */
-    public WordCloudPanel() {
+    public WordCloudPanel(Settings settins) {
         super();
+        this.settings = settings;
         words = new LinkedList<Word>();
 
         setBackground(Color.BLACK);
@@ -53,7 +50,7 @@ public class WordCloudPanel extends JPanel implements EventListener {
      * @param word Word to add.
      */
     private void addWord(Word word) {
-        if(words.size() >= MAX_WORDS) {
+        if(words.size() >= settings.getInt(WordCloudPreferencePane.MAX_WORDS)) {
             words.poll();
         }
 
@@ -109,13 +106,13 @@ public class WordCloudPanel extends JPanel implements EventListener {
         }
     }
 
-    public static void main(String[] args) throws Exception {
-        JFrame frame = new JFrame();
-        frame.setContentPane(new WordCloudPanel());
-        frame.setPreferredSize(new Dimension(300, 400));
-
-        frame.pack();
-        frame.setTitle("WordCloud test.");
-        frame.setVisible(true);
+    @Override
+    public void settingsChanged(SettingsChangeEvent event) {
+        if(WordCloudPreferencePane.MAX_WORDS.equals(event.getKey())) {
+            int size = settings.getInt(WordCloudPreferencePane.MAX_WORDS);
+            while(words.size() >= size) {
+                words.poll();
+            }
+        }
     }
 }

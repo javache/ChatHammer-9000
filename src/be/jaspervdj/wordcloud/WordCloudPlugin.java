@@ -27,11 +27,13 @@ public class WordCloudPlugin extends AbstractPlugin {
 
     @Override
     protected JPanel createPreferencePane(Settings settings) {
-        return null;
+        return new WordCloudPreferencePane(settings);
     }
 
     @Override
     protected Settings createDefaultSettings() {
-        return new Settings();
+        Settings settings = new Settings();
+        settings.setInt(WordCloudPreferencePane.MAX_WORDS, 40);
+        return settings;
     }
 }
