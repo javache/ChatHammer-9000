@@ -1,9 +1,8 @@
 package ch9k.core;
 
 import java.awt.Window;
-import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.event.WindowStateListener;
+import java.awt.event.WindowListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,13 +11,11 @@ import java.util.List;
  * When creating a new window do windowmanager.registerWindow(window) before using window.setVisible(true)
  * also always set a name on the new window.
  */
-public class WindowManager extends WindowAdapter {
+public class WindowManager extends Model implements WindowListener {
     private List<Window> openedWindows;
-    private List<WindowStateListener> listeners;
 
     public WindowManager() {
         openedWindows = new ArrayList<Window>();
-        listeners = new ArrayList<WindowStateListener>();
     }
 
     public void registerWindow(Window w) {
@@ -29,52 +26,39 @@ public class WindowManager extends WindowAdapter {
         return openedWindows;
     }
 
-    public void addListener(WindowStateListener wl) {
-        listeners.add(wl);
-    }
-
-    public void removeListener(WindowStateListener wl) {
-        listeners.remove(wl);
-    }
-
     @Override
     public void windowOpened(WindowEvent e) {
         Window w = e.getWindow();
-        openedWindows.add(w);
-        for(int i = 0; i < listeners.size(); i++) {
-            listeners.get(i).windowStateChanged(e);
+        if(w.isShowing() && !openedWindows.contains(w)) {
+            openedWindows.add(w);
+            fireStateChanged();
         }
     }
 
     @Override
     public void windowClosed(WindowEvent e) {
         Window w = e.getWindow();
-        openedWindows.remove(w);
-        for(int i = 0; i < listeners.size(); i++) {
-            listeners.get(i).windowStateChanged(e);
+        if(!w.isShowing() && openedWindows.remove(w)) {
+           fireStateChanged();
         }
     }
 
     @Override
     public void windowActivated(WindowEvent e) {
-        Window w = e.getWindow();
-        if(w.isVisible()) {
-            openedWindows.add(w);
-            for(int i = 0; i < listeners.size(); i++) {
-                listeners.get(i).windowStateChanged(new WindowEvent(w, WindowEvent.WINDOW_OPENED));
-            }
-        }
+        windowOpened(e);
     }
 
     @Override
     public void windowDeactivated(WindowEvent e) {
-        Window w = e.getWindow();
-        if(!w.isVisible()) {
-            openedWindows.remove(w);
-            for(int i = 0; i < listeners.size(); i++) {
-                listeners.get(i).windowStateChanged(new WindowEvent(w, WindowEvent.WINDOW_CLOSED));
-            }
-        }
+        windowClosed(e);
     }
 
+    @Override
+    public void windowIconified(WindowEvent e) {}
+
+    @Override
+    public void windowDeiconified(WindowEvent e) {}
+
+    @Override
+    public void windowClosing(WindowEvent e) {}
 }

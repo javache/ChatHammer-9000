@@ -7,19 +7,20 @@ import ch9k.core.WindowManager;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowStateListener;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 /**
  * Menu to switch between different windows
  */
-public class WindowMenu extends JMenu implements WindowStateListener{
+public class WindowMenu extends JMenu implements ChangeListener{
     private Map<Window,ShowWindowItem> menuMap;
     private JFrame ownerWindow;
     private WindowManager windowManager;
@@ -31,7 +32,7 @@ public class WindowMenu extends JMenu implements WindowStateListener{
         menuMap = new HashMap<Window, ShowWindowItem>();
 
         windowManager =  ChatApplication.getInstance().getWindowManager();
-        windowManager.addListener(this);
+        windowManager.addChangeListener(this);
 
         List<Window> windows = windowManager.getOpenedWindows();
         for(Window w : windows) {
@@ -51,21 +52,30 @@ public class WindowMenu extends JMenu implements WindowStateListener{
         ShowWindowItem menuItem = menuMap.remove(w);
         if( menuItem != null) {
             remove(menuItem);
+            if(w.equals(ownerWindow)) {
+                windowManager.removeChangeListener(this);
+            }
         }
     }
 
     @Override
-    public void windowStateChanged(WindowEvent e) {
-        if(e.getID() == WindowEvent.WINDOW_OPENED) {
-            addWindow(e.getWindow());
-        }
-
-        if(e.getID() == WindowEvent.WINDOW_CLOSED) {
-            if(e.getWindow() == ownerWindow) {
-                windowManager.removeListener(this);
+    public void stateChanged(ChangeEvent e) {
+        List<Window> windows = windowManager.getOpenedWindows();
+        for(Window w : windows) {
+            if(!menuMap.containsKey(w)){
+                addWindow(w);
             }
-            removeWindow(e.getWindow());
         }
+        ArrayList<Window> toremove = new ArrayList<Window>();
+        for(Window w: menuMap.keySet()){
+            if(!windows.contains(w)){
+                toremove.add(w);
+            }
+        }
+        for(Window w : toremove) {
+            removeWindow(w);
+        }
+        toremove.clear();
     }
 
     private class ShowWindowItem extends JCheckBoxMenuItem implements ActionListener {
