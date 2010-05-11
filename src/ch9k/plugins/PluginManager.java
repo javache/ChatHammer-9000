@@ -1,6 +1,5 @@
 package ch9k.plugins;
 
-import ch9k.eventpool.WarningEvent;
 import java.io.File;
 import ch9k.chat.Conversation;
 import ch9k.core.ChatApplication;
@@ -17,12 +16,12 @@ import ch9k.plugins.event.PluginChangeEvent;
 import ch9k.chat.event.CloseConversationEvent;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
 import org.apache.log4j.Logger;
 import org.jdom.Element;
 import javax.swing.JPanel;
 import javax.swing.JOptionPane;
 import ch9k.core.I18n;
+import ch9k.plugins.event.RequestPluginEvent;
 
 /**
  * A singleton to manage plugins.
@@ -76,6 +75,11 @@ public class PluginManager extends Model implements EventListener, Persistable {
          * conversation, we want to disable all it's plugins. */
         filter = new EventFilter(CloseConversationEvent.class);
         EventPool.getAppPool().addListener(this, filter);
+
+        /* We want to listen to request plugin events */
+        filter = new EventFilter(RequestPluginEvent.class);
+        EventPool.getAppPool().addListener(this, filter);
+
 
         /* Throw our preference pane so the user can install more plugins */
         JPanel preferencePane = new PluginPreferencePane(this);
@@ -341,6 +345,18 @@ public class PluginManager extends Model implements EventListener, Persistable {
             for(String name: plugins.keySet()) {
                 disablePlugin(name, event.getConversation());
             }
+        }
+
+        /* A RequestPluginEvent */
+        if(e instanceof RequestPluginEvent) {
+            RequestPluginEvent event = (RequestPluginEvent)e;
+
+            /* See if we have this plugin available */
+
+            /* Convert it to a byte array */
+
+            /* Send it */
+            
         }
     }
 
