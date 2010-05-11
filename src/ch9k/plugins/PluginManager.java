@@ -1,5 +1,9 @@
 package ch9k.plugins;
 
+import java.net.InetAddress;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.File;
 import ch9k.chat.Conversation;
 import ch9k.core.ChatApplication;
@@ -8,6 +12,7 @@ import ch9k.configuration.PersistentDataObject;
 import ch9k.core.Model;
 import ch9k.core.settings.Settings;
 import ch9k.eventpool.Event;
+import ch9k.eventpool.NetworkEvent;
 import ch9k.eventpool.EventFilter;
 import ch9k.eventpool.EventListener;
 import ch9k.eventpool.EventPool;
@@ -353,14 +358,49 @@ public class PluginManager extends Model implements EventListener, Persistable {
 
         /* A RequestPluginEvent */
         if(e instanceof RequestPluginEvent) {
-            RequestPluginEvent event = (RequestPluginEvent)e;
-
-            /* See if we have this plugin available */
-
-            /* Convert it to a byte array */
-
-            /* Send it */
+            final RequestPluginEvent event = (RequestPluginEvent) e;
             
+            /* Do not react if this is an internal event. */
+            if(!event.isExternal()) return;
+
+            new Thread(new Runnable() {
+                public void run() {
+                    try {
+                        /* See if we have this plugin available. */
+                        String name = event.getPlugin();
+                        String fullFillName = fileNames.get(name);
+                        if(fullFillName == null) return;
+
+                        /* Convert it to a byte array */
+                        File file = new File(fullFillName);
+                        String fileName = file.getName();
+
+                        /* Get the size of the file. */
+                        InputStream input = new FileInputStream(file);
+                        int length = (int) file.length();
+
+                        /* Create the byte array to hold the data. */
+                        byte[] bytes = new byte[length];
+
+                        /* Read in the bytes. */
+                        int offset = 0;
+                        int numRead = 0;
+                        while (offset < bytes.length &&
+                                (numRead = input.read(bytes,
+                                        offset, bytes.length-offset)) >= 0) {
+                            offset += numRead;
+                        }
+
+                        /* Send the event. */
+                        NetworkEvent answer = new RequestedPluginEvent(
+                                (InetAddress) event.getSource(), bytes,
+                                fileName);
+                        EventPool.getAppPool().raiseNetworkEvent(answer);
+                    } catch (IOException exception) {
+                        /* Throw warning. */
+                    }
+                }
+            }).start();
         }
 
         /* A RequestedPluginEvent */
