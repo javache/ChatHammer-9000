@@ -182,35 +182,42 @@ public class CarouselImageChooserModel extends Model
     }
 
     /**
-     * Add a new provided image.
+     * Add a new provided image. This might block for a while.
      * @param image Image to add.
      */
     private void addImage(ProvidedImage image) {
-        synchronized(this) {
-            /* Return if we have the image already. */
-            if(imageSet.contains(image)) return;
+        /* Return if we have the image already. */
+        if(imageSet.contains(image)) return;
 
-            /* Reject foobar images. */
-            if(image.getImage() == null) return;
+        /* Load the image. */
+        System.out.println("Should be null: " + image.getImage());
+        image.ensureLoaded();
 
-            /* If we already have enough images, we need to remove the old image
-             * from the set. */
-            if(images.size() >=
-                    settings.getInt(CarouselPreferencePane.MAX_IMAGES)) {
-                ProvidedImage old = images.get(0);
-                imageSet.remove(old);
-                images.remove(0);
-            }
+        /* Reject foobar images. */
+        if(image.getImage() == null) return;
 
-            /* Insert the new image. */
-            images.add(image);
-            imageSet.add(image);
-
-            /* Update positions. */
-            fireStateChanged();
-
-            System.gc();
+        /* If we already have enough images, we need to remove the old image
+         * from the set. */
+        if(images.size() >=
+                settings.getInt(CarouselPreferencePane.MAX_IMAGES)) {
+            ProvidedImage old = images.get(0);
+            imageSet.remove(old);
+            images.remove(0);
         }
+
+        System.out.println("List: " + images.size());
+        System.out.println("Set: " + imageSet.size());
+
+        /* Insert the new image. */
+        images.add(image);
+        imageSet.add(image);
+
+        /* Update positions. */
+        fireStateChanged();
+
+        /* Perform a garbage collection, since these images take some
+         * memory. */
+        System.gc();
     }
 
     /**
@@ -241,12 +248,7 @@ public class CarouselImageChooserModel extends Model
         final ProvidedImage image = event.getProvidedImage();
         new Thread(new Runnable() {
             public void run() {
-                /* We want to make sure the image is not present, or being
-                 * loaded already. */
-                if(!imageSet.contains(image)) {
-                    image.ensureLoaded();
-                    addImage(image);
-                }
+                addImage(image);
             }
         }).start();
     }
