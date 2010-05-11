@@ -367,17 +367,20 @@ public class PluginManager extends Model implements EventListener, Persistable {
         if(e instanceof RequestedPluginEvent) {
             final RequestedPluginEvent event = (RequestedPluginEvent)e;
 
-            new Thread(new Runnable() {
-                public void run() {
-                    /* Convert the data to an InputStream */
-                    InputStream in = new ByteArrayInputStream(event.getData());
-                    try {
-                        installer.installPlugin(in, event.getFilename());
-                    } catch(IOException ex) {
-                        logger.warn("Could not install plugin");
+            /* Do not react is it is internal. */
+            if(event.isExternal()) {
+                new Thread(new Runnable() {
+                    public void run() {
+                        /* Convert the data to an InputStream */
+                        InputStream in = new ByteArrayInputStream(event.getData());
+                        try {
+                            installer.installPlugin(in, event.getFilename());
+                        } catch(IOException ex) {
+                            logger.warn("Could not install plugin");
+                        }
                     }
-                }
-            }).start();
+                }).start();
+            }
         }
     }
 
