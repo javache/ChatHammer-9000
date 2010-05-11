@@ -208,6 +208,8 @@ public class CarouselImageChooserModel extends Model
 
             /* Update positions. */
             fireStateChanged();
+
+            System.gc();
         }
     }
 
@@ -239,8 +241,12 @@ public class CarouselImageChooserModel extends Model
         final ProvidedImage image = event.getProvidedImage();
         new Thread(new Runnable() {
             public void run() {
-                image.ensureLoaded();
-                addImage(image);
+                /* We want to make sure the image is not present, or being
+                 * loaded already. */
+                if(!imageSet.contains(image)) {
+                    image.ensureLoaded();
+                    addImage(image);
+                }
             }
         }).start();
     }
