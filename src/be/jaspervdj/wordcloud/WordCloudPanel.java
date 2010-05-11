@@ -113,6 +113,8 @@ public class WordCloudPanel extends JPanel
             while(words.size() >= size) {
                 words.poll();
             }
+
+            repaint();
         }
     }
 }
