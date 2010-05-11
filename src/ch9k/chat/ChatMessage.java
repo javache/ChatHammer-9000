@@ -1,5 +1,6 @@
 package ch9k.chat;
 
+import ch9k.core.I18n;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Formatter;
@@ -13,7 +14,7 @@ import java.util.regex.Pattern;
 public class ChatMessage implements Comparable<ChatMessage>, Serializable{
     private String text;
     private String author;
-    private Date time;
+    private transient Date time;
     private boolean systemMessage;
 
     /**
@@ -29,7 +30,7 @@ public class ChatMessage implements Comparable<ChatMessage>, Serializable{
      */
     public ChatMessage(String author, String text, boolean systemMessage) {
         this.time = null;
-        this.text = text;
+        this.text = text.replaceAll("</?(html|head|body)>", "");
         this.author = author;
         this.systemMessage = systemMessage;
     }
@@ -55,13 +56,21 @@ public class ChatMessage implements Comparable<ChatMessage>, Serializable{
         return matcher.replaceAll("").trim();
     }
 
+    public String getFullHtml() {
+        return "<html><head></head><body>" + getHtml() + "</body></html>";
+    }
+
     /**
      * Get the text without the surrounding html tags
      * @return HTML-text
      */
-    public String getInsertHtml() {
-        System.out.println(text.replaceAll("</?(html|head|body)>", ""));
-        return text.replaceAll("</?(html|head|body)>", "");
+    public String getHtml() {
+        Formatter formatter = new Formatter();
+        String date = formatter.format("%1$tH:%1$tM", getTime()).toString();
+        String author = I18n.get("ch9k.chat", "contact_said", getAuthor(), date);
+        
+        return String.format("<p>%s</p><div style=\"margin: 0 15px 0 10px\">%s</div>", 
+                author, getText());
     }
 
     /**

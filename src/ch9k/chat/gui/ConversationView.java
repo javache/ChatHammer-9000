@@ -69,14 +69,16 @@ class ConversationView extends JScrollPane {
             
             try {
                 if(init) {
-                    setText(message.getText());
+                    setText(message.getFullHtml());
                     init = false;
                 } else {
                     int offset = document.getEndPosition().getOffset() - 1;
-                    editorKit.insertHTML(document, offset, message.getInsertHtml(), 1, 0, null);
+                    editorKit.insertHTML(document, offset, message.getHtml(), 1, 0, null);
                 }
             } catch(BadLocationException ex) {
             } catch(IOException ex) {}
+
+            System.err.println(getText());
         }
 
         @Override
