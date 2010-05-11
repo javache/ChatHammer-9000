@@ -1,4 +1,4 @@
-package ch9k.plugins;
+package ch9k.plugins.carousel;
 
 import ch9k.eventpool.WarningEvent;
 import java.awt.Image;
@@ -12,7 +12,7 @@ import javax.imageio.ImageIO;
 /**
  * Image class for images provided by an ImageProvider.
  */
-public class ProvidedImage implements Serializable {
+public class ProvidedImage {
     /**
      * URL the image was loaded from. Very suited as unique identifier.
      */
@@ -21,37 +21,20 @@ public class ProvidedImage implements Serializable {
     /**
      * The image delegate.
      */
-    private transient Image image;
-
-    static {
-        ImageIO.setUseCache(false);
-    }
+    private Image image;
 
     /**
-     * Create a new image.
+     * Create a new image. This will block for a while, as it loads the image
+     * from the URL.
      * @param url URL for the image.
      */
-    public ProvidedImage(String url) {
+    public ProvidedImage(URL url) {
         try {
-            /* Create an image, and send it using an event. */
-            this.url = new URL(url);
-        } catch (MalformedURLException exception) {
+            this.url = url;
+            image = ImageIO.read(this.url);
+        } catch (IOException exception) {
             WarningEvent.raise(this,
                 "Could not get image " + url + ": " + exception);
-        }
-    }
-
-    /**
-     * Make sure that image is loaded.
-     */
-    public synchronized void ensureLoaded() {
-        if(image == null) {
-            try {
-                image = ImageIO.read(this.url);
-            } catch (IOException exception) {
-                WarningEvent.raise(this,
-                    "Could not get image " + url + ": " + exception);
-            }
         }
     }
 

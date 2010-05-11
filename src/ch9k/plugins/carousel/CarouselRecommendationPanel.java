@@ -6,8 +6,7 @@ import ch9k.eventpool.Event;
 import ch9k.eventpool.EventFilter;
 import ch9k.eventpool.EventListener;
 import ch9k.eventpool.EventPool;
-import ch9k.plugins.ProvidedImage;
-import ch9k.plugins.event.RecommendedImageEvent;
+import ch9k.plugins.event.RecommendedImageURLEvent;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.GroupLayout;
@@ -87,7 +86,7 @@ public class CarouselRecommendationPanel
 
         /* Start listening. */
         EventFilter filter = new ConversationEventFilter(
-                RecommendedImageEvent.class, model.getConversation());
+                RecommendedImageURLEvent.class, model.getConversation());
         EventPool.getAppPool().addListener(this, filter);
         model.addChangeListener(this);
         queue.addChangeListener(this);
@@ -104,7 +103,7 @@ public class CarouselRecommendationPanel
 
     @Override
     public void handleEvent(Event e) {
-        final RecommendedImageEvent event = (RecommendedImageEvent) e;
+        final RecommendedImageURLEvent event = (RecommendedImageURLEvent) e;
 
         /* Return when we threw this image ourselves. */
         if(!event.isExternal()) return;
@@ -112,8 +111,7 @@ public class CarouselRecommendationPanel
         /* Add the image to the queue. */
         new Thread(new Runnable() {
             public void run() {
-                ProvidedImage image = event.getProvidedImage();
-                image.ensureLoaded();
+                ProvidedImage image = new ProvidedImage(event.getURL());
                 queue.push(image);
             }
         }).start();

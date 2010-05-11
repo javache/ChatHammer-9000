@@ -2,8 +2,7 @@ package ch9k.plugins.carousel;
 
 import ch9k.core.I18n;
 import ch9k.eventpool.EventPool;
-import ch9k.plugins.ProvidedImage;
-import ch9k.plugins.event.RecommendedImageEvent;
+import ch9k.plugins.event.RecommendedImageURLEvent;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import javax.swing.event.ChangeEvent;
@@ -42,8 +41,8 @@ public class CarouselRecommendAction
         
         if(image != null) {
             /* Raise the recommendation. */
-            RecommendedImageEvent event = new RecommendedImageEvent(
-                    model.getConversation(), image);
+            RecommendedImageURLEvent event = new RecommendedImageURLEvent(
+                    model.getConversation(), image.getURL());
             EventPool.getAppPool().raiseNetworkEvent(event);
 
             /* Register our recommendation. */

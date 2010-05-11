@@ -2,7 +2,6 @@ package ch9k.plugins.carousel;
 
 import ch9k.chat.Conversation;
 import ch9k.core.Model;
-import ch9k.plugins.ProvidedImage;
 
 /**
  * A model class describing the image selection.

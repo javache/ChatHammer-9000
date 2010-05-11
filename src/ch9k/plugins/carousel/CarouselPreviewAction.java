@@ -1,7 +1,6 @@
 package ch9k.plugins.carousel;
 
 import ch9k.core.I18n;
-import ch9k.plugins.ProvidedImage;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import javax.swing.event.ChangeEvent;

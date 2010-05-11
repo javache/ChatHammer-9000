@@ -1,7 +1,6 @@
 package ch9k.plugins.carousel;
 
 import ch9k.core.Model;
-import ch9k.plugins.ProvidedImage;
 import java.util.LinkedList;
 import java.util.Queue;
 

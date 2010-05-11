@@ -1,6 +1,5 @@
 package ch9k.plugins.carousel;
 
-import ch9k.plugins.ProvidedImage;
 import java.awt.Dimension;
 import javax.swing.JFrame;
 

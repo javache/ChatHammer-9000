@@ -1,5 +1,7 @@
 package ch9k.plugins;
 
+import java.net.URL;
+import java.net.MalformedURLException;
 import ch9k.chat.Conversation;
 import ch9k.chat.ConversationSubject;
 import ch9k.chat.event.ConversationEventFilter;
@@ -9,7 +11,7 @@ import ch9k.eventpool.Event;
 import ch9k.eventpool.EventFilter;
 import ch9k.eventpool.EventPool;
 import ch9k.plugins.Plugin;
-import ch9k.plugins.event.NewProvidedImageEvent;
+import ch9k.plugins.event.NewImageURLEvent;
 
 /**
  * Class abstracting image providing.
@@ -55,12 +57,16 @@ public abstract class ImageProvider extends AbstractPluginInstance {
         }
         
         /* Load the actual images. */
-        for (final String url: urls) {
-            /* Create an image, and send it using an event. */
-            ProvidedImage image = new ProvidedImage(url);
-            NewProvidedImageEvent event =
-                    new NewProvidedImageEvent(getConversation(), image);
-            EventPool.getAppPool().raiseNetworkEvent(event);
+        for (final String urlString: urls) {
+            /* Create an actual url and throw an event. */
+            try {
+                URL url = new URL(urlString);
+                NewImageURLEvent event =
+                    new NewImageURLEvent(getConversation(), url);
+                EventPool.getAppPool().raiseNetworkEvent(event);
+            /* Exception found, ignore it. */
+            } catch(MalformedURLException exception) {
+            }
         }
     }
 

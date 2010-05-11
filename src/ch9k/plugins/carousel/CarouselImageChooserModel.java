@@ -1,5 +1,6 @@
 package ch9k.plugins.carousel;
 
+import java.net.URL;
 import ch9k.chat.event.ConversationEventFilter;
 import ch9k.core.Model;
 import ch9k.core.settings.Settings;
@@ -10,8 +11,7 @@ import ch9k.eventpool.Event;
 import ch9k.eventpool.EventFilter;
 import ch9k.eventpool.EventListener;
 import ch9k.eventpool.EventPool;
-import ch9k.plugins.ProvidedImage;
-import ch9k.plugins.event.NewProvidedImageEvent;
+import ch9k.plugins.event.NewImageURLEvent;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -42,10 +42,10 @@ public class CarouselImageChooserModel extends Model
     private List<ProvidedImage> images;
 
     /**
-     * We keep a set of images currently in the carousel, so we don't
+     * We keep a set of URL's currently in the carousel, so we don't
      * accidentaly have two equal images.
      */
-    // private Set<ProvidedImage> imageSet;
+    private Set<URL> urls;
 
     /**
      * Next selection.
@@ -83,7 +83,7 @@ public class CarouselImageChooserModel extends Model
         this.model = model;
         this.settings = settings;
         this.images = new ArrayList<ProvidedImage>();
-        // imageSet = new HashSet<ProvidedImage>();
+        this.urls = new HashSet<URL>();
         nextSelection = 0;
         currentSelection = 0.0;
         previousSelection = 0.0;
@@ -107,7 +107,7 @@ public class CarouselImageChooserModel extends Model
 
         /* Register as listener to receive new images. */
         EventFilter filter = new ConversationEventFilter(
-                NewProvidedImageEvent.class, model.getConversation());
+                NewImageURLEvent.class, model.getConversation());
         EventPool.getAppPool().addListener(this, filter);
 
         /* Listen to settings changes. */
@@ -182,17 +182,15 @@ public class CarouselImageChooserModel extends Model
     }
 
     /**
-     * Add a new provided image. This might block for a while.
-     * @param image Image to add.
+     * Add a new image. This might block for a while.
+     * @param url URL to load.
      */
-    private void addImage(ProvidedImage image) {
+    private synchronized void addImage(URL url) {
         /* Return if we have the image already. */
-        // if(imageSet.contains(image)) return;
-        if(images.contains(image)) return;
+        if(urls.contains(url)) return;
 
         /* Load the image. */
-        System.out.println("Should be null: " + image.getImage());
-        image.ensureLoaded();
+        ProvidedImage image = new ProvidedImage(url);
 
         /* Reject foobar images. */
         if(image.getImage() == null) return;
@@ -201,24 +199,17 @@ public class CarouselImageChooserModel extends Model
          * from the set. */
         if(images.size() >=
                 settings.getInt(CarouselPreferencePane.MAX_IMAGES)) {
-            // ProvidedImage old = images.get(0);
-            // imageSet.remove(old);
+            ProvidedImage old = images.get(0);
+            urls.remove(old.getURL());
             images.remove(0);
         }
 
-        System.out.println("List: " + images.size());
-        // System.out.println("Set: " + imageSet.size());
-
         /* Insert the new image. */
         images.add(image);
-        // imageSet.add(image);
+        urls.add(url);
 
         /* Update positions. */
         fireStateChanged();
-
-        /* Perform a garbage collection, since these images take some
-         * memory. */
-        System.gc();
     }
 
     /**
@@ -245,11 +236,11 @@ public class CarouselImageChooserModel extends Model
 
     @Override
     public void handleEvent(Event e) {
-        NewProvidedImageEvent event = (NewProvidedImageEvent) e;
-        final ProvidedImage image = event.getProvidedImage();
+        NewImageURLEvent event = (NewImageURLEvent) e;
+        final URL url = event.getURL();
         new Thread(new Runnable() {
             public void run() {
-                addImage(image);
+                addImage(url);
             }
         }).start();
     }

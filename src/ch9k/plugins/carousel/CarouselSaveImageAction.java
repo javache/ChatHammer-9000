@@ -2,7 +2,6 @@ package ch9k.plugins.carousel;
 
 import ch9k.core.I18n;
 import ch9k.eventpool.WarningEvent;
-import ch9k.plugins.ProvidedImage;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
