@@ -3,10 +3,8 @@ package ch9k.chat.gui;
 import ch9k.chat.ChatMessage;
 import ch9k.chat.Conversation;
 import java.awt.BorderLayout;
-import java.awt.Color;
+import java.awt.Font;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
@@ -15,8 +13,6 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 import javax.swing.text.BadLocationException;
-import javax.swing.text.Element;
-import javax.swing.text.html.HTML.Tag;
 import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLEditorKit;
 
@@ -38,8 +34,9 @@ class ConversationView extends JScrollPane {
         textPane = new ConversationTextPane(conversation.getMessageList());
         textPane.setContentType("text/html");
         textPane.setEditable(false);
-        textPane.setBackground(Color.RED);
         textPane.setOpaque(false);
+        textPane.putClientProperty(JTextPane.HONOR_DISPLAY_PROPERTIES, true);
+        textPane.setFont(new Font("SansSerif", Font.PLAIN, 14));
 
         JPanel textPaneHolder = new JPanel(new BorderLayout());
         textPaneHolder.add(textPane, BorderLayout.NORTH);
@@ -59,14 +56,13 @@ class ConversationView extends JScrollPane {
         public ConversationTextPane(ListModel listModel) {
             this.listModel = listModel;
             listModel.addListDataListener(this);
-
-
         }
 
         private void render(ChatMessage message) {
             HTMLDocument document = (HTMLDocument)getDocument();
             HTMLEditorKit editorKit = (HTMLEditorKit)getEditorKit();
-            
+
+            // set text
             try {
                 if(init) {
                     setText(message.getFullHtml());
@@ -78,7 +74,8 @@ class ConversationView extends JScrollPane {
             } catch(BadLocationException ex) {
             } catch(IOException ex) {}
 
-            System.err.println(getText());
+            // scroll to bottom
+            setCaretPosition(document.getLength());
         }
 
         @Override

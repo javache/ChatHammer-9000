@@ -69,7 +69,11 @@ public class ChatMessage implements Comparable<ChatMessage>, Serializable{
         String date = formatter.format("%1$tH:%1$tM", getTime()).toString();
         String author = I18n.get("ch9k.chat", "contact_said", getAuthor(), date);
         
-        return String.format("<p>%s</p><div style=\"margin: 0 15px 0 10px\">%s</div>", 
+        return String.format(
+                "<p style=\"margin: 2px 0 2px 2px;\">" +
+                    "<font size=\"3\" color=\"#333333\">%s</font>" +
+                "</p>" +
+                "<div style=\"margin: 0 15px 3px 12px\">%s</div>",
                 author, getText());
     }
 
