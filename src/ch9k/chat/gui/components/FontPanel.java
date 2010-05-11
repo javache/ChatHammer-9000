@@ -117,9 +117,9 @@ public class FontPanel extends JPanel implements ActionListener, CaretListener {
 
         layout.setHorizontalGroup(layout.createSequentialGroup()
             .addGap(0, 0, Short.MAX_VALUE)
-            .addComponent(bold)
-            .addComponent(italic)
-            .addComponent(underline)
+            .addComponent(bold, 40, 40, 40)
+            .addComponent(italic, 40, 40, 40)
+            .addComponent(underline, 40, 40, 40)
             .addComponent(fontType)
             .addComponent(fontSize)
             .addComponent(colorBox)

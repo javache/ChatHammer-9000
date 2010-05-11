@@ -21,6 +21,7 @@ public class ChatMessage implements Comparable<ChatMessage>, Serializable{
      * Filter to strip out HTML.
      */
     private static Pattern htmlStripper = Pattern.compile("<[^<]*>");
+    private static Pattern htmlHeadStripper = Pattern.compile("</?(html|head|body)>");
 
     /**
      * Constructor.
@@ -30,7 +31,7 @@ public class ChatMessage implements Comparable<ChatMessage>, Serializable{
      */
     public ChatMessage(String author, String text, boolean systemMessage) {
         this.time = null;
-        this.text = text.replaceAll("</?(html|head|body)>", "");
+        this.text = htmlHeadStripper.matcher(text).replaceAll("").trim();
         this.author = author;
         this.systemMessage = systemMessage;
     }
