@@ -56,6 +56,15 @@ public class ChatMessage implements Comparable<ChatMessage>, Serializable{
     }
 
     /**
+     * Get the text without the surrounding html tags
+     * @return HTML-text
+     */
+    public String getInsertHtml() {
+        System.out.println(text.replaceAll("</?(html|head|body)>", ""));
+        return text.replaceAll("</?(html|head|body)>", "");
+    }
+
+    /**
      * Get the name of the user that wrote this ChatMessage
      * @return writer
      */

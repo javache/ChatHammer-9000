@@ -46,7 +46,7 @@ public class ConversationWindow extends JFrame implements EventListener {
     /**
      * Show all messages in the conversation
      */
-    private ConversationListView conversationView;
+    private ConversationView conversationView;
 
     /**
      * The plugin menu.
@@ -109,7 +109,7 @@ public class ConversationWindow extends JFrame implements EventListener {
 
     private void initComponents() {
         pluginPane = new JTabbedPane();
-        conversationView = new ConversationListView(conversation);
+        conversationView = new ConversationView(conversation);
         editor = new MessageEditor(conversation);
 
         JPanel conversationPanel = new JPanel(new BorderLayout());
