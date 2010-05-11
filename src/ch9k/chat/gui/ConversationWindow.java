@@ -149,7 +149,6 @@ public class ConversationWindow extends JFrame implements EventListener {
 
         if(e instanceof CloseConversationEvent) {
             CloseConversationEvent event = (CloseConversationEvent) e;
-            System.out.println("Close received.");
             SwingUtilities.invokeLater(new Runnable() {
                 public void run() {
                     getJMenuBar().remove(pluginMenu);
