@@ -63,4 +63,3 @@ public class PluginChangeEvent extends ConversationEvent {
         return settings;
     }
 }
-

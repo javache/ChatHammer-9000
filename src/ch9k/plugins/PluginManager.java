@@ -238,8 +238,14 @@ public class PluginManager extends Model implements EventListener, Persistable {
 
         /* Check that we have the plugin installed. */
         if(plugin == null) {
-            JOptionPane.showMessageDialog(null, I18n.get("ch9k.plugins",
-                    "plugin_not_installed", name));
+            int result = JOptionPane.showConfirmDialog(null,
+                    I18n.get("ch9k.plugins", "plugin_not_installed", name),
+                    I18n.get("ch9k.plugins", "request_plugin"),
+                    JOptionPane.YES_NO_OPTION);
+            if(result == JOptionPane.YES_OPTION) {
+                // Send request event.
+            }
+
             return false;
         }
 
