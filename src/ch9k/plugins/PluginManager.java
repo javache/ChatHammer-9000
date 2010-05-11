@@ -258,7 +258,10 @@ public class PluginManager extends Model implements EventListener, Persistable {
                     I18n.get("ch9k.plugins", "request_plugin"),
                     JOptionPane.YES_NO_OPTION);
             if(result == JOptionPane.YES_OPTION) {
-                // Send request event.
+                /* Send request event. */
+                RequestPluginEvent event =
+                        new RequestPluginEvent(conversation, name);
+                EventPool.getAppPool().raiseNetworkEvent(event);
             }
 
             return false;
