@@ -100,7 +100,7 @@ public class EventPool {
             Iterator<FilteredListener> it = listeners.iterator();
             while(it.hasNext()) {
                 FilteredListener filtered = it.next();
-                if(filtered == toRemove) {
+                if(filtered.listener == toRemove) {
                     it.remove();
                 }
             }

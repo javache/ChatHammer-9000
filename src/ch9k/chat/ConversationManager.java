@@ -2,7 +2,6 @@ package ch9k.chat;
 
 import ch9k.chat.event.CloseConversationEvent;
 import ch9k.chat.event.ContactOfflineEvent;
-import ch9k.chat.event.NewChatMessageEvent;
 import ch9k.chat.event.NewConversationEvent;
 import ch9k.core.I18n;
 import ch9k.core.event.AccountLogoffEvent;
@@ -67,9 +66,11 @@ public class ConversationManager implements Iterable<Conversation> {
                 conversation.getContact().getUsername());
 
         // send a system event
-        ChatMessage closedMessage = new ChatMessage("info", I18n.get("ch9k.chat",
-                    "contact_closed_conversation"));
-        conversation.addMessage(closedMessage);
+        if(!forceClose) {
+            ChatMessage closedMessage = new ChatMessage("info", I18n.get("ch9k.chat",
+                        "contact_closed_conversation"));
+            conversation.addMessage(closedMessage);
+        }
         
         // close the conversation
         conversation.close(forceClose);

@@ -85,7 +85,6 @@ public class ConversationWindow extends JFrame implements EventListener {
         // listen for close-events
         addWindowListener(new WindowAdapter() {
             public void windowClosed(WindowEvent e) {
-                EventPool.getAppPool().removeListener(ConversationWindow.this);
                 if(!conversation.isClosed()) {
                     EventPool.getAppPool().raiseNetworkEvent(
                             new CloseConversationEvent(conversation));
@@ -151,8 +150,12 @@ public class ConversationWindow extends JFrame implements EventListener {
             CloseConversationEvent event = (CloseConversationEvent) e;
             SwingUtilities.invokeLater(new Runnable() {
                 public void run() {
+                    EventPool.getAppPool().removeListener(ConversationWindow.this);
+
+                    EventPool.getAppPool().removeListener(pluginMenu);
                     getJMenuBar().remove(pluginMenu);
                     editor.setEnabled(false);
+                    
                     validate();
                     repaint();
                 }
