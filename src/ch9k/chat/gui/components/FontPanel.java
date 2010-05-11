@@ -9,6 +9,10 @@ import java.awt.Font;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.io.StringReader;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.Action;
 import javax.swing.GroupLayout;
 import javax.swing.JComboBox;
@@ -19,10 +23,16 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
+import javax.swing.text.BadLocationException;
 import javax.swing.text.MutableAttributeSet;
+import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 import javax.swing.text.StyledEditorKit;
+import javax.swing.text.html.HTML;
+import javax.swing.text.html.HTML.Tag;
+import javax.swing.text.html.HTMLDocument;
+import javax.swing.text.html.HTMLEditorKit;
 
 /**
  *
@@ -38,35 +48,47 @@ public class FontPanel extends JPanel implements ActionListener, CaretListener {
      * The actions used to style the text
      */
     private Action boldAction = new StyledEditorKit.BoldAction();
+
     private Action underlineAction = new StyledEditorKit.UnderlineAction();
+
     private Action italicAction = new StyledEditorKit.ItalicAction();
 
     /**
      * The toggle buttons that will use the actions above
      */
     private JToggleButton bold;
+
     private JToggleButton italic;
+
     private JToggleButton underline;
 
     /**
      * Arrays with the available options for the comboboxes
      */
     private String[] fontTypes = { "Serif", "SansSerif", "Monospaced" };
+
     private String[] fontSizes = { "10", "12", "14", "16", "18", "20" };
-    private Color[] colors = {  Color.BLACK, Color.GRAY, Color.BLUE, Color.RED,
-                                Color.GREEN, Color.ORANGE, Color.CYAN, Color.MAGENTA,
-                                Color.YELLOW, Color.PINK };
+
+    private Color[] colors = { Color.BLACK, Color.GRAY, Color.BLUE, Color.RED,
+                               Color.GREEN, Color.ORANGE, Color.CYAN, Color.MAGENTA,
+                               Color.YELLOW, Color.PINK };
+
+    private String[] emoticons = { "smile", "wink", "oink", "sad", "coolbrows", "unsure", "angry", "damn", "tongue", "sop", "sarcastic"};
 
     /**
      * Comboxes in which the user wil be able to select above options
      */
     private JComboBox fontType;
+
     private JComboBox fontSize;
+
     private JComboBox colorBox;
+
+    private JComboBox emoticonBox;
 
     public FontPanel(JTextPane textpane) {
         editor = textpane;
-        
+
         /* Add a caretListener for the toggle buttons */
         editor.addCaretListener(this);
 
@@ -109,31 +131,24 @@ public class FontPanel extends JPanel implements ActionListener, CaretListener {
         ColorRenderer renderer = new ColorRenderer();
         renderer.setSize(30, 20);
         colorBox.setRenderer(renderer);
+
+        emoticonBox = new JComboBox(emoticons);
+        emoticonBox.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                insertEmoticon(emoticons[emoticonBox.getSelectedIndex()]);
+            }
+        });
+        EmoticonRenderer eRenderer = new EmoticonRenderer();;
+        emoticonBox.setRenderer(eRenderer);
     }
 
     private void initLayout() {
         GroupLayout layout = new GroupLayout(this);
         setLayout(layout);
 
-        layout.setHorizontalGroup(layout.createSequentialGroup()
-            .addGap(0, 0, Short.MAX_VALUE)
-            .addComponent(bold, 40, 40, 40)
-            .addComponent(italic, 40, 40, 40)
-            .addComponent(underline, 40, 40, 40)
-            .addComponent(fontType)
-            .addComponent(fontSize)
-            .addComponent(colorBox)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
+        layout.setHorizontalGroup(layout.createSequentialGroup().addGap(0, 0, Short.MAX_VALUE).addComponent(bold, 40, 40, 40).addComponent(italic, 40, 40, 40).addComponent(underline, 40, 40, 40).addComponent(fontType).addComponent(fontSize).addComponent(colorBox).addComponent(emoticonBox,45, 45, 45).addGap(0, 0, Short.MAX_VALUE));
 
-        layout.setVerticalGroup(layout.createParallelGroup()
-            .addComponent(bold)
-            .addComponent(italic)
-            .addComponent(underline)
-            .addComponent(fontType)
-            .addComponent(fontSize)
-            .addComponent(colorBox)
-        );
+        layout.setVerticalGroup(layout.createParallelGroup().addComponent(bold).addComponent(italic).addComponent(underline).addComponent(fontType).addComponent(fontSize).addComponent(colorBox).addComponent(emoticonBox));
     }
 
     public void actionPerformed(ActionEvent e) {
@@ -161,7 +176,7 @@ public class FontPanel extends JPanel implements ActionListener, CaretListener {
     @Override
     public void caretUpdate(CaretEvent e) {
         /* For some reason, it's better to only update our buttons
-         a little bit later */
+        a little bit later */
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 MutableAttributeSet attr = editor.getInputAttributes();
@@ -172,6 +187,21 @@ public class FontPanel extends JPanel implements ActionListener, CaretListener {
                 underline.setSelected(StyleConstants.isUnderline(attr));
             }
         });
+    }
+
+    public void insertEmoticon(String emoticon) {
+        HTMLDocument doc = (HTMLDocument) editor.getStyledDocument();
+        String html = "http://zeus.ugent.be/~Robust2/" + emoticon + ".gif";
+        //Set up html attributes attribute
+        SimpleAttributeSet attrs = new SimpleAttributeSet();
+        attrs.addAttribute(StyleConstants.NameAttribute, HTML.Tag.IMG);
+        attrs.addAttribute(HTML.Attribute.SRC, html);
+        //try inserting the html into the editor
+        try {
+            doc.insertString(editor.getCaretPosition(), " ", attrs);
+        } catch(BadLocationException ex) {
+            Logger.getLogger(FontPanel.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 }
 
