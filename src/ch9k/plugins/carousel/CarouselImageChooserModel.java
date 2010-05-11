@@ -45,7 +45,7 @@ public class CarouselImageChooserModel extends Model
      * We keep a set of images currently in the carousel, so we don't
      * accidentaly have two equal images.
      */
-    private Set<ProvidedImage> imageSet;
+    // private Set<ProvidedImage> imageSet;
 
     /**
      * Next selection.
@@ -83,7 +83,7 @@ public class CarouselImageChooserModel extends Model
         this.model = model;
         this.settings = settings;
         this.images = new ArrayList<ProvidedImage>();
-        imageSet = new HashSet<ProvidedImage>();
+        // imageSet = new HashSet<ProvidedImage>();
         nextSelection = 0;
         currentSelection = 0.0;
         previousSelection = 0.0;
@@ -187,7 +187,8 @@ public class CarouselImageChooserModel extends Model
      */
     private void addImage(ProvidedImage image) {
         /* Return if we have the image already. */
-        if(imageSet.contains(image)) return;
+        // if(imageSet.contains(image)) return;
+        if(images.contains(image)) return;
 
         /* Load the image. */
         System.out.println("Should be null: " + image.getImage());
@@ -200,17 +201,17 @@ public class CarouselImageChooserModel extends Model
          * from the set. */
         if(images.size() >=
                 settings.getInt(CarouselPreferencePane.MAX_IMAGES)) {
-            ProvidedImage old = images.get(0);
-            imageSet.remove(old);
+            // ProvidedImage old = images.get(0);
+            // imageSet.remove(old);
             images.remove(0);
         }
 
         System.out.println("List: " + images.size());
-        System.out.println("Set: " + imageSet.size());
+        // System.out.println("Set: " + imageSet.size());
 
         /* Insert the new image. */
         images.add(image);
-        imageSet.add(image);
+        // imageSet.add(image);
 
         /* Update positions. */
         fireStateChanged();
@@ -228,10 +229,10 @@ public class CarouselImageChooserModel extends Model
         synchronized(this) {
             List<ProvidedImage> old = images;
             images = new ArrayList<ProvidedImage>();
-            imageSet.clear();
+            // imageSet.clear();
             for(int i = 0; i < size && i < old.size(); i++) {
                 images.add(old.get(i));
-                imageSet.add(old.get(i));
+                // imageSet.add(old.get(i));
             }
 
             if(nextSelection >= size) {

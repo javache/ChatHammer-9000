@@ -23,6 +23,10 @@ public class ProvidedImage implements Serializable {
      */
     private transient Image image;
 
+    static {
+        ImageIO.setUseCache(false);
+    }
+
     /**
      * Create a new image.
      * @param url URL for the image.
