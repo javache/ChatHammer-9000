@@ -28,7 +28,7 @@ public class ChatMessage implements Comparable<ChatMessage>, Serializable{
      * @param systemMessage
      */
     public ChatMessage(String author, String text, boolean systemMessage) {
-        this.time = new Date();
+        this.time = null;
         this.text = text;
         this.author = author;
         this.systemMessage = systemMessage;
@@ -68,6 +68,9 @@ public class ChatMessage implements Comparable<ChatMessage>, Serializable{
      * @return time
      */
     public Date getTime() {
+        if(time == null) {
+            time = new Date();
+        }
         return time;
     }
 
