@@ -219,8 +219,10 @@ public class CarouselImageChooserModel extends Model
         synchronized(this) {
             List<ProvidedImage> old = images;
             images = new ArrayList<ProvidedImage>();
+            imageSet.clear();
             for(int i = 0; i < size && i < old.size(); i++) {
                 images.add(old.get(i));
+                imageSet.add(old.get(i));
             }
 
             if(nextSelection >= size) {
