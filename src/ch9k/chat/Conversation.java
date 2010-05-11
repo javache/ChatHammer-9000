@@ -84,19 +84,15 @@ public class Conversation implements EventListener {
      */
     public void close(boolean closeWindow) {
         closed = true;
+        EventPool.getAppPool().removeListener(this);
 
-        if(closeWindow) {
-            EventPool.getAppPool().removeListener(this);
-
-            if(window.isVisible()) {
-                window.dispose();
-            }
+        if(closeWindow && window.isVisible()) {
+            window.dispose();
         } else {
             // add a listener so we can close when logoff happens
             EventPool.getAppPool().addListener(new EventListener() {
                 public void handleEvent(Event event) {
                     close(true);
-                    EventPool.getAppPool().removeListener(this);
                 }
             }, new EventFilter(AccountLogoffEvent.class));
         }
@@ -146,8 +142,8 @@ public class Conversation implements EventListener {
      * Adds a message to this Conversation.
      * @param chatMessage
      */
-    private void addMessage(ChatMessage chatMessage) {
-        if(!isClosed() || chatMessage.isSystemMessage()) {
+    protected void addMessage(ChatMessage chatMessage) {
+        if(!isClosed()) {
             messages.addElement(chatMessage);
         }
     }
