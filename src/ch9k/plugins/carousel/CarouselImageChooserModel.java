@@ -74,9 +74,9 @@ public class CarouselImageChooserModel extends Model
     private Timer timer;
 
     /**
-     * Timer ticks passed.
+     * Start time of the timer.
      */
-    private int ticks;
+    private long timerStart;
 
     /**
      * Constructor.
@@ -94,13 +94,13 @@ public class CarouselImageChooserModel extends Model
         previousSelection = 0.0;
 
         /* Timer to update the animation. */
-        timer = new Timer(25, new ActionListener() {
+        timer = new Timer(33, new ActionListener() {
             public void actionPerformed(ActionEvent event) {
-                ticks++;
+                double t = (double) (System.currentTimeMillis() - timerStart) /
+                        1000.0;
                 double diff = (double) nextSelection - previousSelection;
-                currentSelection = previousSelection +
-                        (double) ticks * diff / 20.0;
-                if(ticks >= 20) {
+                currentSelection = previousSelection + t * diff;
+                if(t >= 1.0) {
                     currentSelection = (double) nextSelection;
                     timer.stop();
                 }
@@ -108,7 +108,7 @@ public class CarouselImageChooserModel extends Model
             }
         });
 
-        ticks = 0;
+        timerStart = 0;
 
         /* Register as listener to receive new images. */
         EventFilter filter = new ConversationEventFilter(
@@ -162,7 +162,7 @@ public class CarouselImageChooserModel extends Model
             nextSelection = NUM_SIDE_IMAGES;
         }
 
-        if(nextSelection > images.size() - NUM_SIDE_IMAGES) {
+        if(nextSelection >= images.size() - NUM_SIDE_IMAGES) {
             nextSelection = images.size() - NUM_SIDE_IMAGES - 1;
         }
 
@@ -172,7 +172,7 @@ public class CarouselImageChooserModel extends Model
 
             /* Start timer for animation. */
             timer.stop();
-            ticks = 0;
+            timerStart = System.currentTimeMillis();
             timer.start();
         }
     }
