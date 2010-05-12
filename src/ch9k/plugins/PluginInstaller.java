@@ -81,8 +81,9 @@ public class PluginInstaller extends URLClassLoader {
      * This file should be located in the application directory already,
      * use installPlugin otherwise.
      * @param file File to register as plugin.
+     * @return Name of the registred plugin.
      */
-    public void registerPlugin(File file) {
+    public String registerPlugin(File file) {
         logger.info("Registering plugin: " + file);
         Manifest manifest = null;
 
@@ -99,7 +100,7 @@ public class PluginInstaller extends URLClassLoader {
         if(manifest == null) {
             WarningEvent.raise(this,
                 "No jar manifest found in " + file);
-            return;
+            return null;
         }
 
         /* Obtain the jar manifest and it's attributes. */
@@ -110,7 +111,7 @@ public class PluginInstaller extends URLClassLoader {
             addURL(file.toURI().toURL());
         } catch (MalformedURLException exception) {
             /* This will never happen, since we know that file is valid now. */
-            return;
+            return null;
         }
 
         /* Find the plugin name .*/
@@ -119,12 +120,14 @@ public class PluginInstaller extends URLClassLoader {
         /* No plugin in this jar. This doesn't matter, it could be a dependency
          * containing no plugin's itself. */
         if(pluginName == null) {
-            return;
+            return null;
         }
 
         /* Register the plugin class. */
         logger.info("Plugin found: " + pluginName);
         pluginManager.addAvailablePlugin(pluginName, file.getAbsolutePath());
+
+        return pluginName;
     }
 
     /**
@@ -140,18 +143,19 @@ public class PluginInstaller extends URLClassLoader {
     /**
      * Install a plugin from an URL.
      * @param url URL pointing to a plugin jar.
+     * @return Name of the installed plugin.
      */
-    public synchronized void installPlugin(URL url) {
+    public synchronized String installPlugin(URL url) {
         logger.info("Installing plugin: " + url);
         try {
             /* We take the filename of the url and store the plugin there. */
             URLConnection connection = url.openConnection();
             File file = new File(url.getFile());
-            installPlugin(connection.getInputStream(), file.getName());
+            return installPlugin(connection.getInputStream(), file.getName());
         } catch (IOException exception) {
             WarningEvent.raise(this,
                 "Could not get plugin " + url + ": " + exception);
-            return;
+            return null;
         }
     }
 
@@ -161,8 +165,9 @@ public class PluginInstaller extends URLClassLoader {
      * @param in Stream to get the plugin from.
      * @param fileName File name of the plugin.
      * @throws IOException
+     * @return Name of the installed plugin.
      */
-    public void installPlugin(InputStream in, String fileName)
+    public synchronized String installPlugin(InputStream in, String fileName)
             throws IOException {
         /* Open the output file. */
         File file = new File(INSTALL_DIRECTORY, fileName);
@@ -182,6 +187,6 @@ public class PluginInstaller extends URLClassLoader {
         out.close();
 
         /* Register the new plugin. */
-        registerPlugin(file);
+        return registerPlugin(file);
     }
 }

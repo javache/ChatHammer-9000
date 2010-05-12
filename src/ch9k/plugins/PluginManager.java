@@ -51,6 +51,11 @@ public class PluginManager extends Model implements EventListener, Persistable {
     private Map<String, String> fileNames;
 
     /**
+     * For every plugin, we also keep the desirable state.
+     */
+    private final Map<String, Map<Conversation, Boolean>> pluginState;
+
+    /**
      * A plugin installer.
      */
     private PluginInstaller installer;
@@ -61,6 +66,7 @@ public class PluginManager extends Model implements EventListener, Persistable {
     public PluginManager() {
         plugins = new HashMap<String, Plugin>();
         fileNames = new HashMap<String, String>();
+        pluginState = new HashMap<String, Map<Conversation, Boolean>>();
         installer = new PluginInstaller(this);
         installer.loadInstalledPlugins();
 
@@ -228,8 +234,10 @@ public class PluginManager extends Model implements EventListener, Persistable {
     public void enablePlugin(String name, Conversation conversation) {
         /* We are enabling this plugin, so we use our settings. */
         Plugin plugin = plugins.get(name);
-        if(plugin == null) return;
-        Settings settings = plugin.getSettings();
+        Settings settings = null;
+        if(plugin != null) {
+            settings = plugin.getSettings();
+        }
 
         if(enable(name, conversation, settings)) {
             /* Throw an event. */
@@ -250,6 +258,7 @@ public class PluginManager extends Model implements EventListener, Persistable {
             String name, Conversation conversation, Settings settings) {
         /* Retrieve the plugin. */
         Plugin plugin = plugins.get(name);
+        setPluginState(name, conversation, true);
 
         /* Check that we have the plugin installed. */
         if(plugin == null) {
@@ -302,6 +311,7 @@ public class PluginManager extends Model implements EventListener, Persistable {
     private synchronized boolean disable(
             String name, Conversation conversation) {
         Plugin plugin = plugins.get(name);
+        setPluginState(name, conversation, false);
         if(plugin == null || !plugin.isEnabled(conversation)) {
             return false;
         }
@@ -309,6 +319,42 @@ public class PluginManager extends Model implements EventListener, Persistable {
         plugin.disablePlugin(conversation);
 
         return true;
+    }
+
+    /**
+     * Set the desirable state for a plugin.
+     * @param name Plugin name.
+     * @param conversation Conversation to change the state for.
+     * @param enabled State of the plugin.
+     */
+    private void setPluginState(String name,
+            Conversation conversation, boolean enabled) {
+        Map<Conversation, Boolean> states = pluginState.get(name);
+        if(states == null) {
+            states = new HashMap<Conversation, Boolean>();
+            pluginState.put(name, states);
+        }
+        states.put(conversation, enabled);
+    }
+
+    /**
+     * Get the desirable state for a plugin.
+     * @param name Plugin name.
+     * @param conversation Conversation to change the state for.
+     * @return State of the plugin.
+     */
+    private boolean getPluginState(String name, Conversation conversation) {
+        Map<Conversation, Boolean> states = pluginState.get(name);
+        if(states == null) {
+            return false;
+        } else {
+            Boolean result = states.get(conversation);
+            if(result == null) {
+                return false;
+            } else {
+                return result.booleanValue();
+            }
+        }
     }
 
     /**
@@ -417,11 +463,25 @@ public class PluginManager extends Model implements EventListener, Persistable {
                 new Thread(new Runnable() {
                     public void run() {
                         /* Convert the data to an InputStream */
-                        InputStream in = new ByteArrayInputStream(event.getData());
+                        InputStream in =    
+                                new ByteArrayInputStream(event.getData());
+                        String name = null;
                         try {
-                            installer.installPlugin(in, event.getFilename());
+                            name = installer.installPlugin(
+                                    in, event.getFilename());
                         } catch(IOException ex) {
                             logger.warn("Could not install plugin");
+                        }
+
+                        /* Search if we should enable this plugin. */
+                        Map<Conversation, Boolean> states =
+                                pluginState.get(name);
+                        if(states == null) return;
+                        for(Conversation conversation: states.keySet()) {
+                            if(states.get(conversation) != null &&
+                                    states.get(conversation).booleanValue()) {
+                                enablePlugin(name, conversation);
+                            }
                         }
                     }
                 }).start();
