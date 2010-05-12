@@ -18,32 +18,28 @@ public class WindowManager extends Model implements WindowListener {
         openedWindows = new ArrayList<Window>();
     }
 
-    public void registerWindow(Window w) {
+    public synchronized void registerWindow(Window w) {
         w.addWindowListener(this);
     }
 
-    public List<Window> getOpenedWindows() {
+    public synchronized List<Window> getOpenedWindows() {
         return openedWindows;
     }
 
     @Override
-    public void windowOpened(WindowEvent e) {
+    public synchronized void windowOpened(WindowEvent e) {
         Window w = e.getWindow();
-        synchronized(this) {
-            if(w.isShowing() && !openedWindows.contains(w)) {
-                openedWindows.add(w);
-                fireStateChanged();
-            }
-        }
+        if(w.isShowing() && !openedWindows.contains(w)) {
+           openedWindows.add(w);
+           fireStateChanged();
+       }
     }
 
     @Override
-    public void windowClosed(WindowEvent e) {
+    public synchronized void windowClosed(WindowEvent e) {
         Window w = e.getWindow();
-        synchronized(this) {
-            if(!w.isShowing() && openedWindows.remove(w)) {
-               fireStateChanged();
-            }
+        if(!w.isShowing() && openedWindows.remove(w)) {
+           fireStateChanged();
         }
     }
 
