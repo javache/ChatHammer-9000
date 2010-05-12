@@ -27,6 +27,11 @@ import java.util.ArrayList;
 public class CarouselImageChooserModel extends Model
         implements EventListener, SettingsChangeListener {
     /**
+     * Number of visible images on either side of the centered image.
+     */
+    private final static int NUM_SIDE_IMAGES = 2;
+
+    /**
      * The selection model.
      */
     private CarouselImageModel model;
@@ -84,7 +89,7 @@ public class CarouselImageChooserModel extends Model
         this.settings = settings;
         this.images = new ArrayList<ProvidedImage>();
         this.urls = new HashSet<URL>();
-        nextSelection = 0;
+        nextSelection = NUM_SIDE_IMAGES;
         currentSelection = 0.0;
         previousSelection = 0.0;
 
@@ -154,7 +159,8 @@ public class CarouselImageChooserModel extends Model
      */
     public void setNextSelection(int nextSelection) {
         if(this.nextSelection != nextSelection &&
-                nextSelection >= 0 && nextSelection < images.size()) {
+                nextSelection >= NUM_SIDE_IMAGES &&
+                nextSelection < images.size() - NUM_SIDE_IMAGES) {
             previousSelection = currentSelection;
             this.nextSelection = nextSelection;
 
@@ -179,6 +185,22 @@ public class CarouselImageChooserModel extends Model
      */
     public double getCurrentSelection() {
         return currentSelection;
+    }
+
+    /**
+     * Get the number of visible images on either side of the centered image.
+     * @return Number of visible images.
+     */
+    public int getNumSideImages() {
+        return NUM_SIDE_IMAGES;
+    }
+
+    /**
+     * Get the total number of visible images.
+     * @return The total number of visible images.
+     */
+    public int getNumVisibleImages() {
+        return NUM_SIDE_IMAGES * 2 + 1;
     }
 
     /**

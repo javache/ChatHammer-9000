@@ -23,11 +23,6 @@ import javax.swing.event.ChangeListener;
 public class CarouselImageChooserPanel extends JPanel
         implements ChangeListener, MouseWheelListener, MouseListener {
     /**
-     * Number of images visible. MUST BE ODD.
-     */
-    private static final int NUM_IMAGES = 5;
-
-    /**
      * Spacing between images (in pixels).
      */
     private static final double SPACING = 10.0;
@@ -92,9 +87,9 @@ public class CarouselImageChooserPanel extends JPanel
         /* Do not forget to draw two extra images. */
         int index = (int) chooserModel.getCurrentSelection();
         double offset = (double) index - chooserModel.getCurrentSelection();
-        for(int i = -1; i <= NUM_IMAGES; i++) {
+        for(int i = -1; i <= chooserModel.getNumVisibleImages(); i++) {
             ProvidedImage image = chooserModel.getProvidedImage(
-                    index + i - NUM_IMAGES / 2);
+                    index + i - chooserModel.getNumVisibleImages() / 2);
             if(image != null) {
                 drawImage(graphics, image.getImage(), i, offset,
                         image.equals(model.getProvidedImage()));
@@ -114,7 +109,8 @@ public class CarouselImageChooserPanel extends JPanel
         double width = (double) getWidth();
         double height = (double) getHeight();
 
-        double imageMaxWidth = width / (double) NUM_IMAGES;
+        double imageMaxWidth = width /
+                (double) chooserModel.getNumVisibleImages();
         double imageMaxHeight = height * 0.6;
         double x = imageMaxWidth * ((double) index + offset + 0.5);
 
@@ -147,7 +143,6 @@ public class CarouselImageChooserPanel extends JPanel
             graphics.setColor(Color.WHITE);
             graphics.drawRect(-2, -2, image.getWidth(null) + 2,
                     image.getHeight(null) + 2);
-            System.out.println("Drawing selection.");
         }
 
         /* Scale and transform. */
@@ -185,17 +180,17 @@ public class CarouselImageChooserPanel extends JPanel
     @Override
     public void mouseClicked(MouseEvent event) {
         double width = (double) getWidth();
-        double imageWidth = width / (double) NUM_IMAGES;
+        double imageWidth = width / (double) chooserModel.getNumVisibleImages();
 
         boolean found = false;
 
         int i = 1;
-        while(i <= NUM_IMAGES && !found) {
+        while(i <= chooserModel.getNumVisibleImages() && !found) {
             if((double) event.getX() < (double) i * imageWidth) {
                 /* Determine the index of the next selection. Rely on the fact
                  * that NUM_IMAGES is odd. */
                 int index = chooserModel.getNextSelection() +
-                        i - NUM_IMAGES / 2 - 1;
+                        i - chooserModel.getNumVisibleImages() / 2 - 1;
                 chooserModel.setNextSelection(index);
                 model.setProvidedImage(chooserModel.getProvidedImage(index));
                 found = true;
