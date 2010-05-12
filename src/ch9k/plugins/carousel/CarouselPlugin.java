@@ -51,11 +51,19 @@ public class CarouselPlugin extends AbstractPlugin {
         EventPool.getAppPool().raiseEvent(event);
 
         frame.pack();
+        frame.setSize(400, 600);
         frame.setTitle("Carousel test.");
         frame.setVisible(true);
 
         FlickrImageProvider flickr = new FlickrImageProvider(null, 
                 conversation, new Settings());
+        Thread.sleep(2000);
+        flickr.sendNewImageEvent("jailbait");
+        Thread.sleep(2000);
+        flickr.sendNewImageEvent("foobar");
+        Thread.sleep(2000);
+        flickr.sendNewImageEvent("tits");
+        Thread.sleep(2000);
         flickr.sendNewImageEvent("jailbait");
     }
 }

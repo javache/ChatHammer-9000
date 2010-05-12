@@ -232,6 +232,11 @@ public class CarouselImageChooserModel extends Model
             urls.add(url);
 
             /* Update positions. */
+            nextSelection--;
+            currentSelection--;
+            previousSelection = currentSelection;
+            setNextSelection(nextSelection > NUM_SIDE_IMAGES ?
+                    nextSelection : NUM_SIDE_IMAGES + 1);
             fireStateChanged();
         }
     }
