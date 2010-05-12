@@ -6,7 +6,6 @@ import ch9k.core.Model;
 import ch9k.core.settings.Settings;
 import ch9k.core.settings.SettingsChangeEvent;
 import ch9k.core.settings.SettingsChangeListener;
-import ch9k.core.settings.SettingsChangeListener;
 import ch9k.eventpool.Event;
 import ch9k.eventpool.EventFilter;
 import ch9k.eventpool.EventListener;
@@ -17,9 +16,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.Timer;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Class representing the image chooser data.
@@ -78,6 +82,8 @@ public class CarouselImageChooserModel extends Model
      */
     private long timerStart;
 
+    private BlockingQueue<URL> urlQueue;
+
     /**
      * Constructor.
      * @param settins The plugin settings.
@@ -117,6 +123,11 @@ public class CarouselImageChooserModel extends Model
 
         /* Listen to settings changes. */
         settings.addSettingsListener(this);
+
+        urlQueue = new LinkedBlockingQueue<URL>();
+        Thread urlThread = new Thread(new URLPurger(),"URLPurger");
+        urlThread.setDaemon(true);
+        urlThread.start();
     }
 
     /**
@@ -272,11 +283,31 @@ public class CarouselImageChooserModel extends Model
     public void handleEvent(Event e) {
         NewImageURLEvent event = (NewImageURLEvent) e;
         final URL url = event.getURL();
-        new Thread(new Runnable() {
-            public void run() {
-                addImage(url);
+        urlQueue.add(url);
+    }
+
+    private class URLPurger implements Runnable {
+
+        private final int timeout = 2000;
+
+        /*
+         * Purge an url from the queue every timeout seconds
+         */
+        public void run() {
+            while(true) {
+                try {
+                    URL url = urlQueue.take();
+                    if (url == null) {
+                        continue;
+                    }
+                    System.out.println("adding url");
+                    addImage(url);
+                    Thread.sleep(timeout);
+                } catch(InterruptedException ex) {
+
+                }
             }
-        }).start();
+        }
     }
 
     @Override
