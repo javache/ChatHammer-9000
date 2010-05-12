@@ -71,6 +71,7 @@ public class CarouselImageChooserPanel extends JPanel
         setBackground(new Color(50, 50, 50));
         setPreferredSize(new Dimension(0, 140));
 
+        model.addChangeListener(this);
         chooserModel.addChangeListener(this);
         addMouseWheelListener(this);
         addMouseListener(this);
@@ -92,13 +93,20 @@ public class CarouselImageChooserPanel extends JPanel
         int index = (int) chooserModel.getCurrentSelection();
         double offset = (double) index - chooserModel.getCurrentSelection();
         for(int i = -1; i <= NUM_IMAGES; i++) {
-            Image image = chooserModel.getImage(index + i - NUM_IMAGES / 2);
-            drawImage(graphics, image, i, offset);
+            ProvidedImage image = chooserModel.getProvidedImage(
+                    index + i - NUM_IMAGES / 2);
+            if(image != null) {
+                drawImage(graphics, image.getImage(), i, offset,
+                        image.equals(model.getProvidedImage()));
+            }
         }
     }
 
+    /**
+     * Draw a single image.
+     */
     private void drawImage(Graphics2D graphics, Image image, int index,
-            double offset) {
+            double offset, boolean selectedInModel) {
         if(image == null) {
             return;
         }
@@ -125,27 +133,39 @@ public class CarouselImageChooserPanel extends JPanel
         }
 
         /* Build a transformation for the image. */
-        AffineTransform transform = new AffineTransform();
-        transform.translate((int) x, height * 0.7);
-        transform.scale(imageWidth / (double) image.getWidth(null),
+        AffineTransform identity = new AffineTransform();
+        AffineTransform original = graphics.getTransform();
+        graphics.translate((int) x, height * 0.7);
+        graphics.scale(imageWidth / (double) image.getWidth(null),
                 imageHeight / (double) image.getHeight(null));
-        transform.translate(- (double) image.getWidth(null) * 0.5,
+        graphics.translate(- (double) image.getWidth(null) * 0.5,
                 -image.getHeight(null));
-        graphics.drawImage(image, transform, null);
+        graphics.drawImage(image, identity, null);
+
+        /* Draw stroke. */
+        if(selectedInModel) {
+            graphics.setColor(Color.WHITE);
+            graphics.drawRect(-2, -2, image.getWidth(null) + 2,
+                    image.getHeight(null) + 2);
+            System.out.println("Drawing selection.");
+        }
 
         /* Scale and transform. */
-        transform.translate(0.0, image.getHeight(null) * 1.6);
-        transform.scale(1.0, - 0.6);
-        graphics.drawImage(image, transform, null);
+        graphics.translate(0.0, image.getHeight(null) * 1.65);
+        graphics.scale(1.0, - 0.6);
+        graphics.drawImage(image, identity, null);
 
         /* Scale back to original format. */
-        transform.scale((double) image.getWidth(null) / imageWidth,
+        graphics.scale((double) image.getWidth(null) / imageWidth,
                 (double) image.getHeight(null) / imageHeight);
 
         /* Scale to gradient format. */
-        transform.scale(imageWidth / (double) gradient.getWidth(null),
+        graphics.scale(imageWidth / (double) gradient.getWidth(null),
                 imageHeight / (double) gradient.getHeight(null));
-        graphics.drawImage(gradient, transform, null);
+        graphics.drawImage(gradient, identity, null);
+
+        /* Restore original transformation matrix. */
+        graphics.setTransform(original);
     }
 
     @Override
