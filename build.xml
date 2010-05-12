@@ -67,7 +67,6 @@
         </macrodef>
         <build-plugin package="be/jaspervdj/googleimage" destination="googleimage"/>
         <build-plugin package="be/jaspervdj/wordcloud" destination="wordcloud"/>
-        <build-plugin package="be/jaspervdj/awesome" destination="awesome"/>
         <build-plugin package="be/ugent/zeus" destination="dummyplugin"/>
     </target>
     <!-- remove doc-dirs when cleaning -->

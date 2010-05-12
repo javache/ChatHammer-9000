@@ -225,7 +225,7 @@ public class CarouselImageChooserModel extends Model
             urls.clear();
             for(int i = 0; i < size && i < old.size(); i++) {
                 images.add(old.get(i));
-                urls.add(old.get(i));
+                urls.add(old.get(i).getURL());
             }
 
             if(nextSelection >= size) {
