@@ -73,8 +73,6 @@ public class FontPanel extends JPanel implements ActionListener, CaretListener {
                                Color.GREEN, Color.ORANGE, Color.CYAN, Color.MAGENTA,
                                Color.YELLOW, Color.PINK };
 
-    private String[] emoticons = { "smile", "wink", "oink", "sad", "coolbrows", "unsure", "angry", "damn", "tongue", "sop", "sarcastic"};
-
     /**
      * Comboxes in which the user wil be able to select above options
      */
@@ -84,7 +82,6 @@ public class FontPanel extends JPanel implements ActionListener, CaretListener {
 
     private JComboBox colorBox;
 
-    private JComboBox emoticonBox;
 
     public FontPanel(JTextPane textpane) {
         editor = textpane;
@@ -132,23 +129,15 @@ public class FontPanel extends JPanel implements ActionListener, CaretListener {
         renderer.setSize(30, 20);
         colorBox.setRenderer(renderer);
 
-        emoticonBox = new JComboBox(emoticons);
-        emoticonBox.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                insertEmoticon(emoticons[emoticonBox.getSelectedIndex()]);
-            }
-        });
-        EmoticonRenderer eRenderer = new EmoticonRenderer();;
-        emoticonBox.setRenderer(eRenderer);
     }
 
     private void initLayout() {
         GroupLayout layout = new GroupLayout(this);
         setLayout(layout);
 
-        layout.setHorizontalGroup(layout.createSequentialGroup().addGap(0, 0, Short.MAX_VALUE).addComponent(bold, 40, 40, 40).addComponent(italic, 40, 40, 40).addComponent(underline, 40, 40, 40).addComponent(fontType).addComponent(fontSize).addComponent(colorBox).addComponent(emoticonBox,45, 45, 45).addGap(0, 0, Short.MAX_VALUE));
+        layout.setHorizontalGroup(layout.createSequentialGroup().addGap(0, 0, Short.MAX_VALUE).addComponent(bold, 40, 40, 40).addComponent(italic, 40, 40, 40).addComponent(underline, 40, 40, 40).addComponent(fontType).addComponent(fontSize).addComponent(colorBox).addGap(0, 0, Short.MAX_VALUE));
 
-        layout.setVerticalGroup(layout.createParallelGroup().addComponent(bold).addComponent(italic).addComponent(underline).addComponent(fontType).addComponent(fontSize).addComponent(colorBox).addComponent(emoticonBox));
+        layout.setVerticalGroup(layout.createParallelGroup().addComponent(bold).addComponent(italic).addComponent(underline).addComponent(fontType).addComponent(fontSize).addComponent(colorBox));
     }
 
     public void actionPerformed(ActionEvent e) {
@@ -187,21 +176,6 @@ public class FontPanel extends JPanel implements ActionListener, CaretListener {
                 underline.setSelected(StyleConstants.isUnderline(attr));
             }
         });
-    }
-
-    public void insertEmoticon(String emoticon) {
-        HTMLDocument doc = (HTMLDocument) editor.getStyledDocument();
-        String html = "http://zeus.ugent.be/~Robust2/" + emoticon + ".gif";
-        //Set up html attributes attribute
-        SimpleAttributeSet attrs = new SimpleAttributeSet();
-        attrs.addAttribute(StyleConstants.NameAttribute, HTML.Tag.IMG);
-        attrs.addAttribute(HTML.Attribute.SRC, html);
-        //try inserting the html into the editor
-        try {
-            doc.insertString(editor.getCaretPosition(), " ", attrs);
-        } catch(BadLocationException ex) {
-            Logger.getLogger(FontPanel.class.getName()).log(Level.SEVERE, null, ex);
-        }
     }
 }
 
