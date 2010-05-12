@@ -185,31 +185,33 @@ public class CarouselImageChooserModel extends Model
      * Add a new image. This might block for a while.
      * @param url URL to load.
      */
-    private synchronized void addImage(URL url) {
-        /* Return if we have the image already. */
-        if(urls.contains(url)) return;
+    private void addImage(URL url) {
+        synchronized(this) {
+            /* Return if we have the image already. */
+            if(urls.contains(url)) return;
 
-        /* Load the image. */
-        ProvidedImage image = new ProvidedImage(url);
+            /* Load the image. */
+            ProvidedImage image = new ProvidedImage(url);
 
-        /* Reject foobar images. */
-        if(image.getImage() == null) return;
+            /* Reject foobar images. */
+            if(image.getImage() == null) return;
 
-        /* If we already have enough images, we need to remove the old image
-         * from the set. */
-        if(images.size() >=
-                settings.getInt(CarouselPreferencePane.MAX_IMAGES)) {
-            ProvidedImage old = images.get(0);
-            urls.remove(old.getURL());
-            images.remove(0);
+            /* If we already have enough images, we need to remove the old image
+             * from the set. */
+            if(images.size() >=
+                    settings.getInt(CarouselPreferencePane.MAX_IMAGES)) {
+                ProvidedImage old = images.get(0);
+                urls.remove(old.getURL());
+                images.remove(0);
+            }
+
+            /* Insert the new image. */
+            images.add(image);
+            urls.add(url);
+
+            /* Update positions. */
+            fireStateChanged();
         }
-
-        /* Insert the new image. */
-        images.add(image);
-        urls.add(url);
-
-        /* Update positions. */
-        fireStateChanged();
     }
 
     /**
@@ -220,10 +222,10 @@ public class CarouselImageChooserModel extends Model
         synchronized(this) {
             List<ProvidedImage> old = images;
             images = new ArrayList<ProvidedImage>();
-            // imageSet.clear();
+            urls.clear();
             for(int i = 0; i < size && i < old.size(); i++) {
                 images.add(old.get(i));
-                // imageSet.add(old.get(i));
+                urls.add(old.get(i));
             }
 
             if(nextSelection >= size) {
