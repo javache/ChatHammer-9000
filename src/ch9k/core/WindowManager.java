@@ -11,11 +11,11 @@ import java.util.List;
  * When creating a new window do windowmanager.registerWindow(window) before using window.setVisible(true)
  * also always set a name on the new window.
  */
-public class WindowManager extends Model implements WindowListener, Runnable {
+public class WindowManager extends Model implements WindowListener {
     private List<Window> openedWindows;
 
     public WindowManager() {
-        run();
+        openedWindows = new ArrayList<Window>();
     }
 
     public synchronized void registerWindow(Window w) {
@@ -61,9 +61,4 @@ public class WindowManager extends Model implements WindowListener, Runnable {
 
     @Override
     public void windowClosing(WindowEvent e) {}
-
-    @Override
-    public void run() {
-        openedWindows = new ArrayList<Window>();
-    }
 }
