@@ -1,5 +1,6 @@
 package ch9k.network;
 
+import ch9k.eventpool.DataEvent;
 import ch9k.eventpool.NetworkEvent;
 import java.io.Closeable;
 import java.io.IOException;
@@ -59,6 +60,14 @@ public class EventWriter implements Runnable, Closeable {
                 event.getClass().getName(), event.getTarget()));
         out.writeObject(event);
         out.flush();
+
+        /* This is supposed to take care of a memory leak in ObjectOutputStream
+         * We don't do this for regural events since that would not be
+         * efficient */
+        if (event instanceof DataEvent) {
+           out.reset();
+        }
+
     }
     
     /**
