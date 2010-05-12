@@ -16,8 +16,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.Timer;
 import java.util.List;
 import java.util.ArrayList;
@@ -294,13 +292,12 @@ public class CarouselImageChooserModel extends Model
          * Purge an url from the queue every timeout seconds
          */
         public void run() {
-            while(true) {
+            while(!Thread.interrupted()) {
                 try {
-                    URL url = urlQueue.take();
-                    if (url == null) {
+                    URL url = urlQueue.poll(timeout,TimeUnit.MILLISECONDS);
+                    if(url == null) {
                         continue;
                     }
-                    System.out.println("adding url");
                     addImage(url);
                     Thread.sleep(timeout);
                 } catch(InterruptedException ex) {
