@@ -158,9 +158,15 @@ public class CarouselImageChooserModel extends Model
      * @param nextSelection The next selection.
      */
     public void setNextSelection(int nextSelection) {
-        if(this.nextSelection != nextSelection &&
-                nextSelection >= NUM_SIDE_IMAGES &&
-                nextSelection < images.size() - NUM_SIDE_IMAGES) {
+        if(nextSelection < NUM_SIDE_IMAGES) {
+            nextSelection = NUM_SIDE_IMAGES;
+        }
+
+        if(nextSelection > images.size() - NUM_SIDE_IMAGES) {
+            nextSelection = images.size() - NUM_SIDE_IMAGES - 1;
+        }
+
+        if(this.nextSelection != nextSelection) {
             previousSelection = currentSelection;
             this.nextSelection = nextSelection;
 
@@ -235,8 +241,7 @@ public class CarouselImageChooserModel extends Model
             nextSelection--;
             currentSelection--;
             previousSelection = currentSelection;
-            setNextSelection(nextSelection > NUM_SIDE_IMAGES ?
-                    nextSelection : NUM_SIDE_IMAGES + 1);
+            setNextSelection(nextSelection + 1);
             fireStateChanged();
         }
     }
