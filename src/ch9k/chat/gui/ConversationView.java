@@ -51,6 +51,7 @@ class ConversationView extends JScrollPane {
     public class ConversationTextPane extends JTextPane
             implements ListDataListener {
         private ListModel listModel;
+        private ChatMessage lastMessage;
         private boolean init = true;
         
         public ConversationTextPane(ListModel listModel) {
@@ -68,14 +69,23 @@ class ConversationView extends JScrollPane {
                     setText(message.getFullHtml());
                     init = false;
                 } else {
+                    boolean showAuthor = true;
+                    if(lastMessage != null) {
+                        showAuthor = !message.getAuthor().equals(lastMessage.getAuthor())
+                                || !message.getFormattedTime().equals(lastMessage.getFormattedTime());
+                    }
+
                     int offset = document.getEndPosition().getOffset() - 1;
-                    editorKit.insertHTML(document, offset, message.getHtml(true), 1, 0, null);
+                    editorKit.insertHTML(document, offset,
+                            message.getHtml(showAuthor), 1, 0, null);
                 }
             } catch(BadLocationException ex) {
             } catch(IOException ex) {}
 
             // scroll to bottom
             setCaretPosition(document.getLength());
+
+            lastMessage = message;
         }
 
         @Override
