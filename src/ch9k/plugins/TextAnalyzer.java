@@ -3,17 +3,11 @@ package ch9k.plugins;
 import ch9k.chat.ChatMessage;
 import ch9k.chat.Conversation;
 import ch9k.chat.ConversationSubject;
-import ch9k.chat.event.ConversationEventFilter;
-import ch9k.chat.event.NewChatMessageEvent;
 import ch9k.chat.event.NewConversationSubjectEvent;
 import ch9k.core.settings.Settings;
 import ch9k.core.settings.SettingsChangeListener;
 import ch9k.core.settings.SettingsChangeEvent;
-import ch9k.eventpool.Event;
-import ch9k.eventpool.EventFilter;
-import ch9k.eventpool.EventListener;
 import ch9k.eventpool.EventPool;
-import ch9k.plugins.Plugin;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -184,7 +178,7 @@ public abstract class TextAnalyzer extends AbstractPluginInstance
         for(String message: messages) {
             /* Remove all punctuation and split on space characters. */
             Matcher matcher = punctuation.matcher(message);
-            String[] words = matcher.replaceAll("").split("\\s+");
+            String[] words = matcher.replaceAll(" ").split("\\s+");
 
             /* Now loop through all words in the message. */
             for(String word: words) {

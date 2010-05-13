@@ -58,24 +58,30 @@ public class ChatMessage implements Comparable<ChatMessage>, Serializable{
     }
 
     public String getFullHtml() {
-        return "<html><head></head><body>" + getHtml() + "</body></html>";
+        return "<html><head></head><body>" + getHtml(true) + "</body></html>";
     }
 
     /**
      * Get the text without the surrounding html tags
-     * @return HTML-text
+     * @param includeAuthor 
+     * @return html
      */
-    public String getHtml() {
-        Formatter formatter = new Formatter();
-        String date = formatter.format("%1$tH:%1$tM", getTime()).toString();
-        String author = I18n.get("ch9k.chat", "contact_said", getAuthor(), date);
-        
-        return String.format(
+    public String getHtml(boolean includeAuthor) {
+        StringBuilder html = new StringBuilder();
+
+        if(includeAuthor) {
+            String author = I18n.get("ch9k.chat", "contact_said", 
+                    getAuthor(), getFormattedTime());
+            html.append(String.format(
                 "<p style=\"margin: 2px 0 2px 2px;\">" +
                     "<font size=\"3\" color=\"#333333\">%s</font>" +
-                "</p>" +
-                "<div style=\"margin: 0 15px 3px 12px\">%s</div>",
-                author, getText());
+                "</p>", author));
+        }     
+        
+        html.append(String.format(
+            "<div style=\"margin: 0 15px 3px 12px\">%s</div>", getText()));
+
+        return html.toString();
     }
 
     /**
@@ -95,6 +101,15 @@ public class ChatMessage implements Comparable<ChatMessage>, Serializable{
             time = new Date();
         }
         return time;
+    }
+
+    /**
+     * Get the formatted time
+     * @return time
+     */
+    public String getFormattedTime() {
+        Formatter formatter = new Formatter();
+        return formatter.format("%1$tH:%1$tM", getTime()).toString();
     }
 
     /**

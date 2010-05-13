@@ -68,6 +68,7 @@
         <build-plugin package="be/jaspervdj/googleimage" destination="googleimage"/>
         <build-plugin package="be/jaspervdj/wordcloud" destination="wordcloud"/>
         <build-plugin package="be/ugent/zeus" destination="dummyplugin"/>
+        <build-plugin package="be/thinkjavache/snitch" destination="snitch"/>
     </target>
     <!-- remove doc-dirs when cleaning -->
     <target name="-post-clean">
