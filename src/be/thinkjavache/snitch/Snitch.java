@@ -1,4 +1,3 @@
-
 package be.thinkjavache.snitch;
 
 import ch9k.chat.ChatMessage;
@@ -44,14 +43,14 @@ public class Snitch extends AbstractPluginInstance {
         super.handleEvent(e);
 
         if(e instanceof NewConversationSubjectEvent) {
-            informnConversationSubject((NewConversationSubjectEvent)e);
+            informConversationSubject((NewConversationSubjectEvent)e);
         }
         if(e instanceof PluginChangeEvent) {
             informPluginEvent((PluginChangeEvent)e);
         }
     }
 
-    private void informnConversationSubject(NewConversationSubjectEvent event) {
+    private void informConversationSubject(NewConversationSubjectEvent event) {
         String[] subjects = event.getConversationSubject().getSubjects();
 
         StringBuilder message = new StringBuilder();

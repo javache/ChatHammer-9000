@@ -1,4 +1,3 @@
-
 package be.thinkjavache.snitch;
 
 import ch9k.chat.Conversation;
