@@ -122,7 +122,7 @@ public class CarouselImageChooserModel extends Model
         /* Listen to settings changes. */
         settings.addSettingsListener(this);
 
-        urlQueue = new LinkedBlockingQueue<URL>();
+        urlQueue = new LinkedBlockingQueue<URL>(10);
         Thread urlThread = new Thread(new URLPurger(),"URLPurger");
         urlThread.setDaemon(true);
         urlThread.start();
@@ -281,12 +281,12 @@ public class CarouselImageChooserModel extends Model
     public void handleEvent(Event e) {
         NewImageURLEvent event = (NewImageURLEvent) e;
         final URL url = event.getURL();
-        urlQueue.add(url);
+        urlQueue.offer(url);
     }
 
     private class URLPurger implements Runnable {
 
-        private final int timeout = 2000;
+        private final int timeout = 1000;
 
         /*
          * Purge an url from the queue every timeout seconds
@@ -294,10 +294,7 @@ public class CarouselImageChooserModel extends Model
         public void run() {
             while(!Thread.interrupted()) {
                 try {
-                    URL url = urlQueue.poll(timeout,TimeUnit.MILLISECONDS);
-                    if(url == null) {
-                        continue;
-                    }
+                    URL url = urlQueue.take();
                     addImage(url);
                     Thread.sleep(timeout);
                 } catch(InterruptedException ex) {
