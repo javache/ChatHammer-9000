@@ -254,7 +254,9 @@ public class CarouselImageChooserModel extends Model
                 previousSelection = currentSelection;
                 setNextSelection(nextSelection + 1);
             } else {
-                setNextSelection(NUM_SIDE_IMAGES);
+                if(nextSelection < NUM_SIDE_IMAGES) {
+                    setNextSelection(NUM_SIDE_IMAGES);
+                }
             }
 
             fireStateChanged();
