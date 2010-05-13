@@ -42,9 +42,11 @@
         <copylibs compress="${jar.compress}" jarfile="${dist.jar}" manifest="${manifest.file}" runtimeclasspath="${run.classpath.without.build.classes.dir}">
             <fileset dir="${build.classes.dir}">
                 <include name="ch9k/**/*" />
+            </fileset>
+            <fileset dir="${src.resources.dir}">
+                <include name="ch9k/**/*" />
                 <include name="*.properties" />
             </fileset>
-            <fileset dir="${src.resources.dir}"/>
             <manifest>
                 <attribute name="Main-Class" value="${main.class}"/>
                 <attribute name="Class-Path" value="${jar.classpath}"/>
@@ -60,6 +62,10 @@
                 <jar compress="${jar.compress}" jarfile="${dist.jar.dir}/@{destination}.jar" manifest="${build.classes.dir}/@{package}/${manifest.file}">
                     <fileset dir="${build.classes.dir}">
                         <include name="@{package}/**/*.class" />
+                        <include name="*.properties" />
+                    </fileset>
+                    <fileset dir="${src.resources.dir}">
+                        <include name="@{package}/**/*" />
                         <include name="*.properties" />
                     </fileset>
                 </jar>
