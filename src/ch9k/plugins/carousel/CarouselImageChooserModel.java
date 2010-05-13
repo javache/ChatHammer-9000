@@ -93,7 +93,7 @@ public class CarouselImageChooserModel extends Model
         this.settings = settings;
         this.images = new ArrayList<ProvidedImage>();
         this.urls = new HashSet<URL>();
-        nextSelection = NUM_SIDE_IMAGES;
+        nextSelection = 0;
         currentSelection = 0.0;
         previousSelection = 0.0;
 
@@ -167,12 +167,12 @@ public class CarouselImageChooserModel extends Model
      * @param nextSelection The next selection.
      */
     public void setNextSelection(int nextSelection) {
-        if(nextSelection < NUM_SIDE_IMAGES) {
-            nextSelection = NUM_SIDE_IMAGES;
-        }
-
         if(nextSelection >= images.size() - NUM_SIDE_IMAGES) {
             nextSelection = images.size() - NUM_SIDE_IMAGES - 1;
+        }
+
+        if(nextSelection < NUM_SIDE_IMAGES) {
+            nextSelection = NUM_SIDE_IMAGES;
         }
 
         if(this.nextSelection != nextSelection) {
@@ -235,8 +235,9 @@ public class CarouselImageChooserModel extends Model
 
             /* If we already have enough images, we need to remove the old image
              * from the set. */
-            if(images.size() >=
-                    settings.getInt(CarouselPreferencePane.MAX_IMAGES)) {
+            boolean dropImage = images.size() >=
+                    settings.getInt(CarouselPreferencePane.MAX_IMAGES);
+            if(dropImage) {
                 ProvidedImage old = images.get(0);
                 urls.remove(old.getURL());
                 images.remove(0);
@@ -247,10 +248,15 @@ public class CarouselImageChooserModel extends Model
             urls.add(url);
 
             /* Update positions. */
-            nextSelection--;
-            currentSelection--;
-            previousSelection = currentSelection;
-            setNextSelection(nextSelection + 1);
+            if(dropImage) {
+                nextSelection--;
+                currentSelection--;
+                previousSelection = currentSelection;
+                setNextSelection(nextSelection + 1);
+            } else {
+                setNextSelection(NUM_SIDE_IMAGES);
+            }
+
             fireStateChanged();
         }
     }
