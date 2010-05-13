@@ -80,7 +80,15 @@ public class CarouselImageChooserModel extends Model
      */
     private long timerStart;
 
+    /**
+     * Blocking queue, so we don't add too many images at the same time.
+     */
     private BlockingQueue<URL> urlQueue;
+
+    /**
+     * Thread in which the url queue lives.
+     */
+    private Thread urlThread;
 
     /**
      * Constructor.
@@ -122,8 +130,9 @@ public class CarouselImageChooserModel extends Model
         /* Listen to settings changes. */
         settings.addSettingsListener(this);
 
+        /* Start a new thread for the URL purger. */
         urlQueue = new LinkedBlockingQueue<URL>(10);
-        Thread urlThread = new Thread(new URLPurger(),"URLPurger");
+        urlThread = new Thread(new URLPurger(),"URLPurger");
         urlThread.setDaemon(true);
         urlThread.start();
     }
@@ -133,6 +142,7 @@ public class CarouselImageChooserModel extends Model
      */
     public void disablePlugin() {
         EventPool.getAppPool().removeListener(this);
+        urlThread.interrupt();
     }
 
     /**
@@ -167,14 +177,18 @@ public class CarouselImageChooserModel extends Model
      * @param nextSelection The next selection.
      */
     public void setNextSelection(int nextSelection) {
+        /* Do not allow the user to scroll to the right of all the visible
+         * images. */
         if(nextSelection >= images.size() - NUM_SIDE_IMAGES) {
             nextSelection = images.size() - NUM_SIDE_IMAGES - 1;
         }
 
+        /* Do not allow the user to scroll left of the leftmost image. */
         if(nextSelection < NUM_SIDE_IMAGES) {
             nextSelection = NUM_SIDE_IMAGES;
         }
 
+        /* Edit the nextSelection field if necessary. */
         if(this.nextSelection != nextSelection) {
             previousSelection = currentSelection;
             this.nextSelection = nextSelection;
@@ -249,16 +263,21 @@ public class CarouselImageChooserModel extends Model
 
             /* Update positions. */
             if(dropImage) {
+                /* Pretend we went back and selected the next image. This will
+                 * cause a nice scrolling effect when images are dropped. */
                 nextSelection--;
                 currentSelection--;
                 previousSelection = currentSelection;
                 setNextSelection(nextSelection + 1);
             } else {
+                /* Do not scroll if we don't have enough images yet. */
                 if(nextSelection < NUM_SIDE_IMAGES) {
                     setNextSelection(NUM_SIDE_IMAGES);
                 }
             }
 
+            /* This fireStateChanged is not always necessary, but it can't hurt,
+             * since it will probably just cause a repaint. */
             fireStateChanged();
         }
     }
@@ -269,14 +288,19 @@ public class CarouselImageChooserModel extends Model
      */
     private void resizeImagesArray(int size) {
         synchronized(this) {
+            /* Create a new array to hold the images. */
             List<ProvidedImage> old = images;
             images = new ArrayList<ProvidedImage>();
             urls.clear();
+
+            /* Move all images to the new array. */
             for(int i = 0; i < size && i < old.size(); i++) {
                 images.add(old.get(i));
                 urls.add(old.get(i).getURL());
             }
 
+            /* Edit the selection if necessary (we can't select an image that
+             * was dropped during the resize) .*/
             if(nextSelection >= size) {
                 setNextSelection(size - 1);
             } else {
@@ -292,12 +316,17 @@ public class CarouselImageChooserModel extends Model
         urlQueue.offer(url);
     }
 
+    /**
+     * Private class throwing URL's from the queue to the actual model.
+     */
     private class URLPurger implements Runnable {
-
+        /**
+         * Timeout interval between two images added.
+         */
         private final int timeout = 1000;
 
-        /*
-         * Purge an url from the queue every timeout seconds
+        /**
+         * Purge an url from the queue every timeout seconds.
          */
         public void run() {
             while(!Thread.interrupted()) {
@@ -306,7 +335,7 @@ public class CarouselImageChooserModel extends Model
                     addImage(url);
                     Thread.sleep(timeout);
                 } catch(InterruptedException ex) {
-
+                    /* Ignore this, or thread will stop now. */
                 }
             }
         }
