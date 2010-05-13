@@ -7,14 +7,6 @@ import ch9k.plugins.AbstractPluginInstance;
 import ch9k.plugins.Plugin;
 import javax.swing.JPanel;
 
-import javax.swing.JFrame;
-import java.net.InetAddress;
-import ch9k.chat.Contact;
-import ch9k.eventpool.Event;
-import ch9k.eventpool.EventPool;
-import ch9k.chat.event.RequestedPluginContainerEvent;
-import ch9k.plugins.flickr.FlickrImageProvider;
-
 /**
  * WordCloud plugin.
  */

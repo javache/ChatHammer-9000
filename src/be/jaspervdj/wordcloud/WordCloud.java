@@ -15,7 +15,6 @@ import ch9k.plugins.AbstractPluginInstance;
 import ch9k.plugins.Plugin;
 import java.awt.Container;
 import java.awt.GridLayout;
-import javax.swing.JLabel;
 
 /**
  * WordCloud plugin view.

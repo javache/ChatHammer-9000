@@ -26,6 +26,8 @@ public class FlickrImageProviderPlugin extends AbstractPlugin {
 
     @Override
     public Settings createDefaultSettings() {
-        return new Settings();
+        Settings settings = new Settings();
+        settings.setBoolean(ImageProviderPreferencePane.SAFE_SEARCH, true);
+        return settings;
     }
 }

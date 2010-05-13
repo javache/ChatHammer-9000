@@ -25,6 +25,8 @@ public class GoogleImageProviderPlugin extends AbstractPlugin {
 
     @Override
     protected Settings createDefaultSettings() {
-        return new Settings();
+        Settings settings = new Settings();
+        settings.setBoolean(ImageProviderPreferencePane.SAFE_SEARCH, true);
+        return settings;
     }
 }
