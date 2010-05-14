@@ -3,15 +3,18 @@ package ch9k.chat;
 import ch9k.chat.event.CloseConversationEvent;
 import ch9k.chat.event.ContactOfflineEvent;
 import ch9k.chat.event.NewConversationEvent;
+import ch9k.core.ChatApplication;
 import ch9k.core.I18n;
 import ch9k.core.event.AccountLogoffEvent;
 import ch9k.eventpool.Event;
 import ch9k.eventpool.EventFilter;
 import ch9k.eventpool.EventListener;
 import ch9k.eventpool.EventPool;
+import ch9k.plugins.PluginManager;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import javax.swing.SwingUtilities;
 import org.apache.log4j.Logger;
 
 /**
@@ -47,8 +50,26 @@ public class ConversationManager implements Iterable<Conversation> {
      */
     public Conversation startConversation(Contact contact, boolean initiatedByMe) {
         if(!conversations.containsKey(contact)) {
-            Conversation conversation = new Conversation(contact, initiatedByMe);
+            final Conversation conversation =
+                    new Conversation(contact, initiatedByMe);
             conversations.put(contact, conversation);
+
+            /* If we initiated the conversation, we want to enable the default
+             * plugins for it. */
+            if(initiatedByMe) {
+                final PluginManager pluginManager =
+                        ChatApplication.getInstance().getPluginManager();
+                /* We use the event thread here, so we execute this code *after*
+                 * the conversation window is constructed completely. */
+                SwingUtilities.invokeLater(new Runnable() {
+                    public void run() {
+                        for(String plugin: pluginManager.getDefaultPlugins()) {
+                            pluginManager.enablePlugin(plugin, conversation);
+                        }
+                    }
+                });
+            }
+
             return conversation;
         } else {
             return conversations.get(contact);
