@@ -75,6 +75,8 @@ public class RegistrationController {
             view.setError(I18n.get("ch9k.core", "error_username_too_short"));
         } else if(password.length() < 6) {
             view.setError(I18n.get("ch9k.core", "error_password_too_short"));
+        } else if(!isAlphaNumeric(username)) {
+            view.setError(I18n.get("ch9k.core", "error_username_not_alphanumeric"));
         } else if(Storage.exists(username)) {
             view.setError(I18n.get("ch9k.core", "error_account_exists"));
         } else {
@@ -84,5 +86,9 @@ public class RegistrationController {
             return true;
         }
         return false;
+    }
+
+    private boolean isAlphaNumeric(String username) {
+        return username.matches("^[a-zA-Z0-9]*$");
     }
 }
