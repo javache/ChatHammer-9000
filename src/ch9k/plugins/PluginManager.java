@@ -1,34 +1,36 @@
 package ch9k.plugins;
 
-import java.net.InetAddress;
-import java.io.FileInputStream;
-import java.io.File;
 import ch9k.chat.Conversation;
-import ch9k.core.ChatApplication;
+import ch9k.chat.event.CloseConversationEvent;
 import ch9k.configuration.Persistable;
 import ch9k.configuration.PersistentDataObject;
+import ch9k.core.ChatApplication;
+import ch9k.core.I18n;
 import ch9k.core.Model;
 import ch9k.core.settings.Settings;
+import ch9k.core.settings.event.PreferencePaneEvent;
 import ch9k.eventpool.Event;
-import ch9k.eventpool.NetworkEvent;
 import ch9k.eventpool.EventFilter;
 import ch9k.eventpool.EventListener;
 import ch9k.eventpool.EventPool;
-import ch9k.core.settings.event.PreferencePaneEvent;
+import ch9k.eventpool.NetworkEvent;
 import ch9k.plugins.event.PluginChangeEvent;
-import ch9k.chat.event.CloseConversationEvent;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import org.apache.log4j.Logger;
-import org.jdom.Element;
-import javax.swing.JPanel;
-import javax.swing.JOptionPane;
-import ch9k.core.I18n;
 import ch9k.plugins.event.RequestPluginEvent;
 import ch9k.plugins.event.RequestedPluginEvent;
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.net.InetAddress;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import org.apache.log4j.Logger;
+import org.jdom.Element;
 
 /**
  * A singleton to manage plugins.
@@ -129,6 +131,22 @@ public class PluginManager extends Model implements EventListener, Persistable {
     }
 
     /**
+     * Get a list of default plugins. These "default" plugins are the ones that
+     * ship with the main application and cannot be removed.
+     * @return A list of default plugins.
+     */
+    public List<String> getDefaultPlugins() {
+        List<String> defaultPlugins = new ArrayList<String>();
+        for(String name: plugins.keySet()) {
+            if(getPluginFileName(name) == null) {
+                defaultPlugins.add(name);
+            }
+        }
+
+        return defaultPlugins;
+    }
+
+    /**
      * Add an available plugin to the list.
      * @param name Class name of the plugin to add.
      * @param fileName Filename of the plugin.
@@ -173,9 +191,7 @@ public class PluginManager extends Model implements EventListener, Persistable {
         }
 
         plugins.put(name, plugin);
-        if(fileName != null) {
-            fileNames.put(name, fileName);
-        }
+        fileNames.put(name, fileName);
         fireStateChanged();
     }
 
