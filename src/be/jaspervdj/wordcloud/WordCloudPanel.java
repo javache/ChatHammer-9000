@@ -1,22 +1,22 @@
 package be.jaspervdj.wordcloud;
 
-import javax.swing.JPanel;
-import java.awt.Graphics;
-import java.awt.Font;
-import java.awt.FontMetrics;
-import java.awt.geom.Rectangle2D;
-import java.util.Queue;
-import java.util.LinkedList;
-import java.awt.Color;
-import ch9k.eventpool.Event;
-import ch9k.eventpool.EventFilter;
-import ch9k.eventpool.EventPool;
-import ch9k.eventpool.EventListener;
-import ch9k.chat.event.NewConversationSubjectEvent;
 import ch9k.chat.ConversationSubject;
+import ch9k.chat.event.NewConversationSubjectEvent;
 import ch9k.core.settings.Settings;
 import ch9k.core.settings.SettingsChangeEvent;
 import ch9k.core.settings.SettingsChangeListener;
+import ch9k.eventpool.Event;
+import ch9k.eventpool.EventFilter;
+import ch9k.eventpool.EventListener;
+import ch9k.eventpool.EventPool;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.FontMetrics;
+import java.awt.Graphics;
+import java.awt.geom.Rectangle2D;
+import java.util.LinkedList;
+import java.util.Queue;
+import javax.swing.JPanel;
 
 /**
  * Panel to show a wordcloud.

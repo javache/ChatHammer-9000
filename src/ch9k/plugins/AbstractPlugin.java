@@ -1,18 +1,18 @@
 package ch9k.plugins;
 
 import ch9k.chat.Conversation;
+import ch9k.chat.event.ConversationEventFilter;
 import ch9k.core.settings.Settings;
 import ch9k.core.settings.SettingsChangeEvent;
 import ch9k.core.settings.SettingsChangeListener;
 import ch9k.core.settings.SettingsChangeListener;
 import ch9k.core.settings.event.PreferencePaneEvent;
 import ch9k.eventpool.Event;
-import ch9k.eventpool.EventPool;
-import ch9k.eventpool.EventListener;
 import ch9k.eventpool.EventFilter;
+import ch9k.eventpool.EventListener;
+import ch9k.eventpool.EventPool;
 import ch9k.eventpool.NetworkEvent;
 import ch9k.plugins.event.RemotePluginSettingsChangeEvent;
-import ch9k.chat.event.ConversationEventFilter;
 import java.util.HashMap;
 import java.util.Map;
 import javax.swing.JPanel;

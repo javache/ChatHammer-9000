@@ -1,6 +1,5 @@
 package ch9k.plugins.carousel;
 
-import java.net.URL;
 import ch9k.chat.event.ConversationEventFilter;
 import ch9k.core.Model;
 import ch9k.core.settings.Settings;
@@ -14,14 +13,15 @@ import ch9k.plugins.event.NewImageURLEvent;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.HashSet;
-import java.util.Set;
-import javax.swing.Timer;
-import java.util.List;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
+import javax.swing.Timer;
 
 /**
  * Class representing the image chooser data.

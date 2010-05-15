@@ -5,23 +5,23 @@ import ch9k.chat.Conversation;
 import ch9k.chat.ConversationSubject;
 import ch9k.chat.event.NewConversationSubjectEvent;
 import ch9k.core.settings.Settings;
-import ch9k.core.settings.SettingsChangeListener;
 import ch9k.core.settings.SettingsChangeEvent;
+import ch9k.core.settings.SettingsChangeListener;
 import ch9k.eventpool.EventPool;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-import org.apache.log4j.Logger;
 import javax.swing.Timer;
+import org.apache.log4j.Logger;
 
 /**
  * Abstract TextAnalyzer class.

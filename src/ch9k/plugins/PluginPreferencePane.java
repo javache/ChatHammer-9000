@@ -1,28 +1,28 @@
 package ch9k.plugins;
 
 import ch9k.core.I18n;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Set;
 import javax.swing.GroupLayout;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JButton;
-import javax.swing.JTextField;
-import javax.swing.JList;
-import javax.swing.JScrollPane;
 import javax.swing.JFileChooser;
+import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import javax.swing.event.DocumentListener;
 import javax.swing.event.DocumentEvent;
-import javax.swing.event.ListSelectionListener;
+import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
-import java.util.Set;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.net.URL;
-import java.net.MalformedURLException;
-import java.io.File;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.filechooser.FileFilter;
 
 /**

@@ -1,8 +1,8 @@
 package ch9k.plugins.event;
 
-import java.net.URL;
 import ch9k.chat.Conversation;
 import ch9k.chat.event.ConversationEvent;
+import java.net.URL;
 
 /**
  * Event thrown when an ImageProvider finds a new relevant image.

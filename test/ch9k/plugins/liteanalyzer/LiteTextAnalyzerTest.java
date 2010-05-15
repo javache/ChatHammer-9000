@@ -2,10 +2,10 @@ package ch9k.plugins.liteanalyzer;
 
 import ch9k.core.settings.Settings;
 import ch9k.plugins.TextAnalyzer;
-import ch9k.plugins.TextAnalyzerTester;
 import ch9k.plugins.TextAnalyzerPreferencePane;
-import org.junit.Test;
+import ch9k.plugins.TextAnalyzerTester;
 import java.util.List;
+import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class LiteTextAnalyzerTest {    

@@ -2,10 +2,10 @@ package be.jaspervdj.wordcloud;
 
 import ch9k.chat.Conversation;
 import ch9k.chat.event.ConversationEventFilter;
+import ch9k.chat.event.NewConversationSubjectEvent;
 import ch9k.chat.event.ReleasePluginContainerEvent;
 import ch9k.chat.event.RequestPluginContainerEvent;
 import ch9k.chat.event.RequestedPluginContainerEvent;
-import ch9k.chat.event.NewConversationSubjectEvent;
 import ch9k.core.settings.Settings;
 import ch9k.eventpool.Event;
 import ch9k.eventpool.EventFilter;

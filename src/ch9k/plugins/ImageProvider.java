@@ -1,7 +1,5 @@
 package ch9k.plugins;
 
-import java.net.URL;
-import java.net.MalformedURLException;
 import ch9k.chat.Conversation;
 import ch9k.chat.ConversationSubject;
 import ch9k.chat.event.ConversationEventFilter;
@@ -12,6 +10,8 @@ import ch9k.eventpool.EventFilter;
 import ch9k.eventpool.EventPool;
 import ch9k.plugins.Plugin;
 import ch9k.plugins.event.NewImageURLEvent;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 /**
  * Class abstracting image providing.
