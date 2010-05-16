@@ -34,6 +34,7 @@ public class ChatMessage implements Comparable<ChatMessage>, Serializable{
         this.text = htmlHeadStripper.matcher(text).replaceAll("").trim();
         this.author = author;
         this.systemMessage = systemMessage;
+        this.time = new Date();
     }
 
     public ChatMessage(String author, String text) {
