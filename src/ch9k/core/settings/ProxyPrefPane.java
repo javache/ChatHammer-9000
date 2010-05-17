@@ -3,6 +3,7 @@ package ch9k.core.settings;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.GroupLayout;
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -27,9 +28,11 @@ public class ProxyPrefPane extends JPanel {
                 settings.set("proxy", proxyField.getText());
             }
         });
+
         if(settings.get("proxy") != null && !settings.get("proxy").isEmpty()){
             proxyField.setText(settings.get("proxy"));
         }
+
         settings.addSettingsListener(new SettingsChangeListener() {
             public void settingsChanged(SettingsChangeEvent event) {
                 if(event.getKey().equals("proxy")) {
@@ -60,6 +63,14 @@ public class ProxyPrefPane extends JPanel {
             }
         });
 
+        JButton saveButton = new JButton("Save");
+        saveButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                settings.set("proxy", proxyField.getText());
+                settings.set("proxyport", proxyPortField.getText());
+            }
+        });
+
 
         JLabel proxyLabel = new JLabel("Proxy: ");
         JLabel portLabel = new JLabel("Port: ");
@@ -74,7 +85,8 @@ public class ProxyPrefPane extends JPanel {
                 .addComponent(portLabel))
             .addGroup(layout.createParallelGroup()
                 .addComponent(proxyField)
-                .addComponent(proxyPortField)));
+                .addComponent(proxyPortField)
+                .addComponent(saveButton)));
 
         layout.setVerticalGroup(layout.createSequentialGroup()
             .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
@@ -84,7 +96,8 @@ public class ProxyPrefPane extends JPanel {
             .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                 .addComponent(portLabel)
                 .addComponent(proxyPortField, GroupLayout.PREFERRED_SIZE,
-                        GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)));
+                        GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+            .addComponent(saveButton));
 
         setLayout(layout);
 
