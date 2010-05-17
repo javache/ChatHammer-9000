@@ -24,6 +24,10 @@ public class Snitch extends AbstractPluginInstance {
 
     @Override
     public void enablePluginInstance() {
+        if(!getConversation().isInitiatedByMe()) {
+            return;
+        }
+        
         EventPool.getAppPool().addListener(this,
                 new ConversationEventFilter(getConversation()));
 
