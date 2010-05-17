@@ -18,10 +18,6 @@
             <arg value="describe" />
         </exec>
     </target> -->
-    <!-- copy the log4j.properties file to the classpath -->
-    <target depends="init" name="-post-compile">
-        <copy todir="${build.classes.dir}" file="log4j.properties" />
-    </target>
     <!-- copy of the the -do-jar-with-libraries from build-impl.xml -->
     <target depends="init,compile,-pre-pre-jar,-pre-jar" if="manifest.available+main.class+mkdist.available" name="-do-jar-with-libraries">
         <property location="${build.classes.dir}" name="build.classes.dir.resolved"/>
@@ -62,7 +58,6 @@
                 <jar compress="${jar.compress}" jarfile="${dist.jar.dir}/@{destination}.jar" manifest="${build.classes.dir}/@{package}/${manifest.file}">
                     <fileset dir="${build.classes.dir}">
                         <include name="@{package}/**/*.class" />
-                        <include name="*.properties" />
                     </fileset>
                     <fileset dir="${src.resources.dir}">
                         <include name="@{package}/**/*" />
