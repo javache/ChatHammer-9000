@@ -149,14 +149,14 @@ public class Connection {
             socket.setSoTimeout(SOCKET_READ_TIMEOUT);
         }
         
-        eventSocketHandler = new SocketHandler(socket,eventQueue,pool,this);
+        eventSocketHandler = new SocketHandler(socket, eventQueue, pool, this);
         
         notifyInitComplete();
     }
     
     public void addDataSocket(Socket socket) throws IOException {
         socket.setKeepAlive(true);
-        dataSocketHandler = new SocketHandler(socket,dataQueue,pool,this);
+        dataSocketHandler = new SocketHandler(socket, dataQueue, pool, this);
     }
     
     private void initDataSocket() {

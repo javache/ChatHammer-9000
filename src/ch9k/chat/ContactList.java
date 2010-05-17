@@ -254,8 +254,11 @@ public class ContactList extends AbstractListModel
     }
 
     private class PingContactThread extends Thread {
-
         private int timeout = 15000;
+
+        public PingContactThread() {
+            setDaemon(true);
+        }
 
         @Override
         public void run() {
@@ -270,7 +273,6 @@ public class ContactList extends AbstractListModel
                 }
             }
         }
-
     }
 
     private void pingContact(Contact contact) {

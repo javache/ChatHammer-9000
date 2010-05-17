@@ -122,6 +122,7 @@ public class Configuration {
                 pluginManager = new PluginManager();
                 storage.store("pluginManager", pluginManager);
             }
+            pluginManager.loadInstalledPlugins();
         }
         return pluginManager;
     }

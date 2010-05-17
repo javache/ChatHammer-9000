@@ -4,6 +4,7 @@ import ch9k.core.I18n;
 import ch9k.core.settings.Settings;
 import ch9k.core.settings.SettingsChangeEvent;
 import ch9k.core.settings.SettingsChangeListener;
+import java.awt.EventQueue;
 import javax.swing.GroupLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -30,15 +31,23 @@ public class WordCloudPreferencePane
     /**
      * MAX_WORDS spinner.
      */
-    private final JSpinner maxWordsSpinner;
+    private JSpinner maxWordsSpinner;
 
     /**
      * Constructor.
      * @param settings Settings to manipulate.
      */
-    public WordCloudPreferencePane(final Settings settings) {
+    public WordCloudPreferencePane(Settings settings) {
         this.settings = settings;
 
+        EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                initComponents();
+            }
+        });
+    }
+
+    private void initComponents() {
         GroupLayout layout = new GroupLayout(this);
 
         layout.setAutoCreateGaps(true);

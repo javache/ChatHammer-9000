@@ -70,15 +70,6 @@ public class PluginManager extends Model implements EventListener, Persistable {
         fileNames = new HashMap<String, String>();
         pluginState = new HashMap<String, Map<Conversation, Boolean>>();
         installer = new PluginInstaller(this);
-        installer.loadInstalledPlugins();
-
-        /* Some plugins are always available, because they ship with the
-         * application. */
-        addAvailablePlugin("ch9k.plugins.carousel.CarouselPlugin", null);
-        addAvailablePlugin(
-                "ch9k.plugins.flickr.FlickrImageProviderPlugin", null);
-        addAvailablePlugin(
-                "ch9k.plugins.liteanalyzer.LiteTextAnalyzerPlugin", null);
 
         /* Register as listener. We will listen to remote enable/disable plugin
          * events, so we can synchronize with the plugin manager on the other
@@ -114,6 +105,26 @@ public class PluginManager extends Model implements EventListener, Persistable {
     public PluginManager(PersistentDataObject pdo) {
         this();
         load(pdo);
+    }
+
+    /**
+     * Load any plugins currently installed
+     */
+    public void loadInstalledPlugins() {
+        /* Load plugins lazily */
+        new Thread(new Runnable() {
+            public void run() {
+                installer.loadInstalledPlugins();
+
+                /* Some plugins are always available, because they ship with the
+                 * application. */
+                addAvailablePlugin("ch9k.plugins.carousel.CarouselPlugin", null);
+                addAvailablePlugin(
+                        "ch9k.plugins.flickr.FlickrImageProviderPlugin", null);
+                addAvailablePlugin(
+                        "ch9k.plugins.liteanalyzer.LiteTextAnalyzerPlugin", null);
+            }
+        }, "PluginManager-initializer").start();
     }
 
     /**
@@ -153,7 +164,9 @@ public class PluginManager extends Model implements EventListener, Persistable {
      */
     public synchronized void addAvailablePlugin(String name, String fileName) {
         /* Check that we don't have it already. */
-        if(plugins.get(name) != null) return;
+        if(plugins.get(name) != null) {
+            return;
+        }
 
         /* Find the class of the new plugin. */
         Class<?> pluginClass = null;
