@@ -13,6 +13,7 @@ import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -48,6 +49,11 @@ public abstract class TextAnalyzer extends AbstractPluginInstance
      * Timer to trigger event spamming.
      */
     private final Timer timer;
+
+    /**
+     * The last subject we send
+     */
+    private List<String> lastSubjects = new ArrayList<String>();
 
     /* Statically parse the list of words to be ignored. */
     static {
@@ -122,22 +128,28 @@ public abstract class TextAnalyzer extends AbstractPluginInstance
         /* Get the result from the actual implementation. */
         List<String> result = getSubjects(messages);
 
-        /* Trim the result to meet the preferences on MAX_SUBJECTS. */
-        int maxSubjects = getSettings().getInt(
-                TextAnalyzerPreferencePane.MAX_SUBJECTS);
-        int numSubjects = result.size() > maxSubjects ?
-                maxSubjects : result.size();
-        String[] subjects = new String[numSubjects];
-        for(int i = 0; i < numSubjects; i++) {
-            subjects[i] = result.get(i);
+        if(!result.equals(lastSubjects)) {
+            lastSubjects = result;
+            /* Trim the result to meet the preferences on MAX_SUBJECTS. */
+            int maxSubjects = getSettings().getInt(
+                    TextAnalyzerPreferencePane.MAX_SUBJECTS);
+            int numSubjects = result.size() > maxSubjects
+                    ?
+                    maxSubjects : result.size();
+            String[] subjects = new String[numSubjects];
+            for(int i = 0; i < numSubjects; i++) {
+                subjects[i] = result.get(i);
+            }
+
+            ConversationSubject subject = new ConversationSubject(subjects);
+
+            /* Throw the new event. */
+            NewConversationSubjectEvent subjectEvent =
+                    new NewConversationSubjectEvent(getConversation(), subject);
+            EventPool.getAppPool().raiseNetworkEvent(subjectEvent);
         }
 
-        ConversationSubject subject = new ConversationSubject(subjects);
-
-        /* Throw the new event. */ 
-        NewConversationSubjectEvent subjectEvent =
-                new NewConversationSubjectEvent(getConversation(), subject);
-        EventPool.getAppPool().raiseNetworkEvent(subjectEvent);
+        
     }
 
     @Override
