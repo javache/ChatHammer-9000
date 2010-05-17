@@ -93,6 +93,7 @@ public class ConversationTest {
             new ChatMessage("Wendy", "O dag lieverd"),
             new ChatMessage("JPanneel", "Hoe gaat het met de overkant?"),
             new ChatMessage("Wendy", "Goed, maar ik mis je wel!"),
+            new ChatMessage("info", "haha, iz in your code", true),
             new ChatMessage("JPanneel", "Ik weet het :)"),
             new ChatMessage("Wendy", "Doei!")
         };
@@ -101,7 +102,7 @@ public class ConversationTest {
 
         EventPool eventPool = EventPool.getAppPool();
 
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 6; i++) {
             EventPool.getAppPool().raiseNetworkEvent(
                     new NewChatMessageEvent(conversation, messages[i]));
             Thread.sleep(100);
@@ -114,7 +115,7 @@ public class ConversationTest {
         assertEquals("Hoe gaat het met de overkant?", conversation.getChatMessages(3)[0].getText());
 
         EventPool.getAppPool().raiseNetworkEvent(
-                    new NewChatMessageEvent(conversation, messages[5]));
+                    new NewChatMessageEvent(conversation, messages[6]));
         Thread.sleep(100);
         assertEquals(5, conversation.getChatMessages(5).length);
         assertEquals(6, conversation.getChatMessages(10).length);
