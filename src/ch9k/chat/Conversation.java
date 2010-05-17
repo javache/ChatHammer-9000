@@ -68,22 +68,28 @@ public class Conversation implements EventListener {
      * @return The resulting messages.
      */
     public ChatMessage[] getChatMessages(int n) {
-        int size = messages.getSize();
-        int i = size - n;
-
-        i = i < 0 ? 0 : i;
+        int i = messages.getSize() - 1;
 
         ArrayList<ChatMessage> tempList = new ArrayList<ChatMessage>();
 
-        while(i < size && tempList.size() < n) {
+        while(i >= 0 && tempList.size() < n) {
             ChatMessage message = (ChatMessage)messages.getElementAt(i);
             if(!message.isSystemMessage()) {
-                tempList.add(message);
+                /* This will add them in the wrong order */
+                tempList.add( message);
             }
-            i++;
+            i--;
         }
 
-        return tempList.toArray(new ChatMessage[tempList.size()]);
+        int size = tempList.size();
+
+        ChatMessage[] array = new ChatMessage[size];
+
+        for(int j = 0; j < array.length; j++) {
+            array[j] = tempList.get(size-j-1);
+        }
+        
+        return array;
     }
 
     /**
