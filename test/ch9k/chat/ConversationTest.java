@@ -75,16 +75,16 @@ public class ConversationTest {
      */
     @Test
     public void testAddMessage() throws InterruptedException {
-        assertEquals(0, conversation.getMessages(10).length);
+        assertEquals(0, conversation.getChatMessages(10).length);
         ChatMessage chatMessage = new ChatMessage("JPanneel", "Hey!");
         NewChatMessageEvent chatMessageEvent = new NewChatMessageEvent(conversation, chatMessage);
         EventPool.getAppPool().raiseNetworkEvent(chatMessageEvent);
         Thread.sleep(100);
-        assertEquals(1, conversation.getMessages(10).length);
+        assertEquals(1, conversation.getChatMessages(10).length);
     }
 
     /**
-     * Test of getMessages method, of class Conversation.
+     * Test of getChatMessages method, of class Conversation.
      */
     @Test
     public void testGetMessages() throws InterruptedException {
@@ -97,7 +97,7 @@ public class ConversationTest {
             new ChatMessage("Wendy", "Doei!")
         };
 
-        assertEquals(0, conversation.getMessages(5).length);
+        assertEquals(0, conversation.getChatMessages(5).length);
 
         EventPool eventPool = EventPool.getAppPool();
 
@@ -107,19 +107,19 @@ public class ConversationTest {
             Thread.sleep(100);
         }
 
-        assertEquals(5, conversation.getMessages(10).length);
-        assertEquals("Hey!", conversation.getMessages(5)[0].getText());
-        assertEquals("Ik weet het :)", conversation.getMessages(5)[4].getText());
-        assertEquals(3, conversation.getMessages(3).length);
-        assertEquals("Hoe gaat het met de overkant?", conversation.getMessages(3)[0].getText());
+        assertEquals(5, conversation.getChatMessages(10).length);
+        assertEquals("Hey!", conversation.getChatMessages(5)[0].getText());
+        assertEquals("Ik weet het :)", conversation.getChatMessages(5)[4].getText());
+        assertEquals(3, conversation.getChatMessages(3).length);
+        assertEquals("Hoe gaat het met de overkant?", conversation.getChatMessages(3)[0].getText());
 
         EventPool.getAppPool().raiseNetworkEvent(
                     new NewChatMessageEvent(conversation, messages[5]));
         Thread.sleep(100);
-        assertEquals(5, conversation.getMessages(5).length);
-        assertEquals(6, conversation.getMessages(10).length);
-        assertEquals("Hoe gaat het met de overkant?", conversation.getMessages(5)[1].getText());
-        assertEquals("Doei!", conversation.getMessages(5)[4].getText());
+        assertEquals(5, conversation.getChatMessages(5).length);
+        assertEquals(6, conversation.getChatMessages(10).length);
+        assertEquals("Hoe gaat het met de overkant?", conversation.getChatMessages(5)[1].getText());
+        assertEquals("Doei!", conversation.getChatMessages(5)[4].getText());
     }
 
     /**
@@ -215,10 +215,10 @@ public class ConversationTest {
         Thread.sleep(100);
 
         // let's check the results!
-        assertEquals(1, remoteConversation.getMessages(10).length);
-        assertEquals("Dag Javache, jij jij remoteUser!", remoteConversation.getMessages(1)[0].getText());
+        assertEquals(1, remoteConversation.getChatMessages(10).length);
+        assertEquals("Dag Javache, jij jij remoteUser!", remoteConversation.getChatMessages(1)[0].getText());
 
-        assertEquals(1, localConversation.getMessages(10).length);
-        assertEquals("Dag Javache, jij jij remoteUser!", localConversation.getMessages(1)[0].getText());
+        assertEquals(1, localConversation.getChatMessages(10).length);
+        assertEquals("Dag Javache, jij jij remoteUser!", localConversation.getChatMessages(1)[0].getText());
     }
 }

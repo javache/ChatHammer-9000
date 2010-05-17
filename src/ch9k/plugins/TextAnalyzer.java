@@ -118,7 +118,7 @@ public abstract class TextAnalyzer extends AbstractPluginInstance
         }
 
         /* Get the raw text from the messages. */
-        ChatMessage[] chatMessages = getConversation().getMessages(
+        ChatMessage[] chatMessages = getConversation().getChatMessages(
                 getSettings().getInt(TextAnalyzerPreferencePane.MAX_MESSAGES));
         String[] messages = new String[chatMessages.length];
         for(int i = 0; i < messages.length; i++) {

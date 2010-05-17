@@ -10,6 +10,7 @@ import ch9k.eventpool.EventFilter;
 import ch9k.eventpool.EventListener;
 import ch9k.eventpool.EventPool;
 import java.awt.EventQueue;
+import java.util.ArrayList;
 import java.util.Date;
 import javax.swing.DefaultListModel;
 import javax.swing.ListModel;
@@ -66,16 +67,23 @@ public class Conversation implements EventListener {
      * @param n The number of messages to return.
      * @return The resulting messages.
      */
-    public ChatMessage[] getMessages(int n) {
+    public ChatMessage[] getChatMessages(int n) {
         int size = messages.getSize();
-        n = n > size ? size : n;
-        ChatMessage[] array = new ChatMessage[n];
+        int i = size - n;
 
-        for(int i = 0; i < n; i++) {
-            array[i] = (ChatMessage)messages.getElementAt(size-n+i);
+        i = i < 0 ? 0 : i;
+
+        ArrayList<ChatMessage> tempList = new ArrayList<ChatMessage>();
+
+        while(i < size && tempList.size() < n) {
+            ChatMessage message = (ChatMessage)messages.getElementAt(i);
+            if(!message.isSystemMessage()) {
+                tempList.add(message);
+            }
+            i++;
         }
-        
-        return array;
+
+        return tempList.toArray(new ChatMessage[tempList.size()]);
     }
 
     /**
