@@ -24,7 +24,7 @@ public class Connection {
      */
     public static final int DEFAULT_PORT = 4011;
 
-    public static final boolean TRUST_TCP = true;
+    public static final boolean TRUST_TCP = false;
 
     /**
      * Amount of time to wait for a socket on connect

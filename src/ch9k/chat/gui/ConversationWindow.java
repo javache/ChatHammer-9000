@@ -70,18 +70,6 @@ public class ConversationWindow extends JFrame implements EventListener {
     }
 
     public void init() {
-        EventFilter requestFilter = new ConversationEventFilter(
-                RequestPluginContainerEvent.class, conversation);
-        EventPool.getAppPool().addListener(this, requestFilter);
-        
-        EventFilter releaseFilter = new ConversationEventFilter(
-                ReleasePluginContainerEvent.class, conversation);
-        EventPool.getAppPool().addListener(this, releaseFilter);
-
-        EventFilter closeFilter = new ConversationEventFilter(
-                CloseConversationEvent.class, conversation);
-        EventPool.getAppPool().addListener(this, closeFilter);
-        
         // listen for close-events
         addWindowListener(new WindowAdapter() {
             public void windowClosed(WindowEvent e) {
@@ -104,6 +92,19 @@ public class ConversationWindow extends JFrame implements EventListener {
 
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setVisible(true);
+
+        /* Start listening to events. */
+        EventFilter requestFilter = new ConversationEventFilter(
+                RequestPluginContainerEvent.class, conversation);
+        EventPool.getAppPool().addListener(this, requestFilter);
+
+        EventFilter releaseFilter = new ConversationEventFilter(
+                ReleasePluginContainerEvent.class, conversation);
+        EventPool.getAppPool().addListener(this, releaseFilter);
+
+        EventFilter closeFilter = new ConversationEventFilter(
+                CloseConversationEvent.class, conversation);
+        EventPool.getAppPool().addListener(this, closeFilter);
     }
 
     private void initComponents() {
