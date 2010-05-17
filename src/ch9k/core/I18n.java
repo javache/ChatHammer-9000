@@ -3,6 +3,7 @@ package ch9k.core;
 import java.awt.event.KeyEvent;
 import java.text.MessageFormat;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
@@ -32,7 +33,14 @@ public class I18n {
     public static String get(String namespace, String key) {
         ResourceBundle bundle = bundles.get(namespace);
         if(bundle == null) {
-            bundle = ResourceBundle.getBundle(namespace + ".MessageBundle");
+            String name = namespace + ".MessageBundle";
+            try {
+                bundle = ResourceBundle.getBundle(name);
+            } catch(MissingResourceException ex) {
+                bundle = ResourceBundle.getBundle(name, Locale.getDefault(),
+                        ChatApplication.getInstance().getPluginManager().getPluginInstaller());
+            }
+            
             bundles.put(namespace, bundle);
         }
 
