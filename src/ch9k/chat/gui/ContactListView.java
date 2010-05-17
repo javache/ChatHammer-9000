@@ -12,7 +12,6 @@ import ch9k.chat.gui.components.StatusIcon;
 import ch9k.core.ChatApplication;
 import ch9k.core.I18n;
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.Frame;
@@ -50,6 +49,7 @@ public class ContactListView extends JPanel {
 
         initComponents();
         initLayout();
+
     }
 
     private void initComponents() {

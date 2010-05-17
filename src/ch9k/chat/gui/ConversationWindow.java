@@ -1,6 +1,5 @@
 package ch9k.chat.gui;
 
-import apple.laf.CoreUIUtils.TabbedPane;
 import ch9k.chat.Conversation;
 import ch9k.chat.event.CloseConversationEvent;
 import ch9k.chat.event.ConversationEventFilter;
