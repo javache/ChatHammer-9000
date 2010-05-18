@@ -49,7 +49,6 @@ public class ContactListView extends JPanel {
 
         initComponents();
         initLayout();
-
     }
 
     private void initComponents() {

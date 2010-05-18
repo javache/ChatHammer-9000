@@ -104,7 +104,6 @@ public class ApplicationWindow extends JFrame {
         panel.add(account, BorderLayout.NORTH);
 
         contactList = new ContactListView();
-        contactList.setBackground(getBackground());
         panel.add(contactList, BorderLayout.CENTER);
 
         statusBar = new JLabel();

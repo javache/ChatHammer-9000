@@ -16,6 +16,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.SwingConstants;
 import org.apache.log4j.Logger;
 
 /**
@@ -31,7 +32,7 @@ public class AboutDialog extends JDialog {
         initComponents();
         initSound();
 
-        setSize(new Dimension(300, 300));
+        setSize(new Dimension(350, 350));
         setLocationRelativeTo(parent);
         setResizable(false);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -53,26 +54,45 @@ public class AboutDialog extends JDialog {
         ImageIcon logo = new ImageIcon(imgURL, "ChatHammer 9000");
         JLabel image = new JLabel(logo);
 
-        JLabel text = new JLabel ("<html><p>ChatHammer 9000 is a project created by Corijn Bruno, De Baets Pieter, Panneel Jens, Van der Jeugt Jasper and Willems Toon.</p>" +
-                "<p>If you are very impressed with our work, and want to hire our team, feel free to drop by the Zeus WPI Headquarters or contact us at so2project@zeus.ugent.be. <br />" +
-                "In case you happen to find any bugs (rather unlikely) you may also contact us, and we might try to fix them in future releases! (also rather unlikely)");
+        JLabel text = new JLabel ("<html><center>" +
+                "<p>ChatHammer 9000 was created by Bruno Corijn, " +
+                "Pieter De Baets, Jens Panneel, Jasper Van der Jeugt and " +
+                "Toon Willems.</p>" +
+                "<p> </p>" +
+                "<p>If you are impressed with our work, and want to hire our team, " +
+                "feel free to contact us at so2project@zeus.ugent.be.</p>" +
+                "<p> </p>" +
+                "<p>In the unlikely event that you happen to find a bug" +
+                " you may also contact us, and if we are really bored, " +
+                "we might fix it in future release (also rather unlikely).</p>");
+        text.setHorizontalAlignment(SwingConstants.CENTER);
 
         GroupLayout layout = new GroupLayout(getContentPane());
         setLayout(layout);
 
         layout.setHorizontalGroup(layout.createSequentialGroup()
-            .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup()
-                .addComponent(image)
-                .addComponent(text)
+            .addGap(15, 15, Short.MAX_VALUE)
+            .addGroup(layout.createParallelGroup()
+                .addGroup(layout.createSequentialGroup()
+                    .addGap(0, 0, Short.MAX_VALUE)
+                    .addComponent(image)
+                    .addGap(0, 0, Short.MAX_VALUE)
                 )
+                .addGroup(layout.createSequentialGroup()
+                    .addGap(0, 0, Short.MAX_VALUE)
+                    .addComponent(text)
+                    .addGap(0, 0, Short.MAX_VALUE)
+                )
+            )
+            .addGap(15, 15, Short.MAX_VALUE)
         );
 
         layout.setVerticalGroup(layout.createSequentialGroup()
-                .addGap(10)
-                .addComponent(image)
-                .addGap(20)
-                .addComponent(text)
+            .addGap(15, 15, Short.MAX_VALUE)
+            .addComponent(image)
+            .addGap(20)
+            .addComponent(text)
+            .addGap(15, 15, Short.MAX_VALUE)
         );
     }
 
