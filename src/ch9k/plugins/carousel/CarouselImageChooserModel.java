@@ -34,6 +34,11 @@ public class CarouselImageChooserModel extends Model
     private final static int NUM_SIDE_IMAGES = 2;
 
     /**
+     * Time (in milliseconds) to scroll from one image to the next.
+     */
+    private final static double SCROLL_TIME = 500.0;
+
+    /**
      * The selection model.
      */
     private CarouselImageModel model;
@@ -81,6 +86,11 @@ public class CarouselImageChooserModel extends Model
     private long timerStart;
 
     /**
+     * Difference in scrolling. Used for the animation.
+     */
+    private double scrollDiff;
+
+    /**
      * Blocking queue, so we don't add too many images at the same time.
      */
     private BlockingQueue<URL> urlQueue;
@@ -108,9 +118,9 @@ public class CarouselImageChooserModel extends Model
         /* Timer to update the animation. */
         timer = new Timer(33, new ActionListener() {
             public void actionPerformed(ActionEvent event) {
-                double t = (double) (System.currentTimeMillis() - timerStart) /
-                        1000.0;
                 double diff = (double) nextSelection - previousSelection;
+                double t = (double) (System.currentTimeMillis() - timerStart) /
+                        (SCROLL_TIME * scrollDiff);
                 currentSelection = previousSelection + t * diff;
                 if(t >= 1.0) {
                     currentSelection = (double) nextSelection;
@@ -121,6 +131,7 @@ public class CarouselImageChooserModel extends Model
         });
 
         timerStart = 0;
+        scrollDiff = 1.0;
 
         /* Register as listener to receive new images. */
         EventFilter filter = new ConversationEventFilter(
@@ -192,6 +203,7 @@ public class CarouselImageChooserModel extends Model
         if(this.nextSelection != nextSelection) {
             previousSelection = currentSelection;
             this.nextSelection = nextSelection;
+            scrollDiff = Math.abs(nextSelection - previousSelection);
 
             /* Start timer for animation. */
             timer.stop();
