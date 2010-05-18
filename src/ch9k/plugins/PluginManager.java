@@ -274,10 +274,10 @@ public class PluginManager extends Model implements EventListener, Persistable {
      * Enable a plugin for a given conversation.
      * @param name Name of the plugin to load.
      * @param conversation Conversation to enable the plugin for.
-     * @param sendEvent If we should send an event for this change.
+     * @param networkEvent If we should send a network event for this change.
      */
     protected void enablePlugin(String name,
-            Conversation conversation, boolean sendEvent) {
+            Conversation conversation, boolean networkEvent) {
         /* We are enabling this plugin, so we use our settings. */
         Plugin plugin = plugins.get(name);
         Settings settings = null;
@@ -285,11 +285,16 @@ public class PluginManager extends Model implements EventListener, Persistable {
             settings = plugin.getSettings();
         }
 
-        if(enable(name, conversation, settings) && sendEvent) {
+        if(enable(name, conversation, settings)) {
             /* Throw an event. */
             PluginChangeEvent event =
                     new PluginChangeEvent(conversation, name, true, settings);
-            EventPool.getAppPool().raiseNetworkEvent(event);
+
+            if(networkEvent) {
+                EventPool.getAppPool().raiseNetworkEvent(event);
+            } else {
+                EventPool.getAppPool().raiseEvent(event);
+            }
         }
     }
 
@@ -347,15 +352,20 @@ public class PluginManager extends Model implements EventListener, Persistable {
      * Disable a plugin for a given conversation.
      * @param name Name of the plugin to disable.
      * @param conversation Conversation to disable the plugin for.
-     * @param sendEvent If we should send an event for this plugin change.
+     * @param networkEvent If we should send a network event for this change.
      */
     protected synchronized void disablePlugin(
-            String name, Conversation conversation, boolean sendEvent) {
-        if(disable(name, conversation) && sendEvent) {
+            String name, Conversation conversation, boolean networkEvent) {
+        if(disable(name, conversation)) {
             /* Throw an event. */
             PluginChangeEvent event =
                     new PluginChangeEvent(conversation, name, false, null);
-            EventPool.getAppPool().raiseNetworkEvent(event);
+
+            if(networkEvent) {
+                EventPool.getAppPool().raiseNetworkEvent(event);
+            } else {
+                EventPool.getAppPool().raiseEvent(event);
+            }
         }
     }
 
