@@ -267,6 +267,17 @@ public class PluginManager extends Model implements EventListener, Persistable {
      * @param conversation Conversation to enable the plugin for.
      */
     public void enablePlugin(String name, Conversation conversation) {
+        enablePlugin(name, conversation, true);
+    }
+
+    /**
+     * Enable a plugin for a given conversation.
+     * @param name Name of the plugin to load.
+     * @param conversation Conversation to enable the plugin for.
+     * @param sendEvent If we should send an event for this change.
+     */
+    protected void enablePlugin(String name,
+            Conversation conversation, boolean sendEvent) {
         /* We are enabling this plugin, so we use our settings. */
         Plugin plugin = plugins.get(name);
         Settings settings = null;
@@ -274,7 +285,7 @@ public class PluginManager extends Model implements EventListener, Persistable {
             settings = plugin.getSettings();
         }
 
-        if(enable(name, conversation, settings)) {
+        if(enable(name, conversation, settings) && sendEvent) {
             /* Throw an event. */
             PluginChangeEvent event =
                     new PluginChangeEvent(conversation, name, true, settings);
@@ -329,7 +340,18 @@ public class PluginManager extends Model implements EventListener, Persistable {
      */
     public synchronized void disablePlugin(
             String name, Conversation conversation) {
-        if(disable(name, conversation)) {
+        disablePlugin(name, conversation, true);
+    }
+
+    /**
+     * Disable a plugin for a given conversation.
+     * @param name Name of the plugin to disable.
+     * @param conversation Conversation to disable the plugin for.
+     * @param sendEvent If we should send an event for this plugin change.
+     */
+    protected synchronized void disablePlugin(
+            String name, Conversation conversation, boolean sendEvent) {
+        if(disable(name, conversation) && sendEvent) {
             /* Throw an event. */
             PluginChangeEvent event =
                     new PluginChangeEvent(conversation, name, false, null);
@@ -531,7 +553,7 @@ public class PluginManager extends Model implements EventListener, Persistable {
             
             /* Enable the default plugins for the conversation. */
             for(String name: getDefaultPlugins()) {
-                enablePlugin(name, conversation);
+                enablePlugin(name, conversation, false);
             }
         }
     }
