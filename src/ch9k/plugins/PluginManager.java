@@ -2,6 +2,7 @@ package ch9k.plugins;
 
 import ch9k.chat.Conversation;
 import ch9k.chat.event.CloseConversationEvent;
+import ch9k.chat.event.ConversationWindowReadyEvent;
 import ch9k.configuration.Persistable;
 import ch9k.configuration.PersistentDataObject;
 import ch9k.core.ChatApplication;
@@ -89,6 +90,11 @@ public class PluginManager extends Model implements EventListener, Persistable {
         /* We surely want to listen to these events,
          * so we can install plugins */
         filter = new EventFilter(RequestedPluginEvent.class);
+        EventPool.getAppPool().addListener(this, filter);
+
+        /* When a conversation window is ready, we enable the default plugins
+         * for that conversation. */
+        filter = new EventFilter(ConversationWindowReadyEvent.class);
         EventPool.getAppPool().addListener(this, filter);
 
         /* Throw our preference pane so the user can install more plugins */
@@ -514,6 +520,18 @@ public class PluginManager extends Model implements EventListener, Persistable {
                         }
                     }
                 }).start();
+            }
+        }
+
+        /* A ConversationWindowReadyEvent. */
+        if(e instanceof ConversationWindowReadyEvent) {
+            /* Obtain the conversation from the event. */
+            Conversation conversation =
+                    ((ConversationWindowReadyEvent) e).getConversation();
+            
+            /* Enable the default plugins for the conversation. */
+            for(String name: getDefaultPlugins()) {
+                enablePlugin(name, conversation);
             }
         }
     }

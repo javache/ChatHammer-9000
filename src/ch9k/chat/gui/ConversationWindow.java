@@ -2,6 +2,7 @@ package ch9k.chat.gui;
 
 import ch9k.chat.Conversation;
 import ch9k.chat.event.CloseConversationEvent;
+import ch9k.chat.event.ConversationWindowReadyEvent;
 import ch9k.chat.event.ConversationEventFilter;
 import ch9k.chat.event.ReleasePluginContainerEvent;
 import ch9k.chat.event.RequestPluginContainerEvent;
@@ -105,6 +106,10 @@ public class ConversationWindow extends JFrame implements EventListener {
         EventFilter closeFilter = new ConversationEventFilter(
                 CloseConversationEvent.class, conversation);
         EventPool.getAppPool().addListener(this, closeFilter);
+
+        /* The conversation window is ready now -- state that with an event. */
+        Event event = new ConversationWindowReadyEvent(conversation);
+        EventPool.getAppPool().raiseEvent(event);
     }
 
     private void initComponents() {

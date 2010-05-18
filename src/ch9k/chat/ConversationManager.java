@@ -54,20 +54,6 @@ public class ConversationManager implements Iterable<Conversation> {
                     new Conversation(contact, initiatedByMe);
             conversations.put(contact, conversation);
 
-            /* Enable the default plugins. */
-            final PluginManager pluginManager =
-                    ChatApplication.getInstance().getPluginManager();
-            
-            /* We use the event thread here, so we execute this code *after*
-             * the conversation window is constructed completely. */
-            /*SwingUtilities.invokeLater(new Runnable() {
-                public void run() {
-                    for(String plugin: pluginManager.getDefaultPlugins()) {
-                        pluginManager.enablePlugin(plugin, conversation);
-                    }
-                }
-            });*/
-
             return conversation;
         } else {
             return conversations.get(contact);
