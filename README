@@ -1,6 +1,19 @@
 # Readme
 
-## Code style
+## Building and running the project
+
+We use an ant-based NetBeans project.
+
+An overview of the used commands:
+	ant clean		Clean the project
+	ant compile		Build the project
+	ant run			Run the main class
+	ant jar			Build the application jar
+	ant plugins		Build the plugin jars
+
+For added convenience there also exists a run-class and a run-test script.
+
+## Coding style
 
 In any project where more than one programmer is involved, there needs to be
 some kind of convention around code style. Since we are programming in the
