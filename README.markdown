@@ -1,15 +1,16 @@
-# Readme
+# ChatHammer 9000
 
 ## Building and running the project
 
 We use an ant-based NetBeans project.
 
 An overview of the used commands:
-	ant clean		Clean the project
-	ant compile		Build the project
-	ant run			Run the main class
-	ant jar			Build the application jar
-	ant plugins		Build the plugin jars
+
+    ant clean		Clean the project
+    ant compile		Build the project
+    ant run			Run the main class
+    ant jar			Build the application jar
+    ant plugins		Build the plugin jars
 
 For added convenience there also exists a run-class and a run-test script.
 
@@ -30,11 +31,11 @@ In addition, let's have a few conventions for git usage.
 
 Use descriptive commit messages. The git convention is to use:
 
-    Short (50 chars or less) summary of changes.
-
-    After an empty line follows a more detailed explanation. This
-    can be as long as you want -- and it's optional if you think
-    the short summary is descriptive enough.
+> Short (50 chars or less) summary of changes.
+>
+> After an empty line follows a more detailed explanation. This
+> can be as long as you want -- and it's optional if you think
+> the short summary is descriptive enough.
     
 As you might have noticed from reading this document, everything will be 
 documented and commented in english.
