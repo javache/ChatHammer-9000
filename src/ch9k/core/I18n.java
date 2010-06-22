@@ -18,12 +18,7 @@ public class I18n {
      */
     private static final Map<String, ResourceBundle> bundles =
             new HashMap<String, ResourceBundle>();
-
-    /* Obtain the top level locale, and load the resource bundle. */
-    static {
-        UIManager.getDefaults().addResourceBundle("ch9k.MessageBundle");
-    }
-
+    
     /**
      * Get a localized message.
      * @param namespace The message namespace.
